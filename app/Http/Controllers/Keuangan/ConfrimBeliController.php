@@ -915,6 +915,15 @@ class ConfrimBeliController extends Controller
             $satuan[] = $satUtama->m_sname;
             $counter++;
         }
+        elseif ($val->i_type == "BL") //bahan baku
+        {
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+
+            $stok[] = $query[0];
+            $satuan[] = $satUtama->m_sname;
+            $counter++;
+        }
     }
 
     $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
