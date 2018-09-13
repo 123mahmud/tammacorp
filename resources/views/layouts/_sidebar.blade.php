@@ -235,7 +235,11 @@
                                     </li>
                                 @endif
 
+<<<<<<< HEAD
+                                @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
+=======
                                  @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
+>>>>>>> 2aa528ad65229806cefbc4f8ed4f186e905f6ea3
                                     <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
                                                     class="hidden">Master</span></a>

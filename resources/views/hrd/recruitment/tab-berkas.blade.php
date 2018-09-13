@@ -27,7 +27,11 @@
             <div class="col-sm-10">
               <div class="preview_td">
                 <img style="width: 100px;height: 100px;border:1px solid pink" id="output_foto" >
+<<<<<<< HEAD
+              </div>
+=======
             </div>
+>>>>>>> 2aa528ad65229806cefbc4f8ed4f186e905f6ea3
             </div>
           </div>
         </div>
@@ -37,7 +41,11 @@
             <label for="sertifikat" class="col-sm-2 col-form-label font-weight-bold">File Sertifikat</label>
             <div class="col-sm-10">
               <!-- <input type="file" class="form-control" id="sertifikat" name="sertifikat" onchange="loadFile(event)" > -->
+<<<<<<< HEAD
+              <input type="file" class="form-control" id="sertifikat" name="sertifikat" accept=".pdf">
+=======
               <input type="file" class="form-control" id="sertifikat" name="sertifikat">
+>>>>>>> 2aa528ad65229806cefbc4f8ed4f186e905f6ea3
             </div>
           </div>
         </div>
@@ -45,7 +53,11 @@
           <div class="form-group row">
             <label for="ijazah" class="col-sm-2 col-form-label font-weight-bold">File Ijazah</label>
             <div class="col-sm-10">
+<<<<<<< HEAD
+              <input type="file" class="form-control" id="ijazah" name="ijazah" accept=".pdf">
+=======
               <input type="file" class="form-control" id="ijazah" name="ijazah">
+>>>>>>> 2aa528ad65229806cefbc4f8ed4f186e905f6ea3
             </div>
           </div>
         </div>
@@ -53,7 +65,11 @@
           <div class="form-group row">
             <label for="file_lain_lain" class="col-sm-2 col-form-label font-weight-bold">File Lain-lain</label>
             <div class="col-sm-10">
+<<<<<<< HEAD
+              <input type="file" class="form-control" id="file_lain_lain" name="file_lain_lain" accept=".pdf">
+=======
               <input type="file" class="form-control" id="file_lain_lain" name="file_lain_lain" >
+>>>>>>> 2aa528ad65229806cefbc4f8ed4f186e905f6ea3
             </div>
           </div>
         </div>
