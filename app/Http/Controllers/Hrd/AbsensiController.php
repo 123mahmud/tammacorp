@@ -12,201 +12,62 @@ use Response;
 use App\Http\Requests;
 use App\m_pegawai_man;
 use App\m_divisi;
+use App\m_produksi;
 use App\abs_pegawai_man;
+use App\abs_pegawai_pro;
+use Excel;
+use Illuminate\Support\Facades\Input;
 
 class AbsensiController extends Controller
 {
     public function index(){
       $devisi = m_divisi::all();
-      return view('hrd.Absensi.index', compact('devisi'));
+      $produksi = m_produksi::all();
+      return view('hrd.Absensi.index', compact('devisi','produksi'));
     }
 
-    public function table($tgl, $data){
-      $d = substr($tgl,0,2);
-      $y = substr($tgl, -4);
-      $m = substr($tgl, -7,-5);
-        $tgl = $y.'-'.$m.'-'.$d;
+    public function table($tgl1, $tgl2, $data){
+      $d = substr($tgl1,0,2);
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+        $tgl1 = $y.'-'.$m.'-'.$d;
 
-      $pegawai = m_pegawai_man::select(
-          'm_pegawai_man.c_id as mp_id',
-          'm_divisi.c_id as md_id',
-          'c_nik',
+      $d = substr($tgl2,0,2);
+      $y = substr($tgl2, -4);
+      $m = substr($tgl2, -7,-5);
+        $tgl2 = $y.'-'.$m.'-'.$d;
+
+      $pegawai = abs_pegawai_man::select(
+          'apm_tanggal',
           'c_nama',
-          'apm_ket')
-        ->join('m_divisi','m_divisi.c_id','=','c_divisi_id')
-        ->leftjoin('abs_pegawai_man', function($join) use ($tgl) {
-            $join->on('apm_pm', '=', 'm_pegawai_man.c_id')
-              ->where('apm_date',$tgl);
-          })
-        ->where('m_divisi.c_id',$data)
+          'apm_jam_kerja',
+          'apm_jam_masuk',
+          'apm_jam_pulang',
+          'apm_scan_masuk',
+          'apm_scan_pulang',
+          'apm_terlambat',
+          'apm_jml_jamkerja')
+        ->join('m_pegawai_man','m_pegawai_man.c_id','=','apm_pm')
+        ->where('apm_tanggal','>=',$tgl1)
+        ->where('apm_tanggal','<=',$tgl2)
+        ->where('c_divisi_id',$data)
         ->get();
       // dd($pegawai);
       return DataTables::of($pegawai)
       ->addIndexColumn()
+
+      ->editColumn('tanggal', function ($data){
+          return date('d M Y', strtotime($data->apm_tanggal));
+      })
+
       ->editColumn('pegawai', function ($data) {
           return "$data->c_nik - $data->c_nama" ;
 
       })
 
-      ->addColumn('Alpha', function($data){
-          if ($data->apm_ket == "A") {
-            return '<input type="hidden"
-                        name="apm_pm[]"
-                        class="form-control input-sm"
-                        value="'.$data->mp_id.'">
-                    <input type="hidden"
-                        name="apm_ket[]"
-                        class="form-control input-sm"
-                        id="data'.$data->mp_id.'"
-                        value="'.$data->apm_ket.'">
-                    <div class="text-center">
-                          <div class="radio icheck-primary">
-                              <input checked type="radio"
-                                    id="'.$data->mp_id.'-1"
-                                    name="data'.$data->mp_id.'"
-                                    value="A|'.$data->mp_id.'">
-                              <label for="'.$data->mp_id.'-1">
-                              </label>
-                          </div>
-                    </div>';
-          }else {
-            return '<input type="hidden"
-                        name="apm_pm[]"
-                        class="form-control input-sm"
-                        value="'.$data->mp_id.'">
-                    <input type="hidden"
-                        name="apm_ket[]"
-                        class="form-control input-sm"
-                        id="data'.$data->mp_id.'"
-                        value="">
-                    <div class="text-center">
-                          <div class="radio icheck-primary">
-                              <input type="radio"
-                                    id="'.$data->mp_id.'-1"
-                                    name="data'.$data->mp_id.'"
-                                    value="A|'.$data->mp_id.'">
-                              <label for="'.$data->mp_id.'-1">
-                              </label>
-                          </div>
-                    </div>';
-          }
 
-      })
-
-      ->addColumn('Izin', function($data){
-          if ($data->apm_ket == "I") {
-            return '<div class="text-center">
-                          <div class="radio icheck-primary">
-                              <input checked type="radio"
-                                  id="'.$data->mp_id.'-2"
-                                  name="data'.$data->mp_id.'"
-                                  value="I|'.$data->mp_id.'">
-                              <label for="'.$data->mp_id.'-2">
-                              </label>
-                          </div>
-                    </div>';
-          }else {
-            return '<div class="text-center">
-                          <div class="radio icheck-primary">
-                              <input type="radio"
-                                  id="'.$data->mp_id.'-2"
-                                  name="data'.$data->mp_id.'"
-                                  value="I|'.$data->mp_id.'">
-                              <label for="'.$data->mp_id.'-2">
-                              </label>
-                          </div>
-                    </div>';
-          }
-
-      })
-
-      ->addColumn('Sakit', function($data){
-          if ($data->apm_ket == "S") {
-            return '<div class="text-center">
-                          <div class="radio icheck-primary">
-                              <input checked type="radio"
-                                  id="'.$data->mp_id.'-3"
-                                  name="data'.$data->mp_id.'"
-                                  value="S|'.$data->mp_id.'">
-                              <label for="'.$data->mp_id.'-3">
-                              </label>
-                          </div>
-                    </div>';
-          }else {
-            return '<div class="text-center">
-                          <div class="radio icheck-primary">
-                              <input type="radio"
-                                  id="'.$data->mp_id.'-3"
-                                  name="data'.$data->mp_id.'"
-                                  value="S|'.$data->mp_id.'">
-                              <label for="'.$data->mp_id.'-3">
-                              </label>
-                          </div>
-                    </div>';
-          }
-
-      })
-
-      ->addColumn('Cuti', function($data){
-        if ($data->apm_ket == "C") {
-          return '<div class="text-center">
-                        <div class="radio icheck-primary">
-                            <input checked type="radio"
-                              id="'.$data->mp_id.'-4"
-                              name="data'.$data->mp_id.'"
-                              value="C|'.$data->mp_id.'">
-                            <label for="'.$data->mp_id.'-4">
-                            </label>
-                        </div>
-                  </div>';
-        }else{
-          return '<div class="text-center">
-                        <div class="radio icheck-primary">
-                            <input type="radio"
-                              id="'.$data->mp_id.'-4"
-                              name="data'.$data->mp_id.'"
-                              value="C|'.$data->mp_id.'">
-                            <label for="'.$data->mp_id.'-4">
-                            </label>
-                        </div>
-                  </div>';
-        }
-
-      })
-
-      ->addColumn('Hadir', function($data){
-        if ($data->apm_ket == "H") {
-          return '<div class="text-center">
-                        <div class="radio icheck-primary">
-                            <input checked type="radio"
-                              id="'.$data->mp_id.'-5"
-                              name="data'.$data->mp_id.'"
-                              value="H|'.$data->mp_id.'">
-                            <label for="'.$data->mp_id.'-5">
-                            </label>
-                        </div>
-                  </div>';
-        }else {
-          return '<div class="text-center">
-                      <div class="radio icheck-primary">
-                            <input type="radio"
-                              id="'.$data->mp_id.'-5"
-                              name="data'.$data->mp_id.'"
-                              value="H|'.$data->mp_id.'">
-                            <label for="'.$data->mp_id.'-5">
-                            </label>
-                      </div>
-                  </div>';
-        }
-
-      })
-
-      ->rawColumns(['pegawai',
-                    'Alpha',
-                    'Izin',
-                    'Sakit',
-                    'Cuti',
-                    'Hadir'
+      ->rawColumns(['tanggal',
+                    'pegawai'
                   ])
       ->make(true);
 
@@ -347,5 +208,59 @@ class AbsensiController extends Controller
                 ])
     ->make(true);
 
+  }
+
+  public function importDataManajemen(Request $request){
+    if ($request->hasFile('file')) {
+      $path = $request->file('file')->getRealPath();
+      $data = Excel::load($path, function($reader){})->get();
+      if (!empty($data) && $data->count()) {
+        foreach ($data as $key => $value) {
+          $absensi = new abs_pegawai_man();
+          $absensi->apm_pm = $value->id_manajemen;
+          $absensi->apm_tanggal = $value->tanggal;
+          $absensi->apm_jam_kerja = $value->jam_kerja;
+          $absensi->apm_jam_masuk = $value->jam_masuk;
+          $absensi->apm_jam_pulang = $value->jam_pulang;
+          $absensi->apm_scan_masuk = $value->scan_masuk;
+          $absensi->apm_scan_pulang = $value->scan_pulang;
+          $absensi->apm_terlambat = $value->terlambat;
+          $absensi->apm_plg_cepat = $value->plg_cepat;
+          $absensi->apm_absent = $value->absent;
+          $absensi->apm_lembur = $value->lembur;
+          $absensi->apm_jml_jamkerja = $value->jml_jam_kerja;
+          $absensi->save();
+        }
+      }
+    }
+
+    return back();
+  }
+
+  public function importDataProduksi(Request $request){
+    if ($request->hasFile('file-produksi')) {
+      $path = $request->file('file-produksi')->getRealPath();
+      $data = Excel::load($path, function($reader){})->get();
+      if (!empty($data) && $data->count()) {
+        foreach ($data as $key => $value) {
+          $absensi = new abs_pegawai_pro();
+          $absensi->app_pp = $value->id_produksi;
+          $absensi->app_tanggal = $value->tanggal;
+          $absensi->app_jam_kerja = $value->jam_kerja;
+          $absensi->app_jam_masuk = $value->jam_masuk;
+          $absensi->app_jam_pulang = $value->jam_pulang;
+          $absensi->app_scan_masuk = $value->scan_masuk;
+          $absensi->app_scan_pulang = $value->scan_pulang;
+          $absensi->app_terlambat = $value->terlambat;
+          $absensi->app_plg_cepat = $value->plg_cepat;
+          $absensi->app_absent = $value->absent;
+          $absensi->app_lembur = $value->lembur;
+          $absensi->app_jml_jamkerja = $value->jml_jam_kerja;
+          $absensi->save();
+        }
+      }
+    }
+
+    return back();
   }
 }

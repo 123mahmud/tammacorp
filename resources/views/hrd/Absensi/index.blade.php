@@ -30,61 +30,80 @@
           </div>
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#alert-tab" data-toggle="tab">Absensi</a>
+              <a href="#alert-tab" data-toggle="tab">Absensi Manajemen</a>
             </li>
-            <li><a href="#note-tab" data-toggle="tab" onclick="detTanggal()">Data Absensi</a></li>
+            <li><a href="#note-tab" data-toggle="tab" onclick="">Absensi Produksi</a></li>
                             {{-- <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> --> --}}
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive">
             <div id="alert-tab" class="tab-pane fade in active">
               <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12" >
+                <div class="col-md-12 col-sm-12 col-xs-12">
 
-                      <div style="margin-left:-5px;">
-                        <div class="col-md-1 col-sm-3 col-xs-12">
-                            <label class="tebal">Tanggal:</label>
-                        </div>
-                          <form id="date">
-                            <div class="col-md-3 col-sm-6 col-xs-12">
-                                <div class="form-group">
-                                    <div class="input-daterange input-group">
-                                        <input id="datepicker" class="form-control input-sm"
-                                          name="tanggal">
-                                    </div>
-                                </div>
-                            </div>
-                          </form>
+                  <div style="margin-left:-5px;">
 
-                          <div class="col-md-2 col-sm-3 col-xs-12" align="center">
-                              <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"
-                                      onclick="getTanggal()">
-                                  <strong>
-                                      <i class="fa fa-search" aria-hidden="true"></i>
-                                  </strong>
-                              </button>
-                              <button class="btn btn-info btn-sm btn-flat refresh-data2" type="button"
-                                      onclick="getTanggal()">
-                                  <strong>
-                                      <i class="fa fa-undo" aria-hidden="true"></i>
-                                  </strong>
-                              </button>
+                    <div class="panel-body">
+                    	<div class="container">
+                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/contoh-excel-manajemen.xlsx')}}');"><button class="btn btn-success">Download Contoh Excel</button></a>
+                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/master-manajemen.xlsx')}}');"><button class="btn btn-success">Download Master Manajemen</button></a>
+                    		<form
+                          style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;     margin-bottom: 16px;"
+                          action="{{url('/import/data-manajemen')}}"
+                          class="form-horizontal"
+                          method="POST"
+                          enctype="multipart/form-data">
+                          {{csrf_field()}}
+                    			<input type="file" class="form-control-file" name="file">
+                    			<input type="submit" value="Upload" class="btn btn-primary">
+                    		</form>
+                    	</div>
+                    </div>
+
+                      <div class="col-md-1 col-sm-3 col-xs-12">
+                          <label class="tebal">Tanggal:</label>
+                      </div>
+                        <form id="date">
+                          <div class="col-md-3 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                  <div class="input-daterange input-group">
+                                      <input id="datepicker01" class="form-control input-sm"
+                                        name="tanggal">
+                                        <span class="input-group-addon">-</span>
+                                        <input id="datepicker02" class="input-sm form-control datepicker2"
+                                               name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                                  </div>
+                              </div>
                           </div>
+                        </form>
 
-                        <div class="col-md-1 col-sm-3 col-xs-12">
-                            <label class="tebal">Devisi:</label>
+                        <div class="col-md-2 col-sm-3 col-xs-12" align="center">
+                            <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"
+                                    onclick="getTanggal()">
+                                <strong>
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </strong>
+                            </button>
+                            <button class="btn btn-info btn-sm btn-flat refresh-data2" type="button"
+                                    onclick="getTanggal()">
+                                <strong>
+                                    <i class="fa fa-undo" aria-hidden="true"></i>
+                                </strong>
+                            </button>
                         </div>
 
-                        <div class="col-md-5 col-sm-3 col-xs-12" align="right">
-                            <select name="tampilData" id="tampil_data" onchange="getTanggal()" class="form-control input-sm">
-                              @foreach ($devisi as $divisi)
-                                <option value="{{$divisi->c_id}}" class="form-control input-sm">{{$divisi->c_divisi}}</option>
-                              @endforeach
-                            </select>
-                        </div>
+                      <div class="col-md-1 col-sm-3 col-xs-12">
+                          <label class="tebal">Devisi:</label>
                       </div>
 
-
+                      <div class="col-md-5 col-sm-3 col-xs-12" align="right">
+                          <select name="tampilData" id="tampil_data" onchange="getTanggal()" class="form-control input-sm">
+                            @foreach ($devisi as $divisi)
+                              <option value="{{$divisi->c_id}}" class="form-control input-sm">{{$divisi->c_divisi}}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
                 </div>
 
 
@@ -92,16 +111,18 @@
                 <div class="panel-body">
                   <div class="table-responsive">
                     <form id="Absensi">
-                    <table id="tableAbsensi" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
+                    <table id="tableAbsensi" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0">
                       <thead>
                         <tr>
-                          <th>No.</th>
+                          <th>Tanggal</th>
                           <th>Kode - Nama Pegawai</th>
-                          <th>Alpha</th>
-                          <th>Izin</th>
-                          <th>Sakit</th>
-                          <th>Cuti</th>
-                          <th>Hadir</th>
+                          <th>Jam Kerja</th>
+                          <th>Jam Masuk</th>
+                          <th>Jam Pulang</th>
+                          <th>Scan Masuk</th>
+                          <th>Scan Pulang</th>
+                          <th>Terlambat</th>
+                          <th>Total Kerja</th>
                         </tr>
                         </tr>
                       </thead>
@@ -152,7 +173,7 @@
               minViewMode: "months"
           });
 
-          $('#datepicker').datepicker({
+          $('#datepicker01').datepicker({
               autoclose: true,
               format: "dd-mm-yyyy",
               endDate: 'today'
@@ -170,89 +191,14 @@
               endDate: 'today'
           });
 
-          $('#tableAbsensi').on('click', "input[type='radio']", function() {
-              if (this.getAttribute('checked')) {
-                  $(this).removeAttr('checked')
-                  var data = $(this).val().split('|');
-                  var cek = $("#data"+data[1]).val();
-                  if (cek == data[0]) {
-                    $("#data"+data[1]).val('');
-                  }else{
-                    $("#data"+data[1]).val(data[0]);
-                  }
-                  $.ajaxSetup({
-                      headers: {
-                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                      }
-                  });
-                  var a = $('#Absensi').serialize();
-                  var b = $('#date').serialize();
-                  $.ajax({
-                      url: baseUrl + "/hrd/absensi/peg/save",
-                      type: 'GET',
-                      data: a + '&' + b,
-                      success: function (response) {
-                        if (response.status == 'sukses') {
-                          iziToast.success({
-                              timeout: 5000,
-                              position: "topLeft",
-                              icon: 'fa fa-chrome',
-                              title: '',
-                              message: 'Absensi Tersimpan.'
-                          });
-                        }else {
-                          iziToast.error({
-                              position: "topLeft",
-                              title: '',
-                              message: 'Absensi Gagal Tersimpan.'
-                          });
-                        }
-                      }
-                    });
-              } else {
-                  $(this).attr('checked', true)
-                  var data = $(this).val().split('|');
-                  $("#data"+data[1]).val(data[0]);
-                  $.ajaxSetup({
-                      headers: {
-                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                      }
-                  });
-                  var a = $('#Absensi').serialize();
-                  var b = $('#date').serialize();
-                  $.ajax({
-                      url: baseUrl + "/hrd/absensi/peg/save",
-                      type: 'GET',
-                      data: a + '&' + b,
-                      success: function (response) {
-                        if (response.status == 'sukses') {
-                          iziToast.success({
-                              timeout: 5000,
-                              position: "topLeft",
-                              icon: 'fa fa-chrome',
-                              title: '',
-                              message: 'Absensi Tersimpan.'
-                          });
-                        }else {
-                          iziToast.error({
-                              position: "topLeft",
-                              title: '',
-                              message: 'Absensi Gagal Tersimpan.'
-                          });
-                        }
-                      }
-                    });
-              }
-          });
-
-
           getTanggal();
 
         });
 
         function getTanggal(){
           $('#tableAbsensi').dataTable().fnDestroy();
-          var tgl1 = $("#datepicker").val();
+          var tgl1 = $("#datepicker01").val();
+          var tgl2 = $("#datepicker02").val();
           var data = $("#tampil_data").val();
           $('#tableAbsensi').DataTable({
               "scrollY": 500,
@@ -260,17 +206,20 @@
               "paging":  false,
               "autoWidth": false,
               "ajax": {
-                  url: baseUrl + "/hrd/absensi/table/" + tgl1 + "/" + data,
+                  url: baseUrl + "/hrd/absensi/table/manajemen/" + tgl1 + "/" + tgl2 + "/" + data,
                   type: 'GET'
               },
               "columns": [
-                {"data" : "DT_Row_Index", orderable: false, searchable: false, "width" : "5%"},
-                {"data" : 'pegawai', name: 'pegawai', width:"45%"},
-                {"data" : 'Alpha', name: 'Alpha', orderable: false, width:"10%"},
-                {"data" : 'Izin', name: 'Izin', orderable: false, width:"10%"},
-                {"data" : 'Sakit', name: 'Sakit', orderable: false, width:"10%"},
-                {"data" : 'Cuti', name: 'Cuti', orderable: false, width:"10%"},
-                {"data" : 'Hadir', name: 'Hadir', orderable: false, width:"10%"},
+                // {"data" : "DT_Row_Index", orderable: false, searchable: false, "width" : "5%"},
+                {"data" : 'tanggal', name: 'pegawai', width:"10%"},
+                {"data" : 'pegawai', name: 'Alpha', orderable: false, width:"10%"},
+                {"data" : 'apm_jam_kerja', name: 'apm_jam_kerja', orderable: false, width:"10%"},
+                {"data" : 'apm_jam_masuk', name: 'apm_jam_masuk', orderable: false, width:"10%"},
+                {"data" : 'apm_jam_pulang', name: 'apm_jam_pulang', orderable: false, width:"10%"},
+                {"data" : 'apm_scan_masuk', name: 'apm_scan_masuk', orderable: false, width:"10%"},
+                {"data" : 'apm_scan_pulang', name: 'apm_scan_pulang', orderable: false, width:"10%"},
+                {"data" : 'apm_terlambat', name: 'apm_terlambat', orderable: false, width:"10%"},
+                {"data" : 'apm_jml_jamkerja', name: 'apm_jml_jamkerja', orderable: false, width:"10%"},
               ],
               "language": {
                 "searchPlaceholder": "Cari Data",
