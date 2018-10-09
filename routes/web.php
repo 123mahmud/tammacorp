@@ -581,6 +581,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payrollman/lookup-data-jabatan', 'Hrd\PayrollmanController@lookupJabatan');
     Route::get('/hrd/payrollman/lookup-data-pegawai', 'Hrd\PayrollmanController@lookupPegawai');
     Route::get('/hrd/payrollman/set-field-modal', 'Hrd\PayrollmanController@setFieldModal');
+    Route::post('/hrd/payrollman/simpan-data', 'Hrd\PayrollmanController@simpanData');
+    Route::get('/hrd/payrollman/get-detail/{id}', 'Hrd\PayrollmanController@getDataDetail');
     
     
     /*Keuangan*/

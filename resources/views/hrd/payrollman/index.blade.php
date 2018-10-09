@@ -60,12 +60,11 @@
   </div> 
   @include('hrd.payrollman.modal')
   @include('hrd.payrollman.modal-detail')
-  @include('hrd.payrollman.modal-detail-score')
 </div>
 @endsection 
 @section("extra_scripts")
   <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
-  <script src="{{ asset('assets/recruitment/vendor/dobPicker.min.js') }}"></script>
+  <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
   <script type="text/javascript">
     var divisi = "";
     var jabatan = "";
@@ -83,30 +82,18 @@
       // Used when bJQueryUI is true
       $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
-      $.dobPicker({
-          // Selectopr IDs
-          daySelector: '#dobday',
-          monthSelector: '#dobmonth',
-          yearSelector: '#dobyear',
-
-          // Default option values
-          dayDefault: 'Tangal',
-          monthDefault: 'Bulan',
-          yearDefault: 'Tahun',
-
-          // Minimum age
-          minimumAge: 0,
-
-          // Maximum age
-          maximumAge: 5
-      });
-
-      $.dobPicker({
-        monthSelector: '#dobmonth_i', /* Required */
-        yearSelector: '#dobyear', /* Required */
-        monthSelector: '#dobmonth_i',
-        monthDefault: 'Bulan',
-      });
+      $.fn.maskFunc = function(){
+        $('.currency').inputmask("currency", {
+          radixPoint: ",",
+          groupSeparator: ".",
+          digits: 2,
+          autoGroup: true,
+          prefix: '', //Space after $, this will not truncate the first character.
+          rightAlign: false,
+          oncleared: function () { self.Value(''); }
+        });
+      }
+      $(this).maskFunc();
 
       var date = new Date();
       var newdate = new Date(date);
@@ -122,8 +109,7 @@
 
       $('.datepicker2').datepicker({
         autoclose: true,
-        format:"dd-mm-yyyy",
-        endDate: 'today'
+        format:"dd-mm-yyyy"
       }).datepicker("setDate", "0");
       //end datepicker
       
@@ -131,9 +117,7 @@
       $(".modal").on("hidden.bs.modal", function(){
         //remove append tr
         //$('tr').remove('.tbl_modal_detail_row');
-        // $('#appending div').remove();
-        // $('#e_appending div').remove();
-        // $('#d_appending div').remove();
+        $('#appending-modal div').remove();
         $('tr').remove('.tbl_modal_detail_row');
         //remove class all jquery validation error
         $('.form-group').find('.error').removeClass('error');
@@ -251,38 +235,13 @@
         }
       });
 
-      //validasi
-      /*$("#form-input-kpi").validate({
-        rules:{
-          tglKpi : "required"
-        },
-        errorPlacement: function() {
-            return false;
-        },
-        submitHandler: function(form) {
-          form.submit();
-        }
-      });*/
-
-      /*$("#form-edit-kpi").validate({
-        rules:{
-          eTglKpi : "required"
-        },
-        errorPlacement: function() {
-            return false;
-        },
-        submitHandler: function(form) {
-          form.submit();
-        }
-      });*/
-
-      //lihatPayrollByTgl();
+      lihatPayrollByTgl();
     });//end jquery
   
     function lihatPayrollByTgl()
     {
-      var bln = $('#dobmonth').val();
-      var thn = $('#dobyear').val();
+      var tgl1 = $('#tgl_index1').val();
+      var tgl2 = $('#tgl_index2').val();
       var divisi = $('#head_divisi').val();
       var status = $('#head_status').val();
       $('#tbl-index').dataTable({
@@ -292,16 +251,17 @@
         "ajax" : {
           url: baseUrl + "/hrd/payrollman/get-payroll-man",
           type: 'GET',
-          data: {bln:bln, thn:thn, divisi:divisi, status:status}
+          data: {tgl1:tgl1, tgl2:tgl2, divisi:divisi, status:status}
         },
         "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
-          {"data" : "DT_Row_Index", "width" : "5%"},
-          {"data" : "DT_Row_Index", "width" : "15%"},
-          {"data" : "DT_Row_Index", "width" : "10%"},
-          {"data" : "DT_Row_Index", "width" : "10%"},
-          {"data" : "DT_Row_Index", "width" : "10%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "20%"}
+          {"data" : "d_pm_code", "width" : "10%"},
+          {"data" : "tglBuat", "width" : "10%"},
+          {"data" : "d_pm_periode", "width" : "18%"},
+          {"data" : "c_nik", "width" : "10%"},
+          {"data" : "c_nama", "width" : "17%"},
+          {"data" : "totGaji", "width" : "15%"},
+          {"data" : "tglCetak", "width" : "10%"},
+          {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
         ],
         "language": {
           "searchPlaceholder": "Cari Data",
@@ -331,10 +291,23 @@
         data: {divisi:divisi, pegawai:pegawai, jabatan:jabatan, sDate:sDate, lDate:lDate},
         success: function(response)
         {
-
+          $('#i_gapok').val(response.gapok);
+          $('#i_tunjangan').val(response.total_tunjangan);
+          $('#i_potongan').val(response.potongan);
+          $('#i_totgaji').val(response.total_income);
+          var i = randString(5);
+          var key = 1;
+          //loop data
+          Object.keys(response.list).forEach(function()
+          {
+            $('#appending-modal').append(
+              '<input type="hidden" id="index_tunjangan" name="index_tunjangan[]" class="form-control input-sm" value="'+response.list[key-1]+'">'
+              +'<input type="hidden" id="nilai_tunjangan" name="nilai_tunjangan[]" class="form-control input-sm" value="'+response.nilai_tunjangan[key-1]+'">');
+            i = randString(5);
+            key++;
+          });
         },
         error: function(){
-          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
           iziToast.warning({
             icon: 'fa fa-times',
             message: 'Terjadi Kesalahan!'
@@ -342,116 +315,107 @@
         },
         async: false
       });
+      $('#btn_simpan').attr('disabled', false);
     }
 
-    /*function tambahData(id) 
+    function submitPayrollMan() 
+    {
+      iziToast.question({
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        //zindex: 999,
+        title: 'Proses Payroll Pegawai',
+        message: 'Apakah anda yakin ?',
+        position: 'center',
+        buttons: [
+          ['<button><b>Ya</b></button>', function (instance, toast) {
+            var IsValid = $("form[name='formInputPayroll']").valid();
+            if(IsValid)
+            {
+              $('#btn_simpan').text('Saving...');
+              $('#btn_simpan').attr('disabled',true);
+              $.ajax({
+                url : baseUrl + "/hrd/payrollman/simpan-data",
+                type: "POST",
+                dataType: "JSON",
+                data: $('#form-input-payroll').serialize(),
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.success({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#btn_simpan').text('Confirm'); //change button text
+                        $('#btn_simpan').attr('disabled',false); //set button enable
+                        $('#modal_tambah_data').modal('hide');
+                        $('#tbl-index').DataTable().ajax.reload();
+                      }
+                    });
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.error({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#btn_simpan').text('Update'); //change button text
+                        $('#btn_simpan').attr('disabled',false); //set button enable
+                        $('#modal_tambah_data').modal('hide');
+                        $('#tbl-index').DataTable().ajax.reload();
+                      }
+                    }); 
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }
+            else
+            {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                position: 'center',
+                message: "Mohon Lengkapi data form !",
+                onClosing: function(instance, toast, closedBy){
+                  $('.divjenis').addClass('has-error');
+                  $('.divDivisi').addClass('has-error');
+                  $('.divJabatan').addClass('has-error');
+                  $('.divPegawai').addClass('has-error');
+                }
+              });
+            } //end check valid
+          }, true],
+          ['<button>Tidak</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          }],
+        ]
+      });
+    }
+
+    function detailPman(id) 
     {
       $.ajax({
-        url : baseUrl + "/hrd/manscorekpi/get-edit/"+id,
-        type: "GET",
-        dataType: "JSON",
-        success: function(response)
-        {
-          var date = response.data[0].d_kpix_date;
-          if(date != null) { var newTglKpix = date.split("-").reverse().join("-"); }
-
-          $('#e_old').val(response.data[0].d_kpix_id);
-          $('#e_tgl_kpix').val(newTglKpix);
-          $('#e_divisi').val(response.pegawai.c_divisi);
-          $('#e_iddivisi').val(response.data[0].kpix_div_id);
-          $('#e_jabatan').val(response.pegawai.c_posisi);
-          $('#e_idjabatan').val(response.data[0].kpix_div_id);
-          $('#e_pegawai').val(response.pegawai.c_nama);
-          $('#e_idpegawai').val(response.data[0].d_kpix_pid);
-          
-          var i = randString(5);
-          var key = 1;
-          var tgl = "";
-          //loop data
-          Object.keys(response.data).forEach(function()
-          {
-            tgl = response.data[key-1].kpix_deadline;
-            if(tgl != null) { var newTgl = tgl.split("-").reverse().join("-"); }
-            $('#e_appending').append(
-                '<div class="col-md-9 col-sm-9 col-xs-9">'
-                  +'<label class="tebal">'+response.data[key-1].kpix_name+' | Bobot : <span style="color:#8080ff;">'+response.data[key-1].kpix_bobot+'</span> | Target : <span style="color:#8080ff;">'+response.data[key-1].kpix_target+'</span> | Deadline : <span style="color:#8080ff;">'+newTgl+'</span></label>'
-                +'</div>'
-                +'<div class="col-md-3 col-sm-3 col-xs-3">'
-                  +'<label class="tebal">Score</span></label>'
-                +'</div>'
-                +'<div class="col-md-9 col-sm-9 col-xs-9">'
-                  +'<div class="form-group">'
-                    +'<input type="text" id="e_value_kpi" name="e_value_kpix[]" class="form-control input-sm" value="'+response.data[key-1].d_kpixdt_value+'">'
-                    +'<input type="hidden" id="e_index_kpi" name="e_index_kpix[]" class="form-control input-sm" value="'+response.data[key-1].kpix_id+'">'
-                    +'<input type="hidden" id="e_dt" name="e_index_dt[]" class="form-control input-sm" value="'+response.data[key-1].d_kpixdt_id+'">'
-                  +'</div>'
-                +'</div>'
-                +'<div class="col-md-3 col-sm-3 col-xs-3">'
-                  +'<div class="form-group">'
-                    +'<input type="text" id="e_score_kpi" name="e_score_kpix[]" class="form-control input-sm" value="'+response.scoreKpi[key-1]+'">'
-                     +'<input type="hidden" id="e_bobot_kpi" name="e_bobot_kpix[]" class="form-control input-sm" value="'+response.data[key-1].kpix_bobot+'">'
-                  +'</div>'
-                +'</div>');
-            i = randString(5);
-            key++;
-          });
-          $('#modal_edit_data').modal('show');
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
-      });
-    }*/
-
-    /*function lihatScoreByTgl()
-    {
-      var tgl1 = $('#tanggal3').val();
-      var tgl2 = $('#tanggal4').val();
-      var tampil = $('#s_confirm').val();
-      $('#tbl-score').dataTable({
-        "destroy": true,
-        "processing" : true,
-        "serverside" : true,
-        "ajax" : {
-          url: baseUrl + "/hrd/manscorekpi/get-score-by-tgl/"+tgl1+"/"+tgl2+"/"+tampil,
-          type: 'GET'
-        },
-        "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "tglBuat", "width" : "10%"},
-          {"data" : "d_kpi_code", "width" : "10%"},
-          {"data" : "c_nama", "width" : "30%"},
-          {"data" : "status", "width" : "15%"},
-          {"data" : "tglConfirm", "width" : "15%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
-        ],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-          }
-        }
-      });
-    }*/
-
-    function detailKpi(id) 
-    {
-      $.ajax({
-        url : baseUrl + "/hrd/manscorekpi/get-edit/"+id,
+        url : baseUrl + "/hrd/payrollman/get-detail/"+id,
         type: "GET",
         dataType: "JSON",
         success: function(response)
         {
           var date = response.data[0].d_kpix_date;
           if(date != null) { var newKpixDate = date.split("-").reverse().join("-"); }
-
+          
           $('#d_tanggal').text(newKpixDate);
           $('#d_divisi').text(response.pegawai.c_divisi);
           $('#d_jabatan').text(response.pegawai.c_posisi);
@@ -492,139 +456,7 @@
         }
       });
     }
-
-    function detailScore(id) {
-      $.ajax({
-        url : baseUrl + "/hrd/manajemenkpipegawai/get-edit/"+id,
-        type: "GET",
-        dataType: "JSON",
-        success: function(response)
-        {
-          var date = response.data[0].d_kpi_date;
-          if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
-
-          $('#ds_old').val(response.data[0].d_kpi_id);
-          $('#ds_idpegawai').val(response.data[0].d_kpi_pid);
-          $('#ds_pegawai').val(response.pegawai.c_nama);
-          $('#ds_tgl_kpi').val(newDueDate);
-          $('#ds_divisi').val(response.pegawai.c_divisi);
-          $('#ds_iddivisi').val(response.data[0].kpi_div_id);
-          $('#ds_jabatan').val(response.pegawai.c_posisi);
-          $('#ds_idjabatan').val(response.data[0].kpi_jabatan_id);
-          
-          var i = randString(5);
-          var key = 1;
-          //loop data
-          Object.keys(response.data).forEach(function()
-          {
-            $('#ds_appending').append(
-                '<div class="col-md-12 col-sm-12 col-xs-12">'
-                  +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
-                +'</div>'
-                +'<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
-                  +'<div class="form-group">'
-                    +'<textarea class="form-control input-sm" id="ds_value_kpi" name="ds_value_kpi[]" rows="3" readonly>'+response.data[key-1].d_kpidt_value+'</textarea>'
-                    +'<input type="hidden" id="ds_index_kpi" name="ds_index_kpi[]" class="form-control input-sm" value="'+response.data[key-1].kpi_id+'" readonly>'
-                  +'</div>'
-                +'</div>');
-            i = randString(5);
-            key++;
-          });
-          $('#modal_detail_datascore').modal('show');
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
-      });
-    }
-
-    function updateKpix() 
-    {
-      iziToast.question({
-        close: false,
-        overlay: true,
-        displayMode: 'once',
-        //zindex: 999,
-        title: 'Konfirmasi Data KPI',
-        message: 'Apakah anda yakin ?',
-        position: 'center',
-        buttons: [
-          ['<button><b>Ya</b></button>', function (instance, toast) {
-            var IsValid = $("form[name='formEditKpi']").valid();
-            if(IsValid)
-            {
-              $('#btn_update').text('Confirm...');
-              $('#btn_update').attr('disabled',true);
-              $.ajax({
-                url : baseUrl + "/hrd/manscorekpi/update-data",
-                type: "POST",
-                dataType: "JSON",
-                data: $('#form-edit-kpi').serialize(),
-                success: function(response)
-                {
-                  if(response.status == "sukses")
-                  {
-                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    iziToast.success({
-                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-                      title: 'Pemberitahuan',
-                      message: response.pesan,
-                      onClosing: function(instance, toast, closedBy){
-                        $('#btn_update').text('Confirm'); //change button text
-                        $('#btn_update').attr('disabled',false); //set button enable
-                        $('#modal_edit_data').modal('hide');
-                        $('#tbl-index').DataTable().ajax.reload();
-                      }
-                    });
-                  }
-                  else
-                  {
-                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                    iziToast.error({
-                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-                      title: 'Pemberitahuan',
-                      message: response.pesan,
-                      onClosing: function(instance, toast, closedBy){
-                        $('#btn_update').text('Update'); //change button text
-                        $('#btn_update').attr('disabled',false); //set button enable
-                        $('#modal_edit_data').modal('hide');
-                        $('#tbl-index').DataTable().ajax.reload();
-                      }
-                    }); 
-                  }
-                },
-                error: function(){
-                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                  iziToast.warning({
-                    icon: 'fa fa-times',
-                    message: 'Terjadi Kesalahan!'
-                  });
-                },
-                async: false
-              }); 
-            }
-            else
-            {
-              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-              iziToast.warning({
-                position: 'center',
-                message: "Mohon Lengkapi data form !",
-                onClosing: function(instance, toast, closedBy){
-                  $('.divjenis').addClass('has-error');
-                  $('.divDivisi').addClass('has-error');
-                  $('.divJabatan').addClass('has-error');
-                  $('.divPegawai').addClass('has-error');
-                }
-              });
-            } //end check valid
-          }, true],
-          ['<button>Tidak</button>', function (instance, toast) {
-            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-          }],
-        ]
-      });
-    }
+    
 
     function ubahStatus(id, status) 
     {
@@ -695,6 +527,27 @@
         text += possible.charAt(Math.floor(Math.random() * possible.length));
 
       return text;
+    }
+
+    function convertDecimalToRupiah(decimal) 
+    {
+      var angka = parseInt(decimal);
+      var rupiah = '';        
+      var angkarev = angka.toString().split('').reverse().join('');
+      for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
+      var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
+      return hasil+',00';
+    }
+
+    function convertIntToRupiah(angka) 
+    {
+      var rupiah = '';        
+      var angkarev = angka.toString().split('').reverse().join('');
+      for(var i = 0; i < angkarev.length; i++) 
+        if(i%3 == 0) 
+          rupiah += angkarev.substr(i,3)+'.';
+      var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
+      return hasil+',00'; 
     }
 
     function refreshTabelIndex() 
