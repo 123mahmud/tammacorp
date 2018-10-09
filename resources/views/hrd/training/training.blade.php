@@ -84,8 +84,8 @@
                                 <tr>
                                   <th>Kode</th>
                                   <th>Nama Pegawai</th>
-                                  <th>Jabatan</th>
                                   <th>Nama Atasan</th>
+                                  <th>Jenis Pelatihan</th>
                                   <th>Status</th>
                                   <th>Aksi</th>
                                 </tr>
@@ -97,7 +97,24 @@
                           </table>
                         </div>
 
-                      </div><!-- /div alert-tab -->
+                      </div>
+                      <div class="modal fade" id="myModalView" role="dialog">
+                          <div class="modal-dialog modal-lg">
+                            <form id="myForm">
+                              <!-- Modal content-->
+                                <div class="modal-content">
+                                  <div class="modal-header" style="background-color: #e77c38;">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title" style="color: white;">Form Detail Formula</h4>
+                                  </div>
+                                  <div id="view-formula">
+
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                        </div>
+                      <!-- /div alert-tab -->
 
                       <!-- div note-tab -->
                       {{-- <div id="note-tab" class="tab-pane fade">
@@ -170,8 +187,8 @@
               // {"data" : "DT_Row_Index", orderable: false, searchable: false},
               {"data" : 'pp_code', name: 'pp_code', width:"10%"},
               {"data" : 'pegawai', name: 'pegawai', orderable: false, width:"30%"},
-              {"data" : 'jabatan', name: 'jabatan', orderable: false, width:"30%"},
               {"data" : 'atasan', name: 'atasan', orderable: false, width:"30%"},
+              {"data" : 'pelatihan', name: 'pelatihan', orderable: false, width:"30%"},
               {"data" : 'status', name: 'status', orderable: false, width:"15%"},
               {"data" : 'aksi', name: 'aksi', orderable: false, width:"15%"},
             ],
@@ -191,7 +208,20 @@
       }
 
       function openPengajuan(id){
-        alert(id);
+        // baseUrl + ""id ;
+        window.location.href= baseUrl + "/hrd/training/acc-pelatihan/" + id;
       }
+
+      function openWaktu(id){
+        $.ajax({
+          url : baseUrl + "/hrd/training/wakti-pelatihan/",
+          type: "get",
+          data: {x:id},
+          success: function(response){
+            $('#view-formula').html(response);
+          }
+        })
+      }
+
       </script>
 @endsection()

@@ -5,7 +5,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Setting Tunjangan</div>
+      <div class="page-title">Master Tunjangan</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -15,7 +15,7 @@
       <li>
         <i></i>&nbsp;HRD&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Setting Tunjangan</li>
+      <li class="active">Master Tunjangan</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -30,7 +30,7 @@
           </div>
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#alert-tab" data-toggle="tab">Setting Tunjangan</a>
+              <a href="#alert-tab" data-toggle="tab">Master Tunjangan</a>
             </li>
           </ul>
           <div id="generalTabContent" class="tab-content responsive">
@@ -38,7 +38,7 @@
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:-10px;margin-bottom: 15px;">
                   <div class="col-md-5 col-sm-6 col-xs-8">
-                    <h4>Form Setting Tunjangan</h4>
+                    <h4>Form Master Tunjangan</h4>
                   </div>
                   <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
                     <a href="{{ url('hrd/payroll/setting-gaji') }}" class="btn"><i class="fa fa-arrow-left"></i></a>

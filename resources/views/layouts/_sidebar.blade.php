@@ -766,8 +766,16 @@
                                         Payroll Pegawai Produksi
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
-                                        Manajemen KPI Pegawai
+                                    @if(Auth::user()->punyaAkses('Payroll Pegawai Manajemen','ma_read'))
+                                        Payroll Pegawai Manajemen
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Manajemen Scoreboard','ma_read'))
+                                        Manajemen Scoreboard
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Manajemen Scoreboard & KPI','ma_read'))
+                                        Manajemen Scoreboard & KPI
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Training Pegawai','ma_read'))
@@ -804,10 +812,17 @@
                                                     class="submenu-title">Payroll</span><span class="hidden">HRD</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Payroll','ma_read'))
+                                @if(Auth::user()->punyaAkses('Payroll Pegawai Produksi','ma_read'))
                                     <li class="{{ Request::is('hrd/produksi/payroll') ? 'active' : '' || Request::is('hrd/produksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/produksi/payroll') }}"><span
                                                     class="submenu-title">Payroll Pegawai Produksi</span>
+                                                    <span class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Payroll Pegawai Manajemen','ma_read'))
+                                    <li class="{{ Request::is('hrd/payrollman/index') ? 'active' : '' || Request::is('hrd/payrollman/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/payrollman/index') }}"><span
+                                                    class="submenu-title">Payroll Pegawai Manajemen</span>
                                                     <span class="hidden">HRD</span></a>
                                     </li>
                                 @endif
@@ -823,9 +838,15 @@
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
+                                @if(Auth::user()->punyaAkses('Manajemen Scoreboard','ma_read'))
                                     <li class="{{ Request::is('hrd/manajemenkpipegawai/index') ? 'active' : '' || Request::is('hrd/manajemenkpipegawai/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/manajemenkpipegawai/index') }}"><span class="submenu-title">Manajemen KPI Pegawai</span><span
+                                        <a href="{{ url('/hrd/manajemenkpipegawai/index') }}"><span class="submenu-title">Manajemen Scoreboard</span><span
+                                                    class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Manajemen Scoreboard & KPI','ma_read'))
+                                    <li class="{{ Request::is('hrd/manscorekpi/index') ? 'active' : '' || Request::is('hrd/manscorekpi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/manscorekpi/index') }}"><span class="submenu-title">Manajemen Scoreboard & KPI</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif

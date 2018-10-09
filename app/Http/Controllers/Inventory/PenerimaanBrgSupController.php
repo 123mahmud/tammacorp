@@ -275,10 +275,51 @@ class PenerimaanBrgSupController extends Controller
 
     public function simpanPenerimaan(Request $request)
     {
-        dd($request->all());
+        // return json_encode("okeee");
+        // dd($request->all());
+
         DB::beginTransaction();
         try 
         {
+            // Cek Jurnal 
+
+            $err = true; $acc = []; $total = 0;
+
+            foreach($request->fieldItemId as $acc_key => $data){
+                $cek = DB::table('m_item')
+                    ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                    ->where('i_id', $data)
+                    ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+                    ->first();
+
+                if(!$cek){
+                    $err = false;
+                }else{
+                    $acc[$acc_key] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'D',
+                        'value'     => $request->fieldHargaTotalRaw[$acc_key]
+                    ];
+
+                    $total += $request->fieldHargaTotalRaw[$acc_key];
+                }
+            }
+
+            if(!$err){
+                return response()->json([
+                    'status' => 'gagal',
+                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+                ]);
+            }
+
+            $acc[count($acc)] = [
+                'td_acc'    => '301.01',
+                'td_posisi' => 'K',
+                'value'     => $total
+            ];
+
+            // // cek jurnal end
+
             //code penerimaan
             $kode = $this->kodePenerimaanAuto();
             //insert to table d_terimapembelian
@@ -409,10 +450,6 @@ class PenerimaanBrgSupController extends Controller
             $this->cek_status_purchasing($request->headNotaPurchase);
             
             DB::commit();
-            return response()->json([
-                'status' => 'sukses',
-                'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
-            ]);
         } 
         catch (\Exception $e) 
         {
@@ -422,18 +459,26 @@ class PenerimaanBrgSupController extends Controller
               'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
           ]);
         }
-    }
 
+        $state_jurnal = _initiateJournal_self_detail($kode, 'MM', date('Y-m-d', strtotime($request->headTglTerima)), 'Penerimaan Bahan Persediaan Dari '.$request->headSupplier.' '.date('d/m/Y', strtotime($request->headTglTerima)), $acc);
+            
+            // return json_encode($state_jurnal);
+
+        return response()->json([
+            'status' => 'sukses',
+            'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
+        ]);
+    }
     public function deletePenerimaan(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try {
           //cari item & qty d_terimapembelian_dt
           $query = DB::table('d_terima_pembelian_dt')->select('d_tbdt_item', 'd_tbdt_qty', 'd_tbdt_smdetail', 'd_tbdt_sat', 'd_tbdt_idpcsdt')->where('d_tbdt_idtb', $request->id)->get();
 
           //cari id_purchasing & update status ke CF
-          $query2 = DB::table('d_terima_pembelian')->select('d_tb_id','d_tb_pid')->where('d_tb_id', $request->id)->first(); 
+          $query2 = DB::table('d_terima_pembelian')->select('d_tb_id','d_tb_pid', 'd_tb_code')->where('d_tb_id', $request->id)->first(); 
           //update status purchasing to CF = "CONFIRMED"
           DB::table('d_purchasing')->where('d_pcs_id', $query2->d_tb_pid)->update(['d_pcs_status' => 'CF']);
 
@@ -512,6 +557,8 @@ class PenerimaanBrgSupController extends Controller
           d_terima_pembelian::where('d_tb_id', $request->id)->delete();
           //cek pada table purchasingdt, jika isreceived semua tbl header ubah status ke RC
           $this->cek_status_purchasing($query2->d_tb_pid);
+
+           _delete_jurnal($query2->d_tb_code);
           
           DB::commit();
           return response()->json([

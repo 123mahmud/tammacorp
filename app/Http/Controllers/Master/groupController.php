@@ -78,6 +78,9 @@ class groupController extends Controller
           ->select('id_akun',
                   'nama_akun')
           ->where('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '120')
+          ->orWhere('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '121')
           ->get();
         return view('/master/datagroup/tambah_group',compact('nota','item'));
     }
@@ -128,6 +131,9 @@ class groupController extends Controller
         ->select('id_akun',
                 'nama_akun')
         ->where('type_akun','DETAIL')
+        ->where(DB::raw('substring(id_akun, 1, 3)'), '120')
+        ->orWhere('type_akun','DETAIL')
+        ->where(DB::raw('substring(id_akun, 1, 3)'), '121')
         ->get();
 
       json_encode($data);

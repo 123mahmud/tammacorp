@@ -245,7 +245,12 @@ class DkpixController extends Controller
 
     public function getDataEdit($id)
     {
-        $id_peg = Auth::user()->m_pegawai_id;
+        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
+
+        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
+                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
+                            ->where('d_kpix.d_kpix_id', $id)->get();
+
         $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
             ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
             ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
@@ -255,15 +260,10 @@ class DkpixController extends Controller
                 'm_pegawai_man.c_jabatan_id',
                 'm_divisi.c_divisi',
                 'm_jabatan.c_posisi')
-            ->where('d_kpix.d_kpix_pid', '=', $id_peg)->first();
-
-        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
-                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
-                            ->where('d_kpix.d_kpix_id', $id)->get();
+            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
 
         return response()->json([
             'status' => 'sukses',
-            'id_peg' => $id_peg,
             'pegawai' => $pegawai,
             'data' => $data
         ]);

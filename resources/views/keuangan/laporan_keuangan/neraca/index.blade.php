@@ -49,7 +49,7 @@
 	     	 #table-data{
 				font-size: 8pt;
 				margin-top: 10px;
-				border: 1px solid #555;
+				border: 0px solid #555;
 				color: #222;
 		    }
 		    #table-data th{
@@ -61,7 +61,7 @@
 		    }
 
 		    #table-data td{
-		    	border-right: 1px solid #555;
+		    	border-right: 0px solid #555;
 		    	padding: 5px;
 		    }
 
@@ -111,6 +111,10 @@
 	          width: 90%;
 	          font-size: 8pt;
 	        }
+
+	       .table-ctn td{
+	       	border-bottom: 1px dotted rgba(0,0,0,0.1);
+	       }
 	    </style>
 
 	    <style type="text/css" media="print">
@@ -136,22 +140,312 @@
 
 	<body style="background: #555;">
 
-		<div class="col-md-12" id="navigation" style="background: rgba(0, 0, 0, 0.4); box-shadow: 0px 2px 5px #444; position: fixed; z-index: 2;">
+	<div class="col-md-12" id="navigation" style="background: rgba(0, 0, 0, 0.4); box-shadow: 0px 2px 5px #444; position: fixed; z-index: 2;">
 	        <div class="row">
 	          <div class="col-md-7" style="background: none; padding: 15px 15px; color: #fff; padding-left: 120px;">
 	            TammaFood
 	          </div>
 	          <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
 	            <ul>
-	              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Register Jurnal"></i></li>
+	              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Neraca"></i></li>
 	              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
 	            </ul>
 	          </div>
 	        </div>
-	  </div>
+	</div>
 
     <div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px 15px; margin-top: 80px;">
-        <center>Neraca Sedang Dalam Perbaikan :(</center>
+        <table width="100%" border="0" style="border-bottom: 1px solid #333;">
+          <thead>
+            <tr>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Neraca Dalam {{ ucfirst($request->jenis) }}</th>
+            </tr>
+
+            <tr>
+              <th style="text-align: left; font-size: 12pt; font-weight: 500">Tamma Robbah Indonesia</th>
+            </tr>
+
+            <tr>
+              <th style="text-align: left; font-size: 8pt; font-weight: 500; padding-bottom: 10px;">(Angka Disajikan Dalam Rupiah, Kecuali Dinyatakan Lain)</th>
+            </tr>
+          </thead>
+        </table>
+
+        <table width="100%" border="0" style="font-size: 8pt;">
+          <thead>
+            <tr>
+              <td style="text-align: left; padding-top: 5px;">
+                Laporan Per  
+                @if($request->jenis == 'bulan')
+                	Bulan {{ date('m/Y', strtotime($data_real)) }}
+                @else
+                	Tahun {{ $request->durasi_1_neraca_tahun }}
+                @endif
+              </td>
+            </tr>
+          </thead>
+        </table>
+
+        <table border="0" width="100%" style="margin-top: 15px;">
+        	<thead>
+        		<td style="text-align: center; padding: 10px 0px; font-weight: bold; border-bottom: 1px dotted #888; border-right: 1px dotted #888; border-top: 1px dotted #888;" width="50%">Aktiva</td>
+        		<td style="text-align: center; padding: 10px 0px; font-weight: bold; border-bottom: 1px dotted #888; border-top: 1px dotted #888;" width="50%">Pasiva</td>
+        	</thead>
+
+        	<tbody>
+        		<?php $total_aktiva = $total_pasiva = 0 ?>
+        		<td style="border-right: 1px dotted #444; vertical-align: top;">
+        			<table class="table-ctn" width="100%" border="0" style="font-size: 10pt;">
+        				<tbody>
+
+        					{{-- Aset Lancar --}}
+
+        					<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        							Aset Lancar
+        						</td>
+        						
+        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+        					<?php $total_parrent = 0 ?>
+
+        					@foreach($data as $key => $data_neraca)
+        						@if(substr($data_neraca->no_group, 0, 1) == 'A' && $data_neraca->id_group <= 11)
+		        					<tr>
+		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="65%">
+		        							{{ $data_neraca->nama_group }}
+		        						</td>
+
+		        						<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        							<?php 
+		        								$nilai = count_neraca($data, $data_neraca->id_group, 'aktiva', $data_real);
+		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
+
+		        								$total_parrent += $nilai;
+		        								$total_aktiva += $nilai;
+		        							?>
+
+		        							{{ $print }}
+		        						</td>
+		        					</tr>
+		        				@endif
+	        				@endforeach
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        							Total Aset Lancar
+        						</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
+        						</td>
+        					</tr>
+
+        					<tr>
+        						<td style="padding: 0px; font-weight: bold;" width="65%" colspan="2">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+
+        					{{-- Aset Tidak Lancar --}}
+        					
+        					<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        							Aset Tidak Lancar
+        						</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+        					<?php $total_parrent = 0; ?>
+        					@foreach($data as $key => $data_neraca)
+        						@if(substr($data_neraca->no_group, 0, 1) == 'A' && $data_neraca->id_group >= 12 && $data_neraca->id_group <= 16)
+		        					<tr>
+		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="65%">
+		        							{{ $data_neraca->nama_group }}
+		        						</td>
+
+		        						<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        							<?php 
+		        								$nilai = count_neraca($data, $data_neraca->id_group, 'aktiva', $data_real);
+		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
+
+		        								$total_parrent += $nilai;		        							
+		        								$total_aktiva += $nilai;
+		        							?>
+
+		        							{{ $print }}
+		        						</td>
+		        					</tr>
+		        				@endif
+	        				@endforeach
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        							Total Aset Tidak Lancar
+        						</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
+        						</td>
+        					</tr>
+
+        				</tbody>
+        			</table>
+        		</td>
+
+        		<td style="vertical-align: top;">
+        			<table class="table-ctn" width="100%" border="0" style="font-size: 10pt;">
+        				<tbody>
+
+        					{{-- Kewajiban --}}
+
+        					<tr>
+        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        							Liabilitas / Kewajiban
+        						</td>
+        						
+        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+        					<?php $total_parrent = 0; ?>
+        					@foreach($data as $key => $data_neraca)
+        						@if(substr($data_neraca->no_group, 0, 1) == 'P' && $data_neraca->id_group >= 17 && $data_neraca->id_group <= 22)
+		        					<tr>
+		        						<td style="padding: 5px 5px 3px 50px; font-weight: 500;" width="65%">
+		        							{{ $data_neraca->nama_group }}
+		        						</td>
+
+		        						<td style="padding: 5px 10px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        							<?php 
+		        								$nilai = count_neraca($data, $data_neraca->id_group, 'pasiva', $data_real);
+		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
+
+		        								$total_parrent += $nilai;
+		        								$total_pasiva += $nilai;
+		        							?>
+
+		        							{{ $print }}
+		        						</td>
+		        					</tr>
+		        				@endif
+	        				@endforeach
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        							Total Liabilitas / Kewajiban
+        						</td>
+        						
+        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
+        						</td>
+        					</tr>
+
+        					<tr>
+        						<td style="padding: 0px; font-weight: bold;" width="65%" colspan="2">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+
+        					{{-- Ekuitas / Modal --}}
+
+        					<tr>
+        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        							Ekuitas / Modal
+        						</td>
+        						
+        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+        					<?php $total_parrent = 0; ?>
+        					@foreach($data as $key => $data_neraca)
+        						@if(substr($data_neraca->no_group, 0, 1) == 'P' && $data_neraca->id_group >= 23 && $data_neraca->id_group <= 25)
+		        					<tr>
+		        						<td style="padding: 5px 5px 3px 50px; font-weight: 500;" width="65%">
+		        							{{ $data_neraca->nama_group }}
+		        						</td>
+
+		        						<td style="padding: 5px 10px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        							<?php 
+		        								$nilai = count_neraca($data, $data_neraca->id_group, 'pasiva', $data_real);
+		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
+
+		        								$total_parrent += $nilai;
+		        								$total_pasiva += $nilai;
+		        							?>
+
+		        							{{ $print }}
+		        						</td>
+		        					</tr>
+		        				@endif
+	        				@endforeach
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        							Total Ekuitas / Modal
+        						</td>
+        						
+        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
+        						</td>
+        					</tr>
+
+        				</tbody>
+        			</table>
+        		</td>
+        	</tbody>
+        </table>
+
+        <table border="0" width="100%" style="margin-top: 15px;">
+        	<tbody>
+        		<td style="border: 1px dotted #444;" width="50%">
+        			<table width="100%" border="0" style="font-size: 10pt;">
+        				<tbody>
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        							Total Aktiva
+        						</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							{{ ($total_aktiva < 0) ? '('.str_replace('-', '', number_format($total_aktiva, 2)).')' : number_format($total_aktiva, 2) }}
+        						</td>
+        					</tr>
+
+        				</tbody>
+        			</table>
+        		</td>
+
+        		<td style="vertical-align: top; border: 1px dotted #444;" width="50%">
+        			<table width="100%" border="0" style="font-size: 10pt;">
+        				<tbody>
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        							Total Pasiva
+        						</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							{{ ($total_pasiva < 0) ? '('.str_replace('-', '', number_format($total_pasiva, 2)).')' : number_format($total_pasiva, 2) }}
+        						</td>
+        					</tr>
+
+        				</tbody>
+        			</table>
+        		</td>
+        	</tbody>
+        </table>
     </div>
 
 	      <!-- modal -->

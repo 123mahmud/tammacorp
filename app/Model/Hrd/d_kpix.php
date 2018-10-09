@@ -17,6 +17,7 @@ class d_kpix extends Model
         'd_kpix_pid', 
         'd_kpix_date',
         'd_kpix_dateconfirm',
-        'd_kpix_isconfirm'
+        'd_kpix_isconfirm',
+        'd_kpix_scoretotal'
     ];
 }

@@ -16,6 +16,8 @@ class d_kpix_dt extends Model
         'd_kpixdt_dkpix_id',
         'd_kpixdt_mkpix_id', 
         'd_kpixdt_value',
+        'd_kpixdt_score',
+        'd_kpixdt_scoreakhir',
         'd_kpixdt_created',
         'd_kpixdt_updated'
     ];

@@ -21,9 +21,9 @@ class transaksi_kas_controller extends Controller
     public function form_resource(){
     	// return json_encode('granted');
 
-    	$akun_perkiraan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,4)'), '1.00')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+    	$akun_perkiraan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
-    	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,4)'), '!=', '1.00')->where(DB::raw('substring(id_akun,1,4)'), '!=', '1.01')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+    	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '!=', '100')->where(DB::raw('substring(id_akun,1,3)'), '!=', '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
     	// return json_encode($list_transaksi);
 

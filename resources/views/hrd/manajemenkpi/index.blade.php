@@ -16,7 +16,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Manajemen KPI</div>
+      <div class="page-title">Manajemen Scoreboard</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -26,7 +26,7 @@
       <li>
         <i></i>&nbsp;HRD&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Manajemen KPI</li>
+      <li class="active">Manajemen Scoreboard</li>
     </ol>
     <div class="clearfix">
     </div>

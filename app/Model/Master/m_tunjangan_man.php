@@ -13,6 +13,7 @@ class m_tunjangan_man extends Model
     
     protected $fillable = [
         'tman_id', 
+        'tman_levelpeg',
         'tman_nama',
         'tman_periode',
         'tman_value'

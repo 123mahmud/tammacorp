@@ -87,12 +87,17 @@
                               </div>
 
                               <div class="col-md-3 col-sm-6 col-xs-12">
-                                <label class="bold">Ruang Lingkup Pekerjaan:</label>
+                                <label class="bold">Jenis Pelatihan:</label>
                               </div>
 
                               <div class="col-md-9 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                  <input type="text" class="form-control input-sm" name="pp_ruang_lingkup">
+                                  <select name="jenis_pelatihan" id="tampil_data" class="form-control input-sm">
+                                      <option value="" class="form-control input-sm">- Pilih Jenis Pelatihan</option>
+                                    @foreach ($pelatihan as $data)
+                                      <option value="{{$data->dp_id}}" class="form-control input-sm">{{$data->dp_name}}</option>
+                                    @endforeach
+                                  </select>
                                 </div>
                               </div>
 
@@ -103,7 +108,7 @@
                               <div class="col-md-9 col-sm-6 col-xs-12">
                                 <div class="form-group">
                                   <select name="pp_nama_atasan" id="tampil_data" class="form-control input-sm">
-                                      <option value="" class="form-control input-sm">- Nama Atasan</option>
+                                      <option value="" class="form-control input-sm">-Pilih Nama Atasan</option>
                                     @foreach ($staf as $data)
                                       <option value="{{$data->mp_id}}" class="form-control input-sm">{{$data->c_nama}}</option>
                                     @endforeach
@@ -111,42 +116,7 @@
                                 </div>
                               </div>
 
-                              <div class="col-md-3 col-sm-6 col-xs-12">
-                                <label class="bold">Petunjuk Pengisian:</label><br>
-                              </div>
-
-                              <div class="col-md-9 col-sm-6 col-xs-12">
-                                <div class="form-group">
-                                  <small>Berilah tanda Checklist pada tempat yang disediakan atau berilah jawaban singkat, jelas, dan padat pada pertanyaan yang diminta !</small>
-                                </div>
-                              </div>
                             </div>
-                            @foreach ($soal as $index => $dataSoal)
-                              <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="form-group bold">
-                                  {{$index+1}}. {{$dataSoal->fp_soal}}
-                                  <input type="hidden" name="fp_id[]" value="{{$dataSoal->fp_id}}">
-                                </div>
-                              </div>
-                              @foreach ($jawab as $dataJawab)
-                                @if ($dataSoal->fp_id == $dataJawab->fpd_fp)
-                                  @if ($dataJawab->fpd_type == 'I')
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                      <div class="form-group">
-                                          <input class="form-control input-sm" type="hidden" name="fpd_jawabid[]" value="{{$dataJawab->fpd_fp}}|{{$dataJawab->fpd_det}}">
-                                          <input class="form-control input-sm" type="text" name="fpd_jawab[]" placeholder="{{$dataJawab->fpd_jawab}}" value="">
-                                      </div>
-                                    </div>
-                                  @else
-                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                      <div class="form-group">
-                                        <input type="checkbox" name="fpd_idjawab[]" value="{{$dataJawab->fpd_fp}}|{{$dataJawab->fpd_det}}">&nbsp;&nbsp;{{$dataJawab->fpd_jawab}}
-                                      </div>
-                                    </div>
-                                  @endif
-                                @endif
-                              @endforeach
-                            @endforeach
 
                           </div>
                           </form>
@@ -189,7 +159,7 @@
           var a = $('#simpanPengajuan').serialize();
           $.ajax({
               url: baseUrl + "/hrd/training/save",
-              type: 'POST',
+              type: 'GET',
               data: a,
               success: function (response, customer) {
                   if (response.status == 'sukses') {

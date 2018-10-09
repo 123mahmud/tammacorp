@@ -33,7 +33,8 @@ class m_pegawai_man extends Model
                           'c_tahun_masuk',
                           'c_divisi_id',
                           'c_jabatan_id',
-                          'c_shift_id'
+                          'c_shift_id',
+                          'c_tunjangan'
                         ];
 
   public $incrementing = false;

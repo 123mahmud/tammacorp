@@ -46,6 +46,10 @@
 
 	      .page-number:after { content: counter(page); }
 
+	      	.table-ctn td{
+	      		border: 1px dotted #ccc;
+	      	}
+
 	     	 #table-data{
 				font-size: 8pt;
 				margin-top: 10px;
@@ -150,8 +154,210 @@
 	        </div>
 	  </div>
 
-    <div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px 15px; margin-top: 80px;">
-        <center>Laba Rugi Sedang Dalam Perbaikan :(</center>
+    <div class="col-md-8 col-md-offset-2" style="background: white; padding: 10px 15px; margin-top: 80px;">
+
+    	<table width="100%" border="0" style="border-bottom: 1px solid #333;">
+          <thead>
+            <tr>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Laba Rugi Dalam {{ ucfirst($request->jenis) }}</th>
+            </tr>
+
+            <tr>
+              <th style="text-align: left; font-size: 12pt; font-weight: 500">Tamma Robbah Indonesia</th>
+            </tr>
+
+            <tr>
+              <th style="text-align: left; font-size: 8pt; font-weight: 500; padding-bottom: 10px;">(Angka Disajikan Dalam Rupiah, Kecuali Dinyatakan Lain)</th>
+            </tr>
+          </thead>
+        </table>
+
+        <table width="100%" border="0" style="font-size: 8pt;">
+          <thead>
+            <tr>
+              <td style="text-align: left; padding-top: 5px;">
+                Laporan Per  
+                @if($request->jenis == 'bulan')
+                	Bulan {{ date('m/Y', strtotime($data_real)) }}
+                @else
+                	Tahun {{ $request->durasi_1_neraca_tahun }}
+                @endif
+              </td>
+            </tr>
+          </thead>
+        </table>
+
+        <table border="0" width="85%" style="margin: 15px auto;">
+
+        	<tbody>
+        		<?php $total_aktiva = $lr_sebelum_pajak = $total_pasiva = 0 ?>
+        		<td style="border-right: 1px dotted #444; vertical-align: top;">
+        			<table class="table-ctn" width="100%" border="0" style="font-size: 10pt;">
+        				<tbody>
+
+        					{{-- Pendapatan --}}
+
+        					<tr>
+        						<td style="padding: 5px 5px 5px 15px; font-weight: bold;" width="60%">
+        							Semua Pendapatan
+        						</td>
+
+        						<td width="20%">&nbsp;</td>
+        						
+        						<td width="20%" style="padding: 5px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+        					<?php $total_parrent = 0 ?>
+
+        					@foreach($data as $key => $data_neraca)
+        						@if($data_neraca->id_group == 26 || $data_neraca->id_group == 38)
+		        					<tr>
+		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="60%">
+		        							{{ $data_neraca->nama_group }}
+		        						</td>
+
+		        						<td width="20%" style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        							<?php 
+		        								$nilai = count_laba_rugi($data, $data_neraca->id_group, 'pasiva', $data_real);
+		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
+
+		        								$total_parrent += $nilai;
+		        								$total_aktiva += $nilai;
+		        								$lr_sebelum_pajak += $nilai;
+		        							?>
+
+		        							{{ $print }}
+		        						</td>
+
+		        						<td width="20%">&nbsp;</td>
+		        					</tr>
+		        				@endif
+	        				@endforeach
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="60%">
+        							Diperoleh Total Pendapatan
+        						</td>
+
+        						<td width="20%" style="border-top: 1px solid #aaa;">&nbsp;</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
+        						</td>
+        					</tr>
+
+        					<tr>
+        						<td style="padding: 0px; font-weight: bold;" width="65%" colspan="3">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+
+        					{{--  Beban  --}}
+        					<tr>
+        						<td style="padding: 5px 5px 5px 15px; font-weight: bold;" width="60%">
+        							Beban - Beban
+        						</td>
+
+        						<td width="20%">&nbsp;</td>
+        						
+        						<td width="20%" style="padding: 5px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							&nbsp;
+        						</td>
+        					</tr>
+
+        					<?php $total_parrent = 0 ?>
+
+        					@foreach($data as $key => $data_neraca)
+        						@if($data_neraca->id_group >= 28 && $data_neraca->id_group <= 37)
+		        					<tr>
+		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="60%">
+		        							{{ $data_neraca->nama_group }}
+		        						</td>
+
+		        						<td width="20%" style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        							<?php 
+		        								$nilai = count_laba_rugi($data, $data_neraca->id_group, 'pasiva', $data_real);
+		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
+
+		        								$total_parrent += $nilai;
+		        								$total_aktiva += $nilai;
+		        								$lr_sebelum_pajak += $nilai;
+		        							?>
+
+		        							{{ $print }}
+		        						</td>
+
+		        						<td width="20%">&nbsp;</td>
+		        					</tr>
+		        				@endif
+	        				@endforeach
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="60%">
+        							Total Beban
+        						</td>
+
+        						<td width="20%" style="border-top: 1px solid #aaa;">&nbsp;</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
+        						</td>
+        					</tr>
+
+        					<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: normal;" width="60%">
+        							<b>Diperoleh Laba/Rugi Kotor </b><small>&nbsp;(Sebelum Pajak)</small>
+        						</td>
+
+        						<td width="20%">&nbsp;</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        							{{ ($lr_sebelum_pajak < 0) ? '('.str_replace('-', '', number_format($lr_sebelum_pajak, 2)).')' : number_format($lr_sebelum_pajak, 2) }}
+        						</td>
+        					</tr>
+
+        					<tr>
+        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="60%">
+        							Total Pajak
+        						</td>
+
+        						<td width="20%">&nbsp;</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-bottom: 1px solid #aaa;">
+        							{{ number_format(0, 2) }}
+        						</td>
+        					</tr>
+
+        				</tbody>
+        			</table>
+        		</td>
+        	</tbody>
+        </table>
+
+        <table border="0" width="85%" style="margin: 15px auto;">
+        	<tbody>
+        		<td style="border: 1px dotted #444;" width="50%">
+        			<table width="100%" border="0" style="font-size: 10pt;">
+        				<tbody>
+
+	        				<tr>
+        						<td style="padding: 10px 5px 5px 15px;" width="65%">
+        							<b>Diperoleh Laba/Rugi Bersih</b> <small>&nbsp;(Setelah Pajak)</small>
+        						</td>
+        						
+        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        							{{ ($total_aktiva < 0) ? '('.str_replace('-', '', number_format($total_aktiva, 2)).')' : number_format($total_aktiva, 2) }}
+        						</td>
+        					</tr>
+
+        				</tbody>
+        			</table>
+        		</td>
+        	</tbody>
+        </table>
     </div>
 
 	      <!-- Modal -->

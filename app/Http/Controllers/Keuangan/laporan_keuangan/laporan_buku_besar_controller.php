@@ -46,7 +46,7 @@ class laporan_buku_besar_controller extends Controller
                                       },
                                 ])
                                 ->whereBetween('d_akun.id_akun', [$request->akun_1, $request->akun_2])
-                            	->where('d_akun.type_akun', 'DETAIL')
+                            	  ->where('d_akun.type_akun', 'DETAIL')
                                 ->orderBy('id_akun', 'asc')->get();
 
         $data = akun::with(['jurnal_detail' => function($query) use ($d1, $d2, $y1, $y2){

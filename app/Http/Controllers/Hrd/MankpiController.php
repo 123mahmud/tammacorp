@@ -176,7 +176,12 @@ class MankpiController extends Controller
 
     public function getDataEdit($id)
     {
-        $id_peg = Auth::user()->m_pegawai_id;
+        $id_peg = d_kpi::select('d_kpi_pid')->where('d_kpi.d_kpi_id', $id)->first();
+
+        $data = d_kpi::join('d_kpi_dt', 'd_kpi.d_kpi_id', '=', 'd_kpi_dt.d_kpidt_dkpi_id')
+                            ->join('m_kpi', 'd_kpi_dt.d_kpidt_mkpi_id', '=', 'm_kpi.kpi_id')
+                            ->where('d_kpi.d_kpi_id', $id)->get();
+
         $pegawai = d_kpi::join('m_pegawai_man', 'd_kpi.d_kpi_pid', '=', 'm_pegawai_man.c_id')
             ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
             ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
@@ -186,15 +191,10 @@ class MankpiController extends Controller
                 'm_pegawai_man.c_jabatan_id',
                 'm_divisi.c_divisi',
                 'm_jabatan.c_posisi')
-            ->where('d_kpi.d_kpi_pid', '=', $id_peg)->first();
-
-        $data = d_kpi::join('d_kpi_dt', 'd_kpi.d_kpi_id', '=', 'd_kpi_dt.d_kpidt_dkpi_id')
-                            ->join('m_kpi', 'd_kpi_dt.d_kpidt_mkpi_id', '=', 'm_kpi.kpi_id')
-                            ->where('d_kpi.d_kpi_id', $id)->get();
+            ->where('d_kpi.d_kpi_pid', '=', $id_peg->d_kpi_pid)->first();
 
         return response()->json([
             'status' => 'sukses',
-            'id_peg' => $id_peg,
             'pegawai' => $pegawai,
             'data' => $data
         ]);

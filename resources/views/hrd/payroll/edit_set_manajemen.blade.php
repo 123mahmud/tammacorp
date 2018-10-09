@@ -100,6 +100,14 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">SMA</label>
+                      </div>
+                      <div class="col-md-4 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="number" value="{{ $data->c_smk }}" id="smk" name="c_smk" class="form-control input-sm">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">D1</label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">

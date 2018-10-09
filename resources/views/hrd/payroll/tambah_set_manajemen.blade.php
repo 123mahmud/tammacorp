@@ -100,6 +100,14 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">SMK</label>
+                      </div>
+                      <div class="col-md-4 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="number" id="smk" name="c_smk" class="form-control input-sm">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">D1</label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
@@ -152,6 +160,7 @@
               $('#sd').val(jum);
               $('#smp').val(jum);
               $('#sma').val(jum);
+              $('#smk').val(jum);
               $('#d1').val(jum);
               $('#d2').val(jum);
               $('#d3').val(jum);

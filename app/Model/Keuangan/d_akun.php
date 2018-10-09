@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class d_akun extends Model
 {
-      protected $table = "d_akun";
+     protected $table = "d_akun";
 	  protected $primaryKey = "id_akun";
 	  public $incrementing = false;
+
+     public function group(){
+      return $this->hasMany('App\Model\Keuangan\d_akun', 'kelompok_akun', 'kelompok_akun');
+     }
 
 	  public function jurnal_detail(){
          return $this->hasMany('App\Model\Keuangan\d_jurnal_dt', 'jrdt_acc', 'id_akun');

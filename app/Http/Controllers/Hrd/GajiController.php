@@ -9,6 +9,7 @@ use App\GajiProduksi;
 use App\Potongan;
 use App\Model\Master\m_tunjangan_man;
 use DB;
+use Auth;
 use DataTables;
 use Carbon\Carbon;
 class GajiController extends Controller
@@ -244,4 +245,84 @@ class GajiController extends Controller
         return redirect('/hrd/payroll/setting-gaji');
     }
 
+
+    public function setTunjanganPegMan(){
+        return view('hrd/payroll/set_tunjangan_peg_man');
+    }
+    public function tunjanganPegManData(){
+        $list = DB::table('m_pegawai_man')
+                ->join('m_divisi', 'm_pegawai_man.c_divisi_id','=','m_divisi.c_id')
+                ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id','=','m_jabatan.c_id')
+                ->select('m_pegawai_man.*', 'm_divisi.c_divisi', 'm_jabatan.c_posisi')
+                ->get();
+        $data = collect($list);
+        return Datatables::of($data)           
+                ->addColumn('action', function ($data) {
+                    return '<button id="edit" onclick="edit_t_pegman('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>';
+                })
+                ->addColumn('none', function ($data) {
+                    return '-';
+                })
+                ->addColumn('tunjangan', function ($data) {
+                    
+                    if ($data->c_tunjangan != null) 
+                    {
+                        $t_list = explode(',', $data->c_tunjangan);
+
+                        $aaa = '<ul style="list-style-type:square">';
+                        for ($i=0; $i <count($t_list); $i++) 
+                        { 
+                            $txt = DB::table('m_tunjangan_man')->select('tman_nama')->where('tman_id', $t_list[$i])->first();
+                            $aaa .=  '<li>'.$txt->tman_nama.'</li>';
+                        }
+                        $aaa .= '</ul>';
+                        return $aaa;
+                    }
+                    else
+                    {
+                        return '-';
+                    }
+
+                })
+                ->rawColumns(['action','tunjangan'])
+                ->make(true);
+    }
+    public function editPegManData($id)
+    {
+        // $id_peg = Auth::user()->m_pegawai_id;
+        $data = DB::table('m_pegawai_man')
+            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+            ->select('m_pegawai_man.*', 'm_jabatan.c_posisi', 'm_jabatan.c_sub_divisi_id','m_divisi.c_divisi')
+            ->where('m_pegawai_man.c_id', $id)->first();
+        
+        if ($data->c_sub_divisi_id == '1') 
+        {
+            $list = explode(",", $data->c_tunjangan);
+            $tunjangan = DB::table('m_tunjangan_man')->where('tman_levelpeg', '!=' ,'ST')->get();
+        }
+        else
+        {
+            $list = explode(",", $data->c_tunjangan);
+            $tunjangan = DB::table('m_tunjangan_man')->where('tman_levelpeg', '!=' ,'LD')->get();
+        }
+        return view('hrd/payroll/edit_set_tunjangan_peg',['data' => $data, 'tunjangan' => $tunjangan, 'list'=>$list]);
+    }
+
+    public function updateTunjanganPeg(Request $request, $id)
+    {
+        if (count($request->form_cek) > 0) {
+            $tunjangan = implode(',', $request->form_cek);
+        }else{
+            $tunjangan = null;
+        }
+        
+        DB::table('m_pegawai_man')->where('c_id','=', $request->idpeg)
+            ->update([
+                'c_tunjangan' => $tunjangan,
+                'updated_at' => Carbon::now('Asia/Jakarta')
+            ]);
+        
+        return redirect('/hrd/payroll/set-tunjangan-pegawai-man');
+    }
 }

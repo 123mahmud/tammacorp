@@ -420,9 +420,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
 //Mahmud Absensi
     Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
-    Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
+    Route::get('/hrd/absensi/table/manajemen/{tgl1}/{tgl2}/{data}', 'Hrd\AbsensiController@table');
     Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
     Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
+    Route::post('/import/data-manajemen', 'Hrd\AbsensiController@importDataManajemen');
+    Route::post('/import/data-produksi', 'Hrd\AbsensiController@importDataProduksi');
 /*hasil Pengerjaan Produksi*/
     Route::get('/hrd/hasilproduksi/index', 'Hrd\HproduksiController@index');
     Route::get('/hrd/hasilproduksi/get-hasil-by-tgl/{tgl1}/{tgl2}', 'Hrd\HproduksiController@getHasilByTgl');
@@ -520,6 +522,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-tunjangan-man/{id}', 'Hrd\GajiController@editTunjangan');
     Route::post('/hrd/payroll/update-tunjangan/{id}', 'Hrd\GajiController@updateTunjangan');
     Route::delete('/hrd/payroll/delete-tunjangan/{id}', 'Hrd\GajiController@deleteTunjangan');
+    Route::get('/hrd/payroll/set-tunjangan-pegawai-man', 'Hrd\GajiController@setTunjanganPegMan');
+    Route::get('/hrd/payroll/datatable-tunjangan-pegman', 'Hrd\GajiController@tunjanganPegManData');
+    Route::get('/hrd/payroll/edit-tunjangan-pegman/{id}', 'Hrd\GajiController@editPegManData');
+    Route::post('/hrd/payroll/update-tunjangan-peg/{id}', 'Hrd\GajiController@updateTunjanganPeg');
     //payroll produksi Mahmud
         Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
         Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
@@ -561,7 +567,22 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/inputkpix/get-edit/{id}', 'Hrd\DkpixController@getDataEdit');
     Route::post('/hrd/inputkpix/update-data', 'Hrd\DkpixController@updateData');
     Route::post('/hrd/inputkpix/delete-data', 'Hrd\DkpixController@deleteData');
-    
+/*Manajemen SCOREBOARD & KPI FINAL*/
+    Route::get('/hrd/manscorekpi/index', 'Hrd\ManscorekpiController@index');
+    Route::get('/hrd/manscorekpi/get-kpi-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\ManscorekpiController@getKpiByTgl');
+    Route::get('/hrd/manscorekpi/get-edit/{id}', 'Hrd\ManscorekpiController@getDataEdit');
+    Route::post('/hrd/manscorekpi/update-data', 'Hrd\ManscorekpiController@updateData');
+    Route::post('/hrd/manscorekpi/ubah-status', 'Hrd\ManscorekpiController@ubahStatus');
+    Route::get('/hrd/manscorekpi/get-score-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\ManscorekpiController@getScoreByTgl');
+/*PAYROLL MANAJEMEN*/
+    Route::get('/hrd/payrollman/index', 'Hrd\PayrollmanController@index');
+    Route::get('/hrd/payrollman/get-payroll-man', 'Hrd\PayrollmanController@listGajiManajemen');
+    Route::get('/hrd/payrollman/lookup-data-divisi', 'Hrd\PayrollmanController@lookupDivisi');
+    Route::get('/hrd/payrollman/lookup-data-jabatan', 'Hrd\PayrollmanController@lookupJabatan');
+    Route::get('/hrd/payrollman/lookup-data-pegawai', 'Hrd\PayrollmanController@lookupPegawai');
+    Route::get('/hrd/payrollman/set-field-modal', 'Hrd\PayrollmanController@setFieldModal');
+    Route::post('/hrd/payrollman/simpan-data', 'Hrd\PayrollmanController@simpanData');
+    Route::get('/hrd/payrollman/get-detail/{id}', 'Hrd\PayrollmanController@getDataDetail');
     
     
     /*Keuangan*/
@@ -585,7 +606,7 @@ Route::group(['middleware' => 'auth'], function () {
             // return _initiateJournal_self_detail('Hanya Coba 1', 'KK', '2018-09-02', 'Tes Self_detail', $cek);
             // return _initiateJournal_from_transaksi('Hanya Coba 2', '2019-08-01', 'Test From Transaksi', 1, [25000000, 20000000, 5000000]);
             // return _updateJournal_from_transaksi('Hanya Coba 2', '2018-08-02', 'Setelah Update FT 4', 1, [10000000, 5000000, 5000000]);
-            // return  _updateJournal_self_detail('Hanya Coba 1', 'BM', '2018-09-01', 'Tes Self_detail', $cek);
+            // return _updateJournal_self_detail('Hanya Coba 1', 'BM', '2018-09-01', 'Tes Self_detail', $cek);
             // return _delete_jurnal('Hanya Coba 2');
         });
 
@@ -996,8 +1017,12 @@ Route::group(['middleware' => 'auth'], function () {
 //Mahmud Training
     Route::get('/hrd/training/form_training', 'Hrd\TrainingContoller@tambah_training')->name('form_training');
     Route::get('/hrd/training/training', 'Hrd\TrainingContoller@training')->name('training');
-    Route::post('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
+    Route::get('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
+    Route::get('/hrd/training/save/form', 'Hrd\TrainingContoller@savePengajuanForm');
     Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}', 'Hrd\TrainingContoller@tablePengajuan');
+    Route::get('/hrd/training/acc-pelatihan/{id}', 'Hrd\TrainingContoller@accPelatihan');
+    Route::get('/hrd/training/lihat-waktu/{id}', 'Hrd\TrainingContoller@lihatWaktu');
+    Route::get('/hrd/training/wakti-pelatihan', 'Hrd\TrainingContoller@reqTimeTraining');
 
 //Master Data Lowongan
     Route::get('/master/datalowongan/index', 'Master\LowonganController@index');

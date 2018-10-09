@@ -116,7 +116,6 @@
             <option value="D2" @if (old('pendidikanterakhir') == 'D2') selected="selected" @endif>D2</option>
             <option value="D3" @if (old('pendidikanterakhir') == 'D3') selected="selected" @endif>D3</option>
             <option value="S1" @if (old('pendidikanterakhir') == 'S1') selected="selected" @endif>S1</option>
-            <option value="S2" @if (old('pendidikanterakhir') == 'S2') selected="selected" @endif>S2</option>
           </select>
         </div>
       </div>
