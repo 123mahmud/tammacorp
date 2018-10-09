@@ -73,7 +73,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="form-control input-sm" name="i_gapok" id="i_gapok">
+                <input type="text" class="form-control input-sm currency" name="i_gapok" id="i_gapok" readonly>
               </div>  
             </div>
 
@@ -83,7 +83,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="form-control input-sm" name="i_tunjangan" id="i_tunjangan">
+                <input type="text" class="form-control input-sm currency" name="i_tunjangan" id="i_tunjangan" readonly>
               </div>  
             </div>
 
@@ -93,7 +93,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="form-control input-sm" name="i_potongan" id="i_potongan">
+                <input type="text" class="form-control input-sm currency" name="i_potongan" id="i_potongan" readonly>
               </div>  
             </div>
 
@@ -103,16 +103,18 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="form-control input-sm" name="i_totgaji" id="i_totgaji">
+                <input type="text" class="form-control input-sm currency" name="i_totgaji" id="i_totgaji" readonly>
               </div>  
             </div>
+
+            <div id="appending-modal"></div>
             
           </div>
 
         </div>
     
         <div class="modal-footer" style="border-top: none;">
-          <button type="button" class="btn btn-info" onclick="submitPayrollMan()" id="btn_simpan">Submit</button>
+          <button type="button" class="btn btn-info" onclick="submitPayrollMan()" id="btn_simpan" disabled>Submit</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
         </div>
 

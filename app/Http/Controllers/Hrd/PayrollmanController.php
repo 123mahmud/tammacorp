@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\abs_pegawai_man;
 use App\m_pegawai_man;
 use App\Model\Hrd\d_payroll_man;
+use App\Model\Hrd\d_payroll_mandt;
 use App\Model\Hrd\d_lembur;
 use Response;
 use DB;
@@ -25,77 +26,69 @@ class PayrollmanController extends Controller
 
     public function listGajiManajemen(Request $request)
     {
-        $tanggal = $request->thn . '-' . $request->bln . '-01';
-        $jml_hari = cal_days_in_month(CAL_GREGORIAN, $request->bln, $request->thn);
+        $tanggal_a = date('Y-m-d',strtotime($request->tgl1));
+        $tanggal_b = date('Y-m-d',strtotime($request->tgl2));
+        //$jml_hari = cal_days_in_month(CAL_GREGORIAN, $request->bln, $request->thn);
         //$tanggal = date('Y-m-d',strtotime($tgl1));
         
-        if ($request->status == 'ALL') {
-            $data = m_pegawai_man::leftjoin('d_payroll_man','m_pegawai_man.c_id','=','d_payroll_man.d_pm_pid')
-                        ->where('c_divisi_id', $request->divisi)
-                        // ->where('d_pm_date', $tanggal)
-                        ->orderBy('d_pm_created', 'DESC')->get();
+        if ($request->status == 'ALL' && $request->divisi == 'semua') {
+            $data = d_payroll_man::join('m_pegawai_man','d_payroll_man.d_pm_pid','=','m_pegawai_man.c_id')
+                        ->select('d_payroll_man.*', 'm_pegawai_man.*')
+                        ->whereBetween('d_payroll_man.d_pm_date', [$tanggal_a, $tanggal_b])
+                        ->orderBy('d_payroll_man.d_pm_created', 'DESC')->get();
+        }elseif ($request->status == 'ALL') {
+            $data = d_payroll_man::join('m_pegawai_man','d_payroll_man.d_pm_pid','=','m_pegawai_man.c_id')
+                        ->select('d_payroll_man.*', 'm_pegawai_man.*')
+                        ->where('m_pegawai_man.c_divisi_id', $request->divisi)
+                        ->whereBetween('d_payroll_man.d_pm_date', [$tanggal_a, $tanggal_b])
+                        ->orderBy('d_payroll_man.d_pm_created', 'DESC')->get();
+        }elseif ($request->divisi == 'semua') {
+            $data = d_payroll_man::join('m_pegawai_man','d_payroll_man.d_pm_pid','=','m_pegawai_man.c_id')
+                        ->select('d_payroll_man.*', 'm_pegawai_man.*')
+                        ->where('d_payroll_man.d_pm_iscetak', '=', $request->status)
+                        ->whereBetween('d_payroll_man.d_pm_date', [$tanggal_a, $tanggal_b])
+                        ->orderBy('d_payroll_man.d_pm_created', 'DESC')->get();
         }else{  
-            $data = m_pegawai_man::leftjoin('d_payroll_man','m_pegawai_man.c_id','=','d_payroll_man.d_pm_pid')
-                        ->where('d_pm_iscetak', '=', $request->status)
-                        ->where('c_divisi_id', $request->divisi)
-                        ->where('d_pm_date', $tanggal)
-                        ->orderBy('d_pm_created', 'DESC')->get();
+            $data = d_payroll_man::join('m_pegawai_man','d_payroll_man.d_pm_pid','=','m_pegawai_man.c_id')
+                        ->select('d_payroll_man.*', 'm_pegawai_man.*')
+                        ->where('d_payroll_man.d_pm_iscetak', '=', $request->status)
+                        ->where('m_pegawai_man.c_divisi_id', $request->divisi)
+                        ->whereBetween('d_payroll_man.d_pm_date', [$tanggal_a, $tanggal_b])
+                        ->orderBy('d_payroll_man.d_pm_created', 'DESC')->get();
         }
-        dd($data);
+        //dd($data);
         
         return DataTables::of($data)
-        ->addIndexColumn()
         ->editColumn('tglBuat', function ($data) 
         {
-            if ($data->d_kpix_date == null) {
+            if ($data->d_pm_date == null) {
                 return '-';
             } else {
-                return $data->d_kpix_date ? with(new Carbon($data->d_kpix_date))->format('d M Y') : '';
+                return $data->d_pm_date ? with(new Carbon($data->d_pm_date))->format('d M Y') : '';
             }
         })
-        ->editColumn('status', function ($data) 
+        ->editColumn('tglCetak', function ($data) 
         {
-            if ($data->d_kpix_isconfirm == 'N') {
-                return '<span style="color:red;text-align:center;"> Belum Dikonfirmasi </span>';
-            } else {
-                return '<span style="color:blue;text-align:center;"> Sudah Dikonfirmasi </span>';
-            }
-        })
-        ->editColumn('tglConfirm', function ($data) 
-        {
-            if ($data->d_kpix_dateconfirm == null) {
+            if ($data->d_pm_datecetak == '0000-00-00') {
                 return '-';
             } else {
-                return $data->d_kpix_dateconfirm ? with(new Carbon($data->d_kpix_dateconfirm))->format('d M Y') : '';
+                return $data->d_pm_datecetak ? with(new Carbon($data->d_pm_datecetak))->format('d M Y') : '';
             }
+        })
+        ->editColumn('totGaji', function ($data) 
+        {
+            return 'Rp. '.number_format($data->d_pm_totalnett,2,",",".");
         })
         ->addColumn('action', function($data)
         { 
-            if ($data->d_kpix_isconfirm == 'Y') {
-                return '<div class="text-center">
-                            <button class="btn btn-sm btn-success" title="Detail"
-                                onclick=detailKpi("'.$data->d_kpix_id.'")><i class="fa fa-info-circle"></i> 
-                            </button>
-                            <button class="btn btn-sm btn-info" title="Confirm"
-                                onclick=confirmKpi("'.$data->d_kpix_id.'") disabled><i class="fa fa-edit"></i> 
-                            </button>
-                            <button class="btn btn-sm btn-danger" title="Batalkan Konfirmasi"
-                                onclick=ubahStatus("'.$data->d_kpix_id.'","Y")><i class="fa fa-mail-forward"></i>
-                            </button>
-                        </div>';
-            }else{
-                return '<div class="text-center">
-                            <button class="btn btn-sm btn-success" title="Detail"
-                                onclick=detailKpi("'.$data->d_kpix_id.'")><i class="fa fa-info-circle"></i> 
-                            </button>
-                            <button class="btn btn-sm btn-info" title="Confirm"
-                                onclick=confirmKpi("'.$data->d_kpix_id.'")><i class="fa fa-edit"></i> 
-                            </button>
-                            <button class="btn btn-sm btn-default" title="Konfirmasi"
-                                onclick=ubahStatus("'.$data->d_kpix_id.'","N") disabled><i class="fa fa-mail-reply"></i>
-                            </button>
-                        </div>';
-            }  
+            return '<div class="text-center">
+                        <button class="btn btn-sm btn-success" title="Detail"
+                            onclick=detailPman("'.$data->d_pm_id.'")><i class="fa fa-info-circle"></i> 
+                        </button>
+                        <button class="btn btn-sm btn-danger" title="Batalkan Konfirmasi"
+                            onclick=hapusPman("'.$data->d_pm_id.'")><i class="fa fa-times-circle"></i>
+                        </button>
+                    </div>';  
         })
         ->rawColumns(['action','status'])
         ->make(true);
@@ -188,10 +181,8 @@ class PayrollmanController extends Controller
             }
         }
 
-        //jumlah hari periode terpilih
-        //$jml_hari = (int)$this->hitungSelisihTanggal($tanggal_a, $tanggal_b);
         //data pegawai
-        $d_pegawai = m_pegawai_man::select('c_anak','c_nikah','c_pendidikan')->where('c_id', $request->pegawai)->first();
+        $d_pegawai = m_pegawai_man::select('c_anak','c_nikah','c_pendidikan', 'c_tunjangan')->where('c_id', $request->pegawai)->first();
 
         //pendidikan
         if ($d_pegawai->c_pendidikan == 'S2') {
@@ -216,8 +207,11 @@ class PayrollmanController extends Controller
             foreach ($d_absen as $val) {
                 if ($val->apm_absent != null) { $alpha[] = $val->apm_absent; } else { $hadir[] = $val->apm_absent; }
                 if ($val->apm_lembur != null) { $lembur[] = $val->apm_lembur; } else { $lembur[] = "00:00:00"; }
+                if ($val->apm_scan_masuk != null) { $dt_scanmasuk[] = $val->apm_tanggal.' '.$val->apm_scan_masuk; } else { $dt_scanmasuk[] = null; }
+                if ($val->apm_jam_masuk != null) { $dt_jammasuk[] = $val->apm_tanggal.' '.$val->apm_jam_masuk; } else { $dt_jammasuk[] = null; }
             }
         }
+        //dd($dt_scanmasuk, $dt_jammasuk);
 
         //hitung lembur jam reguler
         $jam_lembur = 0;
@@ -229,88 +223,209 @@ class PayrollmanController extends Controller
                 $jam_lembur += ((int)$d_lembur[0] + 1);
             }
         }
-        //dd($jam_lembur);
-        if ($lvl_peg == '1') 
-        {
-            $tunjangan = DB::table('m_tunjangan_man')->where('tman_levelpeg', '!=' ,'ST')->get();
-            foreach ($tunjangan as $value) 
-            {
-                if ($value->tman_id == '2') { 
-                    //$t_kehadiran = str_replace('.', '', $value->tman_value * ($jml_hari-count($alpha)));
-                    $t_kehadiran = (int)$value->tman_value * count($hadir); 
-                }
-                if ($value->tman_id == '4') {
-                    $t_uang_makan = (int)$value->tman_value * count($hadir); 
-                }
-                if ($value->tman_id == '6') {
-                    $t_anak = (int)$value->tman_value * $d_pegawai->c_anak; 
-                }
-                if ($value->tman_id == '7') {
-                    if ($d_pegawai->c_nikah == 'Menikah') { $t_istri = (int)$value->tman_value; }else{ $t_istri = 0; }    
-                }
-                if ($value->tman_id == '8') {
-                   $t_kesehatan = (int)$value->tman_value; 
-                }
-                if ($value->tman_id == '10') {
-                   $t_transport = (int)$value->tman_value * count($hadir); 
-                }
-                if ($value->tman_id == '11') {
-                   $t_lembur_jam = (int)$value->tman_value * $jam_lembur; 
-                }
-                if ($value->tman_id == '12') {
-                   $t_lembur_mingguan = (int)$value->tman_value * $jml_lembur_minggu; 
-                }
-            }
-        }
-        else
-        {
-            $tunjangan = DB::table('m_tunjangan_man')->where('tman_levelpeg', '!=' ,'LD')->get();
-            foreach ($tunjangan as $value) 
-            {
-                if ($value->tman_id == '3') { 
-                    //$t_kehadiran = str_replace('.', '', $value->tman_value * ($jml_hari-count($alpha)));
-                    $t_kehadiran = (int)$value->tman_value * count($hadir); 
-                }
-                if ($value->tman_id == '4') {
-                    $t_uang_makan = (int)$value->tman_value * count($hadir); 
-                }
-                if ($value->tman_id == '6') {
-                    $t_anak = (int)$value->tman_value * $d_pegawai->c_anak; 
-                }
-                if ($value->tman_id == '7') {
-                    if ($d_pegawai->c_nikah == 'Menikah') { $t_istri = (int)$value->tman_value; }else{ $t_istri = 0; }    
-                }
-                if ($value->tman_id == '9') {
-                   $t_kesehatan = (int)$value->tman_value; 
-                }
-                if ($value->tman_id == '10') {
-                   $t_transport = (int)$value->tman_value * count($hadir); 
-                }
-                if ($value->tman_id == '11') {
-                   $t_lembur_jam = (int)$value->tman_value * $jam_lembur; 
-                }
-                if ($value->tman_id == '13') {
-                   $t_lembur_mingguan = (int)$value->tman_value * $jml_lembur_minggu; 
-                }
-            }
-        }
-        //dd($t_kehadiran);
-        $arr_income = array($gapok, $t_kehadiran,$t_uang_makan ,$t_anak, $t_istri, $t_kesehatan, $t_transport, $t_lembur_jam, $t_lembur_mingguan);
-        $total_income = array_sum($arr_income);
-        dd($tunjangan);
-        dd($gapok, $t_kehadiran,$t_uang_makan ,$t_anak, $t_istri, $t_kesehatan, $t_transport, $t_lembur_jam, $t_lembur_mingguan, $total_income);
 
-        /*return response()->json([
+        $tunjangan = DB::table('m_tunjangan_man')->get();
+        $list = explode(",", $d_pegawai->c_tunjangan);
+        foreach ($tunjangan as $value) 
+        {
+            for ($z=0; $z <count($list); $z++) 
+            { 
+                if ($value->tman_id == $list[$z] && $value->tman_periode == "HR") 
+                { 
+                    $income[] = (int)$value->tman_value * count($hadir);
+                    $arr_pot[] = (int)$value->tman_value * count($hadir);
+                    //$t_hdrmkn = (int)$value->tman_value * count($hadir);
+                }
+                elseif($value->tman_id == $list[$z] && $value->tman_periode == "ST" && $list[$z] == "6")
+                {
+                    $income[] = (int)$value->tman_value * $d_pegawai->c_anak;
+                }
+                elseif($value->tman_id == $list[$z] && $value->tman_periode == "ST" && $list[$z] == "7")
+                {
+                    if ($d_pegawai->c_nikah == 'Menikah') { $income[] = (int)$value->tman_value; }else{ $income[] = 0; }
+                }
+                elseif($value->tman_id == $list[$z] && $value->tman_periode == "ST")
+                {
+                    $income[] = (int)$value->tman_value; 
+                }
+                elseif($value->tman_id == $list[$z] && $value->tman_periode == "JM")
+                {
+                    $income[] = (int)$value->tman_value * $jam_lembur; 
+                }
+                elseif($value->tman_id == $list[$z] && $value->tman_periode == "MG")
+                {
+                    $income[] = (int)$value->tman_value * $jml_lembur_minggu;
+                }
+            }
+        }
+        
+        //cari selisih jam scan terhadap jam masuk
+        for ($x=0; $x <count($dt_scanmasuk); $x++) 
+        { 
+            if ($dt_scanmasuk[$x] != null) 
+            {
+                $datetime1 = strtotime($dt_jammasuk[$x]);
+                $datetime2 = strtotime($dt_scanmasuk[$x]);
+                $interval  = $datetime2 - $datetime1;
+                $hasil_menit[] = (int)round($interval / 60);
+            }
+        }
+        //dd($hasil_menit);
+        //hitung menit telat dan berapa nilainya
+        $potongan = 0;
+        $ngentot = [];
+        $nilai_tunjangan = [];
+        for ($y=0; $y <count($hasil_menit); $y++) 
+        {   
+            $ngentot = $arr_pot;
+            if ($hasil_menit[$y] > 0 && $hasil_menit[$y] <= 15) {
+                unset($ngentot[1]);
+                unset($ngentot[2]);
+                $potongan += array_sum($ngentot);
+            }elseif ($hasil_menit[$y] > 15 && $hasil_menit[$y] <= 30) {
+                unset($ngentot[2]);
+                $potongan += array_sum($ngentot);
+            }elseif ($hasil_menit[$y] > 30) {
+                $potongan += array_sum($ngentot);
+            }else{
+                $potongan += 0;
+            }
+        }
+        $total_tunjangan = array_sum($income);
+        $nilai_tunjangan = $income;
+        array_push($income, $gapok);
+        $total_income = array_sum($income) - $potongan;
+        return response()->json([
             'status' => 'sukses',
-            'id_peg' => $id_peg,
-            'data' => $data,
-            'kpi' => $kpi
-        ]);*/
+            'gapok' => $gapok,
+            'list' => $list,
+            'nilai_tunjangan' => $nilai_tunjangan,
+            'total_tunjangan' => $total_tunjangan,
+            'total_income' => $total_income,
+            'potongan' => $potongan
+        ]);
     }
 
+    public function simpanData(Request $request)
+    {
+        //dd($request->all());
+        DB::beginTransaction();
+        try 
+        {
+            $datetime =  Carbon::now('Asia/Jakarta');
+            $date = $datetime->toDateString();
+            $periode = $request->i_tgl1." s/d ".$request->i_tgl2;
+            $kode = $this->kodePayrollAuto();
+            $lastId = d_payroll_man::select('d_pm_id')->max('d_pm_id');
+            if ($lastId == 0 || $lastId == '') { $lastId  = 1; } else { $lastId += 1; } 
+            //insert to table d_terimapembelian
+            $proll = new d_payroll_man;
+            $proll->d_pm_id = $lastId;
+            $proll->d_pm_code = $kode;
+            $proll->d_pm_pid = $request->i_pegawai;
+            $proll->d_pm_date = $date;
+            $proll->d_pm_periode = $periode;
+            $proll->d_pm_gapok = str_replace('.', '', $request->i_gapok);
+            $proll->d_pm_totaltun = str_replace('.', '', $request->i_tunjangan);
+            $proll->d_pm_totalpot = str_replace('.', '', $request->i_potongan);
+            $proll->d_pm_totalnett = str_replace('.', '', $request->i_totgaji);
+            $proll->d_pm_created = $datetime;
+            $proll->save();
 
+            for ($i=0; $i < count($request->index_tunjangan); $i++) 
+            {
+                $prolldt = new d_payroll_mandt;
+                $prolldt->d_pmdt_pmid = $lastId;
+                $prolldt->d_pmdt_type = "TJ";
+                $prolldt->d_pmdt_typeid = $request->index_tunjangan[$i];
+                $prolldt->d_pmdt_nilai = $request->nilai_tunjangan[$i];
+                $prolldt->d_pmdt_created = $datetime;
+                $prolldt->save();
+            }
 
-    //=====================================================================================================================
+            $prolldt2 = new d_payroll_mandt;
+            $prolldt2->d_pmdt_pmid = $lastId;
+            $prolldt2->d_pmdt_type = "GJ";
+            $prolldt2->d_pmdt_typeid = null;
+            $prolldt2->d_pmdt_nilai = str_replace('.', '', $request->i_gapok);
+            $prolldt2->d_pmdt_created = $datetime;
+            $prolldt2->save();
+
+            DB::commit();
+            return response()->json([
+              'status' => 'sukses',
+              'pesan' => 'Data Payroll Manajemen Berhasil Dikonfirmasi'
+            ]);
+        } 
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
+    public function getScoreByTgl($id)
+    {
+        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
+
+        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
+                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
+                            ->where('d_kpix.d_kpix_id', $id)->get();
+        foreach ($data as $val) {
+            $score[] = ((int)$val->d_kpixdt_value / (int)$val->kpix_target) * 100;
+        }
+
+        $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
+            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+            ->select(
+                'm_pegawai_man.c_nama',
+                'm_pegawai_man.c_divisi_id',
+                'm_pegawai_man.c_jabatan_id',
+                'm_divisi.c_divisi',
+                'm_jabatan.c_posisi')
+            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
+
+        return response()->json([
+            'status' => 'sukses',
+            'pegawai' => $pegawai,
+            'data' => $data,
+            'scoreKpi' => $score
+        ]);
+    }
+
+    public function getDataDetail($id)
+    {
+        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
+
+        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
+                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
+                            ->where('d_kpix.d_kpix_id', $id)->get();
+        foreach ($data as $val) {
+            $score[] = ((int)$val->d_kpixdt_value / (int)$val->kpix_target) * 100;
+        }
+
+        $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
+            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+            ->select(
+                'm_pegawai_man.c_nama',
+                'm_pegawai_man.c_divisi_id',
+                'm_pegawai_man.c_jabatan_id',
+                'm_divisi.c_divisi',
+                'm_jabatan.c_posisi')
+            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
+
+        return response()->json([
+            'status' => 'sukses',
+            'pegawai' => $pegawai,
+            'data' => $data,
+            'scoreKpi' => $score
+        ]);
+    }
 
     /*public function cariMinggu($tahun,$bulan)
     { 
@@ -324,6 +439,14 @@ class PayrollmanController extends Controller
             $ymd[] = date('Y-m-d', strtotime($tahun.'-'.$bulan.'-'.$i));
         }
         return  $ymd;
+    }*/
+
+    /*function hitungSelisihTanggal($tgl1, $tgl2) 
+    {
+        $datetime1 = date_create($tgl1);
+        $datetime2 = date_create($tgl2);
+        $interval = date_diff($datetime1, $datetime2);
+        return $interval->format('%d%');
     }*/
 
     function cariMinggu($start, $end) 
@@ -350,225 +473,27 @@ class PayrollmanController extends Controller
         return $sundays;
     }
 
-    function hitungSelisihTanggal($tgl1, $tgl2) 
+    public function kodePayrollAuto()
     {
-        $datetime1 = date_create($tgl1);
-        $datetime2 = date_create($tgl2);
-        $interval = date_diff($datetime1, $datetime2);
-        return $interval->format('%d%');
-    }
+        $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_pm_code,4)) as kode_max from d_payroll_man WHERE DATE_FORMAT(d_pm_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
+        $kd = "";
 
-
-
-    public function tambahData($id)
-    {
-        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
-
-        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
-                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
-                            ->where('d_kpix.d_kpix_id', $id)->get();
-        foreach ($data as $val) {
-            $score[] = ((int)$val->d_kpixdt_value / (int)$val->kpix_target) * 100;
-        }
-
-        $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
-            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
-            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
-            ->select(
-                'm_pegawai_man.c_nama',
-                'm_pegawai_man.c_divisi_id',
-                'm_pegawai_man.c_jabatan_id',
-                'm_divisi.c_divisi',
-                'm_jabatan.c_posisi')
-            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
-
-        return response()->json([
-            'status' => 'sukses',
-            'pegawai' => $pegawai,
-            'data' => $data,
-            'scoreKpi' => $score
-        ]);
-    }
-
-    
-
-    
-
-    public function getDataEdit($id)
-    {
-        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
-
-        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
-                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
-                            ->where('d_kpix.d_kpix_id', $id)->get();
-        foreach ($data as $val) {
-            $score[] = ((int)$val->d_kpixdt_value / (int)$val->kpix_target) * 100;
-        }
-
-        $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
-            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
-            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
-            ->select(
-                'm_pegawai_man.c_nama',
-                'm_pegawai_man.c_divisi_id',
-                'm_pegawai_man.c_jabatan_id',
-                'm_divisi.c_divisi',
-                'm_jabatan.c_posisi')
-            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
-
-        return response()->json([
-            'status' => 'sukses',
-            'pegawai' => $pegawai,
-            'data' => $data,
-            'scoreKpi' => $score
-        ]);
-    }
-
-    public function updateData(Request $request)
-    {
-        //dd($request->all());
-        DB::beginTransaction();
-        try 
+        if(count($query)>0)
         {
-            $tanggal =  Carbon::now('Asia/Jakarta');
-            $totalSkor = 0;
-
-            for ($i=0; $i < count($request->e_index_kpix); $i++) 
-            { 
-                $skorAkhir = floatval($request->e_score_kpix[$i]) * floatval($request->e_bobot_kpix[$i]) / 100;
-                d_kpix_dt::where('d_kpixdt_id','=',$request->e_index_dt[$i])
-                        ->update([
-                            'd_kpixdt_value' => $request->e_value_kpix[$i],
-                            'd_kpixdt_score' => $request->e_score_kpix[$i],
-                            'd_kpixdt_scoreakhir' => $skorAkhir,
-                            'd_kpixdt_updated' => Carbon::now('Asia/Jakarta')
-                        ]);
-                $totalSkor += $skorAkhir;
-            }
-
-            $d_kpix = d_kpix::find($request->e_old);
-            $d_kpix->d_kpix_date = date('Y-m-d',strtotime($request->eTglKpix));
-            $d_kpix->d_kpix_updated = $tanggal;
-            $d_kpix->d_kpix_isconfirm = 'Y';
-            $d_kpix->d_kpix_dateconfirm = $tanggal;
-            $d_kpix->d_kpix_scoretotal = $totalSkor;
-            $d_kpix->save();
-
-            DB::commit();
-            return response()->json([
-              'status' => 'sukses',
-              'pesan' => 'Data KPI Berhasil Dikonfirmasi'
-            ]);
-        } 
-        catch (\Exception $e) 
-        {
-          DB::rollback();
-          return response()->json([
-              'status' => 'gagal',
-              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
-          ]);
-        }
-    }
-
-    public function ubahStatus(Request $request)
-    {
-      DB::beginTransaction();
-      try 
-      {
-        $tanggal = Carbon::now('Asia/Jakarta');
-        $d_kpix = d_kpix::find($request->id);
-        if ($request->status == 'Y') 
-        {
-            $d_kpix->d_kpix_dateconfirm = null;
-            $d_kpix->d_kpix_isconfirm = 'N';
-            $pesan = 'Pembatalan konfirmasi data KPI berhasil';
+          foreach($query as $k)
+          {
+            $tmp = ((int)$k->kode_max)+1;
+            $kd = sprintf("%04s", $tmp);
+          }
         }
         else
         {
-            $d_kpix->d_kpix_dateconfirm = $tanggal;
-            $d_kpix->d_kpix_isconfirm = 'Y';
-            $pesan = 'Konfirmasi data KPI berhasil';
+          $kd = "0001";
         }
-        $d_kpix->save();
 
-        DB::commit();
-        return response()->json([
-            'status' => 'sukses',
-            'pesan' => $pesan
-        ]);
-      } 
-      catch (\Exception $e) 
-      {
-        DB::rollback();
-        return response()->json([
-            'status' => 'gagal',
-            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
-        ]);
-      }
+        return $code = "PAY-".date('ym')."-".$kd;
     }
 
-    public function getScoreByTgl($tgl1, $tgl2, $tampil)
-    {
-        $id_peg = Auth::user()->m_pegawai_id;
-        $tanggal1 = date('Y-m-d',strtotime($tgl1));
-        $tanggal2 = date('Y-m-d',strtotime($tgl2));
-        
-        if ($tampil == 'ALL') {
-            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')
-                        ->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])
-                        ->orderBy('d_kpi_created', 'DESC')->get();
-        }else{
-            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')
-                        ->where('d_kpi.d_kpi_isconfirm', '=', $tampil)
-                        ->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])
-                        ->orderBy('d_kpi_created', 'DESC')->get();    
-        }
-        
-        return DataTables::of($data)
-        ->addIndexColumn()
-        ->editColumn('tglBuat', function ($data) 
-        {
-            if ($data->d_kpi_date == null) {
-                return '-';
-            } else {
-                return $data->d_kpi_date ? with(new Carbon($data->d_kpi_date))->format('d M Y') : '';
-            }
-        })
-        ->editColumn('status', function ($data) 
-        {
-            if ($data->d_kpi_isconfirm == 'N') {
-                return '<span style="color:red;text-align:center;"> Belum Dikonfirmasi </span>';
-            } else {
-                return '<span style="color:blue;text-align:center;"> Sudah Dikonfirmasi </span>';
-            }
-        })
-        ->editColumn('tglConfirm', function ($data) 
-        {
-            if ($data->d_kpi_dateconfirm == null) {
-                return '-';
-            } else {
-                return $data->d_kpi_dateconfirm ? with(new Carbon($data->d_kpi_dateconfirm))->format('d M Y') : '';
-            }
-        })
-        ->addColumn('action', function($data)
-        { 
-            if ($data->d_kpi_isconfirm == 'Y') {
-                return '<div class="text-center">
-                            <button class="btn btn-sm btn-success" title="Detail"
-                                onclick=detailScore("'.$data->d_kpi_id.'")><i class="fa fa-info-circle"></i> 
-                            </button>
-                        </div>';
-            }else{
-                return '<div class="text-center">
-                            <button class="btn btn-sm btn-success" title="Detail"
-                                onclick=detailScore("'.$data->d_kpi_id.'")><i class="fa fa-info-circle"></i> 
-                            </button>
-                        </div>';
-            }  
-        })
-        ->rawColumns(['action','status'])
-        ->make(true);
-    }
 
-    // =======================================================================================================================
+    // ===============================================================================================================
 }

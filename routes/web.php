@@ -420,9 +420,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
 //Mahmud Absensi
     Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
-    Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
+    Route::get('/hrd/absensi/table/manajemen/{tgl1}/{tgl2}/{data}', 'Hrd\AbsensiController@table');
     Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
     Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
+    Route::post('/import/data-manajemen', 'Hrd\AbsensiController@importDataManajemen');
+    Route::post('/import/data-produksi', 'Hrd\AbsensiController@importDataProduksi');
 /*hasil Pengerjaan Produksi*/
     Route::get('/hrd/hasilproduksi/index', 'Hrd\HproduksiController@index');
     Route::get('/hrd/hasilproduksi/get-hasil-by-tgl/{tgl1}/{tgl2}', 'Hrd\HproduksiController@getHasilByTgl');
@@ -579,6 +581,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payrollman/lookup-data-jabatan', 'Hrd\PayrollmanController@lookupJabatan');
     Route::get('/hrd/payrollman/lookup-data-pegawai', 'Hrd\PayrollmanController@lookupPegawai');
     Route::get('/hrd/payrollman/set-field-modal', 'Hrd\PayrollmanController@setFieldModal');
+    Route::post('/hrd/payrollman/simpan-data', 'Hrd\PayrollmanController@simpanData');
+    Route::get('/hrd/payrollman/get-detail/{id}', 'Hrd\PayrollmanController@getDataDetail');
     
     
     /*Keuangan*/
@@ -1027,8 +1031,12 @@ Route::group(['middleware' => 'auth'], function () {
 //Mahmud Training
     Route::get('/hrd/training/form_training', 'Hrd\TrainingContoller@tambah_training')->name('form_training');
     Route::get('/hrd/training/training', 'Hrd\TrainingContoller@training')->name('training');
-    Route::post('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
+    Route::get('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
+    Route::get('/hrd/training/save/form', 'Hrd\TrainingContoller@savePengajuanForm');
     Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}', 'Hrd\TrainingContoller@tablePengajuan');
+    Route::get('/hrd/training/acc-pelatihan/{id}', 'Hrd\TrainingContoller@accPelatihan');
+    Route::get('/hrd/training/lihat-waktu/{id}', 'Hrd\TrainingContoller@lihatWaktu');
+    Route::get('/hrd/training/wakti-pelatihan', 'Hrd\TrainingContoller@reqTimeTraining');
 
 //Master Data Lowongan
     Route::get('/master/datalowongan/index', 'Master\LowonganController@index');

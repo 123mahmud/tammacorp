@@ -12,8 +12,9 @@ class d_pengajuan_pelatihan extends Model
                           'pp_code',
                           'pp_pm',
                           'pp_jabatan',
-                          'pp_ruang_lingkup',
-                          'pp_nama_atasan'
+                          'pp_jenis_pelatihan',
+                          'pp_nama_atasan',
+                          'pp_status'
                         ];
 
   public $incrementing = false;
