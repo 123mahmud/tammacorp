@@ -133,6 +133,11 @@
             margin-left: 40px;
           }
 
+          #navigation ul li i{ 
+	      	font-size: 15pt;
+	      	margin-top: 10px;
+	      }
+
            #form-table{
               font-size: 8pt;
             }
@@ -152,7 +157,11 @@
 	        @page { size: landscape; }
 	        #navigation{
 	            display: none;
-	          }
+	        }
+
+	        #contentnya{
+	         	margin-top: -80px;
+	        }
 
 	        #table-data td.total{
 	    		 background-color: #ccc !important;
@@ -172,7 +181,7 @@
 
 		<div class="col-md-12" id="navigation" style="background: rgba(0, 0, 0, 0.4); box-shadow: 0px 2px 5px #444; position: fixed; z-index: 2;">
 	        <div class="row">
-	          <div class="col-md-7" style="background: none; padding: 15px 15px; color: #fff; padding-left: 120px;">
+	          <div class="col-md-7" style="background: none; padding: 15px 15px; color: #fff; padding-left: 120px; font-size: 15pt;">
 	            TammaFood
 	          </div>
 	          <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
@@ -186,7 +195,7 @@
 
 	    <div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px 15px; margin-top: 80px;">
   
-        <table width="100%" border="0" style="border-bottom: 1px solid #333;">
+        <table width="100%" border="0" style="border-bottom: 1px solid #333;" id="contentnya">
           <thead>
             <tr>
               <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Buku Besar  </th>
