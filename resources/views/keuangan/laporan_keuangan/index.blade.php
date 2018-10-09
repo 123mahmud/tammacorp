@@ -125,6 +125,16 @@
                                         <a href="#" data-toggle="modal" data-target="#modal_laba_rugi">Laba Rugi</a>
                                       </div>
                                     </div>
+
+                                    <div class="col-md-3 transaksi-wrapper">
+                                      <div class="col-md-12 icon">
+                                        <i class="fa fa-refresh" style="color: #0099CC;"></i>
+                                      </div>
+
+                                      <div class="col-md-12 text">
+                                        <a href="#" data-toggle="modal" data-target="#modal_arus_kas">Arus Kas</a>
+                                      </div>
+                                    </div>
                                 </div>                                                
                               </div>
                             </div>    
@@ -430,6 +440,54 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Modal -->
+              <div class="modal fade" id="modal_arus_kas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="width: 35%;">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Setting Arus Kas</h4>
+                    </div>
+
+                    <form id="form-jurnal" method="get" action="{{ route('laporan_arus_kas.index') }}" target="_blank">
+                    <div class="modal-body">
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Jenis Periode
+                        </div>
+
+                        <div class="col-md-4">
+                          <select name="jenis" class="form-control" id="jenis_periode_arus_kas">
+                            <option value="bulan">Bulan</option>
+                            <option value="tahun">Tahun</option>
+                          </select>
+                        </div>
+                    </div>
+
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Periode
+                        </div>
+
+                        <div class="col-md-9 durasi_bulan_arus_kas">
+                          <input type="text" name="durasi_1_arus_kas_bulan" placeholder="periode Mulai" class="form-control" id="d1_arus_kas" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                        <div class="col-md-9 durasi_tahun_arus_kas" style="display: none;">
+                          <input type="text" name="durasi_1_arus_kas_tahun" placeholder="periode Mulai" class="form-control" id="d1_arus_kas_tahun" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Proses</button>
+                    </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
                             
 @endsection
 
@@ -608,6 +666,34 @@
         })
 
       // modal laba rugi
+
+      // modal arus kas
+
+        $('#d1_arus_kas').datepicker({
+          format: "yyyy-mm",
+          viewMode: "months", 
+          minViewMode: "months"
+        })
+
+        $('#d1_arus_kas_tahun').datepicker({
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+        })
+
+        $('#jenis_periode_arus_kas').change(function(evt){
+          evt.preventDefault();
+
+          if($(this).val() == 'bulan'){
+            $('.durasi_bulan_arus_kas').show();
+            $('.durasi_tahun_arus_kas').hide();
+          }else{
+            $('.durasi_bulan_arus_kas').hide();
+            $('.durasi_tahun_arus_kas').show();
+          }
+        })
+
+      // modal arus kas
 
     });
   </script>
