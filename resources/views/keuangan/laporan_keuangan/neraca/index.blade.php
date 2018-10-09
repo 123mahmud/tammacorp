@@ -92,10 +92,14 @@
 
 	      #navigation ul li{
 	        color: #fff;
-	        font-size: 15pt;
 	        list-style-type: none;
 	        display: inline-block;
 	        margin-left: 40px;
+	      }
+
+	      #navigation ul li i{ 
+	      	font-size: 15pt;
+	      	margin-top: 10px;
 	      }
 
 	       #form-table{
@@ -115,12 +119,46 @@
 	       .table-ctn td{
 	       	border-bottom: 1px dotted rgba(0,0,0,0.1);
 	       }
+
+	       .table-ctn td.first{
+	       	padding: 10px 5px 5px 15px;
+	       	font-weight: bold;
+	       }
+
+	       .table-ctn td.second{
+	       	padding: 5px 5px 3px 45px;
+	       	font-weight: 500;
+	       }
+
+	       .table-ctn td.number{
+	       	padding: 5px 20px 3px 5px;
+	       	font-weight: 600;
+	       	text-align: right;
+	       	font-size: 9pt;
+	       }
+
 	    </style>
 
 	    <style type="text/css" media="print">
-	        @page { size: landscape; }
+	        @page { size: portrait; }
 	        #navigation{
 	            display: none;
+	         }
+
+	         .table-ctn td.first{
+	         	padding: 10px 5px 5px 0px;
+	         }
+
+	         .table-ctn td.second{ 
+	         	padding: 5px 5px 3px 35px;;
+	         }
+
+	         .table-ctn td.first.pasiva{
+	         	padding: 10px 5px 5px 15px;
+	         }
+
+	         #contentnya{
+	         	margin-top: -80px;
 	         }
 
 	        #table-data td.total{
@@ -142,12 +180,15 @@
 
 	<div class="col-md-12" id="navigation" style="background: rgba(0, 0, 0, 0.4); box-shadow: 0px 2px 5px #444; position: fixed; z-index: 2;">
 	        <div class="row">
-	          <div class="col-md-7" style="background: none; padding: 15px 15px; color: #fff; padding-left: 120px;">
+	          <div class="col-md-7" style="background: none; padding: 15px 15px; color: #fff; padding-left: 120px; font-size: 15pt;">
 	            TammaFood
 	          </div>
 	          <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
 	            <ul>
 	              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Neraca"></i></li>
+
+	              <li><i class="fa fa-files-o" style="cursor: pointer;" onclick="$('#modal_neraca_perbandingan').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Buka Neraca Perbandingan"></i></li>
+
 	              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
 	            </ul>
 	          </div>
@@ -155,7 +196,7 @@
 	</div>
 
     <div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px 15px; margin-top: 80px;">
-        <table width="100%" border="0" style="border-bottom: 1px solid #333;">
+        <table width="100%" border="0" style="border-bottom: 1px solid #333;" id="contentnya">
           <thead>
             <tr>
               <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Neraca Dalam {{ ucfirst($request->jenis) }}</th>
@@ -201,11 +242,11 @@
         					{{-- Aset Lancar --}}
 
         					<tr>
-        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        						<td class="first" width="65%">
         							Aset Lancar
         						</td>
         						
-        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        						<td class="number">
         							&nbsp;
         						</td>
         					</tr>
@@ -215,11 +256,11 @@
         					@foreach($data as $key => $data_neraca)
         						@if(substr($data_neraca->no_group, 0, 1) == 'A' && $data_neraca->id_group <= 11)
 		        					<tr>
-		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="65%">
+		        						<td class="second" width="65%">
 		        							{{ $data_neraca->nama_group }}
 		        						</td>
 
-		        						<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        						<td class="number">
 		        							<?php 
 		        								$nilai = count_neraca($data, $data_neraca->id_group, 'aktiva', $data_real);
 		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
@@ -235,11 +276,11 @@
 	        				@endforeach
 
 	        				<tr>
-        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        						<td class="first" width="65%">
         							Total Aset Lancar
         						</td>
         						
-        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        						<td class="number" style="border-top: 1px solid #aaa;">
         							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
         						</td>
         					</tr>
@@ -254,11 +295,11 @@
         					{{-- Aset Tidak Lancar --}}
         					
         					<tr>
-        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        						<td class="first" width="65%">
         							Aset Tidak Lancar
         						</td>
         						
-        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        						<td class="number">
         							&nbsp;
         						</td>
         					</tr>
@@ -267,11 +308,11 @@
         					@foreach($data as $key => $data_neraca)
         						@if(substr($data_neraca->no_group, 0, 1) == 'A' && $data_neraca->id_group >= 12 && $data_neraca->id_group <= 16)
 		        					<tr>
-		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="65%">
+		        						<td class="second" width="65%">
 		        							{{ $data_neraca->nama_group }}
 		        						</td>
 
-		        						<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        						<td class="number">
 		        							<?php 
 		        								$nilai = count_neraca($data, $data_neraca->id_group, 'aktiva', $data_real);
 		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
@@ -287,11 +328,11 @@
 	        				@endforeach
 
 	        				<tr>
-        						<td style="padding: 10px 5px 5px 15px; font-weight: bold;" width="65%">
+        						<td class="first" width="65%">
         							Total Aset Tidak Lancar
         						</td>
         						
-        						<td style="padding: 10px 20px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        						<td class="number" style="border-top: 1px solid #aaa;">
         							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
         						</td>
         					</tr>
@@ -307,11 +348,11 @@
         					{{-- Kewajiban --}}
 
         					<tr>
-        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        						<td class="first pasiva" width="65%">
         							Liabilitas / Kewajiban
         						</td>
         						
-        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        						<td class="number">
         							&nbsp;
         						</td>
         					</tr>
@@ -320,11 +361,11 @@
         					@foreach($data as $key => $data_neraca)
         						@if(substr($data_neraca->no_group, 0, 1) == 'P' && $data_neraca->id_group >= 17 && $data_neraca->id_group <= 22)
 		        					<tr>
-		        						<td style="padding: 5px 5px 3px 50px; font-weight: 500;" width="65%">
+		        						<td class="second pasiva" width="65%">
 		        							{{ $data_neraca->nama_group }}
 		        						</td>
 
-		        						<td style="padding: 5px 10px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        						<td class="number">
 		        							<?php 
 		        								$nilai = count_neraca($data, $data_neraca->id_group, 'pasiva', $data_real);
 		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
@@ -340,11 +381,11 @@
 	        				@endforeach
 
 	        				<tr>
-        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        						<td class="first pasiva" width="65%">
         							Total Liabilitas / Kewajiban
         						</td>
         						
-        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        						<td class="number" style="border-top: 1px solid #aaa;">
         							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
         						</td>
         					</tr>
@@ -359,11 +400,11 @@
         					{{-- Ekuitas / Modal --}}
 
         					<tr>
-        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        						<td class="first pasiva" width="65%">
         							Ekuitas / Modal
         						</td>
         						
-        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+        						<td class="number" style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
         							&nbsp;
         						</td>
         					</tr>
@@ -372,11 +413,11 @@
         					@foreach($data as $key => $data_neraca)
         						@if(substr($data_neraca->no_group, 0, 1) == 'P' && $data_neraca->id_group >= 23 && $data_neraca->id_group <= 25)
 		        					<tr>
-		        						<td style="padding: 5px 5px 3px 50px; font-weight: 500;" width="65%">
+		        						<td class="second pasiva" width="65%">
 		        							{{ $data_neraca->nama_group }}
 		        						</td>
 
-		        						<td style="padding: 5px 10px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+		        						<td class="number">
 		        							<?php 
 		        								$nilai = count_neraca($data, $data_neraca->id_group, 'pasiva', $data_real);
 		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
@@ -392,11 +433,11 @@
 	        				@endforeach
 
 	        				<tr>
-        						<td style="padding: 10px 5px 5px 20px; font-weight: bold;" width="65%">
+        						<td class="first pasiva" width="65%">
         							Total Ekuitas / Modal
         						</td>
         						
-        						<td style="padding: 10px 10px 5px 5px; font-weight: 600; text-align: right; font-size: 9pt; border-top: 1px solid #aaa;">
+        						<td class="number" style="border-top: 1px solid #aaa;">
         							{{ ($total_parrent < 0) ? '('.str_replace('-', '', number_format($total_parrent, 2)).')' : number_format($total_parrent, 2) }}
         						</td>
         					</tr>
@@ -498,6 +539,72 @@
               </div>
 		  <!-- modal -->
 
+		  <!-- modal -->
+              <!-- Modal -->
+              <div class="modal fade" id="modal_neraca_perbandingan" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="width: 35%;">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Setting Neraca Perbandingan</h4>
+                    </div>
+
+                    <form id="form-jurnal-perbandingan" method="get" action="{{ route('laporan_neraca_perbandingan.index') }}" target="_blank">
+                    <div class="modal-body">
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Jenis Periode
+                        </div>
+
+                        <div class="col-md-4">
+                          <select name="jenis" class="form-control" id="jenis_periode_neraca_perbandingan">
+                            <option value="bulan">Bulan</option>
+                            <option value="tahun">Tahun</option>
+                          </select>
+                        </div>
+                    </div>
+
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Periode 1
+                        </div>
+
+                        <div class="col-md-9 durasi_bulan_neraca_perbandingan">
+                          <input type="text" name="durasi_bulan_1" placeholder="Pilih Periode Bulan 1" class="form-control" id="bulan_neraca_1" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                        <div class="col-md-9 durasi_tahun_neraca_perbandingan" style="display: none;">
+                          <input type="text" name="durasi_tahun_1" placeholder="Pilih Periode Tahun 1" class="form-control" id="tahun_neraca_1" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                      </div>
+
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Periode 2
+                        </div>
+
+                        <div class="col-md-9 durasi_bulan_neraca_perbandingan">
+                          <input type="text" name="durasi_bulan_2" placeholder="Pilih Periode Bulan 2" class="form-control" id="bulan_neraca_2" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                        <div class="col-md-9 durasi_tahun_neraca_perbandingan" style="display: none;">
+                          <input type="text" name="durasi_tahun_2" placeholder="Pilih Periode Tahun 2" class="form-control" id="tahun_neraca_2" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                      </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Proses</button>
+                    </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+		  <!-- modal -->
+
 		<script src="{{ asset ('assets/script/jquery-2.2.4.min.js') }}"></script>
 	    <script src="{{ asset ('assets/js/date-uk.js') }}"></script>
 	{{--     <script src="{{ asset ('assets/js/my.js') }}"></script> --}}
@@ -585,6 +692,58 @@
             })
 
           // modal neraca
+
+          // modal neraca perbandingan
+
+            $('#bulan_neraca_2').datepicker( {
+                format: "yyyy-mm",
+                viewMode: "months", 
+                minViewMode: "months"
+            });
+
+            $('#tahun_neraca_2').datepicker( {
+                format: "yyyy",
+                viewMode: "years", 
+                minViewMode: "years"
+            });
+
+            $('#tahun_neraca_1').datepicker( {
+                format: "yyyy",
+                viewMode: "years", 
+                minViewMode: "years"
+            }).on("changeDate", function(){
+	              $('#tahun_neraca_2').val("");
+	              $('#tahun_neraca_2').datepicker("setStartDate", $(this).val());
+	        });
+
+            $('#bulan_neraca_1').datepicker({
+              format: "yyyy-mm",
+              viewMode: "months", 
+              minViewMode: "months"
+            }).on("changeDate", function(){
+	              $('#bulan_neraca_2').val("");
+	              $('#bulan_neraca_2').datepicker("setStartDate", $(this).val());
+	        });
+
+            $('#d1_neraca_tahun').datepicker({
+              format: "yyyy",
+              viewMode: "years", 
+              minViewMode: "years"
+            })
+
+            $('#jenis_periode_neraca_perbandingan').change(function(evt){
+              evt.preventDefault();
+
+              if($(this).val() == 'bulan'){
+                $('.durasi_bulan_neraca_perbandingan').show();
+                $('.durasi_tahun_neraca_perbandingan').hide();
+              }else{
+                $('.durasi_bulan_neraca_perbandingan').hide();
+                $('.durasi_tahun_neraca_perbandingan').show();
+              }
+            })
+
+          // modal neraca perbandingan
 
             $('#print').click(function(evt){
               evt.preventDefault();

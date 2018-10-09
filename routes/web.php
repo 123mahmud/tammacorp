@@ -814,12 +814,26 @@ Route::group(['middleware' => 'auth'], function () {
                 ]);
             // end laporan neraca
 
-            //laporan neraca
+            //laporan neraca perbandingan
+                Route::get('keuangan/laporan_keuangan/laporan_neraca_perbandingan', [
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_neraca_perbandingan_controller@index',
+                    'as'    => 'laporan_neraca_perbandingan.index'
+                ]);
+            // end laporan neraca perbandingan
+
+            //laporan laba rugi
                 Route::get('keuangan/laporan_keuangan/laporan_laba_rugi', [
                     'uses'  => 'Keuangan\laporan_keuangan\laporan_laba_rugi_controller@index',
                     'as'    => 'laporan_laba_rugi.index'
                 ]);
-            // end laporan neraca
+            // end laporan laba rugi
+
+            //laporan arus kas
+                Route::get('keuangan/laporan_keuangan/laporan_arus_kas', [
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_arus_kas_controller@index',
+                    'as'    => 'laporan_arus_kas.index'
+                ]);
+            // end laporan arus kas
 
         // end Laporan
 
