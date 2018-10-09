@@ -31,8 +31,8 @@
             <li class="active">
               <a href="#alert-tab" data-toggle="tab">Data Jabatan</a>
             </li>
-            <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
-                    <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
+            <li><a href="#note-tab" data-toggle="tab">Jabatan Produksi</a></li>
+            {{-- <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> --}}
           </ul>
           <div id="generalTabContent" class="tab-content responsive">
 
@@ -67,28 +67,29 @@
                   </div>
                 </div>
               </div>
+              </div>
               <!-- /div alert-tab -->
 
               <!-- div note-tab -->
               <div id="note-tab" class="tab-pane fade">
                 <div class="row">
                   <div class="panel-body">
-                    <!-- Isi Content -->
+                    @include('master.datajabatan.jabatan-produksi')
                   </div>
                 </div>
               </div>
               <!--/div note-tab -->
 
               <!-- div label-badge-tab -->
-              <div id="label-badge-tab" class="tab-pane fade">
+              {{-- <div id="label-badge-tab" class="tab-pane fade">
                 <div class="row">
                   <div class="panel-body">
                     <!-- Isi content -->
                   </div>
                 </div>
-              </div>
+              </div> --}}
               <!-- /div label-badge-tab -->
-            </div>
+
           </div>
         </div>
       </div>
@@ -189,12 +190,12 @@
                 });
                             window.location.reload();
                   instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-            
+
                 }, true],
                 ['<button>TIDAK</button>', function (instance, toast) {
-            
+
                   instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-            
+
                 }]
               ],
               onClosing: function(instance, toast, closedBy){

@@ -69,8 +69,8 @@
 
                               <div class="col-md-3 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                  <input type="text" readonly="" class="form-control input-sm" name="namaStaff" value="{{$staff['nama']}}">
-                                  <input type="hidden" readonly="" class="form-control input-sm" name="idStaff" value="{{$staff['id']}}">
+                                  <input type="text" readonly="" class="form-control input-sm" name="b_nama" value="{{$pegawai->b_nama}}">
+                                  <input type="hidden" readonly="" class="form-control input-sm" name="pp_id" value="{{$pegawai->pp_id}}">
                                 </div>
                               </div>
 
@@ -80,10 +80,8 @@
 
                               <div class="col-md-4 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                  <select name="pp_jabatan" id="tampil_data" class="form-control input-sm">
-                                      <option value="{{$jabatan->j_id}}" class="form-control input-sm">{{$jabatan->c_posisi}}</option>
-                                  </select>
-                                </div>
+                                <input type="text" readonly="" class="form-control input-sm" name="c_posisi" value="{{$pegawai->c_posisi}}">
+                              </div>
                               </div>
 
                               <div class="col-md-3 col-sm-6 col-xs-12">
@@ -92,13 +90,8 @@
 
                               <div class="col-md-9 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                  <select name="jenis_pelatihan" id="tampil_data" class="form-control input-sm">
-                                      <option value="" class="form-control input-sm">- Pilih Jenis Pelatihan</option>
-                                    @foreach ($pelatihan as $data)
-                                      <option value="{{$data->dp_id}}" class="form-control input-sm">{{$data->dp_name}}</option>
-                                    @endforeach
-                                  </select>
-                                </div>
+                                <input type="text" readonly="" class="form-control input-sm" name="dp_name" value="{{$pegawai->dp_name}}">
+                              </div>
                               </div>
 
                               <div class="col-md-3 col-sm-6 col-xs-12">
@@ -107,16 +100,37 @@
 
                               <div class="col-md-9 col-sm-6 col-xs-12">
                                 <div class="form-group">
-                                  <select name="pp_nama_atasan" id="tampil_data" class="form-control input-sm">
-                                      <option value="" class="form-control input-sm">-Pilih Nama Atasan</option>
-                                    @foreach ($staf as $data)
-                                      <option value="{{$data->mp_id}}" class="form-control input-sm">{{$data->c_nama}}</option>
-                                    @endforeach
-                                  </select>
-                                </div>
+                                <input type="text" readonly="" class="form-control input-sm" name="a_nama" value="{{$pegawai->a_nama}}">
+                              </div>
                               </div>
 
                             </div>
+                            @foreach ($soal as $index => $dataSoal)
+                              <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group bold">
+                                  {{$index+1}}. {{$dataSoal->fp_soal}}
+                                  <input type="hidden" name="fp_id[]" value="{{$dataSoal->fp_id}}">
+                                </div>
+                              </div>
+                              @foreach ($jawab as $dataJawab)
+                                @if ($dataSoal->fp_id == $dataJawab->fpd_fp)
+                                  @if ($dataJawab->fpd_type == 'I')
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                      <div class="form-group">
+                                          <input class="form-control input-sm" type="hidden" name="fpd_jawabid[]" value="{{$dataJawab->fpd_fp}}|{{$dataJawab->fpd_det}}">
+                                          <input class="form-control input-sm" type="text" name="fpd_jawab[]" placeholder="{{$dataJawab->fpd_jawab}}" value="">
+                                      </div>
+                                    </div>
+                                  @else
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                      <div class="form-group">
+                                        <input type="checkbox" name="fpd_idjawab[]" value="{{$dataJawab->fpd_fp}}|{{$dataJawab->fpd_det}}">&nbsp;&nbsp;{{$dataJawab->fpd_jawab}}
+                                      </div>
+                                    </div>
+                                  @endif
+                                @endif
+                              @endforeach
+                            @endforeach
 
                           </div>
                           </form>
@@ -158,7 +172,7 @@
           $('.simpanButton').attr('disabled', 'disabled');
           var a = $('#simpanPengajuan').serialize();
           $.ajax({
-              url: baseUrl + "/hrd/training/save",
+              url: baseUrl + "/hrd/training/save/form",
               type: 'GET',
               data: a,
               success: function (response, customer) {
