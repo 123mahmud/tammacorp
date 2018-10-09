@@ -20,22 +20,22 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
 
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <label>Bulan</label>
+        <label>Tanggal Awal</label>
       </div>
 
       <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-          <select id="dobmonth" class="form-control input-sm" style="margin-right: 5px;" name="bulan""></select>
+          <input id="tgl_index1" class="form-control input-sm datepicker1" name="tgl_index1" type="text">
         </div>
       </div>
 
       <div class="col-md-2 col-sm-2 col-xs-12">
-        <label>Tahun</label>
+        <label>Sampai Tanggal</label>
       </div>
 
       <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-          <select id="dobyear" class="form-control input-sm" style="margin-right: 5px;" name="tahun"></select>
+          <input id="tgl_index2" class="form-control input-sm datepicker2" name="tgl_index2" type="text" value="{{ date('d-m-Y') }}">
         </div>
       </div>
 
@@ -45,7 +45,7 @@
 
       <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-          <select class="form-control input-sm" name="headDivisi" id="head_divisi">
+          <select class="form-control input-sm" name="headDivisi" id="head_divisi" onchange="lihatPayrollByTgl()">
             <option value="semua"> Tampilkan Semua </option>
 
               @foreach($data as $val)
@@ -62,7 +62,7 @@
 
       <div class="col-md-4 col-sm-4 col-xs-12">
         <div class="form-group">
-          <select class="form-control input-sm" name="headStatus" id="head_status">
+          <select class="form-control input-sm" name="headStatus" id="head_status" onchange="lihatPayrollByTgl()">
             <option value="ALL"> Tampilkan Semua </option>
             <option value="Y"> Sudah Dicetak </option>
             <option value="N"> Belum Dicetak </option>
@@ -77,9 +77,10 @@
     <table class="table tabelan table-hover table-bordered data-table" width="100%" cellspacing="0" id="tbl-index">
       <thead>
           <tr>
-            <th class="wd-10p">No</th>
             <th class="wd-10p">Code</th>
+            <th class="wd-10p">Tanggal</th>
             <th class="wd-10p">Periode</th>
+            <th class="wd-10p">NIP</th>
             <th class="wd-10p">Nama</th>
             <th class="wd-10p">Total Gaji</th>
             <th class="wd-10p">Tgl Cetak</th>
