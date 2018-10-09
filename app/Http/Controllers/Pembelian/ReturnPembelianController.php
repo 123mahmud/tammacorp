@@ -402,9 +402,45 @@ class ReturnPembelianController extends Controller
 
   public function simpanDataReturn(Request $request)
   {
-    //dd($request->all());
+    // dd($request->all());
     DB::beginTransaction();
     try {      
+
+      $err = true; $acc = []; $total = 0;
+
+      foreach($request->fieldItemId as $acc_key => $data){
+          $cek = DB::table('m_item')
+              ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+              ->where('i_id', $data)
+              ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+              ->first();
+
+          if(!$cek){
+              $err = false;
+          }else{
+              $acc[$acc_key] = [
+                  'td_acc'    => $cek->m_akun_persediaan,
+                  'td_posisi' => 'K',
+                  'value'     => $request->fieldHargaTotalRaw[$acc_key]
+              ];
+
+              $total += $request->fieldHargaTotalRaw[$acc_key];
+          }
+      }
+
+      if(!$err){
+          return response()->json([
+              'status' => 'gagal',
+              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+          ]);
+      }
+
+      $acc[count($acc)] = [
+          'td_acc'    => '301.01',
+          'td_posisi' => 'D',
+          'value'     => $total
+      ];
+
       //insert to table d_purchasingreturn
       $dataHeader = new d_purchasingreturn;
       $dataHeader->d_pcsr_pcsid = $request->cariNotaPurchase;
@@ -493,11 +529,12 @@ class ReturnPembelianController extends Controller
                 'd_pcs_date_created' => date('Y-m-d',strtotime(Carbon::now()))
               ]);
 
+      $pcs = DB::table('d_purchasing')
+              ->where('d_pcs_id', $request->cariNotaPurchase)
+              ->select('d_pcs_code')->first();
+
       DB::commit();
-      return response()->json([
-          'status' => 'sukses',
-          'pesan' => 'Data Return Pembelian Berhasil Disimpan'
-      ]);
+
     } 
     catch (\Exception $e) 
     {
@@ -507,13 +544,56 @@ class ReturnPembelianController extends Controller
           'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
       ]);
     }
+
+    $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Pemotongan Nota Dari '.$request->namaSup.' Atas Nomor '.$pcs->d_pcs_code, $acc);
+
+    return response()->json([
+        'status' => 'sukses',
+        'pesan' => 'Data Return Pembelian Berhasil Disimpan'
+    ]);
   }
 
   public function updateDataReturn(Request $request)
   {
-    //dd($request->all());
+    // dd($request->all());
     DB::beginTransaction();
     try {
+
+      $err = true; $acc = []; $total = 0;
+
+      foreach($request->fieldIdItem as $acc_key => $data){
+          $cek = DB::table('m_item')
+              ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+              ->where('i_id', $data)
+              ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+              ->first();
+
+          if(!$cek){
+              $err = false;
+          }else{
+              $acc[$acc_key] = [
+                  'td_acc'    => $cek->m_akun_persediaan,
+                  'td_posisi' => 'K',
+                  'value'     => $request->fieldHargaTotalRaw[$acc_key]
+              ];
+
+              $total += $request->fieldHargaTotalRaw[$acc_key];
+          }
+      }
+
+      if(!$err){
+          return response()->json([
+              'status' => 'gagal',
+              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+          ]);
+      }
+
+      $acc[count($acc)] = [
+          'td_acc'    => '301.01',
+          'td_posisi' => 'D',
+          'value'     => $total
+      ];
+
       //update to table d_purchasingreturn
       $data_header = d_purchasingreturn::find($request->idReturn);
       $data_header->d_pcsr_dateupdated = date('Y-m-d',strtotime(Carbon::now()));
@@ -576,10 +656,6 @@ class ReturnPembelianController extends Controller
       } 
       
     DB::commit();
-    return response()->json([
-          'status' => 'sukses',
-          'pesan' => 'Data Retur Pembelian Berhasil Diupdate'
-      ]);
     } 
     catch (\Exception $e) 
     {
@@ -589,6 +665,15 @@ class ReturnPembelianController extends Controller
           'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
       ]);
     }
+
+    $jrn = DB::table('d_jurnal')->where('jurnal_ref', $request->codeReturn)->select('*')->first();
+
+    $state_jurnal = _updateJournal_self_detail($request->codeReturn, 'MM', $jrn->tanggal_jurnal, $jrn->keterangan, $acc);
+
+    return response()->json([
+          'status' => 'sukses',
+          'pesan' => 'Data Retur Pembelian Berhasil Diupdate'
+      ]);
   }
 
   public function getDetailRevisi($id)
@@ -723,7 +808,7 @@ class ReturnPembelianController extends Controller
 
   public function deleteDataReturn(Request $request)
   {
-    //dd($request->all());
+    // dd($request->all());
     DB::beginTransaction();
     try {
       //ambil code d_purchasingreturn
@@ -731,7 +816,7 @@ class ReturnPembelianController extends Controller
       //ambil data pakai d_stock_mutation 
       $data_sm = DB::table('d_stock_mutation')->where('sm_reff', $code_retur->d_pcsr_code)->orderBy('sm_stock','ASC')
                   ->orderBy('sm_detailid','ASC')->get();
-      //dd($data_sm);
+      // return json_encode($code_retur);
       foreach ($data_sm as $value) 
       {
         //array variabel u/ simpan data stok mutasi
@@ -811,6 +896,8 @@ class ReturnPembelianController extends Controller
           ->where('sm_stock', '=', $sm_stock[$i])
           ->where('sm_detailid', '=', $sm_detailid[$i])
           ->delete();
+
+        _delete_jurnal($code_retur->d_pcsr_code);
       }
 
       //get id purchase and update status po RV -> RC (Received)

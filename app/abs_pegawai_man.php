@@ -10,8 +10,17 @@ class abs_pegawai_man extends Model
   protected $primaryKey = 'apm_id';
   protected $fillable = [ 'apm_id',
                           'apm_pm',
-                          'apm_date',
-                          'apm_ket'
+                          'apm_tanggal',
+                          'apm_jam_kerja',
+                          'apm_jam_masuk',
+                          'apm_jam_pulang',
+                          'apm_scan_masuk',
+                          'apm_scan_pulang',
+                          'apm_terlambat',
+                          'apm_plg_cepat',
+                          'apm_absent',
+                          'apm_lembur',
+                          'apm_jml_jamkerja',
                         ];
 
   public $incrementing = false;
