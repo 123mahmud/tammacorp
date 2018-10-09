@@ -98,7 +98,7 @@
 
 		$next_jurnal = ($jurnal_cek) ? (int)substr($jurnal_cek->no_jurnal, -5) : 0;
 
-		if(date('n-Y', strtotime($jurnal->first()->tanggal_jurnal)) != date('n-Y', strtotime($tanggal_jurnal)))
+		if(date('n-Y', strtotime($jurnal->first()->tanggal_jurnal)) != date('n-Y', strtotime($tanggal_jurnal)) || substr($jurnal->first()->no_jurnal, 0, 2) != $type_transaksi)
 			$bukti_jurnal = $transaksi->type_transaksi.'-'.date('myd', strtotime($tanggal_jurnal)).str_pad(($next_jurnal + 1), 5, '0', STR_PAD_LEFT);
 		else
 			$bukti_jurnal = $jurnal->first()->no_jurnal;
@@ -200,6 +200,29 @@
 		foreach ($array as $key => $data) {
 			if($data->id_group == $id_group){
 				foreach ($data->akun_neraca as $key => $detail) {
+					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
+					$saldo = $detail->opening_balance;
+
+					if($status == 'aktiva' && $detail->posisi_akun == 'K'){
+						$mutasi = $mutasi * -1;
+					}elseif($status == 'pasiva' && $detail->posisi_akun == 'D'){
+						$mutasi = $mutasi * -1;
+					}
+
+					$total += ($saldo + $mutasi);
+				}
+			}
+		}
+
+		return $total;
+	}
+
+	function count_laba_rugi($array, $id_group, $status, $tanggal){
+		$total = 0;
+
+		foreach ($array as $key => $data) {
+			if($data->id_group == $id_group){
+				foreach ($data->akun_laba_rugi as $key => $detail) {
 					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
 					$saldo = $detail->opening_balance;
 

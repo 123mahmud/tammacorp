@@ -16,8 +16,15 @@ class pembayaran_hutang_controller extends Controller
 
     public function form_resource(){
     	$data = DB::table('d_supplier')->select('s_company', 's_id')->orderBy('s_company', 'asc')->get();
+        $akun_kas = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+        $akun_bank = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
-    	return json_encode($data);
+    	return response()->json([
+            'supplier'  => $data,
+            'akun_kas'  => $akun_kas,
+            'akun_bank' => $akun_bank
+            // 'akun_bank' => $bank
+         ]);
     }
 
     public function get_po(Request $request){
@@ -41,18 +48,36 @@ class pembayaran_hutang_controller extends Controller
 
     	// return json_encode(date('Y-m-d', strtotime($request->tanggal_pembayaran)));
 
+        $akun = ($request->jenis_pembayaran == 'T') ? $request->akun_bank : $request->akun_kas;
+
+        $acc = [
+            [
+                'td_acc'    => $akun,
+                'td_posisi' => 'K',
+                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+            ],
+
+            [
+                'td_acc'    => '301.01',
+                'td_posisi' => 'D',
+                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+            ]
+        ];
+
     	$cek = (payment::max('payment_id')) ? (payment::max('payment_id') + 1) : 1;
     	$cek2 = payment::where(DB::raw('month(payment_date)'), date('m', strtotime($request->tanggal_pembayaran)))
     						->orderBy('payment_date', 'desc')
     						->first();
 
     	$code = ($cek2) ? (explode('/', $cek2->payment_code)[2] + 1) : 1;
+        $no_pp = 'PP-'.date('ymd').'/'.$request->supplier.'/'.str_pad($code, 4, '0', STR_PAD_LEFT);
+        $state = ($request->jenis_pembayaran == 'T') ? 'BK' : 'KK';
 
     	// return json_encode($code); 
 
     	payment::insert([
     		'payment_id'			=> $cek,
-    		'payment_code'			=> 'PP-'.date('ymd').'/'.$request->supplier.'/'.str_pad($code, 4, '0', STR_PAD_LEFT),
+    		'payment_code'			=> $no_pp,
     		'payment_po'			=> $request->nomor_po,
     		'payment_keterangan'	=> $request->keterangan_pembayaran,
     		'payment_date'			=> date('Y-m-d', strtotime($request->tanggal_pembayaran)),
@@ -69,6 +94,8 @@ class pembayaran_hutang_controller extends Controller
     		'd_pcs_payment'			=> $payment,
     		'd_pcs_sisapayment'		=> $purchase->d_pcs_total_net - $payment,
     	]);
+
+        $state_jurnal = _initiateJournal_self_detail($no_pp, $state, date('Y-m-d', strtotime($request->tanggal_pembayaran)), $request->keterangan_pembayaran, $acc);
 
     	return json_encode([
     		'status'	=> 'berhasil',
@@ -119,6 +146,24 @@ class pembayaran_hutang_controller extends Controller
 	    	]);
     	}
 
+        $akun = ($request->jenis_pembayaran == 'T') ? $request->akun_bank : $request->akun_kas;
+
+        $acc = [
+            [
+                'td_acc'    => $akun,
+                'td_posisi' => 'K',
+                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+            ],
+
+            [
+                'td_acc'    => '301.01',
+                'td_posisi' => 'D',
+                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+            ]
+        ];
+
+        $state = ($request->jenis_pembayaran == 'T') ? 'BK' : 'KK';
+
     	$update_payment = str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]) - $transaksi->first()->payment_value;
 
     	// return json_encode($purchase->first()->d_payment + $update_payment);
@@ -135,6 +180,8 @@ class pembayaran_hutang_controller extends Controller
     		'd_pcs_payment'			=> $purchase->first()->d_pcs_payment + $update_payment,
     		'd_pcs_sisapayment'		=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_pcs_payment + $update_payment),
     	]);
+
+        $state_jurnal = _updateJournal_self_detail($transaksi->first()->payment_code, $state, $transaksi->first()->payment_date, $request->keterangan_pembayaran, $acc);
 
     	return json_encode([
     		'status'	=> 'berhasil',
@@ -166,6 +213,7 @@ class pembayaran_hutang_controller extends Controller
     	]);
 
     	$transaksi->delete();
+        _delete_jurnal($transaksi->first()->payment_code);
 
     	return json_encode([
     		'status'	=> 'berhasil',

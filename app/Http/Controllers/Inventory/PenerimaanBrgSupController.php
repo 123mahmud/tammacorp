@@ -318,9 +318,7 @@ class PenerimaanBrgSupController extends Controller
                 'value'     => $total
             ];
 
-            // return json_encode($acc);
-
-            // cek jurnal end
+            // // cek jurnal end
 
             //code penerimaan
             $kode = $this->kodePenerimaanAuto();
@@ -462,7 +460,9 @@ class PenerimaanBrgSupController extends Controller
           ]);
         }
 
-        $state_jurnal = _initiateJournal_self_detail($request->headNotaTxt, 'MM', date('Y-m-d', strtotime($request->headTglTerima)), 'Pembelian Bahan Persediaan Dari '.$request->headSupplier.' '.date('d/m/Y', strtotime($request->headTglTerima)), $acc);
+        $state_jurnal = _initiateJournal_self_detail($kode, 'MM', date('Y-m-d', strtotime($request->headTglTerima)), 'Penerimaan Bahan Persediaan Dari '.$request->headSupplier.' '.date('d/m/Y', strtotime($request->headTglTerima)), $acc);
+            
+            // return json_encode($state_jurnal);
 
         return response()->json([
             'status' => 'sukses',
@@ -471,14 +471,14 @@ class PenerimaanBrgSupController extends Controller
     }
     public function deletePenerimaan(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try {
           //cari item & qty d_terimapembelian_dt
           $query = DB::table('d_terima_pembelian_dt')->select('d_tbdt_item', 'd_tbdt_qty', 'd_tbdt_smdetail', 'd_tbdt_sat', 'd_tbdt_idpcsdt')->where('d_tbdt_idtb', $request->id)->get();
 
           //cari id_purchasing & update status ke CF
-          $query2 = DB::table('d_terima_pembelian')->select('d_tb_id','d_tb_pid')->where('d_tb_id', $request->id)->first(); 
+          $query2 = DB::table('d_terima_pembelian')->select('d_tb_id','d_tb_pid', 'd_tb_code')->where('d_tb_id', $request->id)->first(); 
           //update status purchasing to CF = "CONFIRMED"
           DB::table('d_purchasing')->where('d_pcs_id', $query2->d_tb_pid)->update(['d_pcs_status' => 'CF']);
 
@@ -557,6 +557,8 @@ class PenerimaanBrgSupController extends Controller
           d_terima_pembelian::where('d_tb_id', $request->id)->delete();
           //cek pada table purchasingdt, jika isreceived semua tbl header ubah status ke RC
           $this->cek_status_purchasing($query2->d_tb_pid);
+
+           _delete_jurnal($query2->d_tb_code);
           
           DB::commit();
           return response()->json([

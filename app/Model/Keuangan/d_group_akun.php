@@ -13,4 +13,8 @@ class d_group_akun extends Model
 	public function akun_neraca(){
 		return $this->hasMany('App\Model\Keuangan\d_akun', 'group_neraca', 'no_group');
 	}
+
+	public function akun_laba_rugi(){
+		return $this->hasMany('App\Model\Keuangan\d_akun', 'group_laba_rugi', 'no_group');
+	}
 }

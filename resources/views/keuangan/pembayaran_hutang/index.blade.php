@@ -132,6 +132,28 @@
                                             </div>
                                           </div>
 
+                                          <div class="row" v-if="single_data.jenis == 'C'">
+                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
+                                              <label class="tebal">Pilih Akun Kas</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
+                                                <select class="form-control" name="akun_kas" id="akun_kas" v-model="single_data.akun_kas">
+                                                  <option :value="kas.id_akun" v-for="kas in akun_kas">@{{ kas.nama_akun }}</option>
+                                                </select>
+                                            </div>
+                                          </div>
+
+                                          <div class="row" v-if="single_data.jenis == 'T'">
+                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
+                                              <label class="tebal">Pilih Akun Bank</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
+                                                <select class="form-control" name="akun_bank" id="akun_bank" v-model="single_data.akun_bank">
+                                                  <option :value="kas.id_akun" v-for="kas in akun_bank">@{{ kas.nama_akun }}</option>
+                                                </select>
+                                            </div>
+                                          </div>
+
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Nominal Pembayaran</label>
@@ -530,12 +552,16 @@
         list_purchase: [],
         list_transaksi: [],
         suppliers: [],
+        akun_kas: [],
+        akun_bank: [],
 
         single_data: {
             nomor_nota: '',
             supplier: '',
             nomor_po: '',
             keterangan: '',
+            akun_kas: '',
+            akun_bank: '',
             jenis: 'C',
         },
       },
@@ -551,8 +577,22 @@
               .then((response) => {
                 console.log(response.data);
 
-                this.suppliers = response.data;
-                this.single_data.supplier = response.data[0].s_id;
+                if(response.data.supplier.length > 0){
+                  this.suppliers = response.data.supplier;
+                  this.single_data.supplier = response.data.supplier[0].s_id;
+                }
+
+                if(response.data.akun_kas.length > 0){
+                  this.akun_kas = response.data.akun_kas;
+                  this.single_data.akun_kas = response.data.akun_kas[0].id_akun;
+                }
+
+                if(response.data.akun_bank.length > 0){
+                  this.akun_bank = response.data.akun_bank;
+                  this.single_data.akun_bank = response.data.akun_bank[0].id_akun;
+                }
+
+                // console.log(this.single_data.akun_kas);
 
                 $('.overlay.main').fadeOut(200);
                 $('#tanggal_pembayaran').val('{{ date('d-m-Y') }}')
