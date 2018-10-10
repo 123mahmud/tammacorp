@@ -434,6 +434,7 @@
           
           var i = randString(5);
           var key = 1;
+          var key2 = 1;
           var totBobot = 0;
           var totScore = 0;
           //loop data
@@ -446,7 +447,7 @@
                   +'<td>'
                     +'<span style="float:left;">Rp. </span>'
                     +'<span style="float:right;">'
-                      +convertDecimalToRupiah(response.list_tunjangan[key-1].tman_value)
+                      +convertDecimalToRupiah(response.list_tunjangan[key-1].d_pmdt_nilai)
                     +'</span>'
                   +'</td>'
                 +'</tr>');
@@ -455,26 +456,61 @@
           });
           $('#d_appending').append(
                 '<tr class="tbl_modal_detail_row">'
-                  +'<td>'+Key+'</td>'
-                  +'<td>Gaji Pokok</td>'
+                  +'<td colspan="2" align="right"><strong>Total Tunjangan</strong></td>'
+                  +'<td>'
+                    +'<span style="float:left;"><strong>Rp. </strong></span>'
+                    +'<span style="float:right;"><strong>'
+                      +convertDecimalToRupiah(response.payroll.d_pm_totaltun)
+                    +'</strong></span>'
+                  +'</td>'
+                +'</tr>');
+          $('#d_appending').append(
+                '<tr class="tbl_modal_detail_row">'
+                  +'<td colspan="2" align="right"><strong>Gaji Pokok</strong></td>'
+                  +'<td>'
+                    +'<span style="float:left;"><strong>Rp. </strong></span>'
+                    +'<span style="float:right;"><strong>'
+                      +convertDecimalToRupiah(response.list_gaji.d_pmdt_nilai)
+                    +'</strong></span>'
+                  +'</td>'
+                +'</tr>');
+          Object.keys(response.list_potongan).forEach(function()
+          {
+            $('#d_appending').append(
+                '<tr class="tbl_modal_detail_row">'
+                  +'<td>'+key+'</td>'
+                  +'<td>'+response.list_potongan[key2-1].d_pot_keterangan+'</td>'
                   +'<td>'
                     +'<span style="float:left;">Rp. </span>'
                     +'<span style="float:right;">'
-                      +convertDecimalToRupiah(response.list_gaji.d_pmdt_nilai)
+                      +convertDecimalToRupiah(response.list_potongan[key2-1].d_pot_value)
                     +'</span>'
                   +'</td>'
-                +'</tr>'
-                +'<tr class="tbl_modal_detail_row">'
-                  +'<td>'+Key+'</td>'
-                  +'<td>Potongan</td>'
+                +'</tr>');
+            i = randString(5);
+            key++;
+            key2++;
+          });
+          $('#d_appending').append(
+                '<tr class="tbl_modal_detail_row">'
+                  +'<td colspan="2" align="right"><strong>Total Potongan</strong></td>'
                   +'<td>'
-                    +'<span style="float:left;">Rp. </span>'
-                    +'<span style="float:right;">'
-                      +convertDecimalToRupiah(response.list_gaji.d_pmdt_nilai)
-                    +'</span>'
+                    +'<span style="float:left;"><strong>Rp. </strong></span>'
+                    +'<span style="float:right;"><strong>'
+                      +convertDecimalToRupiah(response.payroll.d_pm_totalpot)
+                    +'</strong></span>'
                   +'</td>'
-                +'</tr>'
-                );
+                +'</tr>');
+          $('#d_appending').append(
+                '<tr class="tbl_modal_detail_row">'
+                  +'<td colspan="2" align="right"><strong>Total Gaji Nett</strong></td>'
+                  +'<td>'
+                    +'<span style="float:left;"><strong>Rp. </strong></span>'
+                    +'<span style="float:right;"><strong>'
+                      +convertDecimalToRupiah(response.payroll.d_pm_totalnett)
+                    +'</strong></span>'
+                  +'</td>'
+                +'</tr>');
           $('#modal_detail_data').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown)
