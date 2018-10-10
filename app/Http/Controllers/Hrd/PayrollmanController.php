@@ -418,36 +418,6 @@ class PayrollmanController extends Controller
         }
     }
 
-    public function getScoreByTgl($id)
-    {
-        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
-
-        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
-                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
-                            ->where('d_kpix.d_kpix_id', $id)->get();
-        foreach ($data as $val) {
-            $score[] = ((int)$val->d_kpixdt_value / (int)$val->kpix_target) * 100;
-        }
-
-        $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
-            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
-            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
-            ->select(
-                'm_pegawai_man.c_nama',
-                'm_pegawai_man.c_divisi_id',
-                'm_pegawai_man.c_jabatan_id',
-                'm_divisi.c_divisi',
-                'm_jabatan.c_posisi')
-            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
-
-        return response()->json([
-            'status' => 'sukses',
-            'pegawai' => $pegawai,
-            'data' => $data,
-            'scoreKpi' => $score
-        ]);
-    }
-
     public function getDataDetail($id)
     {
         $payroll = d_payroll_man::join('m_pegawai_man', 'd_payroll_man.d_pm_pid', '=', 'm_pegawai_man.c_id')
@@ -479,29 +449,31 @@ class PayrollmanController extends Controller
         ]);
     }
 
-    /*public function cariMinggu($tahun,$bulan)
-    { 
-        $date = "$tahun-$bulan-01";
-        $first_day = date('N',strtotime($date));
-        $first_day = 7 - $first_day + 1;
-        $last_day =  date('t',strtotime($date));
-        $days = array();
-        for($i=$first_day; $i <= $last_day; $i=$i+7 )
-        {
-            $ymd[] = date('Y-m-d', strtotime($tahun.'-'.$bulan.'-'.$i));
-        }
-        return  $ymd;
-    }*/
-
-    /*function hitungSelisihTanggal($tgl1, $tgl2) 
+    public function deleteData(Request $request)
     {
-        $datetime1 = date_create($tgl1);
-        $datetime2 = date_create($tgl2);
-        $interval = date_diff($datetime1, $datetime2);
-        return $interval->format('%d%');
-    }*/
+      DB::beginTransaction();
+      try {
+        d_payroll_mandt::where('d_pmdt_pmid', $request->id)->delete();
+        d_payroll_man::where('d_pm_id', $request->id)->delete();
+        d_potongan::where('d_pot_prollid', $request->id)->delete();
 
-    function cariMinggu($start, $end) 
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses',
+            'pesan' => 'Data Payroll Berhasil Dihapus'
+        ]);
+      } 
+      catch (\Exception $e) 
+      {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+        ]);
+      }
+    }
+
+    public function cariMinggu($start, $end) 
     {
         $timestamp1 = strtotime($start);
         $timestamp2 = strtotime($end);
@@ -545,18 +517,6 @@ class PayrollmanController extends Controller
 
         return $code = "PAY-".date('ym')."-".$kd;
     }
-
-    public function FunctionName($value='')
-    {
-        $i_pot = new d_potongan;
-                $i_pot->d_pot_pid = $request->name;
-                $i_pot->d_pot_prollid = $request->name;
-                $i_pot->d_pot_keterangan = $request->name;
-                $i_pot->d_pot_date = $request->name;
-                $i_pot->d_pot_value = $request->name;
-                $i_pot->save();
-    }
-
 
     // ===============================================================================================================
 }

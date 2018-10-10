@@ -45,13 +45,11 @@
             <li class="active">
               <a href="#index-tab" data-toggle="tab">Payroll Manajemen</a>
             </li>
-            <li><a href="#score-tab" data-toggle="tab" onclick="lihatScoreByTgl()">Data Scoreboard</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive">
             <!-- /div alert-tab -->
             @include('hrd.payrollman.tab-index')
-            @include('hrd.payrollman.tab-score')
           </div>
 
         </div>
@@ -117,16 +115,13 @@
       $(".modal").on("hidden.bs.modal", function(){
         //remove append tr
         //$('tr').remove('.tbl_modal_detail_row');
-        $('#appending-modal div').remove();
+        $('#d_appending div').remove();
         $('tr').remove('.tbl_modal_detail_row');
         //remove class all jquery validation error
         $('.form-group').find('.error').removeClass('error');
         $('.form-group').removeClass('has-valid has-error');
         //reset all input txt field
         $('#form-input-payroll')[0].reset();
-        // $('#form-edit-kpi')[0].reset();
-        // $('#form-detail-kpi')[0].reset();
-        // $('#form-detail-score')[0].reset();
         //empty select2 field
         $('#i_divisi').empty();
         $('#i_jabatan').empty();
@@ -520,24 +515,23 @@
       });
     }
     
-
-    function ubahStatus(id, status) 
+    function hapusPman(id) 
     {
       iziToast.question({
         timeout: 20000,
         close: false,
         overlay: true,
         displayMode: 'once',
-        title: 'Ubah Status Data',
+        title: 'Hapus Data',
         message: 'Apakah anda yakin ?',
         position: 'center',
         buttons: [
           ['<button><b>Ya</b></button>', function (instance, toast) {
             $.ajax({
-              url : baseUrl + "/hrd/manscorekpi/ubah-status",
+              url : baseUrl + "/hrd/payrollman/delete-data",
               type: "POST",
               dataType: "JSON",
-              data: {id:id, status:status, "_token": "{{ csrf_token() }}"},
+              data: {id:id, "_token": "{{ csrf_token() }}"},
               success: function(response)
               {
                 if(response.status == "sukses")
