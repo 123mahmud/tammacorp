@@ -44,7 +44,6 @@
                   <div style="margin-left:-5px;">
 
                     <div class="panel-body">
-                    	<div class="container">
                     		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/contoh-excel-manajemen.xlsx')}}');"><button class="btn btn-success">Download Contoh Excel</button></a>
                     		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/master-manajemen.xlsx')}}');"><button class="btn btn-success">Download Master Manajemen</button></a>
                     		<form
@@ -57,7 +56,6 @@
                     			<input type="file" class="form-control-file" name="file">
                     			<input type="submit" value="Upload" class="btn btn-primary">
                     		</form>
-                    	</div>
                     </div>
 
                       <div class="col-md-1 col-sm-3 col-xs-12">
