@@ -584,6 +584,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/payrollman/simpan-data', 'Hrd\PayrollmanController@simpanData');
     Route::get('/hrd/payrollman/get-detail/{id}', 'Hrd\PayrollmanController@getDataDetail');
     
+    // print KPI
+    Route::get('/hrd/manscorekpi/print_kpi/{id}', 'Hrd\ManscorekpiController@print_pki')->name('print_kpi');
+
     
     /*Keuangan*/
 

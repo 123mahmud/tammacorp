@@ -363,6 +363,13 @@
             i = randString(5);
             key++;
           });
+          $('#btn-modal')
+            .html(
+              '<a class="btn btn-info" target="_blank" href="'+ baseUrl +'/hrd/manscorekpi/print_kpi/'+ id +'">'+
+                '<i class="fa fa-print"></i> Print'+
+              '</a>'+
+              '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+
           $('#d_appending').append(
                 '<tr class="tbl_modal_detail_row">'
                   +'<td colspan = "2" align="center"><strong>Total Bobot : '+totBobot+'</strong></td>'
