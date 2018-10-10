@@ -339,4 +339,46 @@ class ManscorekpiController extends Controller
     }
 
     // =======================================================================================================================
+
+      public function print_pki($id)
+    {
+        $id_peg = d_kpix::select('d_kpix_pid')->where('d_kpix.d_kpix_id', $id)->first();
+
+        $data = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
+                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
+                            ->where('d_kpix.d_kpix_id', $id)->get();
+
+
+        $total = d_kpix::join('d_kpix_dt', 'd_kpix.d_kpix_id', '=', 'd_kpix_dt.d_kpixdt_dkpix_id')
+                            ->join('m_kpix', 'd_kpix_dt.d_kpixdt_mkpix_id', '=', 'm_kpix.kpix_id')
+                            ->select(DB::raw('sum(kpix_bobot) as total_bobot, sum(d_kpixdt_scoreakhir) as total_score_akhir'))
+                            ->where('d_kpix.d_kpix_id', $id)->get();
+
+        foreach ($data as $val) {
+            $score[] = ((int)$val->d_kpixdt_value / (int)$val->kpix_target) * 100;
+        }
+
+        $pegawai = d_kpix::join('m_pegawai_man', 'd_kpix.d_kpix_pid', '=', 'm_pegawai_man.c_id')
+            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+            ->select(
+                'm_pegawai_man.c_nama',
+                'm_pegawai_man.c_divisi_id',
+                'm_pegawai_man.c_jabatan_id',
+                'm_divisi.c_divisi',
+                'm_jabatan.c_posisi')
+            ->where('d_kpix.d_kpix_pid', '=', $id_peg->d_kpix_pid)->first();
+
+        // return response()->json([
+        //     'status' => 'sukses',
+        //     'pegawai' => $pegawai,
+        //     'data' => $data,
+        //     'scoreKpi' => $score
+        // ]);
+        // return $data;
+        // return $total;
+        // return $score;
+        // return $pegawai;
+        return view('hrd.manajemenkpix.print_pki', compact('pegawai', 'data', 'score', 'total'));
+    }
 }
