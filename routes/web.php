@@ -583,6 +583,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payrollman/set-field-modal', 'Hrd\PayrollmanController@setFieldModal');
     Route::post('/hrd/payrollman/simpan-data', 'Hrd\PayrollmanController@simpanData');
     Route::get('/hrd/payrollman/get-detail/{id}', 'Hrd\PayrollmanController@getDataDetail');
+    Route::post('/hrd/payrollman/delete-data', 'Hrd\PayrollmanController@deleteData');
     
     // print KPI
     Route::get('/hrd/manscorekpi/print_kpi/{id}', 'Hrd\ManscorekpiController@print_pki')->name('print_kpi');
