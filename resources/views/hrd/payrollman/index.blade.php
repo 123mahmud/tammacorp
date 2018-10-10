@@ -297,6 +297,7 @@
           $('#i_totgaji').val(response.total_income);
           var i = randString(5);
           var key = 1;
+          var key2 = 1;
           //loop data
           Object.keys(response.list).forEach(function()
           {
@@ -305,6 +306,15 @@
               +'<input type="hidden" id="nilai_tunjangan" name="nilai_tunjangan[]" class="form-control input-sm" value="'+response.nilai_tunjangan[key-1]+'">');
             i = randString(5);
             key++;
+          });
+          Object.keys(response.potonganTxt).forEach(function()
+          {
+            $('#appending-modal').append(
+              '<input type="hidden" id="harian" name="harian[]" class="form-control input-sm" value="'+response.potonganTxt[key2-1].harian+'">'
+              +'<input type="hidden" id="harianmakan" name="harianmakan[]" class="form-control input-sm" value="'+response.potonganTxt[key2-1].harianmakan+'">'
+              +'<input type="hidden" id="harianmakantrans" name="harianmakantrans[]" class="form-control input-sm" value="'+response.potonganTxt[key2-1].harianmakantrans+'">');
+            i = randString(5);
+            key2++;
           });
         },
         error: function(){
@@ -413,41 +423,58 @@
         dataType: "JSON",
         success: function(response)
         {
-          var date = response.data[0].d_kpix_date;
+          var date = response.payroll.d_pm_date;
           if(date != null) { var newKpixDate = date.split("-").reverse().join("-"); }
           
           $('#d_tanggal').text(newKpixDate);
-          $('#d_divisi').text(response.pegawai.c_divisi);
-          $('#d_jabatan').text(response.pegawai.c_posisi);
-          $('#d_pegawai').text(response.pegawai.c_nama);
+          $('#periode').text(response.payroll.d_pm_periode);
+          $('#d_divisi').text(response.payroll.c_divisi);
+          $('#d_jabatan').text(response.payroll.c_posisi);
+          $('#d_pegawai').text(response.payroll.c_nama);
           
           var i = randString(5);
           var key = 1;
           var totBobot = 0;
           var totScore = 0;
           //loop data
-          Object.keys(response.data).forEach(function()
+          Object.keys(response.list_tunjangan).forEach(function()
           {
             $('#d_appending').append(
                 '<tr class="tbl_modal_detail_row">'
                   +'<td>'+key+'</td>'
-                  +'<td>'+response.data[key-1].kpix_bobot+'</td>'
-                  +'<td>'+response.data[key-1].kpix_name+'</td>'
-                  +'<td>'+response.data[key-1].kpix_target+'</td>'
-                  +'<td>'+response.data[key-1].d_kpixdt_value+'</td>'
-                  +'<td>'+response.data[key-1].d_kpixdt_score+'</td>'
-                  +'<td>'+response.data[key-1].d_kpixdt_scoreakhir+'</td>'
+                  +'<td>'+response.list_tunjangan[key-1].tman_nama+'</td>'
+                  +'<td>'
+                    +'<span style="float:left;">Rp. </span>'
+                    +'<span style="float:right;">'
+                      +convertDecimalToRupiah(response.list_tunjangan[key-1].tman_value)
+                    +'</span>'
+                  +'</td>'
                 +'</tr>');
-            totBobot += parseInt(response.data[key-1].kpix_bobot);
-            totScore += parseFloat(response.data[key-1].d_kpixdt_scoreakhir);
             i = randString(5);
             key++;
           });
           $('#d_appending').append(
                 '<tr class="tbl_modal_detail_row">'
-                  +'<td colspan = "2" align="center"><strong>Total Bobot : '+totBobot+'</strong></td>'
-                  +'<td colspan = "5" align="center"><strong>Total Skor Akhir : '+totScore+'</strong></td>'
-                +'</tr>');
+                  +'<td>'+Key+'</td>'
+                  +'<td>Gaji Pokok</td>'
+                  +'<td>'
+                    +'<span style="float:left;">Rp. </span>'
+                    +'<span style="float:right;">'
+                      +convertDecimalToRupiah(response.list_gaji.d_pmdt_nilai)
+                    +'</span>'
+                  +'</td>'
+                +'</tr>'
+                +'<tr class="tbl_modal_detail_row">'
+                  +'<td>'+Key+'</td>'
+                  +'<td>Potongan</td>'
+                  +'<td>'
+                    +'<span style="float:left;">Rp. </span>'
+                    +'<span style="float:right;">'
+                      +convertDecimalToRupiah(response.list_gaji.d_pmdt_nilai)
+                    +'</span>'
+                  +'</td>'
+                +'</tr>'
+                );
           $('#modal_detail_data').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -535,7 +562,7 @@
       var rupiah = '';        
       var angkarev = angka.toString().split('').reverse().join('');
       for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-      var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
+      var hasil = rupiah.split('',rupiah.length-1).reverse().join('');
       return hasil+',00';
     }
 
