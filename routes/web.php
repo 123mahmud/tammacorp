@@ -587,6 +587,8 @@ Route::group(['middleware' => 'auth'], function () {
     
     // print KPI
     Route::get('/hrd/manscorekpi/print_kpi/{id}', 'Hrd\ManscorekpiController@print_pki')->name('print_kpi');
+    // print payroll
+    Route::get('/hrd/payrollman/print-payroll/{id}', 'Hrd\PayrollmanController@print_payroll');
 
     
     /*Keuangan*/

@@ -530,4 +530,37 @@ class PayrollmanController extends Controller
     }
 
     // ===============================================================================================================
+
+    public function print_payroll($id)
+    {
+        $payroll = d_payroll_man::join('m_pegawai_man', 'd_payroll_man.d_pm_pid', '=', 'm_pegawai_man.c_id')
+                            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                            ->select('d_payroll_man.*', 'm_pegawai_man.c_id', 'm_pegawai_man.c_nama' ,'m_pegawai_man.c_divisi_id', 'm_pegawai_man.c_jabatan_id', 'm_pegawai_man.c_tunjangan', 'm_divisi.c_divisi', 'm_jabatan.c_posisi', 'm_jabatan.c_sub_divisi_id')
+                            ->where('d_payroll_man.d_pm_id', $id)->first();
+
+        //$list = explode(",", $payroll->c_tunjangan);
+
+        $list_tunjangan = d_payroll_mandt::join('d_payroll_man', 'd_payroll_mandt.d_pmdt_pmid', '=', 'd_payroll_man.d_pm_id')
+                            ->join('m_tunjangan_man', 'd_payroll_mandt.d_pmdt_typeid', '=', 'm_tunjangan_man.tman_id')
+                            ->select('d_payroll_mandt.*', 'd_payroll_man.*', 'm_tunjangan_man.*')
+                            ->where('d_payroll_mandt.d_pmdt_type', "TJ")
+                            ->where('d_payroll_mandt.d_pmdt_pmid', $id)
+                            ->get();
+
+        $list_gaji = d_payroll_mandt::select('d_pmdt_nilai')->where('d_pmdt_type', "GJ")->where('d_pmdt_pmid', $id)->first();
+        $list_potongan = d_potongan::where('d_pot_prollid', $id)->where('d_pot_pid', $payroll->c_id)->get();
+
+        //dd($payroll, $list_tunjangan, $list_gaji);
+
+        // return response()->json([
+        //     'status' => 'sukses',
+        //     'payroll' => $payroll,
+        //     'list_tunjangan' => $list_tunjangan,
+        //     'list_gaji' => $list_gaji,
+        //     'list_potongan' => $list_potongan
+        // ]);
+
+        return view('hrd.payrollman.print-payroll', [ 'rocknroll' => $payroll , 'tunjangan' => $list_tunjangan , 'gaji' => $list_gaji, 'potongan' => $list_potongan ]);
+    }
 }
