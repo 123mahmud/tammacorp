@@ -509,6 +509,11 @@
                     +'</strong></span>'
                   +'</td>'
                 +'</tr>');
+          $('#btn-modal').html('<a href="'+ baseUrl +'/hrd/payrollman/print-payroll/'+ id +'" target="_blank" class="btn btn-info">'+
+            '<i class="fa fa-print"></i> Print'+
+            '</a>'+
+            '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+
           $('#modal_detail_data').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown)
