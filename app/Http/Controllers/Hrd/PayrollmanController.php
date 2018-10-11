@@ -212,6 +212,7 @@ class PayrollmanController extends Controller
                 if ($val->apm_jam_masuk != null) { $dt_jammasuk[] = $val->apm_tanggal.' '.$val->apm_jam_masuk; } else { $dt_jammasuk[] = null; }
             }
         }
+        //dd($lembur);
         //dd($dt_scanmasuk, $dt_jammasuk);
 
         //hitung lembur jam reguler
@@ -276,6 +277,7 @@ class PayrollmanController extends Controller
         $potongan = 0;
         $ngentot = [];
         $nilai_tunjangan = [];
+        $potonganTxt = [];
         for ($y=0; $y <count($hasil_menit); $y++) 
         {   
             $ngentot = $arr_pot;
@@ -283,14 +285,14 @@ class PayrollmanController extends Controller
                 unset($ngentot[1]);
                 unset($ngentot[2]);
                 $potongan += array_sum($ngentot);
-                $potonganTxt[] = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
+                $potonganTxt = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 15 && $hasil_menit[$y] <= 30) {
                 unset($ngentot[2]);
                 $potongan += array_sum($ngentot);
-                $potonganTxt[] = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
+                $potonganTxt = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 30) {
                 $potongan += array_sum($ngentot);
-                $potonganTxt[] = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
+                $potonganTxt = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
             }else{
                 $potongan += 0;
             }

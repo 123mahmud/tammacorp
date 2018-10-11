@@ -67,6 +67,7 @@
     var divisi = "";
     var jabatan = "";
     var pegawai = "";
+    var tgl_i1 = "";
     $(document).ready(function () {
       //fix to issue select2 on modal when opening in firefox
       $.fn.modal.Constructor.prototype.enforceFocus = function() {};
@@ -104,6 +105,7 @@
         format:"dd-mm-yyyy",
         endDate: 'today'
       }).datepicker("setDate", nd);
+      tgl_i1 = $('.datepicker1').val();
 
       $('.datepicker2').datepicker({
         autoclose: true,
@@ -122,6 +124,7 @@
         $('.form-group').removeClass('has-valid has-error');
         //reset all input txt field
         $('#form-input-payroll')[0].reset();
+        $('#i_tgl1').val(tgl_i1);
         //empty select2 field
         $('#i_divisi').empty();
         $('#i_jabatan').empty();
@@ -278,7 +281,6 @@
       pegawai = $('.i_pegawai').val();
       var sDate = $('#i_tgl1').val();
       var lDate = $('#i_tgl2').val();
-     
       $.ajax({
         url : baseUrl + "/hrd/payrollman/set-field-modal",
         type: "GET",
@@ -321,6 +323,7 @@
         async: false
       });
       $('#btn_simpan').attr('disabled', false);
+      $('#btn_proses').attr('disabled', true);
     }
 
     function submitPayrollMan() 

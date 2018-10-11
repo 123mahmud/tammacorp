@@ -13,27 +13,27 @@
         <div class="modal-body">
           <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-bottom: 10px;margin-bottom: 15px;">
             
-            <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="col-md-7 col-sm-7 col-xs-12">
               <label class="tebal">Tanggal : </label>
               <span id="d_tanggal">
             </div>
 
-            <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-5 col-sm-5 col-xs-12">
               <label class="tebal">Periode : </label>
               <span id="periode">
             </div>
 
-            <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="col-md-7 col-sm-7 col-xs-12">
               <label class="tebal">Divisi : </label>
               <span id="d_divisi">
             </div>
 
-            <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="col-md-5 col-sm-5 col-xs-12">
               <label class="tebal">Jabatan : </label>
               <span id="d_jabatan">
             </div>
 
-            <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="col-md-7 col-sm-7 col-xs-12">
               <label class="tebal">Pegawai : </label>
               <span id="d_pegawai">
             </div>
