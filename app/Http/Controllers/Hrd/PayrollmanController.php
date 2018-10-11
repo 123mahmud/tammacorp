@@ -285,14 +285,14 @@ class PayrollmanController extends Controller
                 unset($ngentot[1]);
                 unset($ngentot[2]);
                 $potongan += array_sum($ngentot);
-                $potonganTxt = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
+                $potonganTxt[] = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 15 && $hasil_menit[$y] <= 30) {
                 unset($ngentot[2]);
                 $potongan += array_sum($ngentot);
-                $potonganTxt = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
+                $potonganTxt[] = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 30) {
                 $potongan += array_sum($ngentot);
-                $potonganTxt = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
+                $potonganTxt[] = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
             }else{
                 $potongan += 0;
             }
@@ -352,49 +352,58 @@ class PayrollmanController extends Controller
             }
 
             //potongan kehadiran
-            for ($i=0; $i < count($request->harian); $i++) 
-            {
-                if ($request->harian[$i] != 0) {
-                    $pharian = new d_potongan;
-                    $pharian->d_pot_pid = $request->i_pegawai;
-                    $pharian->d_pot_prollid = $lastId;
-                    $pharian->d_pot_keterangan = "Potongan Kehadiran";
-                    $pharian->d_pot_date = $date;
-                    $pharian->d_pot_value = $request->harian[$i];
-                    $pharian->d_pot_created = $datetime;
-                    $pharian->save();
+            if (isset($request->harian)) {
+                for ($i=0; $i < count($request->harian); $i++) 
+                {
+                    if ($request->harian[$i] != 0) {
+                        $pharian = new d_potongan;
+                        $pharian->d_pot_pid = $request->i_pegawai;
+                        $pharian->d_pot_prollid = $lastId;
+                        $pharian->d_pot_keterangan = "Potongan Kehadiran";
+                        $pharian->d_pot_date = $date;
+                        $pharian->d_pot_value = $request->harian[$i];
+                        $pharian->d_pot_created = $datetime;
+                        $pharian->save();
+                    }
+                    
                 }
-                
             }
+            
             //potongan kehadiran + makan
-            for ($i=0; $i < count($request->harianmakan); $i++) 
-            {
-                if ($request->harianmakan[$i] != 0) {
-                    $pharianmakan = new d_potongan;
-                    $pharianmakan->d_pot_pid = $request->i_pegawai;
-                    $pharianmakan->d_pot_prollid = $lastId;
-                    $pharianmakan->d_pot_keterangan = "Potongan Kehadiran & Makan";
-                    $pharianmakan->d_pot_date = $date;
-                    $pharianmakan->d_pot_value = $request->harianmakan[$i];
-                    $pharianmakan->d_pot_created = $datetime;
-                    $pharianmakan->save();
+            if (isset($request->harianmakan)) {
+                for ($i=0; $i < count($request->harianmakan); $i++) 
+                {
+                    if ($request->harianmakan[$i] != 0) {
+                        $pharianmakan = new d_potongan;
+                        $pharianmakan->d_pot_pid = $request->i_pegawai;
+                        $pharianmakan->d_pot_prollid = $lastId;
+                        $pharianmakan->d_pot_keterangan = "Potongan Kehadiran & Makan";
+                        $pharianmakan->d_pot_date = $date;
+                        $pharianmakan->d_pot_value = $request->harianmakan[$i];
+                        $pharianmakan->d_pot_created = $datetime;
+                        $pharianmakan->save();
+                    }
+                    
                 }
-                
             }
+            
             //potongan kehadiran + makan + transport
-            for ($i=0; $i < count($request->harianmakantrans); $i++) 
-            {
-                if ($request->harianmakantrans[$i] != 0) {
-                    $pharianmakantrans = new d_potongan;
-                    $pharianmakantrans->d_pot_pid = $request->i_pegawai;
-                    $pharianmakantrans->d_pot_prollid = $lastId;
-                    $pharianmakantrans->d_pot_keterangan = "Potongan Kehadiran, Makan & Transport";
-                    $pharianmakantrans->d_pot_date = $date;
-                    $pharianmakantrans->d_pot_value = $request->harianmakantrans[$i];
-                    $pharianmakantrans->d_pot_created = $datetime;
-                    $pharianmakantrans->save();
+            if (isset($request->harianmakantrans)) {
+                for ($i=0; $i < count($request->harianmakantrans); $i++) 
+                {
+                    if ($request->harianmakantrans[$i] != 0) {
+                        $pharianmakantrans = new d_potongan;
+                        $pharianmakantrans->d_pot_pid = $request->i_pegawai;
+                        $pharianmakantrans->d_pot_prollid = $lastId;
+                        $pharianmakantrans->d_pot_keterangan = "Potongan Kehadiran, Makan & Transport";
+                        $pharianmakantrans->d_pot_date = $date;
+                        $pharianmakantrans->d_pot_value = $request->harianmakantrans[$i];
+                        $pharianmakantrans->d_pot_created = $datetime;
+                        $pharianmakantrans->save();
+                    }
                 }
             }
+            
 
             $prolldt2 = new d_payroll_mandt;
             $prolldt2->d_pmdt_pmid = $lastId;
