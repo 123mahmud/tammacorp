@@ -197,14 +197,14 @@
 		<div class="div-width">
 
 			<h2 class="text-center underline" style="margin: 30px 0 0 0;">SURAT PEMUTUSAN HUBUNGAN KERJA</h2>
-			<small class="text-center" style="display: block;">No : 000/PHK/HRD/VII/2018</small>
+			<small class="text-center" style="display: block;">No : {{$data->c_kode}}</small>
 
 			<table class="border-none" width="100%" style="margin-top: 30px;" cellpadding="5px">
 				<tr>
 					<td>Kepada Yth:</td>
 				</tr>
 				<tr>
-					<td>Saudara ..................</td>
+					<td>Saudara <strong>{{$data->c_nama}}</strong></td>
 				</tr>
 				<tr>
 					<td>di Tempat</td>
@@ -214,19 +214,18 @@
 				</tr>
 				<tr>
 					<td>
-						<p class="paragraph-indent">Sehubungan dengan hasil evaluasi kinerja saudara  selama ….......... bulan terakhir, maka kami menilai tidak ada peningkatan dan perbaikan kinerja. Menimbang dari sisi kedisiplinan dan tanggung jawab pekerjaan. maka dari itu kami memutuskan untuk tidak melanjutkan kontrak kerja (Pemutusan Hubungan Kerja) dengan saudara ....................................</p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Sehubungan dengan hasil evaluasi kinerja saudara  selama <strong>{{$data->c_bulan_terakhir}}</strong> bulan terakhir, maka kami menilai tidak ada peningkatan dan perbaikan kinerja. Menimbang dari sisi kedisiplinan dan tanggung jawab pekerjaan. maka dari itu kami memutuskan untuk tidak melanjutkan kontrak kerja (Pemutusan Hubungan Kerja) dengan saudara <strong>{{$data->c_nama}}</strong> </p>
 
-						<p class="paragraph-indent">Dengan demikian, terhitung mulai tanggal    bulan   tahun 2018, hubungan kerja antara CV. Tamma Robah Indonesia dengan saudara ........................................ dinyatakan berakhir. Atas nama perusahaan, kami menyampaikan banyak terima kasih atas kinerja yang saudara berikan selama ini.</p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Dengan demikian, terhitung mulai tanggal    bulan   tahun 2018, hubungan kerja antara CV. Tamma Robah Indonesia dengan saudara <strong>{{$data->c_nama}}</strong> dinyatakan berakhir. Atas nama perusahaan, kami menyampaikan banyak terima kasih atas kinerja yang saudara berikan selama ini.</p>
 
-						<p class="paragraph-indent">Demikian surat pemutusan hubungan kerja kami sampaikan dan atas perhatian dan pengertian saudara kami ucapkan terima kasih.</p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Demikian surat pemutusan hubungan kerja kami sampaikan dan atas perhatian dan pengertian saudara kami ucapkan terima kasih.</p>
 					</td>
 				</tr>
 			</table>
 			<table width="100%" class="border-none" cellpadding="5px">
 				<tr>
 					<td width="49%"></td>
-					<td align="center">Surabaya,......................<br><br>CV. Tamma Robbah Indonesia</td>
-					
+					<td align="center">Surabaya, {{date('d F Y',strtotime($data->c_tgl_phk))}}<br>CV. Tamma Robbah Indonesia</td>
 				</tr>
 				<tr>
 					<td></td>

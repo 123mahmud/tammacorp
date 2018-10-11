@@ -451,13 +451,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/recruitment/buat_pdf', 'RecruitmentController@buat_pdf');
 //surat
     Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index')->name('manajemensurat');
+//surat phk
     Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
     Route::get('/hrd/manajemensurat/data-phk', 'Hrd\ManajemenSuratController@phkData');
     Route::post('/hrd/manajemensurat/simpan-phk', 'Hrd\ManajemenSuratController@simpanPhk');
     Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@editPhk');
     Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
     Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
-
+    Route::get('/hrd/manajemensurat/lookup-data-pegawai', 'Hrd\ManajemenSuratController@lookupPegawai');
+    Route::get('/hrd/manajemensurat/cetak-surat/{id}', 'Hrd\ManajemenSuratController@cetakSurat');
+    // surat-phk pengurangan pegawai
+    Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
+    // surat-phk kesalahan berat
+    Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
 // Ari
     // surat2
     // form kenaikan gaji
@@ -481,10 +487,6 @@ Route::group(['middleware' => 'auth'], function () {
     // form perintah lembur
     Route::get('/hrd/manajemensurat/form_perintah_lembur', 'Hrd\ManajemenSuratController@form_perintah_lembur')->name('form_perintah_lembur');
     Route::get('/hrd/manajemensurat/form_perintah_lembur_print', 'Hrd\ManajemenSuratController@form_perintah_lembur_print')->name('form_perintah_lembur_print');
-    // surat-phk pengurangan pegawai
-    Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
-    // surat-phk kesalahan berat
-    Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
     // application form
     Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
 

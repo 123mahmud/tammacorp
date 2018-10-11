@@ -143,11 +143,6 @@
        $('.ceklis_tunjangan').iCheck('uncheck');
     });
 
-    var numcheck = $(".ip_hidden").length;
-    //alert(numcheck);
-    // for (var i = 0; i < numcheck; i++) {
-    //   alert($("input[name='form_cek]").val());
-    // }
     $('input[name="form_cek[]"]').each(function() 
     {
       var ceklis = $(this).val();
