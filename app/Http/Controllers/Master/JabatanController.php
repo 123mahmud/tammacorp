@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use DB;
 use DataTables;
 use App\Jabatan;
+use App\m_jabatan_pro;
 
 class JabatanController extends Controller
 {
@@ -101,5 +103,73 @@ class JabatanController extends Controller
         $data = DB::table('m_jabatan')->where('c_id', $id)->delete();
 
         return redirect('master/datajabatan');
+    }
+
+    public function tablePro(){
+        $produksi = m_jabatan_pro::all();
+        // dd($produksi);
+        return Datatables::of($produksi) 
+        ->addIndexColumn()
+        ->addColumn('action', function ($data) {
+             return '<button id="edit" 
+                        onclick="editJPro('.$data->c_id.')" 
+                        class="btn btn-warning  btn-sm" 
+                        title="Edit"><i class="glyphicon glyphicon-pencil"></i>
+                    </button>'.'
+                    <button id="delete" 
+                        onclick="hapusJPro('.$data->c_id.')" 
+                        class="btn btn-danger btn-sm" 
+                        title="Hapus">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>';
+        })
+
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    public function tambahJabatanPro(){
+
+        return view('master.datajabatan.tambah-jabatanpro');
+    }
+
+    public function simpanJabatanPro(Request $req){
+        //dd($req->all());
+        DB::beginTransaction();
+        try {
+        $id = m_jabatan_pro::select('c_id')->max('c_id')+1;
+        m_jabatan_pro::insert([
+            'c_id' => $id,
+            'c_jabatan_pro' => $req->c_jabatan_pro,
+            'created_at' => Carbon::now()
+        ]);
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+          ]);
+        } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+          ]);
+        }
+    }
+
+    public function hapusJabatanPro($id){
+        DB::beginTransaction();
+        try {
+            m_jabatan_pro::where('c_id',$id)->delete();
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+          ]);
+        } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+          ]);
+        }
     }
 }

@@ -37,9 +37,9 @@
             <li>
               <a href="#alert-tab" data-toggle="tab">Produksi</a>
             </li>
-            <!-- <li>
+    {{--         <li>
               <a href="#potongan" data-toggle="tab">Potongan</a>
-            </li> -->
+            </li> --}}
           </ul>
           <div id="generalTabContent" class="tab-content responsive">
             <div id="transfer" class="tab-pane fade in active">
@@ -148,6 +148,7 @@
                                 <th class="wd-15p">Nama</th>
                                 <th class="wd-15p">Gaji</th>
                                 <th class="wd-15p">Lembur</th>
+                                <th class="wd-15p">Jabatan</th>
                                 <th class="wd-15p">Aksi</th>
                               </tr>
                             </thead>
@@ -313,6 +314,7 @@
             { "data": "nm_gaji" },
             { "data": "gaji" },
             { "data": "lembur" },
+            { "data": "jabatan" },
             { "data": "action" }
           ],
           "responsive": true,

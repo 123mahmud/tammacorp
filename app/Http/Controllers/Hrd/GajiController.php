@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\GajiManajemen;
 use App\GajiProduksi;
 use App\Potongan;
+use App\m_gaji_pro;
 use App\Model\Master\m_tunjangan_man;
 use DB;
 use Auth;
@@ -65,7 +66,7 @@ class GajiController extends Controller
     }
     public function gajiProData(){
         $list = DB::table('m_gaji_pro')
-                ->get();
+            ->get();
         $data = collect($list);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
@@ -79,6 +80,26 @@ class GajiController extends Controller
                       </span>
                     </div>';
                 })
+                ->addColumn('jabatan', function ($data) {
+                    if ($data->c_gaji_jabatan != null) 
+                    {
+                        $t_list = explode(',', $data->c_gaji_jabatan);
+
+                        $aaa = '<ul style="list-style-type:square">';
+                        for ($i=0; $i <count($t_list); $i++) 
+                        { 
+                            $txt = DB::table('m_jabatan_pro')->select('c_jabatan_pro')
+                                ->where('c_id', $t_list[$i])->first();
+                            $aaa .=  '<li>'.$txt->c_jabatan_pro.'</li>';
+                        }
+                        $aaa .= '</ul>';
+                        return $aaa;
+                    }
+                    else
+                    {
+                        return '-';
+                    };
+                })
                 ->addColumn('gaji', function ($data) {
                     return '<div>Rp.
                       <span class="pull-right">
@@ -86,7 +107,7 @@ class GajiController extends Controller
                       </span>
                     </div>';
                 })
-                ->rawColumns(['action','lembur','gaji'])
+                ->rawColumns(['action','lembur','jabatan','gaji'])
                 ->make(true);
     }
     public function potonganData(){
@@ -137,12 +158,35 @@ class GajiController extends Controller
     }
     public function editGajiPro($id){
         $data = DB::table('m_gaji_pro')->where('c_id', $id)->first();
+        $list = explode(',', $data->c_gaji_jabatan);
+        if ($list == "") {
+            for ($i=0; $i <count($list); $i++) {
+            $txt[$i] = DB::table('m_jabatan_pro')->select('c_id','c_jabatan_pro')
+                    ->orWhere('c_id', $list[$i])
+                    ->first(); 
+            }
+        }else{
+            $txt = DB::table('m_jabatan_pro')->select('c_id','c_jabatan_pro')
+                    ->get(); 
+        }
         
-        return view('hrd/payroll/edit_set_produksi',['data' => $data]);
+        return view('hrd/payroll/edit_set_produksi',['data' => $data, 'txt' => $txt, 'list' => $list]);
     }
     public function updateGajiPro(Request $request, $id){
-        $input = $request->except('_token', '_method');
-        $data = GajiProduksi::where('c_id', $id)->update($input);
+        // dd($request->all());
+        if (count($request->form_cek) > 0) {
+            $tunjangan = implode(',', $request->form_cek);
+        }else{
+            $tunjangan = null;
+        }
+        m_gaji_pro::where('c_id', $id)
+            ->update([
+                'nm_gaji' => $request->nm_gaji,
+                'c_gaji' => $request->c_gaji,
+                'c_lembur' => $request->c_lembur,
+                'c_gaji_jabatan' => $tunjangan,
+                'updated_at' => Carbon::now()
+            ]);
         
         return redirect('/hrd/payroll/setting-gaji');
     }

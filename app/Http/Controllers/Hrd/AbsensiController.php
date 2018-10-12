@@ -39,6 +39,7 @@ class AbsensiController extends Controller
 
       $pegawai = abs_pegawai_man::select(
           'apm_tanggal',
+          'c_nik',
           'c_nama',
           'apm_jam_kerja',
           'apm_jam_masuk',
@@ -127,86 +128,42 @@ class AbsensiController extends Controller
     $m2 = substr($tgl2, -7,-5);
       $tgl2 = $y2.'-'.$m2.'-'.$d2;
 
-    $pegawai = m_pegawai_man::select(
-        'm_pegawai_man.c_id as mp_id',
-        'm_divisi.c_id as md_id',
-        'c_nik',
-        'c_nama',
-        'apm_pm',
-        DB::raw("(SELECT count(apm_pm) as a from abs_pegawai_man as ap
-        where ap.apm_pm=abs_pegawai_man.apm_pm and apm_ket='A') as Alpha"),
-
-        DB::raw("(SELECT count(apm_pm) as a from abs_pegawai_man as ap
-        where ap.apm_pm=abs_pegawai_man.apm_pm and apm_ket='I') as Izin"),
-
-        DB::raw("(SELECT count(apm_pm) as a from abs_pegawai_man as ap
-        where ap.apm_pm=abs_pegawai_man.apm_pm and apm_ket='S') as Sakit"),
-
-        DB::raw("(SELECT count(apm_pm) as a from abs_pegawai_man as ap
-        where ap.apm_pm=abs_pegawai_man.apm_pm and apm_ket='C') as Cuti"),
-
-        DB::raw("(SELECT count(apm_pm) as a from abs_pegawai_man as ap
-        where ap.apm_pm=abs_pegawai_man.apm_pm and apm_ket='H') as Hadir"))
-
-      ->join('m_divisi','m_divisi.c_id','=','c_divisi_id')
-      ->leftJoin('abs_pegawai_man','abs_pegawai_man.apm_pm','=','m_pegawai_man.c_id')
-      ->where('m_divisi.c_id',$data)
-      ->where('apm_date','>=', $tgl1)
-      ->where('apm_date','<=', $tgl2)
-      ->groupBy('m_pegawai_man.c_id')
-      ->get();
-
+    $pegawai = abs_pegawai_pro::select(
+          'app_tanggal',
+          'c_nik',
+          'c_nama',
+          'app_jam_kerja',
+          'app_jam_masuk',
+          'app_jam_pulang',
+          'app_scan_masuk',
+          'app_scan_pulang',
+          'app_terlambat',
+          'app_jml_jamkerja')
+        ->join('m_pegawai_pro','m_pegawai_pro.c_id','=','app_pp')
+        ->where('app_tanggal','>=',$tgl1)
+        ->where('app_tanggal','<=',$tgl2)
+        ->where('c_rumah_produksi',$data)
+        ->get();
       // dd($pegawai);
     return DataTables::of($pegawai)
 
     ->addIndexColumn()
-    ->editColumn('pegawai', function ($data) {
-        return "$data->c_nik - $data->c_nama" ;
+    ->addIndexColumn()
 
-    })
+      ->editColumn('tanggal', function ($data){
+          return date('d M Y', strtotime($data->app_tanggal));
+      })
 
-    ->addColumn('Alpha', function($data){
-      return '<input  name="c_id[]"
-                      class="form-control text-right"
-                      readonly
-                      value="'.$data->Alpha.'">';
-    })
+      ->editColumn('pegawai', function ($data) {
+          return "$data->c_nik - $data->c_nama" ;
 
-    ->addColumn('Izin', function($data){
-      return '<input  name="c_id[]"
-                      class="form-control text-right"
-                      readonly
-                      value="'.$data->Izin.'">';
-    })
+      })
 
-    ->addColumn('Sakit', function($data){
-      return '<input  name="c_id[]"
-                      class="form-control text-right"
-                      readonly
-                      value="'.$data->Sakit.'">';
-    })
 
-    ->addColumn('Cuti', function($data){
-      return '<input  name="c_id[]"
-                      class="form-control text-right"
-                      readonly
-                      value="'.$data->Cuti.'">';
-    })
-
-    ->addColumn('Hadir', function($data){
-      return '<input  name="c_id[]"
-                      class="form-control text-right"
-                      readonly
-                      value="'.$data->Hadir.'">';
-    })
-    ->rawColumns(['pegawai',
-                  'Alpha',
-                  'Izin',
-                  'Sakit',
-                  'Cuti',
-                  'Hadir'
-                ])
-    ->make(true);
+      ->rawColumns(['tanggal',
+                    'pegawai'
+                  ])
+      ->make(true);
 
   }
 
