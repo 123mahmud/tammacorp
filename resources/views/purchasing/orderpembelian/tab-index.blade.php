@@ -50,7 +50,7 @@
                 <th>Staff</th>
                 <th>Supplier</th>
                 <th>Cara Bayar</th>
-                <th>Harga Total</th>
+                <th>Total</th>
                 <th>Tgl Kirim</th>
                 <th>Status</th>
                 <th style="text-align: center;">Aksi</th>

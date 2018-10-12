@@ -162,7 +162,7 @@ class OrderPembelianController extends Controller
       })
       ->editColumn('hargaTotalNet', function ($data) 
       {
-        return 'Rp. '.number_format($data->d_pcs_total_net,0,",",".");
+        return number_format($data->d_pcs_total_net,0,",",".");
       })
       ->editColumn('tglMasuk', function ($data) 
       {
@@ -181,13 +181,13 @@ class OrderPembelianController extends Controller
         {
           return '<div class="text-center">
                       <button class="btn btn-sm btn-success" title="Detail"
-                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
+                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-info-circle"></i> 
                       </button>
                       <button class="btn btn-sm btn-warning" title="Edit"
-                          onclick=editOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-edit"></i>
+                          onclick=editOrder("'.$data->d_pcs_id.'")><i class="fa fa-edit"></i>
                       </button>
                       <button class="btn btn-sm btn-danger" title="Delete"
-                          onclick=deleteOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-trash"></i>
+                          onclick=deleteOrder("'.$data->d_pcs_id.'")><i class="fa fa-times-circle"></i>
                       </button>
                   </div>'; 
         }
@@ -195,13 +195,13 @@ class OrderPembelianController extends Controller
         {
           return '<div class="text-center">
                       <button class="btn btn-sm btn-success" title="Detail"
-                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
+                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-info-circle"></i> 
                       </button>
                       <button class="btn btn-sm btn-warning" title="Edit"
-                          onclick=editOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-edit"></i>
+                          onclick=editOrder("'.$data->d_pcs_id.'")><i class="fa fa-edit"></i>
                       </button>
                       <button class="btn btn-sm btn-danger" title="Delete"
-                          onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-trash"></i>
+                          onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="fa fa-times-circle"></i>
                       </button>
                   </div>'; 
         }
@@ -209,13 +209,13 @@ class OrderPembelianController extends Controller
         {
           return '<div class="text-center">
                       <button class="btn btn-sm btn-success" title="Detail"
-                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
+                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-info-circle"></i> 
                       </button>
                       <button class="btn btn-sm btn-warning" title="Edit"
-                          onclick=editOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-edit"></i>
+                          onclick=editOrder("'.$data->d_pcs_id.'") disabled><i class="fa fa-edit"></i>
                       </button>
                       <button class="btn btn-sm btn-danger" title="Delete"
-                          onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-trash"></i>
+                          onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="fa fa-times-circle"></i>
                       </button>
                   </div>'; 
         }  
