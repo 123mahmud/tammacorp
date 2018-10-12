@@ -11,7 +11,7 @@
 		}
 		.div-width{
 			width: 900px;
-			padding: 50px 15px 15px 15px;
+			padding: 30px 15px 15px 15px;
 			background: transparent;
 			position: relative;
 		}
@@ -176,14 +176,11 @@
 
 	@php
 		setlocale(LC_ALL, 'IND');
-
-
-
 	@endphp
 	
 		
 	<div class="div-width">
-
+		<h2>Data KPI Pegawai</h2>
 		<table width="100%" class="border-none">
 			<tr>
 				<td width="10%">Tanggal</td>
@@ -231,7 +228,61 @@
 				<td colspan="5" class="bold text-center">Total Skor Akhir : {{$total[0]['total_score_akhir']}}</td>
 			</tr>
 		</table>
+	</div>
 
+	<div style="padding-top: 30px;">
+		<hr>
+	</div>
+
+	<div class="div-width">
+		<h2>Data KPI Pegawai</h2>
+		<table width="100%" class="border-none">
+			<tr>
+				<td width="10%">Tanggal</td>
+				<td width="1%">:</td>
+				<td width="45%">{{strftime('%e %B %Y', strtotime($data[0]['d_kpix_date']) ) }}</td>
+			
+				<td width="10%">Divisi</td>
+				<td width="1%">:</td>
+				<td>{{$pegawai['c_divisi']}}</td>
+			</tr>
+			<tr>
+				<td>Jabatan</td>
+				<td>:</td>
+				<td>{{$pegawai['c_posisi']}}</td>
+			
+				<td>Pegawai</td>
+				<td>:</td>
+				<td>{{$pegawai['c_nama']}}</td>
+			</tr>
+		</table>
+
+		<table width="100%" cellpadding="3px" style="margin-top: 15px;">
+			<tr class="bold text-center">
+				<td width="1%">No</td>
+				<td>Bobot</td>
+				<td>Key Performance</td>
+				<td>Target</td>
+				<td>Realisasi</td>
+				<td>Skor</td>
+				<td>Skor Akhir</td>
+			</tr>
+			@for($i=0;$i<count($data);$i++)
+				<tr>
+					<td align="center">{{$i+1}}</td>
+					<td align="center">{{$data[$i]['kpix_bobot']}}</td>
+					<td>{{$data[$i]['kpix_name']}}</td>
+					<td align="right">{{$data[$i]['kpix_target']}}</td>
+					<td align="right">{{$data[$i]['d_kpixdt_value']}}</td>
+					<td align="right">{{$data[$i]['d_kpixdt_score']}}</td>
+					<td align="right">{{$data[$i]['d_kpixdt_scoreakhir']}}</td>
+				</tr>
+			@endfor
+			<tr>
+				<td colspan="2" class="bold text-center">Total Bobot : {{$total[0]['total_bobot']}}</td>
+				<td colspan="5" class="bold text-center">Total Skor Akhir : {{$total[0]['total_score_akhir']}}</td>
+			</tr>
+		</table>
 	</div>
 
 
