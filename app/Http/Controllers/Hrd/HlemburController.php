@@ -346,6 +346,51 @@ class HlemburController extends Controller
       }
     }
 
+    public function print($id, $jenis)
+    {
+        if ($jenis == "MAN") {
+            $data = d_lembur::join('m_pegawai_man','d_lembur.d_lembur_pid','=','m_pegawai_man.c_id')
+                            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                            ->select('d_lembur.*', 'm_pegawai_man.c_id', 'm_pegawai_man.c_nik', 'm_pegawai_man.c_nama', 'm_pegawai_man.c_divisi_id', 'm_pegawai_man.c_jabatan_id', 'm_divisi.*', 'm_jabatan.*')
+                            ->where('d_lembur.d_lembur_id', $id)
+                            ->get();
+
+            $data2 = array(
+                'divisi' => $data[0]->c_divisi_id,
+                'jabatan' => $data[0]->c_jabatan_id,
+                'pegawai' => $data[0]->d_lembur_nama,
+                'divisiTxt' => $data[0]->c_divisi,
+                'jabatanTxt' => $data[0]->c_posisi,
+                'hari_indo' => $this->hari_indo($data[0]->d_lembur_date),
+                'tgl_indo' => $this->tgl_indo($data[0]->d_lembur_date)
+            );
+        }else{
+            $data = d_lembur::join('m_pegawai_pro','d_lembur.d_lembur_pid','=','m_pegawai_pro.c_id')
+                            ->join('m_jabatan_pro', 'm_pegawai_pro.c_jabatan_pro_id', '=', 'm_jabatan_pro.c_id')
+                            ->select('d_lembur.*', 'm_pegawai_pro.c_id', 'm_pegawai_pro.c_nik', 'm_pegawai_pro.c_jabatan_pro_id', 'm_jabatan_pro.*')
+                            ->where('d_lembur.d_lembur_id', $id)
+                            ->get();
+            $data2 = array(
+                'divisi' => "4",
+                'jabatan' => $data[0]->c_jabatan_pro_id,
+                'pegawai' => $data[0]->d_lembur_nama,
+                'divisiTxt' => "Produksi",
+                'jabatanTxt' => $data[0]->c_jabatan_pro,
+                'hari_indo' => $this->hari_indo($data[0]->d_lembur_date),
+                'tgl_indo' => $this->tgl_indo($data[0]->d_lembur_date)
+            );   
+        }
+
+        // return response()->json([
+        //     'status' => 'sukses',
+        //     'data' => $data,
+        //     'data2' => $data2
+        // ]);
+
+        return view('hrd/datalembur/form-lembur-print', ['data' => $data, 'data2' => $data2]);
+    }
+
     public function kodeLemburAuto()
     {
         $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_lembur_code,4)) as kode_max from d_lembur WHERE DATE_FORMAT(d_lembur_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
@@ -365,5 +410,70 @@ class HlemburController extends Controller
         }
 
         return $code = "LBR-".date('ym')."-".$kd;
+    }
+
+    public function hari_indo($tanggal)
+    {
+        $hari = date('D',strtotime($tanggal));
+     
+        switch($hari){
+            case 'Sun':
+                $hari_ini = "Minggu";
+            break;
+     
+            case 'Mon':         
+                $hari_ini = "Senin";
+            break;
+     
+            case 'Tue':
+                $hari_ini = "Selasa";
+            break;
+     
+            case 'Wed':
+                $hari_ini = "Rabu";
+            break;
+     
+            case 'Thu':
+                $hari_ini = "Kamis";
+            break;
+     
+            case 'Fri':
+                $hari_ini = "Jumat";
+            break;
+     
+            case 'Sat':
+                $hari_ini = "Sabtu";
+            break;
+            
+            default:
+                $hari_ini = "Undefined";     
+            break;
+        }
+     
+        return $hari_ini;
+    }
+
+    public function tgl_indo($tanggal)
+    {
+        $bulan = array (
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember'
+        );
+        $pecah = explode('-', $tanggal);
+
+        // variabel pecah 0 = tahun
+        // variabel pecah 1 = bulan
+        // variabel pecah 2 = tanggal
+        return $pecah[2].' '.$bulan[$pecah[1]].' ' .$pecah[0];
     }
 }

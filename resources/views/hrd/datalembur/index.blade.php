@@ -356,7 +356,7 @@
           $('#pegawai_det').val(data.pegawai);
           $('#keperluan_det').val(data.data[0].d_lembur_keperluan);
           $('#append-detail').html(
-            '<a href="'+ baseUrl +'/hrd/datalembur/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'
+            '<a href="'+ baseUrl +'/hrd/datalembur/print/'+ id +'/'+ jenpeg +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'
             +'<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
           $('#modal_detail_data').modal('show');
         },
