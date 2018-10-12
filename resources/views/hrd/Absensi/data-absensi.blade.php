@@ -1,6 +1,6 @@
     <div class="panel-body">
-            <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-produksi/contoh-excel-produksi.xlsx')}}');"><button class="btn btn-success">Download Contoh Master</button></a>
-            <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-produksi/master-produksi.xlsx')}}');"><button class="btn btn-success">Download ID Produksi</button></a>
+            <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-produksi/contoh-master-produksi.xlsx')}}');"><button class="btn btn-success">Download Contoh Master</button></a>
+            <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-produksi/id-produksi.xlsx')}}');"><button class="btn btn-success">Download ID Produksi</button></a>
             <form
           style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;     margin-bottom: 16px;"
           action="{{url('/import/data-produksi')}}"
