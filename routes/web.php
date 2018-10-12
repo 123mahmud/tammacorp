@@ -1066,6 +1066,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/master/datajabatan/update-jabatan/{id}', 'Master\JabatanController@updateJabatan');
     Route::get('/master/datajabatan/tambah-jabatan', 'Master\JabatanController@tambahJabatan');
     Route::delete('/master/datajabatan/delete-jabatan/{id}', 'Master\ManajemenSuratController@deleteJabatan');
+    Route::get('/master/datajabatan/tableproduksi', 'Master\JabatanController@tablePro');
+    Route::get('/master/datajabatan/tambah-jabatanpro', 'Master\JabatanController@tambahJabatanPro');
+    Route::get('datajabatan/simpan-jabatanpro', 'Master\JabatanController@simpanJabatanPro');
+    Route::get('datajabatan/hapus-jabatanpro/{id}', 'Master\JabatanController@hapusJabatanPro');
 //pegawai
     Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
     Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');

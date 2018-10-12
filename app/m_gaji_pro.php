@@ -10,9 +10,9 @@ class m_gaji_pro extends Model
   protected $primaryKey = 'c_id';
   protected $fillable = [ 'c_id',
                           'nm_gaji',
-                          'i_type',
                           'c_gaji',
-                          'c_lembur'
+                          'c_lembur',
+                          'c_gaji_jabatan'
                         ];
 
   public $incrementing = false;

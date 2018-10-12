@@ -26,6 +26,6 @@ class abs_pegawai_pro extends Model
   public $incrementing = false;
   public $remember_token = false;
   //public $timestamps = false;
-  const CREATED_AT = 'apm_insert';
-  const UPDATED_AT = 'apm_update';
+  const CREATED_AT = 'app_insert';
+  const UPDATED_AT = 'app_updated';
 }
