@@ -462,6 +462,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/cetak-surat/{id}', 'Hrd\ManajemenSuratController@cetakSurat');
 // Ari
     // surat2
+    // application form
+    Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
     // form kenaikan gaji
     Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
     Route::get('/hrd/manajemensurat/form_kenaikan_gaji_print', 'Hrd\ManajemenSuratController@form_kenaikan_gaji_print')->name('form_kenaikan_gaji_print');
@@ -477,8 +479,7 @@ Route::group(['middleware' => 'auth'], function () {
     // form keterangan kerja
     Route::get('/hrd/manajemensurat/form_keterangan_kerja', 'Hrd\ManajemenSuratController@form_keterangan_kerja')->name('form_keterangan_kerja');
     Route::get('/hrd/manajemensurat/form_keterangan_kerja_print', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
-    // application form
-    Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
+    
 
 
 //gaji

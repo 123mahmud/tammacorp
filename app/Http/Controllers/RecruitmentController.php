@@ -67,9 +67,12 @@ class RecruitmentController extends Controller
         $cek2 = DB::table('d_apply')->where('ap_pid', $id)->where('ap_stid', '3')->first();
         $cek3 = DB::table('d_apply')->where('ap_pid', $id)->where('ap_stid', '4')->first();
 
-        if (count($cek1) > 0 ) { $cek_app1 = $cek1->ap_stdt_id; } else { $cek_app1 = '1'; }
+        /*if (count($cek1) > 0 ) { $cek_app1 = $cek1->ap_stdt_id; } else { $cek_app1 = '1'; }
         if (count($cek2) > 0 ) { $cek_app2 = $cek2->ap_stdt_id; } else { $cek_app2 = '1'; }
-        if (count($cek3) > 0 ) { $cek_app3 = $cek3->ap_stdt_id; } else { $cek_app3 = '1'; }
+        if (count($cek3) > 0 ) { $cek_app3 = $cek3->ap_stdt_id; } else { $cek_app3 = '1'; }*/
+        if (!empty($cek1)) { $cek_app1 = $cek1->ap_stdt_id; } else { $cek_app1 = '1'; }
+        if (!empty($cek2)) { $cek_app2 = $cek2->ap_stdt_id; } else { $cek_app2 = '1'; }
+        if (!empty($cek3)) { $cek_app3 = $cek3->ap_stdt_id; } else { $cek_app3 = '1'; }
 
         return view('hrd/recruitment/process_rekrut', compact('data', 'approve1', 'approve2', 'approve3', 'cek_app1', 'cek_app2', 'cek_app3', 'jadwal_i', 'jadwal_p', 'vacancy'));
     }
