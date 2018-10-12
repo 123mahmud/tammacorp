@@ -460,10 +460,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
     Route::get('/hrd/manajemensurat/lookup-data-pegawai', 'Hrd\ManajemenSuratController@lookupPegawai');
     Route::get('/hrd/manajemensurat/cetak-surat/{id}', 'Hrd\ManajemenSuratController@cetakSurat');
-    // surat-phk pengurangan pegawai
-    Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
-    // surat-phk kesalahan berat
-    Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
 // Ari
     // surat2
     // form kenaikan gaji

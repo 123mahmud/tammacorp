@@ -132,18 +132,6 @@
                   </form>
                               
               </div>
-
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="form-group">
-                    <h3>Hanya Preview</h3>
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <a class="btn btn-block btn-sm btn-info" target="_blank" href="{{route('surat_phk_print_berat')}}"><i class="fa fa-print"></i> Print Kesalahan Berat</a>
-                  <a class="btn btn-block btn-sm btn-info" target="_blank" href="{{route('surat_phk_print_pengurangan')}}"><i class="fa fa-print"></i> Print Pengurangan Pegawai</a>
-                </div>
-              </div>
                   
               <div class="table-responsive" style="margin-top: 15px;">
                 <table id="tbl_phk" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0">
@@ -295,25 +283,6 @@
       $.ajax({
         type: "PUT",
         url: '{{ url("hrd/manajemensurat/edit-phk") }}' + '/' + a,
-        data: { id },
-        success: function (data) {
-        },
-        complete: function (argument) {
-          window.location = (this.url)
-        },
-        error: function () {
-
-        },
-        async: false
-      });
-    }
-    function cetak(a) {
-      var parent = $(a).parents('tr');
-      var id = $(parent).find('.d_id').text();
-      console.log(id);
-      $.ajax({
-        type: "GET",
-        url: '{{ url("hrd/manajemensurat/cetak-surat") }}' + '/' + a,
         data: { id },
         success: function (data) {
         },
