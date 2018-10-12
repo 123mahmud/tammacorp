@@ -192,8 +192,8 @@ class ManajemenSuratController extends Controller
         return view('hrd/manajemensurat/surat_phk_print_berat');
     }
 
-//===============================================================================================================================
-
+//==============================================================================================================================
+        
     public function form_kenaikan_gaji(){
         return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji');
     }
@@ -206,12 +206,6 @@ class ManajemenSuratController extends Controller
     }
     public function form_laporan_leader_print(){
         return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader_print');
-    }
-    public function form_lembur(){
-        return view('hrd/manajemensurat/surat/form_lembur/form_lembur');
-    }
-    public function form_lembur_print(){
-        return view('hrd/manajemensurat/surat/form_lembur/form_lembur_print');
     }
     public function form_overhandle(){
         return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle');
@@ -230,12 +224,6 @@ class ManajemenSuratController extends Controller
     }
     public function form_keterangan_kerja_print(){
         return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja_print');
-    }
-    public function form_perintah_lembur(){
-        return view('hrd/manajemensurat/surat/form_perintah_lembur/form_perintah_lembur');
-    }
-    public function form_perintah_lembur_print(){
-        return view('hrd/manajemensurat/surat/form_perintah_lembur/form_perintah_lembur_print');
     }
     public function form_application_print(){
         return view('hrd/manajemensurat/surat/form_application/form_application');

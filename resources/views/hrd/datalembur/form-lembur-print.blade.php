@@ -180,71 +180,55 @@
 		</header>
 			
 	<div class="div-width">
-
 		<h2 style="margin: 30px 0 0 0;">FORM LEMBUR</h2>
-		<small style="margin: 15px 0 0 0;">FM-SDM-01-2018</small>
-
-		<table width="100%" style="margin-top: 30px;" cellpadding="5px">
+		<small style="margin: 15px 0 0 0;">No : {{$data[0]->d_lembur_code}}</small>
+		<table width="96%" style="margin-top: 10px;" cellpadding="5px">
 			<tr>
-				<td colspan="2">Tanggal Pengajuan Lembur pada<br>
-					Hari, Tgl 28 Sep 2018
-				</td>
-				<td rowspan="2" align="center">Lembur Pada Waktu :</td>
-				<td align="center">
-					<label><input type="radio" value="hari_kerja" name="hari" disabled=""> Hari Kerja</label>
+				<td colspan="3"><strong>Tanggal Pengajuan Lembur pada :</strong> {{$data2['hari_indo']}}, {{$data2['tgl_indo']}}
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2">Divisi :
-				</td>
-				
-				<td align="center">
-					<label><input type="radio" value="hari_libur" name="hari" disabled=""> Hari Libur</label>
+				<td colspan="3"><strong>Divisi :</strong> {{$data2['divisiTxt']}}
 				</td>
 			</tr>
 			<tr>
 				<td class="top" style="height: 50px;" colspan="4">
-					<label class="bold">Uraian Lembur : </label><br>
-					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+					<label class="bold">Uraian Lembur : </label><br><br>
+					{{$data[0]->d_lembur_keperluan}}
 				</td>
 			</tr>
 			<tr>
-				<td class="border-none-bottom" colspan="4">Yang Bertanda di bawah ini :</td>
+				<td class="border-none-bottom" colspan="4"><strong>Yang Bertanda di bawah ini :</strong></td>
 			</tr>
 			<tr>
 				<td>Nama</td>
 				<td class="border-none-left border-none-right" width="1%">:</td>
-				<td colspan="2">Alpha</td>
+				<td colspan="2">{{$data2['pegawai']}}</td>
 			</tr>
 			<tr>
 				<td>NIK</td>
 				<td class="border-none-left border-none-right" width="1%">:</td>
-				<td colspan="2">11112</td>
+				<td colspan="2">{{$data[0]->c_nik}}</td>
 			</tr>
 			<tr>
 				<td>Jabatan</td>
 				<td class="border-none-left border-none-right" width="1%">:</td>
-				<td colspan="2">Jendral</td>
+				<td colspan="2">{{$data2['jabatanTxt']}}</td>
 			</tr>
 			<tr>
-				<td colspan="2">Divisi</td>
-				<td colspan="2"></td>
+				<td>Divisi</td>
+				<td class="border-none-left border-none-right" width="1%">:</td>
+				<td colspan="2">{{$data2['divisiTxt']}}</td>
 			</tr>
-			
 		</table>
-		<table width="100%" class="border-none-top" cellpadding="5px">
+		<table width="96%" class="border-none-top" cellpadding="5px">
 			<tr>
 				<td align="center">Diajukan oleh,</td>
 				<td align="center">Disetujui oleh,<br>Kepala Divisi</td>
 				<td align="center">Diketahui oleh :<br>Ka. HRD & Umum</td>
 			</tr>
 			<tr>
-				<td height="100px" valign="bottom" align="center">..................................</td>
+				<td height="100px" valign="bottom" align="center">{{$data2['pegawai']}} (NIK : {{$data[0]->c_nik}})</td>
 				<td valign="bottom" align="center">..................................</td>
 				<td valign="bottom" align="center">..................................</td>
 			</tr>
