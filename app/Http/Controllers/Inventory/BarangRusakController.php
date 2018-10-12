@@ -435,7 +435,7 @@ class BarangRusakController extends Controller
                         ->where('s_position', '8')
                         ->first();
 
-                if (count($q_dstock) > 0) 
+                if (!empty($q_dstock)) {
                 {
                     $id_dstock = $q_dstock->s_id;
                     $stokAkhir = (int)$hasilConvert + (int)$q_dstock->s_qty;
