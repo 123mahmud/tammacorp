@@ -16,8 +16,6 @@ class d_ubah_jenis extends Model
         'd_uj_code', 
         'd_uj_date',
         'd_uj_staff',
-        'd_uj_gdg',
-        'd_uj_created',
-        'd_uj_updated'
+        'd_uj_gdg'
     ];
 }

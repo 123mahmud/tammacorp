@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header" style="background-color: #e77c38;">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title" style="color: white;">Detail Pemakaian Barang Gudang</h4>
+        <h4 class="modal-title" style="color: white;">Detail Penerimaan Gudang Rusak</h4>
       </div>
 
       <div class="modal-body">
@@ -70,7 +70,7 @@
                 <th width="30%;">Kode | Barang</th>
                 <th width="15%">Qty</th>
                 <th width="10%">Satuan</th>
-                <th width="15%">Stok</th>
+                <th width="15%">Stok Gdg Asal</th>
                 <th width="20%">Keterangan</th>
               </tr>
             </thead>
