@@ -46,7 +46,6 @@
             <!-- /div form-tab -->
             @include('hrd.manajemensurat.surat.form_kenaikan_gaji.form_kenaikan_gaji_tab_index')
             <!-- /div form-tab -->
-
             {{-- list-tab --}}
             @include('hrd.manajemensurat.surat.form_kenaikan_gaji.form_kenaikan_gaji_tab_list')
             {{-- end list-tab --}}
