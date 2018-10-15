@@ -463,6 +463,7 @@ Route::group(['middleware' => 'auth'], function () {
 //surat kenaikan gaji/pangkat
     Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
     Route::get('/hrd/manajemensurat/form_kenaikan_gaji_print', 'Hrd\ManajemenSuratController@form_kenaikan_gaji_print')->name('form_kenaikan_gaji_print');
+    Route::get('/hrd/manajemensurat/lookup-data-pegawai2', 'Hrd\ManajemenSuratController@lookupPegawai2');
 // Ari
     // surat2
     // application form

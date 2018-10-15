@@ -200,6 +200,73 @@ class ManajemenSuratController extends Controller
     public function form_kenaikan_gaji_print(){
         return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji_print');
     }
+    public function lookupPegawai2(Request $request)
+    {
+        $formatted_tags = array();
+        $term = trim($request->q);
+        if (empty($term)) 
+        {
+            $pegawai = DB::table('m_pegawai_man')
+                ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                ->join('m_sub_divisi', 'm_jabatan.c_sub_divisi_id', '=', 'm_sub_divisi.c_id')
+                ->select('m_pegawai_man.c_id',
+                         'm_pegawai_man.c_nama',
+                         'm_pegawai_man.c_tahun_masuk',
+                         'm_pegawai_man.c_divisi_id',
+                         'm_pegawai_man.c_jabatan_id',
+                         'm_pegawai_man.c_pendidikan',
+                         'm_divisi.c_divisi',
+                         'm_jabatan.c_posisi',
+                         'm_jabatan.c_sub_divisi_id',
+                         'm_sub_divisi.c_subdivisi')
+                ->orderBy('m_pegawai_man.c_nama', 'ASC')->limit(10)->get();
+        }
+        else
+        {  
+            $pegawai = DB::table('m_pegawai_man')
+                ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                ->join('m_sub_divisi', 'm_jabatan.c_sub_divisi_id', '=', 'm_sub_divisi.c_id')
+                ->select('m_pegawai_man.c_id',
+                         'm_pegawai_man.c_nama',
+                         'm_pegawai_man.c_tahun_masuk',
+                         'm_pegawai_man.c_divisi_id',
+                         'm_pegawai_man.c_jabatan_id',
+                         'm_pegawai_man.c_pendidikan',
+                         'm_divisi.c_divisi',
+                         'm_jabatan.c_posisi',
+                         'm_jabatan.c_sub_divisi_id',
+                         'm_sub_divisi.c_subdivisi')
+                ->where('m_pegawai_man.c_nama', 'LIKE', '%'.$term.'%')
+                ->orderBy('m_pegawai_man.c_nama', 'ASC')
+                ->limit(10)->get();
+        }
+        foreach ($pegawai as $val) {
+            if ($val->c_pendidikan == 'S2') {
+                $akronim_title = 'c_s1';
+            }else{
+                $akronim_title = strtolower('c_'.$val->c_pendidikan);
+            }
+
+            $gj = DB::table('m_gaji_man')->select($akronim_title)->first();
+            $gapok = (int)$gj->$akronim_title;
+
+            $formatted_tags[] = [
+                'id' => $val->c_id,
+                'text' => $val->c_nama,
+                'divisi' => $val->c_divisi_id,
+                'txtDivisi' => $val->c_divisi,
+                'tglAwalMasuk' => $val->c_tahun_masuk,
+                'jabatan' => $val->c_jabatan_id,
+                'txtJabatan' => $val->c_posisi,
+                'level' => $val->c_sub_divisi_id,
+                'txtLevel' => $val->c_subdivisi,
+                'gapok' => $gapok
+            ];
+        }
+        return Response::json($formatted_tags);
+    }
 
     //==============================================END KENAIKAN GAJI==========================================================
     

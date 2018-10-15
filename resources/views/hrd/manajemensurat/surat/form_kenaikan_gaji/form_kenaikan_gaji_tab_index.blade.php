@@ -11,9 +11,7 @@
         <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="form-group">
            
-            <select class="form-control input-sm select2">
-              <option>--Pilih Karyawan--</option>
-            </select>
+            <select class="form-control input-sm select2" name="pegawai"></select>
           
           </div>
         </div>
@@ -24,7 +22,8 @@
 
         <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="form-group">
-            <input type="text" class="form-control input-sm" name="">
+            <input type="text" class="form-control input-sm" name="divisi">
+            <input type="hidden" class="form-control input-sm" name="iddivisi">
           </div>
         </div>
 
@@ -34,7 +33,7 @@
 
         <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="form-group">
-            <input type="text" class="form-control input-sm datepicker" name="">
+            <input class="form-control input-sm datepicker1" name="tgl_awal_masuk" type="text">
           </div>
         </div>
         
@@ -67,30 +66,34 @@
         <tr>
           <td>Jabatan</td>
           <td>
-            <select class="form-control input-sm select2">
-              <option>--Pilih Jabatan--</option>
-            </select>
+            <input type="text" class="form-control input-sm" name="jabatan_now" readonly>
+            <input type="hidden" class="form-control input-sm" name="idjabatan_now">
           </td>
           <td>
-            <select class="form-control input-sm select2">
-              <option>--Pilih Jabatan--</option>
-            </select>
+            <select class="form-control input-sm select2" name="jabatan"></select>
           </td>
         </tr>
         <tr>
           <td>Grade / Tingkat</td>
-          <td><input type="text" class="form-control input-sm" readonly="" name=""></td>
-          <td><input type="text" class="form-control input-sm" readonly="" name=""></td>
+          <td>
+            <input type="text" class="form-control input-sm" readonly="" name="level_now">
+            <input type="hidden" class="form-control input-sm" name="idlevel_now">
+          </td>
+          <td>
+            <input type="text" class="form-control input-sm" readonly="" name="">
+          </td>
         </tr>
         <tr>
-          <td>Gaji</td>
-          <td><input type="text" class="form-control input-sm" name=""></td>
+          <td>Gaji Pokok</td>
+          <td><input type="text" class="form-control input-sm" name="gaji_now" readonly></td>
           <td><input type="text" class="form-control input-sm" name=""></td>
         </tr>
         <tr>
           <td>Efektif per Tanggal</td>
-          <td><input type="text" class="form-control input-sm datepicker" name=""></td>
-          <td><input type="text" class="form-control input-sm datepicker" name=""></td>
+          <td>
+            <input class="form-control input-sm datepicker1" name="tanggal_now" type="text">
+          </td>
+          <td><input type="text" class="form-control input-sm datepicker1" name=""></td>
         </tr>
       </tbody>
     </table>

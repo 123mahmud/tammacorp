@@ -60,56 +60,108 @@
 @endsection 
 
 @section("extra_scripts")
-
+<script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
 
 <script type="text/javascript">
-  var extensions = {
-    "sFilterInput": "form-control input-sm",
-    "sLengthSelect": "form-control input-sm"
-  }
-  // Used when bJQueryUI is false
-  $.extend($.fn.dataTableExt.oStdClasses, extensions);
-  // Used when bJQueryUI is true
-  $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-  $('#tbl_jabatan').DataTable({
-    processing: true,
-    // responsive:true,
-    serverSide: true,
-    ajax: {
-      url: '{{ url("hrd/datajabatan/data-jabatan") }}',
-    },
-    columnDefs: [
-      {
-        targets: 0,
-        className: 'center d_id'
-      },
-    ],
-    "columns": [
-      { "data": "kode" },
-      { "data": "c_posisi" },
-      { "data": "c_divisi" },
-      { "data": "action" },
-    ],
-    "responsive": true,
-    "pageLength": 10,
-    "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-    "language": {
-      "searchPlaceholder": "Cari Data",
-      "emptyTable": "Tidak ada data",
-      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-      "sSearch": '<i class="fa fa-search"></i>',
-      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-      "infoEmpty": "",
-      "paginate": {
-        "previous": "Sebelumnya",
-        "next": "Selanjutnya",
-      }
+  $(document).ready(function () {
+
+    //fix to issue select2 on modal when opening in firefox
+    $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+    
+    var extensions = {
+      "sFilterInput": "form-control input-sm",
+      "sLengthSelect": "form-control input-sm"
     }
+    // Used when bJQueryUI is false
+    $.extend($.fn.dataTableExt.oStdClasses, extensions);
+    // Used when bJQueryUI is true
+    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+    $('#tbl_jabatan').DataTable({
+      processing: true,
+      // responsive:true,
+      serverSide: true,
+      ajax: {
+        url: '{{ url("hrd/datajabatan/data-jabatan") }}',
+      },
+      columnDefs: [
+        {
+          targets: 0,
+          className: 'center d_id'
+        },
+      ],
+      "columns": [
+        { "data": "kode" },
+        { "data": "c_posisi" },
+        { "data": "c_divisi" },
+        { "data": "action" },
+      ],
+      "responsive": true,
+      "pageLength": 10,
+      "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+          "previous": "Sebelumnya",
+          "next": "Selanjutnya",
+        }
+      }
+    });
+    
+    $('.datepicker1').datepicker({
+      autoclose: true,
+      format : 'dd-mm-yyyy'
+    });
+
+    //$('.select2').select2();
+    $("select[name='pegawai']").select2({
+      placeholder: "Pilih Pegawai",
+      ajax: {
+        url: baseUrl + '/hrd/manajemensurat/lookup-data-pegawai2',
+        dataType: 'JSON',
+        data: function (params) {
+          return {
+              q: $.trim(params.term)
+          };
+        },
+        processResults: function (data) {
+          data = data.map(function (item) {
+              return {
+                  id: item.id,
+                  text: item.text,
+                  divisi: item.divisi,
+                  txtDivisi: item.txtDivisi,
+                  tglAwalMasuk : item.tglAwalMasuk,
+                  jabatan: item.jabatan,
+                  txtJabatan : item.txtJabatan,
+                  level: item.level,
+                  txtLevel : item.txtLevel,
+                  gapok : item.gapok
+              };
+          });
+          return { results: data };
+        },
+        cache: true
+      },
+    });
+
+    $("select[name='pegawai']").change(function(event) {
+      var dataSelect = $("select[name='pegawai']").select2('data')[0];
+      if(dataSelect.tglAwalMasuk != null) { var newDate = dataSelect.tglAwalMasuk.split("-").reverse().join("-"); }
+      $("input[name='divisi']").val(dataSelect.txtDivisi);
+      $("input[name='iddivisi']").val(dataSelect.divisi);
+      $("input[name='tgl_awal_masuk']").val(newDate);
+      $("input[name='jabatan_now']").val(dataSelect.txtJabatan);
+      $("input[name='idjabatan_now']").val(dataSelect.jabatan);
+      $("input[name='level_now']").val(dataSelect.txtLevel);
+      $("input[name='idlevel_now']").val(dataSelect.level);
+      $("input[name='tanggal_now']").val(newDate);
+      $("input[name='gaji_now']").val(dataSelect.gapok);
+    });
   });
-  
-  $('.datepicker').datepicker({
-    format : 'dd-mm-yyyy'
-  });
-  $('.select2').select2();
 </script> 
 @endsection
