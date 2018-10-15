@@ -23,6 +23,27 @@
           </div>
         </div>
       </div>
+              <div id="data-product-plan" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
+          <div class="table-responsive">
+              <table class="table tabelan table-hover table-bordered" id="detailFormul" width="100%">
+                <thead>
+                  <tr>
+                    <th width="30%">Jumlah Masuk</th>
+                    <th width="30%">Jumlah Lembur</th>
+                    <th width="40%">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+               
+                  <tr>
+                    <td class="text-right">{{ $jmlHadir }} x {{ number_format($uangHadir,0,'.',',') }} = {{ number_format($gajiHR,0,'.',',') }}</td>
+                    <td class="text-right">{{ $jmlHadir }} Jam x {{ number_format($uangLembur,0,'.',',')}} = {{ number_format($gajiHR,0,'.',',') }}</td>
+                    <td class="text-right">{{ number_format($totalHRL,0,'.',',') }}</td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
         <div id="data-product-plan" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
           <div class="table-responsive">
               <table class="table tabelan table-hover table-bordered" id="detailFormula" width="100%">
@@ -71,12 +92,13 @@
                   @endforeach
                   <tr>
                     <td colspan="3" style="text-align:left;font-weight: bold;">Pendapatan Total</td>
-                    <td  class="text-right" style="font-weight: bold;">{{ number_format($total,0,'.',',') }}</td>
+                    <td  class="text-right" style="font-weight: bold;">{{ number_format($totalHRL + $total,0,'.',',') }}</td>
                   </tr>
                 </tbody>
               </table>
           </div>
         </div>
+
 
         <div class="modal-footer">
           <button type="button" class="btn btn-warning">Print</button>

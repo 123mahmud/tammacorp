@@ -307,7 +307,9 @@ class POSRetailController extends Controller
               ->select('m_group.m_akun_penjualan', 'm_group.m_gid')
               ->first();
 
-          if(!$cek){
+          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_penjualan)->first();
+
+          if(!$cek || !$cek2){
               $err = false;
           }else{
               $akun[count($akun)] = [
@@ -321,7 +323,7 @@ class POSRetailController extends Controller
       if(!$err){
           return response()->json([
               'status' => 'gagal',
-              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
           ]);
       }
 
@@ -473,14 +475,20 @@ class POSRetailController extends Controller
     $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
     $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
 
-    if(substr($request->sp_method[0], 0, 3) == '100')
+    if(substr($request->sp_method[0], 0, 3) == '100'){
       $state = 'KM';
-    else if(substr($request->sp_method[0], 0, 3) == '101')
+      $sts = 'Cash';
+    }
+    else if(substr($request->sp_method[0], 0, 3) == '101'){
       $state = 'BM';
-    else
+      $sts = 'Transfer';
+    }
+    else{
       $state = 'MM';
+      $sts = 'Hutang';
+    }
 
-    $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), $akun);
+    $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, $akun);
 
     return response()->json([
         'status' => 'sukses',
