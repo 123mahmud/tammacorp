@@ -415,7 +415,9 @@ class ReturnPembelianController extends Controller
               ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
               ->first();
 
-          if(!$cek){
+          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
+
+          if(!$cek || !$cek2){
               $err = false;
           }else{
               $acc[$acc_key] = [
@@ -568,7 +570,9 @@ class ReturnPembelianController extends Controller
               ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
               ->first();
 
-          if(!$cek){
+          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
+
+          if(!$cek || !$cek2){
               $err = false;
           }else{
               $acc[$acc_key] = [
