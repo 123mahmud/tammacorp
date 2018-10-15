@@ -24,47 +24,7 @@ class ManajemenSuratController extends Controller
             $maxid += 1;
         }
         $tahun = Carbon::now('Asia/Jakarta')->format('Y');
-        $bulan = Carbon::now('Asia/Jakarta')->format('m');
-        switch ($bulan) {
-            case "01":
-                $bulan = "I";
-                break;
-            case "02":
-                $bulan =  "II";
-                break;
-            case "03":
-                $bulan =  "III";
-                break;
-            case "04":
-                $bulan =  "IV";
-                break;
-            case "05":
-                $bulan =  "V";
-                break;
-            case "06":
-                $bulan =  "vI";
-                break;
-            case "07":
-                $bulan =  "VII";
-                break;
-            case "08":
-                $bulan =  "VIII";
-                break;
-            case "09":
-                $bulan =  "IX";
-                break;
-            case "10":
-                $bulan =  "X";
-                break;
-            case "11":
-                $bulan =  "XI";
-                break;
-            case "12":
-                $bulan =  "XII";
-                break;
-            default:
-                echo "masukan format bulan dengan benar";
-        }
+        $bulan = $this->convertMonthToGreek(Carbon::now('Asia/Jakarta')->format('m'));
         $kode = str_pad($maxid, 3, '0', STR_PAD_LEFT)."/PHK/HRD/TRI/".$bulan."/".$tahun;
         // dd($kode);
         return view('hrd/manajemensurat/surat/form_phk/surat_phk',['kode' => $kode]);
@@ -267,6 +227,99 @@ class ManajemenSuratController extends Controller
         }
         return Response::json($formatted_tags);
     }
+    public function lookupjabatan(Request $request)
+    {
+        $formatted_tags = array();
+        $term = trim($request->q);
+        if (empty($term)) 
+        {
+            $jabatan = DB::table('m_jabatan')
+            ->select('m_jabatan.*', 'm_sub_divisi.c_subdivisi')
+            ->join('m_sub_divisi', 'm_jabatan.c_sub_divisi_id', '=', 'm_sub_divisi.c_id')
+            ->where('m_jabatan.c_divisi_id', $request->divisi)
+            ->orderBy('m_jabatan.c_posisi', 'ASC')
+            ->limit(10)->get();
+        }
+        else
+        {  
+            $jabatan = DB::table('m_jabatan')
+            ->select('m_jabatan.*', 'm_sub_divisi.c_subdivisi')
+            ->join('m_sub_divisi', 'm_jabatan.c_sub_divisi_id', '=', 'm_sub_divisi.c_id')
+            ->where('m_jabatan.c_divisi_id', $request->divisi)
+            ->where('m_jabatan.c_posisi', 'LIKE', '%'.$term.'%')
+            ->orderBy('m_jabatan.c_posisi', 'ASC')->limit(10)->get();
+        }
+        foreach ($jabatan as $val) {
+            $formatted_tags[] = [ 
+                'id' => $val->c_id,
+                'text' => $val->c_posisi,
+                'idlevel' => $val->c_sub_divisi_id,
+                'level' => $val->c_subdivisi
+            ];
+        }
+        return Response::json($formatted_tags);
+    }
+    public function simpanNaikJabatan(Request $request){
+        //dd($request->all());
+        $maxid = DB::Table('d_naik_jabatan')->select('nj_id')->max('nj_id');
+        if ($maxid <= 0 || $maxid <= '') { $maxid  = 1; }else{ $maxid += 1; }
+
+        $dtnow = Carbon::now('Asia/Jakarta');
+        $dnow = date('Y-m-d',strtotime(Carbon::now('Asia/Jakarta')));
+        $tahun = Carbon::now('Asia/Jakarta')->format('Y');
+        $bulan = $this->convertMonthToGreek(Carbon::now('Asia/Jakarta')->format('m'));
+        $kode = str_pad($maxid, 3, '0', STR_PAD_LEFT)."/PROMOSI/HRD/".$bulan."/".$tahun;
+
+        DB::table('d_naik_jabatan')->insert([
+            'nj_id' => $maxid,
+            'nj_code' => $kode,
+            'nj_type' => 'J',
+            'nj_pid' => $request->pegawai,
+            'nj_alasan' => $request->alasan,
+            'nj_tgl' => $dnow,
+            'nj_tgl_aktif' => date('Y-m-d',strtotime($request->tanggal_now)),
+            'nj_level_lama' => $request->idlevel_now,
+            'nj_posisi_lama' => $request->idjabatan_now,
+            'nj_level_baru' => $request->idlevel,
+            'nj_posisi_baru' => $request->jabatan,
+            'nj_p_rekom' => $request->rekomendasi,
+            'nj_divisi_rekom' => $request->iddivisi_rekom,
+            'nj_jabatan_rekom' => $request->idjabatan_rekom,
+            'nj_created' => $dtnow
+        ]);
+
+        return redirect('/hrd/manajemensurat/form_kenaikan_gaji');
+    }
+    public function promosiData(){
+        $list = DB::table('d_naik_jabatan')
+        ->join
+        ->get();
+        $data = collect($list);
+        return Datatables::of($data)           
+                ->addColumn('action', function ($data) {
+                         return  '<button id="edit" onclick="edit('.$data->nj_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
+                                        <a href="'.url('/hrd/manajemensurat/cetak-surat-promosi/'.$data->nj_id).'" target="_blank" class="btn btn-info"><i class="glyphicon glyphicon-print"></i></a>'.'
+                                        <button id="delete" onclick="hapus('.$data->nj_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                })
+                ->addColumn('kode', function ($data) {
+                    return  str_pad($data->c_id, 3, '0', STR_PAD_LEFT);
+                })
+                ->addColumn('none', function ($data) {
+                    return '-';
+                })
+                ->addColumn('type', function ($data) {
+                    if ($data->nj_type == "G") {return "Gaji"; }else{ return 'Jabatan'; }
+                })
+                ->addColumn('tanggal', function ($data) {
+                    if ($data->nj_tgl == null) {
+                        return '-';
+                    } else {
+                        return $data->nj_tgl ? with(new Carbon($data->nj_tgl))->format('d M Y') : '';
+                    }    
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+    }
 
     //==============================================END KENAIKAN GAJI==========================================================
     
@@ -296,5 +349,48 @@ class ManajemenSuratController extends Controller
     }
     public function form_application_print(){
         return view('hrd/manajemensurat/surat/form_application/form_application');
+    }
+    public function convertMonthToGreek($bulan)
+    {
+        switch ($bulan) {
+            case "01":
+                return "I";
+                break;
+            case "02":
+                return "II";
+                break;
+            case "03":
+                return "III";
+                break;
+            case "04":
+                return "IV";
+                break;
+            case "05":
+                return "V";
+                break;
+            case "06":
+                return "vI";
+                break;
+            case "07":
+                return "VII";
+                break;
+            case "08":
+                return "VIII";
+                break;
+            case "09":
+                return "IX";
+                break;
+            case "10":
+                return "X";
+                break;
+            case "11":
+                return "XI";
+                break;
+            case "12":
+                return "XII";
+                break;
+            default:
+                return "masukan format bulan dengan benar";
+        }
     }
 }
