@@ -183,7 +183,7 @@ class PayrollmanController extends Controller
         }
 
         //data pegawai
-        $d_pegawai = m_pegawai_man::select('c_anak','c_nikah','c_pendidikan', 'c_tunjangan')->where('c_id', $request->pegawai)->first();
+        $d_pegawai = m_pegawai_man::select('c_anak','c_nikah','c_pendidikan', 'c_tunjangan', 'c_tahun_masuk')->where('c_id', $request->pegawai)->first();
 
         //pendidikan
         if ($d_pegawai->c_pendidikan == 'S2') {
@@ -245,6 +245,16 @@ class PayrollmanController extends Controller
                 elseif($value->tman_id == $list[$z] && $value->tman_periode == "ST" && $list[$z] == "7")
                 {
                     if ($d_pegawai->c_nikah == 'Menikah') { $income[] = (int)$value->tman_value; }else{ $income[] = 0; }
+                }
+                elseif($value->tman_id == $list[$z] && $value->tman_periode == "ST" && $list[$z] == "14")
+                {
+                    //$thnmasuk = explode('-', $d_pegawai->c_tahun_masuk);
+                    if ($d_pegawai->c_tahun_masuk == '0000-00-00') {
+                        $tahun_msk = (int)date('Y');
+                    }else{
+                        $tahun_msk = (int)date('Y',strtotime($d_pegawai->c_tahun_masuk));    
+                    }
+                    $income[] = ((int)date('Y') - $tahun_msk) * (int)$value->tman_value;
                 }
                 elseif($value->tman_id == $list[$z] && $value->tman_periode == "ST")
                 {
