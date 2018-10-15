@@ -617,9 +617,9 @@
         {"data" : "d_br_code", "width" : "10%"},
         {"data" : "namaItem", "width" : "20%"},
         {"data" : "d_brdt_qty", "width" : "10%"},
-        {"data" : "m_sname", "width" : "10%"},
+        {"data" : "m_sname", "width" : "8%"},
         {"data" : "d_brdt_keterangan", "width" : "15%"},
-        {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
+        {"data" : "action", orderable: false, searchable: false, "width" : "12%"}
       ],
       "language": {
         "searchPlaceholder": "Cari Data",

@@ -460,13 +460,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
     Route::get('/hrd/manajemensurat/lookup-data-pegawai', 'Hrd\ManajemenSuratController@lookupPegawai');
     Route::get('/hrd/manajemensurat/cetak-surat/{id}', 'Hrd\ManajemenSuratController@cetakSurat');
+//surat kenaikan gaji/pangkat
+    Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
+    Route::get('/hrd/manajemensurat/form_kenaikan_gaji_print', 'Hrd\ManajemenSuratController@form_kenaikan_gaji_print')->name('form_kenaikan_gaji_print');
 // Ari
     // surat2
     // application form
     Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
-    // form kenaikan gaji
-    Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
-    Route::get('/hrd/manajemensurat/form_kenaikan_gaji_print', 'Hrd\ManajemenSuratController@form_kenaikan_gaji_print')->name('form_kenaikan_gaji_print');
     // form laporan leader
     Route::get('/hrd/manajemensurat/form_laporan_leader', 'Hrd\ManajemenSuratController@form_laporan_leader')->name('form_laporan_leader');
     Route::get('/hrd/manajemensurat/form_laporan_leader_print', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');

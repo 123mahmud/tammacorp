@@ -435,7 +435,7 @@ class BarangRusakController extends Controller
                         ->where('s_position', '8')
                         ->first();
 
-                if (!empty($q_dstock)) {
+                if (!empty($q_dstock)) 
                 {
                     $id_dstock = $q_dstock->s_id;
                     $stokAkhir = (int)$hasilConvert + (int)$q_dstock->s_qty;
@@ -684,11 +684,11 @@ class BarangRusakController extends Controller
                 $q_dstock = DB::table('d_stock')
                         ->select('s_id', 's_qty')
                         ->where('s_item', $request->fieldIpItem[$i])
-                        ->where('s_comp', '8')
-                        ->where('s_position', '8')
+                        ->where('s_comp', $request->fieldIpScomp[$i])
+                        ->where('s_position', $request->fieldIpSpos[$i])
                         ->first();
 
-                if (count($q_dstock) > 0) 
+                if (!empty($q_dstock)) 
                 {
                     $id_dstock = $q_dstock->s_id;
                     $stokAkhir = (int)$hasilConvert + (int)$q_dstock->s_qty;
@@ -705,8 +705,8 @@ class BarangRusakController extends Controller
                     DB::table('d_stock')
                         ->insert([
                             's_id'=>$lastIdStok,
-                            's_comp' => '8',
-                            's_position'=> '8',
+                            's_comp' => $request->fieldIpScomp[$i],
+                            's_position'=> $request->fieldIpSpos[$i],
                             's_item'=> $request->fieldIpItem[$i],
                             's_qty'=>$hasilConvert,
                             's_qty_min'=> 1,
@@ -871,7 +871,7 @@ class BarangRusakController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'sukses',
-                'pesan' => 'Data Barang Rusak Berhasil Disimpan'
+                'pesan' => 'Barang Telah berhasil diuah jenis'
             ]);
         } 
         catch (\Exception $e) 

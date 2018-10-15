@@ -67,7 +67,7 @@ class ManajemenSuratController extends Controller
         }
         $kode = str_pad($maxid, 3, '0', STR_PAD_LEFT)."/PHK/HRD/TRI/".$bulan."/".$tahun;
         // dd($kode);
-        return view('hrd/manajemensurat/surat_phk',['kode' => $kode]);
+        return view('hrd/manajemensurat/surat/form_phk/surat_phk',['kode' => $kode]);
     }
     public function phkData(){
         $list = DB::table('d_phk')->get();
@@ -150,31 +150,31 @@ class ManajemenSuratController extends Controller
 
         DB::table('d_phk')->insert($input);
 
-        return redirect('/hrd/manajemensurat/surat-phk');
+        return redirect('/hrd/manajemensurat/surat/form_phk/surat-phk');
     }
     public function editPhk($id){
         $phk = DB::table('d_phk')->where('c_id', $id)->first();
 
-        return view('hrd/manajemensurat/edit_phk',['phk' => $phk]);
+        return view('hrd/manajemensurat/surat/form_phk/edit_phk',['phk' => $phk]);
     }
     public function updatePhk(Request $request, $id){
         $input = $request->except('_token','_method');
         $input['updated_at'] = Carbon::now('Asia/Jakarta');
 
         $data = DB::table('d_phk')->where('c_id', $id)->update($input);
-        return redirect('/hrd/manajemensurat/surat-phk');
+        return redirect('/hrd/manajemensurat/surat/form_phk/surat-phk');
     }
     public function deletePhk($id){
         $data = DB::table('d_phk')->where('c_id', $id)->delete();
 
-        return redirect('/hrd/manajemensurat/surat-phk');
+        return redirect('/hrd/manajemensurat/surat/form_phk/surat-phk');
     }
     public function cetakSurat($id){
         $data = DB::table('d_phk')->where('c_id', $id)->first();
         if ($data->c_jenis == '1') {
-            return view('hrd/manajemensurat/surat_phk_print', ['data' => $data]);
+            return view('hrd/manajemensurat/surat/form_phk/surat_phk_print', ['data' => $data]);
         }else{
-            return view('hrd/manajemensurat/surat_phk_print_berat', ['data' => $data]);
+            return view('hrd/manajemensurat/surat/form_phk/surat_phk_print_berat', ['data' => $data]);
         }
 
         return response()->json([
@@ -186,13 +186,13 @@ class ManajemenSuratController extends Controller
         ]);
     }
     public function surat_phk_print(){
-        return view('hrd/manajemensurat/surat_phk_print');
+        return view('hrd/manajemensurat/surat/form_phk/surat_phk_print');
     }
     public function surat_phk_print_berat(){
-        return view('hrd/manajemensurat/surat_phk_print_berat');
+        return view('hrd/manajemensurat/surat/form_phk/surat_phk_print_berat');
     }
 
-//==============================================================================================================================
+    //==============================================END PHK====================================================================
         
     public function form_kenaikan_gaji(){
         return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji');
@@ -201,6 +201,8 @@ class ManajemenSuratController extends Controller
         return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji_print');
     }
 
+    //==============================================END KENAIKAN GAJI==========================================================
+    
     public function form_laporan_leader(){
         return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader');
     }
