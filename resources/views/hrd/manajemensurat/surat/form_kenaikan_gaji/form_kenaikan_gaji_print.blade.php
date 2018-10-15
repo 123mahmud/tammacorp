@@ -10,7 +10,7 @@
 			font-size: 16px !important;
 		}
 		.div-width{
-			width: 900px;
+			width: 870px;
 			padding: 0 15px 15px 15px;
 			background: transparent;
 			position: relative;
@@ -182,29 +182,45 @@
 	<div class="div-width">
 
 		<h2 style="margin: 30px 15px 0 15px;">FORMULIR KENAIKAN GAJI ATAU TINGKAT KARYAWAN</h2>
-		<small style="margin: 15px 15px 15px 15px;">FM-SDM-01-2018</small>
+		<small style="margin: 15px 15px 15px 15px;">{{$data->nj_code}}</small>
 
 		<table width="100%" class="border-none" style="margin: 30px 15px 15px 15px;">
 			<tr>
 				<td>Nama</td>
 				<td>:</td>
-				<td colspan="2">Alpha</td>
+				<td colspan="2">{{$data->c_nama}}</td>
 			</tr>
 			<tr>
 				<td>Departemen</td>
 				<td>:</td>
-				<td colspan="2">1</td>
+				<td colspan="2">{{$data->c_divisi}}</td>
 			</tr>
 			<tr>
 				<td>Tanggal Mulai Kerja</td>
 				<td>:</td>
-				<td colspan="2">28 Sep 2018</td>
+				<td colspan="2">{{date('d M Y', strtotime($data->c_tahun_masuk))}}</td>
 			</tr>
 			<tr>
 				<td>Kenaikan</td>
 				<td>:</td>
-				<td><label><input type="radio" disabled="" value="gaji" name="">Gaji</label></td>
-				<td><label><input type="radio" disabled="" value="tingkat" name="">Grade/Tingkat</label></td>
+				<td>
+					<label>
+						@if ($data->nj_type == 'G')
+							<input type="radio" disabled="" value="gaji" checked="checked">Gaji
+						@else
+							<input type="radio" disabled="" value="gaji">Gaji
+						@endif
+					</label>
+				</td>
+				<td>
+					<label>
+						@if ($data->nj_type == 'J')
+							<input type="radio" disabled="" value="tingkat" checked="checked">Grade/Tingkat
+						@else
+							<input type="radio" disabled="" value="tingkat">Grade/Tingkat
+						@endif
+					</label>
+				</td>
 			</tr>
 			
 		</table>
@@ -217,28 +233,28 @@
 			</tr>
 			<tr>
 				<td>Jabatan</td>
-				<td></td>
-				<td></td>
+				<td>{{$data->c_posisi}}</td>
+				<td>{{$posisiBaru->c_posisi}}</td>
 			</tr>
 			<tr>
 				<td>Grade/Tingkat</td>
-				<td></td>
-				<td></td>
+				<td>{{$data->c_subdivisi}}</td>
+				<td>{{$levelBaru->c_subdivisi}}</td>
 			</tr>
 			<tr>
-				<td>Gaji</td>
-				<td></td>
-				<td></td>
+				<td>Gaji Pokok</td>
+				<td>{{'Rp. ' .number_format($gapok,2,",",".")}}</td>
+				<td>{{'Rp. ' .number_format($gapok,2,",",".")}}</td>
 			</tr>
 			<tr>
 				<td>Efektif per Tanggal</td>
-				<td></td>
-				<td></td>
+				<td>{{date('d M Y', strtotime($data->nj_tgl_aktif))}}</td>
+				<td>{{date('d M Y', strtotime($data->nj_tgl))}}</td>
 			</tr>
 		</table>
 
 		<label class="bold">Alasan Kenaikan</label>
-		<p>Berhasil merampok bank sebesar Rp. 100.000.000.000.000,00 (Seratus Triliun Rupiah)</p>
+		<p>{{$data->nj_alasan}}</p>
 
 
 		<table width="100%">
@@ -251,20 +267,21 @@
 			</tr>
 			<tr>
 				<td class="border-none-right">
+					{{$rekom->c_nama}}
 					<div class="border-top ttd">
-						Nama / Jabatan
+					{{$rekom->c_posisi}}
 					</div>
 				</td>
 				<td>
 					<div class="float-left">
-						Tanggal : 28 Sep 2018
+						Tanggal : {{date('d M Y', strtotime($data->nj_created))}}
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td colspan="2" class="border-none-bottom top" style="height: 70px;">
 					
-						Diusulkan oleh,
+						Disetujui oleh,
 					
 				</td>
 			</tr>
@@ -283,7 +300,7 @@
 			<tr>
 				<td colspan="2" class="border-none-bottom top" style="height: 70px;">
 					
-						Diusulkan oleh,
+						Disetujui oleh,
 					
 				</td>
 			</tr>

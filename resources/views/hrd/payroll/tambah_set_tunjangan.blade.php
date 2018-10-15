@@ -58,6 +58,20 @@
                       </div>
 
                       <div class="col-md-12 col-sm-12 col-xs-12">
+                        <label class="tebal">Level Tunjangan</label>
+                      </div>
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                          <select id="" name="level" class="form-control input-sm">
+                          <option value="">--pilih Level--</option>
+                          <option value="AL">Semua</option>
+                          <option value="LD">Leader</option>
+                          <option value="ST">Staff</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12 col-sm-12 col-xs-12">
                         <label class="tebal">Periode</label>
                       </div>
                       <div class="col-md-12 col-sm-12 col-xs-12">
