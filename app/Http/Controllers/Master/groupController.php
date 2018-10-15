@@ -26,12 +26,18 @@ class groupController extends Controller
           ->select('m_gid',
                    'm_gcode',
                    'm_gname',
-                   'nama_akun')
-         ->leftjoin('d_akun', function($join) {
-             $join->on('id_akun', '=', 'm_group.m_akun_persediaan')
-               ->where('type_akun','DETAIL');
+                   'c.nama_akun as persediaan',
+                   'd.nama_akun as penjualan')
+         ->leftjoin('d_akun as c', function($join) {
+             $join->on('c.id_akun', '=', 'm_group.m_akun_persediaan')
+               ->where('c.type_akun','DETAIL');
+           })
+         ->leftjoin('d_akun as d', function($join) {
+             $join->on('d.id_akun', '=', 'm_group.m_akun_penjualan')
+               ->where('d.type_akun','DETAIL');
            })
          ->get();
+
         // return $list;
         $data = collect($list);
 
@@ -82,7 +88,15 @@ class groupController extends Controller
           ->orWhere('type_akun','DETAIL')
           ->where(DB::raw('substring(id_akun, 1, 3)'), '121')
           ->get();
-        return view('/master/datagroup/tambah_group',compact('nota','item'));
+
+        $penjualan = DB::table('d_akun')
+          ->select('id_akun',
+                  'nama_akun')
+          ->where('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '500')
+          ->get();
+
+        return view('/master/datagroup/tambah_group',compact('nota','item','penjualan'));
     }
     public function simpan_group(Request $request)
     {
@@ -102,6 +116,7 @@ class groupController extends Controller
                       'm_gcode'=>'0'. $request->id,
                       'm_gname'=>$request->nama,
                       'm_akun_persediaan'=>$request->akun,
+                      'm_akun_penjualan'=>$request->akun_penjualan,
                       'm_gcreate'=>Carbon::now(),
                     ]);
     }
@@ -118,11 +133,17 @@ class groupController extends Controller
                  'm_gname',
                  'm_gcode',
                  'm_akun_persediaan',
-                 'id_akun',
-                 'nama_akun')
-        ->leftjoin('d_akun', function($join) {
-            $join->on('id_akun', '=', 'm_group.m_akun_persediaan')
-              ->where('type_akun','DETAIL');
+                 'c.id_akun as persediaan',
+                 'd.id_akun as penjualan',
+                 'c.nama_akun as persediaan_nama',
+                 'd.nama_akun as penjualan_nama')
+        ->leftjoin('d_akun as c', function($join) {
+            $join->on('c.id_akun', '=', 'm_group.m_akun_persediaan')
+              ->where('c.type_akun','DETAIL');
+          })
+        ->leftjoin('d_akun as d', function($join) {
+            $join->on('d.id_akun', '=', 'm_group.m_akun_penjualan')
+              ->where('d.type_akun','DETAIL');
           })
         ->where('m_gid','=',$id)
         ->first();
@@ -136,9 +157,16 @@ class groupController extends Controller
         ->where(DB::raw('substring(id_akun, 1, 3)'), '121')
         ->get();
 
+      $penjualan = DB::table('d_akun')
+          ->select('id_akun',
+                  'nama_akun')
+          ->where('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '500')
+          ->get();
+
       json_encode($data);
 
-      return view('master/datagroup/edit_group',compact('data','item'));
+      return view('master/datagroup/edit_group',compact('data','item','penjualan'));
     }
     public function update_group(Request $request)
     {
@@ -150,6 +178,7 @@ class groupController extends Controller
                   ->update([
                       'm_gname'=>$request->nama,
                       'm_akun_persediaan'=>$request->akun,
+                      'm_akun_penjualan'=>$request->penjualan,
                       'm_gupdate'=>$tanggal,
                     ]);
       return response()->json(['status'=>1]);
