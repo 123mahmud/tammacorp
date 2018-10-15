@@ -64,14 +64,37 @@
                                 <div class="col-md-12">
 
                                 </div>
+
                                 <div class="col-md-2 col-sm-3 col-xs-12">
-                                     <label class="tebal">Nama Akun</label>
+                                     <label class="tebal">Akun Persediaan</label>
                                </div>
                                <div class="col-md-4 col-sm-9 col-xs-12">
                                  <div class="form-group">
                                      <select name="akun" class="form-control" id="item">
-                                           <option value=" ">- Pilih Nama Akun</option>
+                                          <option value="">-- Pilih Akun Persediaan</option>
                                        @foreach ($item as $e)
+                                           <option value="{{ $e->id_akun }}">{{ $e->nama_akun }}</option>
+                                       @endforeach
+                                     </select>
+                                 </div>
+                               </div>
+
+                               <div class="col-md-12">
+
+                                </div>
+
+                                <div class="col-md-12">
+
+                                </div>
+                                
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+                                     <label class="tebal">Akun Penjualan</label>
+                               </div>
+                               <div class="col-md-4 col-sm-9 col-xs-12">
+                                 <div class="form-group">
+                                     <select name="akun_penjualan" class="form-control" id="penjualan">
+                                      <option value="">-- Pilih Akun Penjualan</option>
+                                       @foreach ($penjualan as $e)
                                            <option value="{{ $e->id_akun }}">{{ $e->nama_akun }}</option>
                                        @endforeach
                                      </select>
@@ -108,6 +131,7 @@
       var id = $("#id").val();
       var nama = $("#nama").val();
       var item = $("#item").val();
+      var penjualan = $('#penjualan').val();
       if(nama == '' || nama == null ){
 
         toastr.warning('Data Nama Harap Diisi!','Peringatan')

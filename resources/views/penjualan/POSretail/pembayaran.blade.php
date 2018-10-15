@@ -22,7 +22,7 @@
                         <select name="sp_method[]" class="form-control getPayment">
                             @foreach ($dataPayment as $data)
                                 <option class="{{ $data->pm_name }}"
-                                        value="{{ $data->pm_id }}">{{ $data->pm_name }}</option>
+                                        value="{{ $data->pm_coa_code }}">{{ $data->pm_name }}</option>
                             @endforeach
                         </select>
                     </td>
