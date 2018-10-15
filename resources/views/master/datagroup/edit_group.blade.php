@@ -70,15 +70,36 @@
 
                                 </div>
                                  <div class="col-md-2 col-sm-3 col-xs-12">
-                                      <label class="tebal">Nama Akun</label>
+                                      <label class="tebal">Akun Persediaan</label>
                                 </div>
                                 <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
                                       <select name="akun" class="form-control" id="item">
-                                          <option value=" ">- Pilih Nama Akun</option>
+                                          <option value="">-- Pilih Akun Persediaan</option>
                                         @foreach ($item as $akun)
-                                          @if ($akun->id_akun == $data->id_akun)
-                                            <option value="{{ $data->id_akun }}" selected>{{ $data->nama_akun }}</option>
+                                          @if ($akun->id_akun == $data->persediaan)
+                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->nama_akun }}</option>
+                                          @else
+                                            <option value="{{ $akun->id_akun }}" >{{ $akun->nama_akun }}</option>
+                                          @endif
+                                        @endforeach
+                                      </select>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-12">
+
+                                </div>
+                                 <div class="col-md-2 col-sm-3 col-xs-12">
+                                      <label class="tebal">Akun Penjualan</label>
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+                                      <select name="penjualan" class="form-control" id="penjualan">
+                                          <option value="">-- Pilih Akun Penjualan</option>
+                                        @foreach ($penjualan as $akun)
+                                          @if ($akun->id_akun == $data->penjualan)
+                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->nama_akun }}</option>
                                           @else
                                             <option value="{{ $akun->id_akun }}" >{{ $akun->nama_akun }}</option>
                                           @endif
@@ -128,12 +149,12 @@
 
         return false;
       }
-      if(item == '' || item == null ){
+      // if(item == '' || item == null ){
 
-        toastr.warning('Data Item Harap Diisi!','Peringatan')
+      //   toastr.warning('Data Item Harap Diisi!','Peringatan')
 
-        return false;
-      }
+      //   return false;
+      // }
 
       $.ajax({
         url : '{{ route('update_group') }}',
