@@ -197,14 +197,14 @@
 		<div class="div-width">
 
 			<h2 class="text-center underline" style="margin: 30px 0 0 0;">SURAT PEMUTUSAN HUBUNGAN KERJA</h2>
-			<small class="text-center" style="display: block;">No : 000/PHK/HRD/VII/2018</small>
+			<small class="text-center" style="display: block;">No : {{$data->c_kode}}</small>
 
 			<table class="border-none" width="100%" style="margin-top: 30px;" cellpadding="5px">
 				<tr>
 					<td>Kepada Yth:</td>
 				</tr>
 				<tr>
-					<td>Saudara</td>
+					<td>Saudara <strong>{{$data->c_nama}}</strong></td></td>
 				</tr>
 				<tr>
 					<td>di Tempat</td>
@@ -214,20 +214,20 @@
 				</tr>
 				<tr>
 					<td>
-						<p class="paragraph-indent">Sehubungan perusahaan akan mengadakan efisiensi dalam upaya penyeimbangan biaya operasional perusahaan yang akan disesuaikan dengan jumlah karyawan yang ada. Hal ini akan berakibat pada restrukturisasi kepengurusan serta pengurangan karyawan, maka dengan ini CV. Tamma Robah Indonesia melakukan pemutusan hubungan kerja sebagian karyawan.</p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Sehubungan perusahaan akan mengadakan efisiensi dalam upaya penyeimbangan biaya operasional perusahaan yang akan disesuaikan dengan jumlah karyawan yang ada. Hal ini akan berakibat pada restrukturisasi kepengurusan serta pengurangan karyawan, maka dengan ini CV. Tamma Robah Indonesia melakukan pemutusan hubungan kerja sebagian karyawan.</p>
 
-						<p class="paragraph-indent">Sehubungan dengan kebijakan tersebut, maka CV. Tamma Robah Indonesia memutuskan untuk :<label class="bold"> Memberhentikan (Pemutusan Hubungan Kerja)</label> dengan saudara................................              </p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Sehubungan dengan kebijakan tersebut, maka CV. Tamma Robah Indonesia memutuskan untuk :<label class="bold"> Memberhentikan (Pemutusan Hubungan Kerja)</label> dengan saudara <strong>{{$data->c_nama}}</strong></p>
 
-						<p class="paragraph-indent">Dengan demikian, terhitung dari tanggal …..... Bulan .............................. Tahun ….......... hubungan kerja dengan saudara …......................................, kami nyatakan sudah berakhir.</p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Dengan demikian, terhitung dari tanggal <strong>{{date('d',strtotime($data->c_tgl_phk))}}</strong> Bulan <strong>{{date('F',strtotime($data->c_tgl_phk))}}</strong> Tahun <strong>{{date('Y',strtotime($data->c_tgl_phk))}}</strong> hubungan kerja dengan saudara <strong>{{$data->c_nama}}</strong> kami nyatakan sudah berakhir.</p>
 
-						<p class="paragraph-indent">Kami selaku pihak perusahaan menyampaikan terima kasih untuk segala loyalitas saudara …................................ yang diberikan, apabila kelak perusahaan sudah semakin membaik, kami akan menawarkan kesempatan kembali bagi saudara .............................. untuk bergabung lagi di CV. Tamma Robah Indonesia.</p>
+						<p class="paragraph-indent" style="text-align:justify; margin-right: 30px;">Kami selaku pihak perusahaan menyampaikan terima kasih untuk segala loyalitas saudara <strong>{{$data->c_nama}}</strong> yang diberikan, apabila kelak perusahaan sudah semakin membaik, kami akan menawarkan kesempatan kembali bagi saudara <strong>{{$data->c_nama}}</strong> untuk bergabung lagi di CV. Tamma Robah Indonesia.</p>
 					</td>
 				</tr>
 			</table>
 			<table width="100%" class="border-none" cellpadding="5px">
 				<tr>
 					<td width="49%"></td>
-					<td align="center">Surabaya,......................<br><br>Direktur Utama<br>CV. Tamma Robbah Indonesia</td>
+					<td align="center">Surabaya, {{date('d F Y',strtotime($data->c_tgl_phk))}}<br>Direktur Utama<br>CV. Tamma Robbah Indonesia</td>
 					
 				</tr>
 				<tr>

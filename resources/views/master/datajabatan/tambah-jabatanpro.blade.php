@@ -47,57 +47,31 @@
                     <h4>Tambah Data Jabatan</h4>
                   </div>
                   <div class="col-md-7 col-sm-6 col-xs-4 " align="right" style="margin-top:5px;margin-right: -25px;">
-                    <a href="{{ url('master/datajabatan') }}" class="btn">
+                    <a href="{{ url('/master/datajabatan') }}" class="btn">
                       <i class="fa fa-arrow-left"></i>
                     </a>
                   </div>
                 </div>
 
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px;">
-                  <form method="POST" class="form" action="{{ url('hrd/datajabatan/simpan-jabatan') }}" enctype="multipart/form-data" style="font-family:Arial;">
+                  <form id="jPro">
                     {{ csrf_field() }}
                     <table class="table">
-                    <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Divisi</label>
-                      </div>
-                      <div class="col-md-4 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <select id="divisi" name="c_divisi_id" class="form-control input-sm">
-                            <option>--pilih divisi--</option>
-                            <?php foreach($divisi as $div){ ?>
-                            <option value="{{ $div->c_id }}">{{ $div->c_divisi }}</option>
-                            <?php } ?>
-                          </select>
-                        </div>
-                      </div>
-                      <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Posisi</label>
-                      </div>
-                      <div class="col-md-4 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <select id="divisi" name="c_sub_divisi_id" class="form-control input-sm">
-                            <option>--pilih posisi--</option>
-                            <?php foreach($subdivisi as $sdiv){ ?>
-                            <option value="{{ $sdiv->c_id }}">{{ $sdiv->c_subdivisi }}</option>
-                            <?php } ?>
-                          </select>
-                        </div>
-                      </div>
+                   
                       <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">Nama Jabatan</label>
                       </div>
                       <div class="col-md-10 col-sm-8 col-xs-12">
                         <div class="form-group">
-                          <input required type="text" name="c_posisi" id="c_posisi" class="form-control input-sm">
+                          <input required type="text" name="c_jabatan_pro" id="c_jabatan_pro" class="form-control input-sm">
                         </div>
                       </div>
                     </table>
-                    <div class="col-sm-12">
-                      <input type="submit" value="Simpan" class="btn btn-warning pull-right">
-                    </div>
                   </form>
+                  <div class="col-sm-12">
+                      <input type="submit" value="Simpan" onclick="simpanJPro()" class="btn btn-warning pull-right" id="simpabjPro">
+                    </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>
@@ -124,4 +98,40 @@
               }
             });
         }
+
+        function simpanJPro(){
+        $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        $('.simpabjPro').attr('disabled', 'disabled');
+        var a = $('#jPro').serialize();
+        $.ajax({
+            url: baseUrl + "/datajabatan/simpan-jabatanpro",
+            type: 'GET',
+            data: a,
+            success: function (response, customer) {
+                if (response.status == 'sukses') {
+                    iziToast.success({
+                        timeout: 5000,
+                        position: "topRight",
+                        icon: 'fa fa-chrome',
+                        title: '',
+                        message: 'Berhasil Menyimpan.'
+                    });
+                    $('.simpabjPro').removeAttr('disabled', 'disabled');
+                    window.location.href = baseUrl + "/master/datajabatan";
+                } else {
+                    iziToast.error({
+                        position: "topRight",
+                        title: '',
+                        message: 'Gagal Menyimpan.'
+                    });
+                    $('.simpabjPro').removeAttr('disabled', 'disabled');
+                }
+            }
+        })
+        }
+
       </script> @endsection

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Print KPI</title>
+	<title>FORM LEMBUR</title>
 	<style type="text/css">
 		*:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(small):not(label){
 			font-size: 14px;
@@ -11,7 +11,7 @@
 		}
 		.div-width{
 			width: 900px;
-			padding: 30px 15px 15px 15px;
+			padding: 0 15px 15px 15px;
 			background: transparent;
 			position: relative;
 		}
@@ -107,7 +107,7 @@
 		@media print {
 			.div-width{
 				margin: auto;
-				padding: 10px 15px 15px 15px;
+				padding: 170px 15px 15px 15px;
 				width: 95vw;
 				position: relative;
 			}
@@ -173,118 +173,70 @@
 	<div class="btn-print" align="right">
 		<button onclick="javascript:window.print();">Print</button>
 	</div>
-
-	@php
-		setlocale(LC_ALL, 'IND');
-	@endphp
-	
-		
-	<div class="div-width">
-		<h2>Data KPI Pegawai</h2>
-		<table width="100%" class="border-none">
-			<tr>
-				<td width="10%">Tanggal</td>
-				<td width="1%">:</td>
-				<td width="45%">{{strftime('%e %B %Y', strtotime($data[0]['d_kpix_date']) ) }}</td>
+		<div class="div-width-background">
+		</div>
+		<header>
+			<img width="100%" src="{{asset('assets/img/header-tammafood-surat.png')}}">
+		</header>
 			
-				<td width="10%">Divisi</td>
-				<td width="1%">:</td>
-				<td>{{$pegawai['c_divisi']}}</td>
+	<div class="div-width">
+		<h2 style="margin: 30px 0 0 0;">FORM LEMBUR</h2>
+		<small style="margin: 15px 0 0 0;">No : {{$data[0]->d_lembur_code}}</small>
+		<table width="96%" style="margin-top: 10px;" cellpadding="5px">
+			<tr>
+				<td colspan="3"><strong>Tanggal Pengajuan Lembur pada :</strong> {{$data2['hari_indo']}}, {{$data2['tgl_indo']}}
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3"><strong>Divisi :</strong> {{$data2['divisiTxt']}}
+				</td>
+			</tr>
+			<tr>
+				<td class="top" style="height: 50px;" colspan="4">
+					<label class="bold">Uraian Lembur : </label><br><br>
+					{{$data[0]->d_lembur_keperluan}}
+				</td>
+			</tr>
+			<tr>
+				<td class="border-none-bottom" colspan="4"><strong>Yang Bertanda di bawah ini :</strong></td>
+			</tr>
+			<tr>
+				<td>Nama</td>
+				<td class="border-none-left border-none-right" width="1%">:</td>
+				<td colspan="2">{{$data2['pegawai']}}</td>
+			</tr>
+			<tr>
+				<td>NIK</td>
+				<td class="border-none-left border-none-right" width="1%">:</td>
+				<td colspan="2">{{$data[0]->c_nik}}</td>
 			</tr>
 			<tr>
 				<td>Jabatan</td>
-				<td>:</td>
-				<td>{{$pegawai['c_posisi']}}</td>
-			
-				<td>Pegawai</td>
-				<td>:</td>
-				<td>{{$pegawai['c_nama']}}</td>
+				<td class="border-none-left border-none-right" width="1%">:</td>
+				<td colspan="2">{{$data2['jabatanTxt']}}</td>
+			</tr>
+			<tr>
+				<td>Divisi</td>
+				<td class="border-none-left border-none-right" width="1%">:</td>
+				<td colspan="2">{{$data2['divisiTxt']}}</td>
+			</tr>
+		</table>
+		<table width="96%" class="border-none-top" cellpadding="5px">
+			<tr>
+				<td align="center">Diajukan oleh,</td>
+				<td align="center">Disetujui oleh,<br>Kepala Divisi</td>
+				<td align="center">Diketahui oleh :<br>Ka. HRD & Umum</td>
+			</tr>
+			<tr>
+				<td height="100px" valign="bottom" align="center">{{$data2['pegawai']}} (NIK : {{$data[0]->c_nik}})</td>
+				<td valign="bottom" align="center">..................................</td>
+				<td valign="bottom" align="center">..................................</td>
 			</tr>
 		</table>
 
-		<table width="100%" cellpadding="3px" style="margin-top: 15px;">
-			<tr class="bold text-center">
-				<td width="1%">No</td>
-				<td>Bobot</td>
-				<td>Key Performance</td>
-				<td>Target</td>
-				<td>Realisasi</td>
-				<td>Skor</td>
-				<td>Skor Akhir</td>
-			</tr>
-			@for($i=0;$i<count($data);$i++)
-				<tr>
-					<td align="center">{{$i+1}}</td>
-					<td align="center">{{$data[$i]['kpix_bobot']}}</td>
-					<td>{{$data[$i]['kpix_name']}}</td>
-					<td align="right">{{$data[$i]['kpix_target']}}</td>
-					<td align="right">{{$data[$i]['d_kpixdt_value']}}</td>
-					<td align="right">{{$data[$i]['d_kpixdt_score']}}</td>
-					<td align="right">{{$data[$i]['d_kpixdt_scoreakhir']}}</td>
-				</tr>
-			@endfor
-			<tr>
-				<td colspan="2" class="bold text-center">Total Bobot : {{$total[0]['total_bobot']}}</td>
-				<td colspan="5" class="bold text-center">Total Skor Akhir : {{$total[0]['total_score_akhir']}}</td>
-			</tr>
-		</table>
 	</div>
-
-	<div style="padding-top: 30px;">
-		<hr>
-	</div>
-
-	<div class="div-width">
-		<h2>Data KPI Pegawai</h2>
-		<table width="100%" class="border-none">
-			<tr>
-				<td width="10%">Tanggal</td>
-				<td width="1%">:</td>
-				<td width="45%">{{strftime('%e %B %Y', strtotime($data[0]['d_kpix_date']) ) }}</td>
-			
-				<td width="10%">Divisi</td>
-				<td width="1%">:</td>
-				<td>{{$pegawai['c_divisi']}}</td>
-			</tr>
-			<tr>
-				<td>Jabatan</td>
-				<td>:</td>
-				<td>{{$pegawai['c_posisi']}}</td>
-			
-				<td>Pegawai</td>
-				<td>:</td>
-				<td>{{$pegawai['c_nama']}}</td>
-			</tr>
-		</table>
-
-		<table width="100%" cellpadding="3px" style="margin-top: 15px;">
-			<tr class="bold text-center">
-				<td width="1%">No</td>
-				<td>Bobot</td>
-				<td>Key Performance</td>
-				<td>Target</td>
-				<td>Realisasi</td>
-				<td>Skor</td>
-				<td>Skor Akhir</td>
-			</tr>
-			@for($i=0;$i<count($data);$i++)
-				<tr>
-					<td align="center">{{$i+1}}</td>
-					<td align="center">{{$data[$i]['kpix_bobot']}}</td>
-					<td>{{$data[$i]['kpix_name']}}</td>
-					<td align="right">{{$data[$i]['kpix_target']}}</td>
-					<td align="right">{{$data[$i]['d_kpixdt_value']}}</td>
-					<td align="right">{{$data[$i]['d_kpixdt_score']}}</td>
-					<td align="right">{{$data[$i]['d_kpixdt_scoreakhir']}}</td>
-				</tr>
-			@endfor
-			<tr>
-				<td colspan="2" class="bold text-center">Total Bobot : {{$total[0]['total_bobot']}}</td>
-				<td colspan="5" class="bold text-center">Total Skor Akhir : {{$total[0]['total_score_akhir']}}</td>
-			</tr>
-		</table>
-	</div>
-
-
+		<footer>
+			<img width="100%" src="{{asset('assets/img/footer-tammafood-surat.png')}}">
+		</footer>
 </body>
 </html>

@@ -207,7 +207,7 @@ class PayrollmanController extends Controller
         if (count($d_absen) > 0) {
             foreach ($d_absen as $val) {
                 if ($val->apm_absent != null) { $alpha[] = $val->apm_absent; } else { $hadir[] = $val->apm_absent; }
-                if ($val->apm_lembur != null) { $lembur[] = $val->apm_lembur; } else { $lembur[] = "00:00:00"; }
+                if ($val->apm_lembur != null) { $lembur[] = $val->apm_lembur; } else { $lembur[] = "01:00:00"; }
                 if ($val->apm_scan_masuk != null) { $dt_scanmasuk[] = $val->apm_tanggal.' '.$val->apm_scan_masuk; } else { $dt_scanmasuk[] = null; }
                 if ($val->apm_jam_masuk != null) { $dt_jammasuk[] = $val->apm_tanggal.' '.$val->apm_jam_masuk; } else { $dt_jammasuk[] = null; }
             }
@@ -285,14 +285,14 @@ class PayrollmanController extends Controller
                 unset($ngentot[1]);
                 unset($ngentot[2]);
                 $potongan += array_sum($ngentot);
-                $potonganTxt = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
+                $potonganTxt[] = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 15 && $hasil_menit[$y] <= 30) {
                 unset($ngentot[2]);
                 $potongan += array_sum($ngentot);
-                $potonganTxt = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
+                $potonganTxt[] = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 30) {
                 $potongan += array_sum($ngentot);
-                $potonganTxt = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
+                $potonganTxt[] = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
             }else{
                 $potongan += 0;
             }
@@ -352,49 +352,58 @@ class PayrollmanController extends Controller
             }
 
             //potongan kehadiran
-            for ($i=0; $i < count($request->harian); $i++) 
-            {
-                if ($request->harian[$i] != 0) {
-                    $pharian = new d_potongan;
-                    $pharian->d_pot_pid = $request->i_pegawai;
-                    $pharian->d_pot_prollid = $lastId;
-                    $pharian->d_pot_keterangan = "Potongan Kehadiran";
-                    $pharian->d_pot_date = $date;
-                    $pharian->d_pot_value = $request->harian[$i];
-                    $pharian->d_pot_created = $datetime;
-                    $pharian->save();
+            if (isset($request->harian)) {
+                for ($i=0; $i < count($request->harian); $i++) 
+                {
+                    if ($request->harian[$i] != 0) {
+                        $pharian = new d_potongan;
+                        $pharian->d_pot_pid = $request->i_pegawai;
+                        $pharian->d_pot_prollid = $lastId;
+                        $pharian->d_pot_keterangan = "Potongan Kehadiran";
+                        $pharian->d_pot_date = $date;
+                        $pharian->d_pot_value = $request->harian[$i];
+                        $pharian->d_pot_created = $datetime;
+                        $pharian->save();
+                    }
+                    
                 }
-                
             }
+            
             //potongan kehadiran + makan
-            for ($i=0; $i < count($request->harianmakan); $i++) 
-            {
-                if ($request->harianmakan[$i] != 0) {
-                    $pharianmakan = new d_potongan;
-                    $pharianmakan->d_pot_pid = $request->i_pegawai;
-                    $pharianmakan->d_pot_prollid = $lastId;
-                    $pharianmakan->d_pot_keterangan = "Potongan Kehadiran & Makan";
-                    $pharianmakan->d_pot_date = $date;
-                    $pharianmakan->d_pot_value = $request->harianmakan[$i];
-                    $pharianmakan->d_pot_created = $datetime;
-                    $pharianmakan->save();
+            if (isset($request->harianmakan)) {
+                for ($i=0; $i < count($request->harianmakan); $i++) 
+                {
+                    if ($request->harianmakan[$i] != 0) {
+                        $pharianmakan = new d_potongan;
+                        $pharianmakan->d_pot_pid = $request->i_pegawai;
+                        $pharianmakan->d_pot_prollid = $lastId;
+                        $pharianmakan->d_pot_keterangan = "Potongan Kehadiran & Makan";
+                        $pharianmakan->d_pot_date = $date;
+                        $pharianmakan->d_pot_value = $request->harianmakan[$i];
+                        $pharianmakan->d_pot_created = $datetime;
+                        $pharianmakan->save();
+                    }
+                    
                 }
-                
             }
+            
             //potongan kehadiran + makan + transport
-            for ($i=0; $i < count($request->harianmakantrans); $i++) 
-            {
-                if ($request->harianmakantrans[$i] != 0) {
-                    $pharianmakantrans = new d_potongan;
-                    $pharianmakantrans->d_pot_pid = $request->i_pegawai;
-                    $pharianmakantrans->d_pot_prollid = $lastId;
-                    $pharianmakantrans->d_pot_keterangan = "Potongan Kehadiran, Makan & Transport";
-                    $pharianmakantrans->d_pot_date = $date;
-                    $pharianmakantrans->d_pot_value = $request->harianmakantrans[$i];
-                    $pharianmakantrans->d_pot_created = $datetime;
-                    $pharianmakantrans->save();
+            if (isset($request->harianmakantrans)) {
+                for ($i=0; $i < count($request->harianmakantrans); $i++) 
+                {
+                    if ($request->harianmakantrans[$i] != 0) {
+                        $pharianmakantrans = new d_potongan;
+                        $pharianmakantrans->d_pot_pid = $request->i_pegawai;
+                        $pharianmakantrans->d_pot_prollid = $lastId;
+                        $pharianmakantrans->d_pot_keterangan = "Potongan Kehadiran, Makan & Transport";
+                        $pharianmakantrans->d_pot_date = $date;
+                        $pharianmakantrans->d_pot_value = $request->harianmakantrans[$i];
+                        $pharianmakantrans->d_pot_created = $datetime;
+                        $pharianmakantrans->save();
+                    }
                 }
             }
+            
 
             $prolldt2 = new d_payroll_mandt;
             $prolldt2->d_pmdt_pmid = $lastId;
@@ -521,4 +530,37 @@ class PayrollmanController extends Controller
     }
 
     // ===============================================================================================================
+
+    public function print_payroll($id)
+    {
+        $payroll = d_payroll_man::join('m_pegawai_man', 'd_payroll_man.d_pm_pid', '=', 'm_pegawai_man.c_id')
+                            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                            ->select('d_payroll_man.*', 'm_pegawai_man.c_id', 'm_pegawai_man.c_nama' ,'m_pegawai_man.c_divisi_id', 'm_pegawai_man.c_jabatan_id', 'm_pegawai_man.c_tunjangan', 'm_divisi.c_divisi', 'm_jabatan.c_posisi', 'm_jabatan.c_sub_divisi_id')
+                            ->where('d_payroll_man.d_pm_id', $id)->first();
+
+        //$list = explode(",", $payroll->c_tunjangan);
+
+        $list_tunjangan = d_payroll_mandt::join('d_payroll_man', 'd_payroll_mandt.d_pmdt_pmid', '=', 'd_payroll_man.d_pm_id')
+                            ->join('m_tunjangan_man', 'd_payroll_mandt.d_pmdt_typeid', '=', 'm_tunjangan_man.tman_id')
+                            ->select('d_payroll_mandt.*', 'd_payroll_man.*', 'm_tunjangan_man.*')
+                            ->where('d_payroll_mandt.d_pmdt_type', "TJ")
+                            ->where('d_payroll_mandt.d_pmdt_pmid', $id)
+                            ->get();
+
+        $list_gaji = d_payroll_mandt::select('d_pmdt_nilai')->where('d_pmdt_type', "GJ")->where('d_pmdt_pmid', $id)->first();
+        $list_potongan = d_potongan::where('d_pot_prollid', $id)->where('d_pot_pid', $payroll->c_id)->get();
+
+        //dd($payroll, $list_tunjangan, $list_gaji);
+
+        // return response()->json([
+        //     'status' => 'sukses',
+        //     'payroll' => $payroll,
+        //     'list_tunjangan' => $list_tunjangan,
+        //     'list_gaji' => $list_gaji,
+        //     'list_potongan' => $list_potongan
+        // ]);
+
+        return view('hrd.payrollman.print-payroll', [ 'rocknroll' => $payroll , 'tunjangan' => $list_tunjangan , 'gaji' => $list_gaji, 'potongan' => $list_potongan ]);
+    }
 }

@@ -31,7 +31,7 @@
           </div>
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#index-tab" data-toggle="tab" onclick="cariTanggal()">Manajemen SPK</a>
+              <a href="#index-tab" data-toggle="tab" onclick="cariTanggal()">Manajemen Surat</a>
             </li>
             {{-- <li>
               <a href="#finishResult-tab" data-toggle="tab" onclick="cariTanggal2()">Daftar SPK Selesai</a>
@@ -48,17 +48,14 @@
                   <div class="table-responsive">
                     <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" cellpadding="0" id="data1">
                       <tbody>
-                        <tr>
+                        <!-- <tr>
                           <td><a href="{{route('form_application_print')}}" class="btn btn-block btn-secondary">Application form</a></td>
-                        </tr>
+                        </tr> -->
                         <tr>
                           <td><a href="{{route('form_kenaikan_gaji')}}" class="btn btn-block btn-secondary">Form kenaikan gaji atau tingkat</a></td>
                         </tr>
                         <tr>
                           <td><a href="{{route('form_laporan_leader')}}" class="btn btn-block btn-secondary">Form laporan leader</a></td>
-                        </tr>
-                        <tr>
-                          <td><a href="{{route('form_lembur')}}" class="btn btn-block btn-secondary">Form lembur</a></td>
                         </tr>
                         <tr>
                           <td><a href="{{route('form_overhandle')}}" class="btn btn-block btn-secondary">Form overhandle</a></td>
@@ -71,9 +68,6 @@
                         </tr>
                         <tr>
                           <td><a href="{{ url('hrd/manajemensurat/surat-phk') }}" class="btn btn-block btn-secondary">Surat pemutusan hubungan kerja</a></td>
-                        </tr>
-                        <tr>
-                          <td><a href="{{route('form_perintah_lembur')}}" class="btn btn-block btn-secondary">Surat perintah lembur</a></td>
                         </tr>
                       </tbody>
                     </table> 

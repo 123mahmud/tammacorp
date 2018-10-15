@@ -32,7 +32,7 @@
             <li class="active">
               <a href="#alert-tab" data-toggle="tab">Absensi Manajemen</a>
             </li>
-            <li><a href="#note-tab" data-toggle="tab" onclick="">Absensi Produksi</a></li>
+            <li><a href="#note-tab" data-toggle="tab" onclick="detTanggal()">Absensi Produksi</a></li>
                             {{-- <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> --> --}}
           </ul>
 
@@ -44,8 +44,8 @@
                   <div style="margin-left:-5px;">
 
                     <div class="panel-body">
-                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/contoh-excel-manajemen.xlsx')}}');"><button class="btn btn-success">Download Contoh Excel</button></a>
-                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/master-manajemen.xlsx')}}');"><button class="btn btn-success">Download Master Manajemen</button></a>
+                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/contoh-master-manajemen.xlsx')}}');"><button class="btn btn-success">Download Contoh Master</button></a>
+                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/id-manajemen.xlsx')}}');"><button class="btn btn-success">Download ID Manajemen</button></a>
                     		<form
                           style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;     margin-bottom: 16px;"
                           action="{{url('/import/data-manajemen')}}"
@@ -245,13 +245,15 @@
                 type: 'GET'
             },
             "columns": [
-              {"data" : "DT_Row_Index", orderable: false, searchable: false},
-              {"data" : 'pegawai', name: 'pegawai', width:"40%"},
-              {"data" : 'Alpha', name: 'Alpha', orderable: false, width:"10%"},
-              {"data" : 'Izin', name: 'Izin', orderable: false, width:"10%"},
-              {"data" : 'Sakit', name: 'Sakit', orderable: false, width:"10%"},
-              {"data" : 'Cuti', name: 'Cuti', orderable: false, width:"10%"},
-              {"data" : 'Hadir', name: 'Hadir', orderable: false, width:"10%"},
+              {"data" : 'tanggal', name: 'pegawai', width:"10%"},
+              {"data" : 'pegawai', name: 'Alpha', orderable: false, width:"10%"},
+              {"data" : 'app_jam_kerja', name: 'app_jam_kerja', orderable: false, width:"10%"},
+              {"data" : 'app_jam_masuk', name: 'app_jam_masuk', orderable: false, width:"10%"},
+              {"data" : 'app_jam_pulang', name: 'app_jam_pulang', orderable: false, width:"10%"},
+              {"data" : 'app_scan_masuk', name: 'app_scan_masuk', orderable: false, width:"10%"},
+              {"data" : 'app_scan_pulang', name: 'app_scan_pulang', orderable: false, width:"10%"},
+              {"data" : 'app_terlambat', name: 'app_terlambat', orderable: false, width:"10%"},
+              {"data" : 'app_jml_jamkerja', name: 'app_jml_jamkerja', orderable: false, width:"10%"},
             ],
             "language": {
               "searchPlaceholder": "Cari Data",

@@ -58,8 +58,8 @@
 
         </div>
     
-        <div class="modal-footer" style="border-top: none;">
-          <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+        <div class="modal-footer" id="btn-modal" style="border-top: none;">
+          
         </div>
 
       </div>

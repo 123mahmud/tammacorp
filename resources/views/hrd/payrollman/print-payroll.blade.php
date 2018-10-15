@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FORM LEMBUR</title>
+	<title>Print Payroll</title>
 	<style type="text/css">
 		*:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(small):not(label){
 			font-size: 14px;
 		}
 		.s16{
-			font-size: 16px !important;
+			font-size: 18px !important;
 		}
 		.div-width{
 			width: 900px;
-			padding: 0 15px 15px 15px;
+			padding: 50px 15px 15px 15px;
 			background: transparent;
 			position: relative;
 		}
@@ -107,7 +107,7 @@
 		@media print {
 			.div-width{
 				margin: auto;
-				padding: 170px 15px 15px 15px;
+				padding: 10px 15px 15px 15px;
 				width: 95vw;
 				position: relative;
 			}
@@ -173,86 +173,139 @@
 	<div class="btn-print" align="right">
 		<button onclick="javascript:window.print();">Print</button>
 	</div>
-		<div class="div-width-background">
-		</div>
-		<header>
-			<img width="100%" src="{{asset('assets/img/header-tammafood-surat.png')}}">
-		</header>
-			
+
+	@php
+		setlocale(LC_ALL, 'IND');
+
+		$tanggal = str_replace(' s/d ', '', $rocknroll['d_pm_periode']);
+
+		$tanggal1 = substr($tanggal,0,10);
+
+		$tanggal2 = substr($tanggal,-10,10);
+
+	@endphp
+	
+		
+
+
 	<div class="div-width">
+		<table width="100%" class="border-none" style="margin-bottom: 15px;">
+			<tr>
+				<td width="1%">
+					<img src="{{asset('assets/img/tamma.png')}}" width="100" height="100">
+				</td>
+				<td align="center" valign="middle">
+					<h1>PT. Tamma Robah Indonesia</h1>
 
-		<h2 style="margin: 30px 0 0 0;">FORM LEMBUR</h2>
-		<small style="margin: 15px 0 0 0;">FM-SDM-01-2018</small>
-
-		<table width="100%" style="margin-top: 30px;" cellpadding="5px">
-			<tr>
-				<td colspan="2">Tanggal Pengajuan Lembur pada<br>
-					Hari, Tgl 28 Sep 2018
-				</td>
-				<td rowspan="2" align="center">Lembur Pada Waktu :</td>
-				<td align="center">
-					<label><input type="radio" value="hari_kerja" name="hari" disabled=""> Hari Kerja</label>
+					<h2>SLIP GAJI</h2>
+					
 				</td>
 			</tr>
-			<tr>
-				<td colspan="2">Divisi :
-				</td>
-				
-				<td align="center">
-					<label><input type="radio" value="hari_libur" name="hari" disabled=""> Hari Libur</label>
-				</td>
-			</tr>
-			<tr>
-				<td class="top" style="height: 50px;" colspan="4">
-					<label class="bold">Uraian Lembur : </label><br>
-					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-					quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-					consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-					cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-					proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-				</td>
-			</tr>
-			<tr>
-				<td class="border-none-bottom" colspan="4">Yang Bertanda di bawah ini :</td>
-			</tr>
-			<tr>
-				<td>Nama</td>
-				<td class="border-none-left border-none-right" width="1%">:</td>
-				<td colspan="2">Alpha</td>
-			</tr>
-			<tr>
-				<td>NIK</td>
-				<td class="border-none-left border-none-right" width="1%">:</td>
-				<td colspan="2">11112</td>
-			</tr>
-			<tr>
-				<td>Jabatan</td>
-				<td class="border-none-left border-none-right" width="1%">:</td>
-				<td colspan="2">Jendral</td>
-			</tr>
-			<tr>
-				<td colspan="2">Divisi</td>
-				<td colspan="2"></td>
-			</tr>
-			
 		</table>
-		<table width="100%" class="border-none-top" cellpadding="5px">
+					
+		<table width="100%" class="border-none">
 			<tr>
-				<td align="center">Diajukan oleh,</td>
-				<td align="center">Disetujui oleh,<br>Kepala Divisi</td>
-				<td align="center">Diketahui oleh :<br>Ka. HRD & Umum</td>
+				<td width="10%">Tanggal</td>
+				<td width="1%">:</td>
+				<td width="45%">{{strftime('%e %B %Y', strtotime($rocknroll['d_pm_date']) ) }}</td>
+			
+				<td width="10%">Periode</td>
+				<td width="1%">:</td>
+				<td>{{ strftime('%e %B %Y', strtotime($tanggal1)) }} s/d {{strftime('%e %B %Y', strtotime($tanggal2))}} </td>
 			</tr>
 			<tr>
-				<td height="100px" valign="bottom" align="center">..................................</td>
-				<td valign="bottom" align="center">..................................</td>
-				<td valign="bottom" align="center">..................................</td>
+				<td>Divisi</td>
+				<td>:</td>
+				<td>{{$rocknroll['c_divisi']}}</td>
+			
+				<td>Jabatan</td>
+				<td>:</td>
+				<td>{{$rocknroll['c_posisi']}}</td>
+				
 			</tr>
+			<tr>
+				<td>Pegawai</td>
+				<td>:</td>
+				<td class="bold">{{$rocknroll['c_nama']}}</td>
+			</tr>
+		</table>
+
+		<table width="100%" cellpadding="3px" style="margin-top: 15px;">
+			<tr class="bold text-center">
+				<td>Keterangan</td>
+				<td>Nilai</td>
+			</tr>
+
+			@for($i=0;$i<count($tunjangan);$i++)
+				<tr>
+					<td>{{$tunjangan[$i]['tman_nama']}}</td>
+					<td>
+						<div class="float-left">
+							Rp.
+						</div>
+						<div class="float-right">
+							{{number_format($tunjangan[$i]['d_pmdt_nilai'],2,',','.')}}
+						</div>
+					</td>
+				</tr>
+			@endfor
+
+			<tr class="bold">
+				<td align="right">Total Tunjangan</td>
+				<td>
+					<div class="float-left">
+						Rp.
+					</div>
+					<div class="float-right">
+						{{number_format($rocknroll['d_pm_totaltun'],2,',','.')}}
+					</div>
+				</td>
+			</tr>
+
+			<tr class="bold">
+				<td align="right">Gaji Pokok</td>
+				<td>
+					<div class="float-left">
+						Rp.
+					</div>
+					<div class="float-right">
+						{{number_format($rocknroll['d_pm_gapok'],2,',','.')}}
+					</div>
+				</td>
+			</tr>
+
+			<tr class="bold">
+				<td align="right">Total Potongan</td>
+				<td>
+					<div class="float-left">
+						Rp.
+					</div>
+					<div class="float-right">
+						{{number_format($rocknroll['d_pm_totalpot'],2,',','.')}}
+					</div>
+				</td>
+			</tr>
+
+			<tr class="bold">
+				<td class="s16" align="right">Total Gaji Nett</td>
+				<td>
+					<div class="s16 float-left">
+						Rp.
+					</div>
+					<div class="s16 float-right">
+						{{number_format($rocknroll['d_pm_totalnett'],2,',','.')}}
+					</div>
+				</td>
+			</tr>
+
 		</table>
 
 	</div>
-		<footer>
-			<img width="100%" src="{{asset('assets/img/footer-tammafood-surat.png')}}">
-		</footer>
+
+{{-- 	<footer>
+		<img src="{{asset('assets/img/footer-tammafood-surat.png')}}" width="100%">
+	</footer> --}}
+
+
 </body>
 </html>

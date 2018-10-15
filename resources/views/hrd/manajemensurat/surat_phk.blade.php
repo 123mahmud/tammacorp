@@ -68,22 +68,23 @@
                         <div class="col-md-3 col-sm-6 col-xs-12">
                           <div class="form-group">
                             <select class="form-control input-sm" name="c_jenis">
-                              <option>--Pilih Jenis--</option>
+                              <option value="" disabled>--Pilih Jenis--</option>
                               <option value="1">Pengurangan Pegawai</option>
                               <option value="2">Kesalahan Berat</option>
-
                             </select>
                           </div>
                         </div>
 
                         <div class="col-md-3 col-sm-6 col-xs-12">
-                          <label>Nama</label>
+                          <label>Type Pegawai</label>
                         </div>
 
                         <div class="col-md-3 col-sm-6 col-xs-12">
                           <div class="form-group">
-                            <select class="form-control input-sm select2" name="c_nama">
-                              <option>--Pilih Pegawai--</option>
+                            <select class="form-control input-sm" name="c_type_pegawai">
+                              <option value="" disabled>--Pilih Type Pegawai--</option>
+                              <option value="MAN">Pegawai Manajemen</option>
+                              <option value="PRO">Pegawai Produksi</option>
                             </select>
                           </div>
                         </div>
@@ -94,7 +95,19 @@
 
                         <div class="col-md-3 col-sm-6 col-xs-12">
                           <div class="form-group">
-                            <input id="tgl" type="text" class="form-control input-sm" name="c_tgl_phk">
+                            <input id="tgl" type="text" class="form-control input-sm" name="c_tgl_phk" value="{{ date('d-m-Y') }}">
+                          </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                          <label>Nama</label>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <select class="form-control input-sm select2" name="c_pid" style="width: 100% !important;">
+                            </select>
+                            <input type="hidden" class="form-control input-sm" name="c_nama">
                           </div>
                         </div>
 
@@ -119,18 +132,6 @@
                   </form>
                               
               </div>
-
-              <div class="row">
-                <div class="col-lg-12">
-                  <div class="form-group">
-                    <h3>Hanya Preview</h3>
-                  </div>
-                </div>
-                <div class="col-lg-12">
-                  <a class="btn btn-block btn-sm btn-info" target="_blank" href="{{route('surat_phk_print_berat')}}"><i class="fa fa-print"></i> Print Kesalahan Berat</a>
-                  <a class="btn btn-block btn-sm btn-info" target="_blank" href="{{route('surat_phk_print_pengurangan')}}"><i class="fa fa-print"></i> Print Pengurangan Pegawai</a>
-                </div>
-              </div>
                   
               <div class="table-responsive" style="margin-top: 15px;">
                 <table id="tbl_phk" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0">
@@ -138,6 +139,7 @@
                     <tr>
                       <th>Kode</th>
                       <th>Nama</th>
+                      <th>Pegawai</th>
                       <th>Tanggal PHK</th>
                       <th>Jenis PHK</th>
                       <th>Action</th>
@@ -184,20 +186,50 @@
 
   <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
   <script type="text/javascript">
-    $('.select2').select2();
-
+    //$('.select2').select2();
     $('#tgl').datepicker({
-              autoclose: true,
-              format: 'yyyy-mm-dd'
-            });
-      $('select').on('change', function() {
-        if(this.value == 2){
-                 $('.sejak').removeAttr('hidden');
-              }else{
-                $('.sejak').attr('hidden','true');
-                $('.sejak input').val('');
-              }
-      })
+      autoclose: true,
+      format:"dd-mm-yyyy"
+    });
+
+
+    $("select[name='c_pid']").select2({
+        placeholder: "Pilih Pegawai",
+        ajax: {
+          url: baseUrl + '/hrd/manajemensurat/lookup-data-pegawai',
+          dataType: 'JSON',
+          data: function (params) {
+            return {
+                q: $.trim(params.term),
+                typePeg : $("select[name='c_type_pegawai']").val()
+            };
+          },
+          processResults: function (data) {
+              return {
+                  results: data
+              };
+          },
+          cache: true
+        }, 
+    });
+
+    $("select[name='c_pid']").on("change", function(){
+      $("input[name='c_nama']").val($(this).text());
+    });
+
+
+    $("select[name='c_jenis']").on("change", function() {
+      if(this.value == 2)
+      {
+        $('.sejak').removeAttr('hidden');
+      }
+      else
+      {
+        $('.sejak').attr('hidden','true');
+        $('.sejak input').val('');
+      }
+    });
+
     var extensions = {
       "sFilterInput": "form-control input-sm",
       "sLengthSelect": "form-control input-sm"
@@ -222,7 +254,8 @@
       "columns": [
         { "data": "kode" },
         { "data": "c_nama" },
-        { "data": "c_tgl_phk" },
+        { "data": "pegawai" },
+        { "data": "tanggal" },
         { "data": "status" },
         { "data": "action" },
       ],

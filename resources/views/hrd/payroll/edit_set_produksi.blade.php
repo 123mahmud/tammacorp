@@ -43,7 +43,7 @@
                     {{ method_field('PUT') }}
                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Nama Gaji</label>
+                        <label class="tebal">Nama Gaji:</label>
                       </div>
                       <div class="col-md-10 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -51,7 +51,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Gaji</label>
+                        <label class="tebal">Gaji:</label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -59,11 +59,32 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Lembur</label>
+                        <label class="tebal">Lembur:</label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
                           <input type="number" value="{{ $data->c_lembur }}" name="c_lembur" class="form-control input-sm">
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">Untuk Jabatan:</label>
+                      </div>
+                      <div class="col-md-10 col-sm-8 col-xs-12" style="margin-bottom:20px">
+                        <div class="form-group">
+                          
+                          @foreach ($txt as $lis)
+                            <label class="col-md-12 col-sm-12 col-xs-12 lbl-check">
+                              @for ($i = 0; $i <count($list); $i++)
+                                @if ($list[$i] == $lis->c_id)
+                                  <input type="hidden" value="{{$list[$i]}}" class="ip_hidden" name="ip_cek[]">
+                                @endif
+                              @endfor
+                              <input type="checkbox" value="{{$lis->c_id}}" name="form_cek[]" class="ceklis_tunjangan">
+                                  {{$lis->c_jabatan_pro}}                         
+                            </label>
+                          @endforeach
+                           
+                        </div>
                         </div>
                       </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">
@@ -79,5 +100,33 @@
             </div>
           </div>
           @endsection @section('extra_scripts')
+          <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+          <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
           <script type="text/javascript">
-          </script> @endsection
+            $(document).ready(function() { 
+              $('#btn-check-all').click(function() {
+                 $('.ceklis_tunjangan').iCheck('check');
+              });
+              $('#btn-uncheck-all').click(function() {
+                 $('.ceklis_tunjangan').iCheck('uncheck');
+              });
+
+              var numcheck = $(".ip_hidden").length;
+              //alert(numcheck);
+              // for (var i = 0; i < numcheck; i++) {
+              //   alert($("input[name='form_cek]").val());
+              // }
+              $('input[name="form_cek[]"]').each(function() 
+              {
+                var ceklis = $(this).val();
+                $('input[name="ip_cek[]"]').each(function() 
+                {
+                  var ipcek = $(this).val();
+                  if (ipcek == ceklis) 
+                  {
+                    $('input.ceklis_tunjangan[value="'+ipcek+'"]').iCheck('check');
+                  }
+                });
+              });    
+            }); 
+          </script>  @endsection
