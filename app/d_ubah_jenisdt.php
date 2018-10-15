@@ -19,8 +19,6 @@ class d_ubah_jenisdt extends Model
         'd_ujdt_qty',
         'd_ujdt_price',
         'd_ujdt_pricetotal',
-        'd_ujdt_keterangan',
-        'd_ujdt_created',
-        'd_ujdt_updated'
+        'd_ujdt_keterangan'
     ];
 }

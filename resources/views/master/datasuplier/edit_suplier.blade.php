@@ -267,9 +267,8 @@
 
     $('.datepicker1').datepicker({
       autoclose: true,
-      format:"dd-mm-yyyy",
-      endDate: 'today'
-    }).datepicker("setDate", nd);
+      format:"dd-mm-yyyy"
+    });
 
     //mask money
     $.fn.maskFunc = function(){

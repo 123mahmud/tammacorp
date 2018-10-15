@@ -137,11 +137,13 @@ class SuplierController extends Controller
         //dd($request->all());
         DB::beginTransaction();
         try 
-        {   
-          $y = substr($request->tglTop, -4);
-          $m = substr($request->tglTop, -7, -5);
-          $d = substr($request->tglTop, 0, 2);
-          $tglTop = $y.'-'.$m.'-'.$d;
+        { 
+          if ($request->tglTop != "") {
+            $tglTop = date('Y-m-d',strtotime($request->tglTop));
+          }else{
+            $tglTop = null;
+          }
+          
 
           $tanggal = date("Y-m-d h:i:s");
 

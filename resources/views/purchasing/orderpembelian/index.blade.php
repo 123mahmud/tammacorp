@@ -321,6 +321,12 @@
         url: baseUrl + "/purchasing/orderpembelian/get-order-by-tgl/"+tgl1+"/"+tgl2,
         type: 'GET'
       },
+      columnDefs: [
+        {
+          targets: 6 ,
+          className: 'right format_money'
+        },
+      ],
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
         {"data" : "tglOrder", "width" : "10%"},
@@ -331,8 +337,11 @@
         {"data" : "hargaTotalNet", "width" : "12%"},
         {"data" : "tglMasuk", "width" : "10%"},
         {"data" : "status", "width" : "7%"},
-        {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
+        {"data" : "action", orderable: false, searchable: false, "width" : "17%"}
       ],
+      "responsive":true,
+      "pageLength": 10,
+      "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
       "language": {
         "searchPlaceholder": "Cari Data",
         "emptyTable": "Tidak ada data",
