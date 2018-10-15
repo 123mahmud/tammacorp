@@ -204,7 +204,8 @@ class POSRetailController extends Controller
   }
 
   public function store(Request $request){
-    // dd($request->all());
+    // return json_encode($request->all());
+
     DB::beginTransaction();
     try {
     $year = carbon::now()->format('y');
@@ -276,7 +277,7 @@ class POSRetailController extends Controller
   }
 
   public function sal_save_final(Request $request){
-  // dd($request->all());
+  return json_encode($request->all());
   DB::beginTransaction();
     try {
     $s_id = d_sales::max('s_id') + 1;
