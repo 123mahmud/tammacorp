@@ -35,7 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
 //rencana bahan baku
     Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\RencanaBahanController@index');
     Route::get('/purchasing/rencanabahanbaku/get-rencana-bytgl/{tgl1}/{tgl2}', 'Pembelian\RencanaBahanController@getRencanaByTgl');
-    Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
+    //Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
+    Route::get('/purchasing/rencanabahanbaku/proses-purchase-plan', 'Pembelian\RencanaBahanController@prosesPurchasePlan');
+    Route::get('/purchasing/rencanabahanbaku/suggest-item', 'Pembelian\RencanaBahanController@suggestItem');
     Route::post('/purchasing/rencanabahanbaku/ubah-status-spk', 'Pembelian\RencanaBahanController@ubahStatus');
 //order pembelian
     Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');

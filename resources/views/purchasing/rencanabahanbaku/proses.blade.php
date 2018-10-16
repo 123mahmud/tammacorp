@@ -16,13 +16,13 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Rencana Bahan Baku Produksi</div>
+      <div class="page-title">Proses Rencana pembelian bahan baku</div>
     </div>
     
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
       <li><i></i>&nbsp;Purchasing&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Rencana Bahan Baku Produksi</li>
+      <li class="active">Proses Rencana pembelian bahan baku</li>
     </ol>
 
     <div class="clearfix"></div>
@@ -38,71 +38,85 @@
           </div>
       
           <ul id="generalTab" class="nav nav-tabs">
-            <li class="active"><a href="#alert-tab" data-toggle="tab">Rencana Bahan Baku Produksi</a></li>
+            <li class="active"><a href="#alert-tab" data-toggle="tab">Proses Rencana pembelian bahan baku</a></li>
           </ul>
           
           <div id="generalTabContent" class="tab-content responsive">
-            @include('purchasing.rencanabahanbaku.tambah')
             <div id="alert-tab" class="tab-pane fade in active">
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
 
                   <div class="col-md-2 col-sm-3 col-xs-12">
-                    <label class="tebal">Tanggal SPK</label>
+                    <label class="tebal">Supplier</label>
                   </div>
 
                   <div class="col-md-4 col-sm-6 col-xs-12">
                     <div class="form-group">
-                      <div class="input-daterange input-group">
-                        <input id="tanggal1" class="form-control input-sm datepicker1" name="iTanggal1" type="text">
-                        <span class="input-group-addon">-</span>
-                        <input id="tanggal2" class="input-sm form-control datepicker2" name="iTanggal2" type="text" value="{{ date('d-m-Y') }}">
-                      </div>
+                      <select class="form-control input-sm" name="supplier" id="index_sup">
+                        @foreach($d_sup as $val)
+                          <option value="{{$val['sup_id']}}">{{$val['sup_txt']}}</option>
+                        @endforeach
+                      </select>
                     </div>
                   </div>
 
                   <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                    <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="lihatRencanaByTanggal()">
+                    <button class="btn btn-primary btn-sm btn-flat" type="button" onclick="kunciSupplier()">
                       <strong>
-                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <i class="fa fa-lock" aria-hidden="true"></i>
                       </strong>
                     </button>
-                    <button class="btn btn-info btn-sm btn-flat refresh-data-history" type="button" onclick="refreshTabel()">
+                    <button class="btn btn-success btn-sm btn-flat" type="button" onclick="prosesSupplier()">
                       <strong>
-                        <i class="fa fa-undo" aria-hidden="true"></i>
+                        <i class="fa fa-check" aria-hidden="true"></i>
                       </strong>
                     </button>
+                    <a href="{{ url('purchasing/rencanabahanbaku/bahan') }}" class="btn btn-default btn-sm btn-flat">
+                      <i class="fa fa-arrow-left"></i>
+                    </a>
                   </div>
 
                   <div class="table-responsive">
                     <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                       <thead>
                         <tr>
-                          <th>Nama</th>
-                          <th>Qty SPK</th>
-                          <th>Stok</th>
-                          <th>Kekurangan</th>
-                          <th>Rencana PO</th>
-                          <th>Aksi</th>
+                          <th style="text-align: center; width: 35%;">Nama Item</th>
+                          <th style="text-align: center; width: 15%;">Satuan</th>
+                          <th style="text-align: center; width: 15%;">Stok</th>
+                          <th style="text-align: center; width: 15%;">Kekurangan</th>
+                          <th style="text-align: center; width: 15%;">Qty</th>
+                          <th style="text-align: center; width: 5%;">Aksi</th>
                         </tr>
                       </thead>
                       <tbody>
+                        <tr>
+                          <td>
+                            <input type="text" class="form-control input-sm" readonly="" name="item[]" value="{{$data[0]['i_name']." | ".$data[0]['i_code']}}">
+                            <input type="hidden" class="form-control input-sm" name="itemid[]" value="{{$data[0]['item_id']}}">
+                            <input type="hidden" class="form-control input-sm" name="tgl1[]" id="tgl_1" value="{{$data[0]['tanggal1']}}">
+                            <input type="hidden" class="form-control input-sm" name="tgl2[]" id="tgl_2" value="{{$data[0]['tanggal2']}}">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control input-sm" readonly="" name="satuan[]" value="{{$data[0]['satuan']}}">
+                            <input type="hidden" class="form-control input-sm" name="satuanid[]" value="{{$data[0]['i_sat1']}}">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control input-sm currency" readonly="" name="stok[]" value="{{$data[0]['stok']}}">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control input-sm" readonly="" name="remaining[]" value="{{number_format($data[0]['selisih'],0,",",".")}}">
+                          </td>
+                          <td>
+                            <input type="text" class="form-control input-sm currency" name="qtyreq[]" value="{{abs($data[0]['selisih'])}}">
+                          </td>
+                          <td align="center">
+                            -
+                          </td>
+                        </tr>
                       </tbody>
                     </table> 
                   </div> 
                 </div>
-              </div>
-            </div>
-
-            <div id="note-tab" class="tab-pane fade">
-              <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12"></div>
-              </div>
-            </div>
-            
-            <div id="label-badge-tab" class="tab-pane fade">
-              <div class="row">
-                <div class="panel-body"></div>
               </div>
             </div>
           </div>
@@ -117,6 +131,7 @@
 @endsection
 @section("extra_scripts")
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+<script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     var extensions = {
@@ -128,10 +143,18 @@
     // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
     
-    //force integer input in textfield
-    $('input.numberinput').bind('keypress', function (e) {
-        return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
-    });
+    $.fn.maskFunc = function(){
+      $('.currency').inputmask("currency", {
+        radixPoint: ",",
+        groupSeparator: ".",
+        digits: 0,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+      });
+    }
+    $(this).maskFunc();
 
     var date = new Date();
     var newdate = new Date(date);
@@ -150,26 +173,10 @@
       format:"dd-mm-yyyy",
       endDate: 'today'
     });//datepicker("setDate", "0");
-
-     // fungsi jika modal hidden
-    $(".modal").on("hidden.bs.modal", function(){
-      $('tr').remove('.tbl_modal_row');
-    });
     
-    // $.fn.dataTable.ext.errMode = 'none';
-    // $('#data').on('error.dt', function(e, settings, techNote, message) {
-    //    console.log('An error has been reported by DataTables: ', message);
-    //    $('.dataTables_empty').text('Data pada tabel kosong...');
-    // });
-
-    $('#tampil_data').on('change', function() {
-      lihatRencanaByTanggal();
-    });
-
-  lihatRencanaByTanggal();
   });//end jquery
 
-  function lihatRencanaByTanggal()
+  /*function lihatRencanaByTanggal()
   {
     var tgl1 = $('#tanggal1').val();
     var tgl2 = $('#tanggal2').val();
@@ -205,20 +212,27 @@
         }
       }
     });
+  }*/
+
+  function kunciSupplier() {
+    if ($('#index_sup').is('[disabled=disabled]')) {
+      $('#index_sup').attr('disabled', false);
+    }else{
+      $('#index_sup').attr('disabled', true);
+    }
   }
 
-  function proses(id,tgl1,tgl2) 
-  {
+  function prosesSupplier() {
+    var idsup = $('#index_sup').val();
+    var tgl1 = $('#tgl_1').val();
+    var tgl2 = $('#tgl_2').val();
     $.ajax({
-      url : baseUrl + "/purchasing/rencanabahanbaku/proses-purchase-plan",
-      data : {id:id, tgl1:tgl1, tgl2:tgl2},
+      url : baseUrl + "/purchasing/rencanabahanbaku/suggest-item",
+      data : {idsup:idsup, tgl1:tgl1, tgl2:tgl2},
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
-      },
-      complete: function (argument) {
-        window.location = (this.url)
       },
       error: function ()
       {
@@ -226,26 +240,6 @@
       async: false
     });
   }
-
-  /*function edit(a) {
-      var parent = $(a).parents('tr');
-      var id = $(parent).find('.d_id').text();
-      console.log(id);
-      $.ajax({
-        type: "PUT",
-        url: '{{ url("hrd/manajemensurat/edit-phk") }}' + '/' + a,
-        data: { id },
-        success: function (data) {
-        },
-        complete: function (argument) {
-          window.location = (this.url)
-        },
-        error: function () {
-
-        },
-        async: false
-      });
-  }*/
 
   function gantiStatus(id, isPO) {
     iziToast.question({
