@@ -262,6 +262,7 @@ class GajiController extends Controller
     }
     public function simpanTunjangan(Request $request){
         $data = new m_tunjangan_man;
+        $data->tman_levelpeg = $request->level;
         $data->tman_nama = $request->nama;
         $data->tman_periode = $request->periode;
         $data->tman_value = str_replace('.', '', $request->nilai);
@@ -277,6 +278,7 @@ class GajiController extends Controller
         m_tunjangan_man::where('tman_id','=', $id)
             ->update([
                 'tman_nama' => $request->nama,
+                'tman_levelpeg' => $request->level,
                 'tman_periode' => $request->periode,
                 'tman_value' => str_replace('.', '', $request->nilai),
                 'tman_updated' => Carbon::now('Asia/Jakarta')

@@ -136,14 +136,6 @@ class ManajemenSuratController extends Controller
         }else{
             return view('hrd/manajemensurat/surat/form_phk/surat_phk_print_berat', ['data' => $data]);
         }
-
-        return response()->json([
-            'status' => 'sukses',
-            'data' => $data,
-            'divisi' => $divisi,
-            'jabatan' => $jabatan,
-            'pegawai' => $pegawai
-        ]);
     }
     public function surat_phk_print(){
         return view('hrd/manajemensurat/surat/form_phk/surat_phk_print');
@@ -156,9 +148,6 @@ class ManajemenSuratController extends Controller
         
     public function form_kenaikan_gaji(){
         return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji');
-    }
-    public function form_kenaikan_gaji_print(){
-        return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji_print');
     }
     public function lookupPegawai2(Request $request)
     {
@@ -276,7 +265,7 @@ class ManajemenSuratController extends Controller
             'nj_type' => 'J',
             'nj_pid' => $request->pegawai,
             'nj_alasan' => $request->alasan,
-            'nj_tgl' => $dnow,
+            'nj_tgl' => date('Y-m-d',strtotime($request->tanggal)),
             'nj_tgl_aktif' => date('Y-m-d',strtotime($request->tanggal_now)),
             'nj_level_lama' => $request->idlevel_now,
             'nj_posisi_lama' => $request->idjabatan_now,
@@ -292,14 +281,17 @@ class ManajemenSuratController extends Controller
     }
     public function promosiData(){
         $list = DB::table('d_naik_jabatan')
-        ->join
+        ->join('m_pegawai_man', 'd_naik_jabatan.nj_pid', '=', 'm_pegawai_man.c_id')
+        ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+        ->select('d_naik_jabatan.*', 'm_pegawai_man.c_id','m_pegawai_man.c_nama','m_pegawai_man.c_divisi_id','m_pegawai_man.c_jabatan_id','m_divisi.c_divisi','m_jabatan.c_posisi')
         ->get();
+
         $data = collect($list);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
-                         return  '<button id="edit" onclick="edit('.$data->nj_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                        <a href="'.url('/hrd/manajemensurat/cetak-surat-promosi/'.$data->nj_id).'" target="_blank" class="btn btn-info"><i class="glyphicon glyphicon-print"></i></a>'.'
-                                        <button id="delete" onclick="hapus('.$data->nj_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                         return  '<a href="'.url('/hrd/manajemensurat/cetak-surat-promosi/'.$data->nj_id).'" target="_blank" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-print"></i></a>'.'
+                                  <button id="delete" onclick="hapus('.$data->nj_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
                 })
                 ->addColumn('kode', function ($data) {
                     return  str_pad($data->c_id, 3, '0', STR_PAD_LEFT);
@@ -310,6 +302,10 @@ class ManajemenSuratController extends Controller
                 ->addColumn('type', function ($data) {
                     if ($data->nj_type == "G") {return "Gaji"; }else{ return 'Jabatan'; }
                 })
+                ->addColumn('usul', function ($data) {
+                    $nm_peg = DB::table('m_pegawai_man')->select('c_nama')->where('c_id', $data->nj_p_rekom)->first();
+                    return $nm_peg->c_nama;
+                })
                 ->addColumn('tanggal', function ($data) {
                     if ($data->nj_tgl == null) {
                         return '-';
@@ -319,6 +315,68 @@ class ManajemenSuratController extends Controller
                 })
                 ->rawColumns(['action'])
                 ->make(true);
+    }
+    public function cetakSuratPromosi($id){
+        $data = DB::table('d_naik_jabatan')
+                ->join('m_pegawai_man', 'd_naik_jabatan.nj_pid', '=', 'm_pegawai_man.c_id')
+                ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                ->join('m_sub_divisi', 'm_jabatan.c_sub_divisi_id', '=', 'm_sub_divisi.c_id')
+                ->where('d_naik_jabatan.nj_id', $id)
+                ->select(
+                    'd_naik_jabatan.*',
+                    'm_pegawai_man.c_id',
+                    'm_pegawai_man.c_nama',
+                    'm_pegawai_man.c_divisi_id',
+                    'm_pegawai_man.c_jabatan_id',
+                    'm_pegawai_man.c_tahun_masuk',
+                    'm_pegawai_man.c_pendidikan',
+                    'm_divisi.c_divisi',
+                    'm_jabatan.c_posisi',
+                    'm_sub_divisi.c_subdivisi'
+                )
+                ->first();
+
+        $rekom = DB::table('m_pegawai_man')
+                    ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+                    ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                    ->join('m_sub_divisi', 'm_jabatan.c_sub_divisi_id', '=', 'm_sub_divisi.c_id')
+                    ->where('m_pegawai_man.c_id', $data->nj_p_rekom)
+                    ->select(
+                        'm_pegawai_man.c_id',
+                        'm_pegawai_man.c_nama',
+                        'm_pegawai_man.c_divisi_id',
+                        'm_pegawai_man.c_jabatan_id',
+                        'm_divisi.c_divisi',
+                        'm_jabatan.c_posisi',
+                        'm_sub_divisi.c_subdivisi'
+                    )
+                    ->first();
+
+        $posisiBaru = DB::table('m_jabatan')->select('c_posisi')->where('c_id', $data->nj_posisi_baru)->first();
+        $levelBaru = DB::table('m_sub_divisi')->select('c_subdivisi')->where('c_id', $data->nj_level_baru)->first();
+
+        if ($data->c_pendidikan == 'S2') {
+                $akronim_title = 'c_s1';
+        }else{
+            $akronim_title = strtolower('c_'.$data->c_pendidikan);
+        }
+
+        $gj = DB::table('m_gaji_man')->select($akronim_title)->first();
+        $gapok = (int)$gj->$akronim_title;
+
+        return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji_print', [
+            'data' => $data,
+            'gapok' => $gapok,
+            'rekom' => $rekom,
+            'posisiBaru' => $posisiBaru,
+            'levelBaru' => $levelBaru
+        ]);
+    }
+    public function deleteSuratPromosi($id){
+        $data = DB::table('d_naik_jabatan')->where('nj_id', $id)->delete();
+
+        return redirect('/hrd/manajemensurat/form_kenaikan_gaji');
     }
 
     //==============================================END KENAIKAN GAJI==========================================================

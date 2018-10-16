@@ -204,6 +204,7 @@
 
   function getListPromosi() {
     $('#tbl-promosi').DataTable({
+      destroy: true,
       processing: true,
       serverSide: true,
       ajax: {
@@ -218,9 +219,9 @@
       "columns": [
         { "data": "nj_code" },
         { "data": "tanggal" },
-        { "data": "pegawai" },
-        { "data": "tanggal" },
-        { "data": "status" },
+        { "data": "c_nama" },
+        { "data": "type" },
+        { "data": "usul" },
         { "data": "action" },
       ],
       "responsive": true,
@@ -240,5 +241,49 @@
       }
     });
   }
+
+  function hapus(id) {
+      iziToast.question({
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        toastOnce: true,
+        id: 'question',
+        zindex: 999,
+        title: 'Hey',
+        message: 'Apakah anda yakin?',
+        position: 'center',
+        buttons: [
+          ['<button><b>YA</b></button>', function (instance, toast) {
+            $.ajax({
+              url: '{{ url("hrd/manajemensurat/delete-surat-promosi") }}' + '/' + id,
+              async: false,
+              type: "DELETE",
+              data: {
+                "id": id,
+                "_method": 'DELETE',
+                "_token": '{{ csrf_token() }}',
+              },
+              dataType: "json",
+              success: function (data) { }
+            });
+            window.location.reload();
+            instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+
+          }, true],
+          ['<button>TIDAK</button>', function (instance, toast) {
+
+            instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+
+          }]
+        ],
+        onClosing: function (instance, toast, closedBy) {
+          console.info('Closing | closedBy: ' + closedBy);
+        },
+        onClosed: function (instance, toast, closedBy) {
+          console.info('Closed | closedBy: ' + closedBy);
+        }
+      });
+    }
 </script> 
 @endsection
