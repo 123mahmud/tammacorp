@@ -7,7 +7,7 @@ Hello Tamma
 ## Spesification
 
 - PHP >= 7.1.3
-- MySQL mahmud
+- MySQL mahmudeeeek
 - OpenSSL PHP Extension
 - PDO PHP Extension
 - Mbstring PHP Extension
