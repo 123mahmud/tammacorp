@@ -34,7 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
 //rizky
 //rencana bahan baku
     Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\RencanaBahanController@index');
-    Route::get('/purchasing/rencanabahanbaku/get-rencana-bytgl/{tgl1}/{tgl2}/{tampil}', 'Pembelian\RencanaBahanController@getRencanaByTgl');
+    Route::get('/purchasing/rencanabahanbaku/get-rencana-bytgl/{tgl1}/{tgl2}', 'Pembelian\RencanaBahanController@getRencanaByTgl');
     Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
     Route::post('/purchasing/rencanabahanbaku/ubah-status-spk', 'Pembelian\RencanaBahanController@ubahStatus');
 //order pembelian

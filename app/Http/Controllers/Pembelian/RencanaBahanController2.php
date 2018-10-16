@@ -25,30 +25,35 @@ class RencanaBahanController extends Controller
       return view('purchasing/rencanabahanbaku/bahan');
     }
 
-    public function getRencanaByTgl($tgl1, $tgl2)
+    public function getRencanaByTgl($tgl1, $tgl2, $tampil)
     {
-      
-      $tanggal1 = date('Y-m-d',strtotime($tgl1));
-      $tanggal2 = date('Y-m-d',strtotime($tgl2));
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tanggal1 = $y.'-'.$m.'-'.$d;
 
-      $dataHeader = d_spk::join('spk_formula', 'd_spk.spk_ref', '=', 'spk_formula.fr_spk')
-                ->join('m_item','spk_formula.fr_formula','=','m_item.i_id')
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      if ($tampil == 'notyet') 
+      {
+        $spk_is_po = "FALSE";
+      }else 
+      {
+        $spk_is_po = "TRUE";
+      }
+      
+      $dataHeader = d_spk::join('m_item','d_spk.spk_item','=','m_item.i_id')
                 ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
-                ->select(
-                    'd_spk.*',
-                    DB::raw('SUM(fr_value) as total'),
-                    'spk_formula.*',
-                    'm_item.i_id',
-                    'm_item.i_name',
-                    'm_item.i_code',
-                    'm_item.i_sat1'
-                  )
+                ->select('d_spk.*', 'm_item.i_id', 'm_item.i_name','m_item.i_code', 'm_item.i_sat1')
                 ->where('d_spk.spk_status', '=', 'DR')
+                ->where('d_spk.spk_ispo', '=', $spk_is_po)
                 ->whereBetween('d_spk.spk_date', [$tanggal1, $tanggal2])
-                ->groupBy('m_item.i_name')
                 ->orderBy('d_spk.spk_date', 'DESC')
                 ->get();
-
+      
       if (count($dataHeader) > 0) 
       {
         foreach ($dataHeader as $val) 
@@ -80,7 +85,7 @@ class RencanaBahanController extends Controller
             $data['satuan'][$i] = $satUtama->m_sname;
             $counter++;
           }
-          elseif ($itemType[$i]->i_type == "BP") //bahan produksi
+          elseif ($itemType[$i]->i_type == "BP") //bahan baku
           {
             $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
             $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
@@ -98,30 +103,47 @@ class RencanaBahanController extends Controller
         }
       }
 
-      //return Response::json($dataHeader);
-
       return DataTables::of($dataHeader)
       ->addIndexColumn()
+      ->editColumn('tglSpk', function ($data) 
+      {
+        if ($data->spk_date == null) 
+        {
+            return '-';
+        }
+        else 
+        {
+            return $data->spk_date ? with(new Carbon($data->spk_date))->format('d M Y') : '';
+        }
+      })
       ->editColumn('stok', function ($data) 
       {
-        return number_format($data->stok,0,",",".").' '.$data->satuan;
-      })
-      ->editColumn('qtyTotal', function ($data) 
-      {
-        return number_format($data->total,0,",",".");
-      })
-      ->editColumn('kekurangan', function ($data) 
-      {
-        return number_format((int)$data->stok - (int)$data->total,0,",",".");
+        return $data->stok.' '.$data->satuan;
       })
       ->addColumn('action', function($data)
       {
-        return '<div class="text-center">
-                <button class="btn btn-sm btn-success" title="Detail"
-                    onclick=proses("'.$data->i_id.'")><i class="fa fa-check"></i> 
-                </button>';
+        if ($data->spk_ispo == "TRUE") 
+        {
+         return '<div class="text-center">
+                  <button class="btn btn-sm btn-success" title="Detail"
+                      onclick=detailRencana("'.$data->spk_id.'")><i class="fa fa-eye"></i> 
+                  </button>
+                  <button class="btn btn-danger btn-sm" title="Ubah status belum PO"
+                    onclick=gantiStatus("'.$data->spk_id.'","done")><i class="glyphicon glyphicon-remove"></i>
+                  </button>';
+        }
+        else
+        {
+          return '<div class="text-center">
+                  <button class="btn btn-sm btn-success" title="Detail"
+                      onclick=detailRencana("'.$data->spk_id.'")><i class="fa fa-eye"></i> 
+                  </button>
+                  <button class="btn btn-info btn-sm" title="Ubah status sudah PO" 
+                    onclick=gantiStatus("'.$data->spk_id.'","notyet")><i class="glyphicon glyphicon-ok"></i>
+                  </button>';
+        }
       })
-      ->rawColumns(['action'])
+      ->rawColumns(['status', 'action'])
       ->make(true);
     }
 
