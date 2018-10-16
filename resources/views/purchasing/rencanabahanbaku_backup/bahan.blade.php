@@ -74,15 +74,22 @@
                     </button>
                   </div>
 
+                  <div class="col-md-3 col-sm-3 col-xs-12" align="right">
+                    <select name="tampilData" id="tampil_data" class="form-control input-sm">
+                      <option value="notyet" class="form-control">Tampilkan Data : Belum PO</option>
+                      <option value="done" class="form-control">Tampilkan Data : Sudah PO</option>
+                    </select>
+                  </div>
+
                   <div class="table-responsive">
                     <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                       <thead>
                         <tr>
-                          <th>Nama</th>
-                          <th>Qty SPK</th>
+                          <th>No</th>
+                          <th>Kode SPK</th>
+                          <th>Tanggal SPK</th>
+                          <th>Nama Barang</th>
                           <th>Stok</th>
-                          <th>Kekurangan</th>
-                          <th>Order</th>
                           <th>Aksi</th>
                         </tr>
                       </thead>
@@ -175,23 +182,21 @@
     var tgl2 = $('#tanggal2').val();
     var tampil = $('#tampil_data').val();
     $('#data').dataTable({
-      destroy: true,
-      processing: true,
-      serverSide: true,
-      ajax : {
-        url: baseUrl + "/purchasing/rencanabahanbaku/get-rencana-bytgl/"+tgl1+"/"+tgl2,
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/purchasing/rencanabahanbaku/get-rencana-bytgl/"+tgl1+"/"+tgl2+"/"+tampil,
         type: 'GET'
       },
       "columns" : [
-        {"data" : "i_name", "width" : "20%"},
-        {"data" : "qtyTotal", "width" : "10%"},
-        {"data" : "stok", "width" : "20%"},
-        {"data" : "kekurangan", "width" : "20%"},
-        {"data" : "kekurangan", "width" : "20%"},
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "spk_code", "width" : "20%"},
+        {"data" : "tglSpk", "width" : "20%"},
+        {"data" : "i_name", "width" : "30%"},
+        {"data" : "stok", "width" : "15%"},
         {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
       ],
-      "responsive": true,
-      "lengthMenu": [[-1], ["All"]],
       "language": {
         "searchPlaceholder": "Cari Data",
         "emptyTable": "Tidak ada data",
