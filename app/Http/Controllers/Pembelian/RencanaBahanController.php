@@ -101,7 +101,7 @@ class RencanaBahanController extends Controller
         { 
           $dataHeader[$j]['stok'] = $data['stok'][$j];
           $dataHeader[$j]['satuan'] = $data['satuan'][$j];
-          $dataHeader[$j]['selisih'] = $data['stok'][$j] - $dataHeader[$j]['total'];
+          $dataHeader[$j]['selisih'] = $data['stok'][$j] - ($dataHeader[$j]['total'] - $dataHeader[$j]['qtyOrderPlan']);
           $dataHeader[$j]['tanggal1'] = $tanggal1;
           $dataHeader[$j]['tanggal2'] = $tanggal2;
         }
@@ -121,7 +121,7 @@ class RencanaBahanController extends Controller
         })
         ->editColumn('kekurangan', function ($data) 
         {
-          return number_format((int)$data->stok - (int)$data->total,0,",",".");
+          return number_format((int)$data->selisih,0,",",".");
         })
         ->editColumn('qtyorderplan', function ($data) 
         {
@@ -221,7 +221,7 @@ class RencanaBahanController extends Controller
         { 
           $dataHeader[$j]['stok'] = $data['stok'][$j];
           $dataHeader[$j]['satuan'] = $data['satuan'][$j];
-          $dataHeader[$j]['selisih'] = $data['stok'][$j] - $dataHeader[$j]['total'];
+          $dataHeader[$j]['selisih'] = $data['stok'][$j] - ($dataHeader[$j]['total'] - $dataHeader[$j]['qtyOrderPlan']);
           $dataHeader[$j]['tanggal1'] = $request->tgl1;
           $dataHeader[$j]['tanggal2'] = $request->tgl2;
         }
@@ -234,32 +234,50 @@ class RencanaBahanController extends Controller
 
     public function suggestItem(Request $request)
     {
-      $dataHeader = d_spk::join('spk_formula', 'd_spk.spk_id', '=', 'spk_formula.fr_spk')
-                    ->join('m_item','spk_formula.fr_formula','=','m_item.i_id')
-                    ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
-                    ->join('d_purchasingplan_dt', 'spk_formula.fr_formula', '=', 'd_purchasingplan_dt.d_pcspdt_item')
-                    ->select(
-                        'd_spk.*',
-                        DB::raw('SUM(fr_value) as total'),
-                        'spk_formula.*',
-                        'm_item.i_id as item_id',
-                        'm_item.i_name',
-                        'm_item.i_code',
-                        'm_item.i_sat1',
-                        'd_purchasingplan_dt.d_pcspdt_item',
-                        DB::raw("IFNULL( 
-                                  (SELECT SUM(d_pcspdt_qtyconfirm) 
-                                    FROM d_purchasingplan_dt 
-                                    WHERE d_pcspdt_created BETWEEN '".$request->tgl1."' AND '".$request->tgl2."'
-                                    AND d_pcspdt_item = item_id) ,'0') 
-                                    as qtyOrderPlan")
-                    )
-                    ->where('d_spk.spk_status', '=', 'DR')
-                    ->whereBetween('d_spk.spk_date', [$request->tgl1, $request->tgl2])
-                    ->groupBy('i_id')
-                    ->orderBy('i_name', 'ASC')
-                    ->get();
+      $item = DB::table('d_supplier')->select('s_item_list')->where('s_id', $request->idsup)->first();
+      $list_item = explode(',', $item->s_item_list);
+      $d_item = [];
+      for ($i=0; $i <count($list_item); $i++) 
+      { 
+        $aa = DB::table('m_item')->select('i_id','i_name','i_code')->where('i_id', $list_item[$i])->first();
+        if ($request->item != $aa->i_id) {
+          $d_item[] = array('item_id' => $aa->i_id, 'item_txt'=> $aa->i_name, 'item_code'=> $aa->i_code);
+        }
+      }
 
+      $hasil = [];
+      for ($j=0; $j <count($d_item); $j++) 
+      { 
+        $dataHeader[] = spk_formula::join('d_spk', 'spk_formula.fr_spk', '=', 'd_spk.spk_id')
+                              ->join('m_item', 'spk_formula.fr_formula', '=', 'm_item.i_id')
+                              ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
+                              ->select(
+                                'd_spk.*',
+                                'spk_formula.*',
+                                'm_item.i_name',
+                                'm_item.i_code',
+                                'm_item.i_sat1',
+                                'm_item.i_id as item_id',
+                                DB::raw('IFNULL(
+                                          (SELECT SUM(fr_value) FROM spk_formula 
+                                          JOIN d_spk on spk_formula.fr_spk = d_spk.spk_id 
+                                          WHERE spk_date BETWEEN "'.$request->tgl1.'" AND "'.$request->tgl2.'"
+                                          AND fr_formula = item_id), "0")
+                                          as totalQTySpk'),
+                                DB::raw("IFNULL( 
+                                        (SELECT SUM(d_pcspdt_qtyconfirm) 
+                                          FROM d_purchasingplan_dt 
+                                          WHERE d_pcspdt_created BETWEEN '".$request->tgl1."' AND '".$request->tgl2."'
+                                          AND d_pcspdt_item = item_id) ,'0') 
+                                          as qtyOrderPlan")
+                              )
+                              ->where('d_spk.spk_status', '=', 'DR')
+                              ->where('spk_formula.fr_formula', '=', $d_item[$j])
+                              // ->whereBetween('d_spk.spk_date', [$request->tgl1, $request->tgl2])
+                              ->groupBy('spk_formula.fr_formula')
+                              ->first();
+      }
+           
       if (count($dataHeader) > 0) 
       {
         foreach ($dataHeader as $val) 
@@ -269,53 +287,71 @@ class RencanaBahanController extends Controller
           //get satuan utama
           $sat1[] = $val->i_sat1;
         }
+
         $counter = 0;
-        for ($i=0; $i <count($itemType); $i++) 
+        for ($k=0; $k <count($itemType); $k++) 
         { 
-          if ($itemType[$i]->i_type == "BJ") //brg jual
+          if ($itemType[$k]->i_type == "BJ") //brg jual
           {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$k]->i_id."' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
             $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
 
-            $data['stok'][$i] = $query[0]->qtyStok;
-            $data['satuan'][$i] = $satUtama->m_sname;
+            $dataHeader[$k]['stok'] = $query[0]->qtyStok;
+            $dataHeader[$k]['satuan'] = $satUtama->m_sname;
             $counter++;
           }
-          elseif ($itemType[$i]->i_type == "BB") //bahan baku
+          elseif ($itemType[$k]->i_type == "BB") //bahan baku
           {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$k]->i_id."' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
             $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
 
-            $data['stok'][$i] = $query[0]->qtyStok;
-            $data['satuan'][$i] = $satUtama->m_sname;
+            $dataHeader[$k]['stok'] = $query[0]->qtyStok;
+            $dataHeader[$k]['satuan'] = $satUtama->m_sname;
             $counter++;
           }
-          elseif ($itemType[$i]->i_type == "BP") //bahan produksi
+          elseif ($itemType[$k]->i_type == "BP") //bahan produksi
           {
             $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
             $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
 
-            $data['stok'][$i] = $query[0]->qtyStok;
-            $data['satuan'][$i] = $satUtama->m_sname;
+            $dataHeader[$k]['stok'] = $query[0]->qtyStok;
+            $dataHeader[$k]['satuan'] = $satUtama->m_sname;
             $counter++;
           }
         }
-        for ($j=0; $j < count($dataHeader); $j++) 
+
+        for ($l=0; $l < count($dataHeader); $l++) 
         { 
-          $dataHeader[$j]['stok'] = $data['stok'][$j];
-          $dataHeader[$j]['satuan'] = $data['satuan'][$j];
-          $dataHeader[$j]['selisih'] = $data['stok'][$j] - $dataHeader[$j]['total'];
-          $dataHeader[$j]['tanggal1'] = $request->tgl1;
-          $dataHeader[$j]['tanggal2'] = $request->tgl2;
+          $dataHeader[$l]['selisih'] = $dataHeader[$l]['stok'] - ($dataHeader[$l]['totalQTySpk'] - $dataHeader[$l]['qtyOrderPlan']);
+          $dataHeader[$l]['abs_selisih'] = abs($dataHeader[$l]['selisih']);
+          $dataHeader[$l]['tanggal1'] = $request->tgl1;
+          $dataHeader[$l]['tanggal2'] = $request->tgl2;
         }
       }
 
-      return response::json($dataHeader);
-      /*return response()->json([
-            'status' => 'sukses',
-            'header' => $dataHeader,
-        ]);*/
-    
+      // foreach ($dataHeader as $value) {
+      //   $result[] = array(
+      //     'spk_item' => $value->spk_item,
+      //     'i_name' => $value->i_name,
+      //     'i_id' => $value->item_id,
+      //     'i_code' => $value->i_code,
+      //     'i_sat1' => $value->i_sat1,
+      //     'satuan' => $value->satuan,
+      //     'qtyOrderPlan' => number_format($value->qtyOrderPlan,0,",","."),
+      //     'stok' => number_format($value->stok,0,",","."),
+      //     'selisih' => number_format($value->selisih,0,",","."),
+      //     'tanggal1' => $value->tanggal1,
+      //     'tanggal3' => $value->tanggal2,
+      //     'fr_formula' => $value->fr_formula
+      //   );
+      // }
+      
+      return response()->json([
+          'status' => 'sukses',
+          'list' => $d_item,
+          // 'data' => $result,
+          'data' => $dataHeader,
+      ]);
     }
 
     public function getDetailRencana($id)

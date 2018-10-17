@@ -75,47 +75,48 @@
                       <i class="fa fa-arrow-left"></i>
                     </a>
                   </div>
-
-                  <div class="table-responsive">
-                    <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
-                      <thead>
-                        <tr>
-                          <th style="text-align: center; width: 35%;">Nama Item</th>
-                          <th style="text-align: center; width: 15%;">Satuan</th>
-                          <th style="text-align: center; width: 15%;">Stok</th>
-                          <th style="text-align: center; width: 15%;">Kekurangan</th>
-                          <th style="text-align: center; width: 15%;">Qty</th>
-                          <th style="text-align: center; width: 5%;">Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <input type="text" class="form-control input-sm" readonly="" name="item[]" value="{{$data[0]['i_name']." | ".$data[0]['i_code']}}">
-                            <input type="hidden" class="form-control input-sm" name="itemid[]" value="{{$data[0]['item_id']}}">
-                            <input type="hidden" class="form-control input-sm" name="tgl1[]" id="tgl_1" value="{{$data[0]['tanggal1']}}">
-                            <input type="hidden" class="form-control input-sm" name="tgl2[]" id="tgl_2" value="{{$data[0]['tanggal2']}}">
-                          </td>
-                          <td>
-                            <input type="text" class="form-control input-sm" readonly="" name="satuan[]" value="{{$data[0]['satuan']}}">
-                            <input type="hidden" class="form-control input-sm" name="satuanid[]" value="{{$data[0]['i_sat1']}}">
-                          </td>
-                          <td>
-                            <input type="text" class="form-control input-sm currency" readonly="" name="stok[]" value="{{$data[0]['stok']}}">
-                          </td>
-                          <td>
-                            <input type="text" class="form-control input-sm" readonly="" name="remaining[]" value="{{number_format($data[0]['selisih'],0,",",".")}}">
-                          </td>
-                          <td>
-                            <input type="text" class="form-control input-sm currency" name="qtyreq[]" value="{{abs($data[0]['selisih'])}}">
-                          </td>
-                          <td align="center">
-                            -
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table> 
-                  </div> 
+                  <form method="POST" id="form_proses" name="formProses">
+                    <div class="table-responsive">
+                      <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
+                        <thead>
+                          <tr>
+                            <th style="text-align: center; width: 35%;">Nama Item</th>
+                            <th style="text-align: center; width: 15%;">Satuan</th>
+                            <th style="text-align: center; width: 15%;">Stok</th>
+                            <th style="text-align: center; width: 15%;">Kekurangan</th>
+                            <th style="text-align: center; width: 15%;">Qty</th>
+                            <th style="text-align: center; width: 5%;">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody_append">
+                          <tr>
+                            <td>
+                              <input type="text" class="form-control input-sm" readonly="" name="item[]" value="{{$data[0]['i_code']." | ".$data[0]['i_name']}}">
+                              <input type="hidden" class="form-control input-sm" name="itemid[]" value="{{$data[0]['item_id']}}" id="i_itemid">
+                              <input type="hidden" class="form-control input-sm" name="tgl1[]" id="tgl_1" value="{{$data[0]['tanggal1']}}">
+                              <input type="hidden" class="form-control input-sm" name="tgl2[]" id="tgl_2" value="{{$data[0]['tanggal2']}}">
+                            </td>
+                            <td>
+                              <input type="text" class="form-control input-sm" readonly="" name="satuan[]" value="{{$data[0]['satuan']}}">
+                              <input type="hidden" class="form-control input-sm" name="satuanid[]" value="{{$data[0]['i_sat1']}}">
+                            </td>
+                            <td>
+                              <input type="text" class="form-control input-sm currency" readonly="" name="stok[]" value="{{$data[0]['stok']}}">
+                            </td>
+                            <td>
+                              <input type="text" class="form-control input-sm" readonly="" name="remaining[]" value="{{number_format($data[0]['selisih'],0,",",".")}}">
+                            </td>
+                            <td>
+                              <input type="text" class="form-control input-sm currency" name="qtyreq[]" value="{{abs($data[0]['selisih'])}}">
+                            </td>
+                            <td align="center">
+                              -
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table> 
+                    </div>
+                  </form> 
                 </div>
               </div>
             </div>
@@ -224,15 +225,55 @@
 
   function prosesSupplier() {
     var idsup = $('#index_sup').val();
+    var item = $('#i_itemid').val();
     var tgl1 = $('#tgl_1').val();
     var tgl2 = $('#tgl_2').val();
     $.ajax({
       url : baseUrl + "/purchasing/rencanabahanbaku/suggest-item",
-      data : {idsup:idsup, tgl1:tgl1, tgl2:tgl2},
+      data : {idsup:idsup, item:item, tgl1:tgl1, tgl2:tgl2},
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
+        var i = randString(5);
+        var key = 1;
+        Object.keys(data.data).forEach(function(){
+            // var hargaTotalItemGross = data.data_isi[key-1].d_pcsdt_total;
+            // var qtyCost = data.data_isi[key-1].d_pcsdt_qtyconfirm;
+            // var qtyTerima = data.data_qty[key-1];
+            // //harga total per item setelah kena diskon & pajak
+            // var hargaTotalItemNet = Math.round(parseFloat(hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100) + ((hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100)) * taxPercent/100)).toFixed(2));
+            // console.log(hargaTotalItemNet);
+            // var hargaSatuanItemNet = hargaTotalItemNet/qtyCost;
+            // var hargaTotalPerRow = hargaSatuanItemNet * qtyTerima;
+            $('#tbody_append').append(
+                '<tr class="tbl_form_row" id="row'+i+'">'
+                  +'<td>'
+                    +'<input type="text" class="form-control input-sm" readonly name="item[]" value="'+data.data[key-1].i_code+' | '+data.data[key-1].i_name+'">'
+                    +'<input type="hidden" class="form-control input-sm" name="itemid[]" value="'+data.data[key-1].item_id+'">'
+                    +'<input type="hidden" class="form-control input-sm" name="tgl1[]" id="tgl_1" value="'+data.data[key-1].tanggal1+'">'
+                    +'<input type="hidden" class="form-control input-sm" name="tgl2[]" id="tgl_2" value="'+data.data[key-1].tanggal2+'">'
+                  +'</td>'
+                  +'<td>'
+                    +'<input type="text" class="form-control input-sm" readonly name="satuan[]" value="'+data.data[key-1].satuan+'">'
+                    +'<input type="hidden" class="form-control input-sm" name="satuanid[]" value="'+data.data[key-1].i_sat1+'">'
+                  +'</td>'
+                  +'<td>'
+                    +'<input type="text" class="form-control input-sm currency" readonly name="stok[]" value="'+data.data[key-1].stok+'">'
+                  +'</td>'
+                  +'<td>'
+                    +'<input type="text" class="form-control input-sm" readonly name="remaining[]" value="'+data.data[key-1].selisih+'">'
+                  +'</td>'
+                  +'<td>'
+                    +'<input type="text" class="form-control input-sm currency" name="qtyreq[]" value="'+data.data[key-1].abs_selisih+'">'
+                  +'</td>'
+                  +'<td>'
+                   +'<button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button>'
+                  +'</td>'
+                +'</tr>');
+            i = randString(5);
+            key++;
+          });
       },
       error: function ()
       {
