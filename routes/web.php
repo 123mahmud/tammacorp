@@ -480,7 +480,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/form_overhandle_print', 'Hrd\ManajemenSuratController@form_overhandle_print')->name('form_overhandle_print');
     // form permintaan
     Route::get('/hrd/manajemensurat/form_permintaan', 'Hrd\ManajemenSuratController@form_permintaan')->name('form_permintaan');
-    Route::get('/hrd/manajemensurat/form_permintaan_print', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
+    Route::get('/hrd/manajemensurat/form_permintaan_print/{id}', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
+    Route::get('/hrd/manajemensurat/tambah_form_permintaan', 'Hrd\ManajemenSuratController@tambah_form_permintaan');
+    Route::get('/hrd/manajemensurat/form_permintaan_datatable', 'Hrd\ManajemenSuratController@form_permintaan_datatable')->name('form_permintaan_datatable');
+    Route::get('/hrd/manajemensurat/hapus_form_permintaan/{id}', 'Hrd\ManajemenSuratController@hapus_form_permintaan')->name('hapus_form_permintaan');
     // form keterangan kerja
     Route::get('/hrd/manajemensurat/form_keterangan_kerja', 'Hrd\ManajemenSuratController@form_keterangan_kerja')->name('form_keterangan_kerja');
     Route::get('/hrd/manajemensurat/form_keterangan_kerja_print', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
@@ -1108,5 +1111,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
     Route::get('/produksi/spk/print/{spk_id}', 'Produksi\spkProductionController@print')->name('spk_print');
+
 // irA
 }); // End Route Groub middleware auth

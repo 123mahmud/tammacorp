@@ -77,62 +77,175 @@
 
 
 <script type="text/javascript">
-  var extensions = {
-    "sFilterInput": "form-control input-sm",
-    "sLengthSelect": "form-control input-sm"
-  }
-  // Used when bJQueryUI is false
-  $.extend($.fn.dataTableExt.oStdClasses, extensions);
-  // Used when bJQueryUI is true
-  $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-  $('#tbl_jabatan').DataTable({
-    processing: true,
-    // responsive:true,
-    serverSide: true,
-    ajax: {
-      url: '{{ url("hrd/datajabatan/data-jabatan") }}',
-    },
-    columnDefs: [
-      {
-        targets: 0,
-        className: 'center d_id'
-      },
-    ],
-    "columns": [
-      { "data": "kode" },
-      { "data": "c_posisi" },
-      { "data": "c_divisi" },
-      { "data": "action" },
-    ],
-    "responsive": true,
-    "pageLength": 10,
-    "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-    "language": {
-      "searchPlaceholder": "Cari Data",
-      "emptyTable": "Tidak ada data",
-      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-      "sSearch": '<i class="fa fa-search"></i>',
-      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-      "infoEmpty": "",
-      "paginate": {
-        "previous": "Sebelumnya",
-        "next": "Selanjutnya",
-      }
-    }
-  });
-  
-  $('.datepicker').datepicker({
-    format : 'dd-mm-yyyy'
-  });
-
-  $('.select2').select2();
-
   $(document).ready(function(){
+
+        var extensions = {
+              "sFilterInput": "form-control input-sm",
+              "sLengthSelect": "form-control input-sm"
+            }
+            // Used when bJQueryUI is false
+            $.extend($.fn.dataTableExt.oStdClasses, extensions);
+            // Used when bJQueryUI is true
+            $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+            $('#form_permintaan_table').DataTable({
+              destroy:true,
+              processing: true,
+              // responsive:true,
+              serverSide: true,
+              ajax: {
+                url: '{{ route("form_permintaan_datatable") }}',
+              },
+              columnDefs: [
+                {
+                  targets: 0,
+                  className: 'center d_id'
+                },
+              ],
+              "columns": [
+                { "data": "DT_Row_Index" },
+                { "data": "tgl_pengujian" },
+                { "data": "tgl_masuk" },
+                { "data": "pkb_departement"},
+                { "data": "aksi"},
+              ],
+              "responsive": true,
+              "pageLength": 10,
+              "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+              "language": {
+                "searchPlaceholder": "Cari Data",
+                "emptyTable": "Tidak ada data",
+                "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                "sSearch": '<i class="fa fa-search"></i>',
+                "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                "infoEmpty": "",
+                "paginate": {
+                  "previous": "Sebelumnya",
+                  "next": "Selanjutnya",
+                }
+              }
+            });
+        
+
+
+       
+
+        $('a[href="#list-tab"]').on('click', function(){
+          nav_table();
+        });
+
+        $('.datepicker').datepicker({
+          format : 'dd-mm-yyyy'
+        });
+
+        $('.select2').select2();
+
+
     
         $('.input-daterange').datepicker({
           'format': 'dd-mm-yyyy',
         });
-      
-  });
+
+        $('.hanya_angka').maskMoney({
+          thousands : ',',
+          decimal : '.'
+        });
+
+        
+
+
+
+  });   
+
+
+        $('.btn-simpan').on('click', function(){
+
+          var forum_permintaan_asli = $('#forum_permintaan_asli').serialize();
+
+          $posisi = $('#posisi');
+
+          $pendidikan = $('#pendidikan');
+
+          // $('#forum_permintaan_asli').validate().form();
+
+          // var validator = $("#forum_permintaan_asli").validate({
+          //   rules : {
+          //     department : "required",
+          //     tgl_pengujian : "required",
+          //     tgl_masuk : "required",
+          //     posisi : "required",
+          //     jumlah_butuh: "required",
+          //     jumlah_karyawan : "required",
+          //     usia : "required",
+          //     pendidikan : "required",
+          //     pengalaman : "required",
+          //     gaji : "required"
+
+          //   },
+          //   messages : {
+          //     posisi : "Silahkan Pilih Posisi!",
+          //     pendidikan : "Silahkan Pilih Pendidikan!"
+          //   }
+          // });
+
+
+          $.ajax({
+            url : baseUrl+'/hrd/manajemensurat/tambah_form_permintaan',
+            data: forum_permintaan_asli,
+            method : 'GET',
+            dataType : "JSON",
+            success : function(response){
+              iziToast.success({
+                title : "Sukses!",
+                message : "Data Berhasil Disimpan"
+              });
+              $("html, body").animate({ scrollTop: 0 }, "slow");
+              $('#forum_permintaan_asli')[0].reset();
+              $('#generalTab').find('a[href="#list-tab"]').click();
+            },
+            error : function(response){
+              iziToast.error({
+                title : "Gagal",
+                message : "Data Gagal Disimpan"
+              });
+            }
+
+          });
+
+        });
+        
+
+        function nav_table(){
+
+          $('#form_permintaan_table').DataTable().ajax.reload();
+
+        }
+
+        function hapus(id)
+        {
+          $.ajax({
+            url : baseUrl + '/hrd/manajemensurat/hapus_form_permintaan/' + id,
+            async: false,
+            data: {
+                "id":id,
+                "_method": 'DELETE',
+                "_token": '{{ csrf_token() }}'
+              },
+            dataType : "JSON",
+            success:function(response){
+              iziToast.success({
+                title:"Sukses!",
+                message:"Data Berhasil Dihapus"
+              });
+              nav_table();
+            },
+            error:function(response){
+              iziToast.error({
+                title:"Gagal!",
+                message:"Data Gagal Dihapus"
+              });
+            }
+          });
+        }
 </script> 
 @endsection

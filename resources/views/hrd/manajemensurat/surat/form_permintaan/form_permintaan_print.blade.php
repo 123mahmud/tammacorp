@@ -182,7 +182,11 @@
 <body>
 	<div class="div-page-break-after">
 
+		@php
 
+		setlocale(LC_ALL, 'id_ID');
+
+		@endphp
 
 		<div class="btn-print" align="right">
 			<button onclick="javascript:window.print();">Print</button>
@@ -202,15 +206,15 @@
 				<tr>
 					<td>Departement</td>
 					<td width="1%">:</td>
-					<td class="min-width-100px"></td>
+					<td class="min-width-100px">{{$daita[0]->pkb_departement}}</td>
 					<td>Tanggal Masuk</td>
 					<td width="1%">:</td>
-					<td class="min-width-100px"></td>
+					<td class="min-width-100px">{{strftime("%A, %e %B %Y" ,strtotime($daita[0]->pkb_tgl_masuk))}}</td>
 				</tr>
 				<tr>
 					<td>Tanggal Pengujian</td>
 					<td>:</td>
-					<td></td>
+					<td>{{strftime("%A, %e %B %Y" ,strtotime($daita[0]->pkb_tgl_pengujian))}}</td>
 				</tr>
 			</table>
 
@@ -222,62 +226,70 @@
 				<tr>
 					<td>1</td>
 					<td width="30%">Posisi</td>
-					<td></td>
+					<td>{{$daita[0]->pkb_posisi}}</td>
 				</tr>
 				<tr>
 	                <td>2</td>
 	                <td>Jumlah yang dibutuhkan</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_jumlah_butuh}}</td>
 	              </tr>
 	              <tr>
 	                <td>3</td>
 	                <td>Jumlah karyawan sekarang</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_jumlah_karyawan}}</td>
 	              </tr>
 	              <tr>
 	                <td>4</td>
 	                <td>Untuk penambahan/penggantian</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_penambahan}}</td>
 	              </tr>
 	              <tr>
 	                <td>5</td>
 	                <td>Alasan</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_alasan}}</td>
 	              </tr>
 	              <tr>
 	                <td>6</td>
 	                <td>Usia</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_usia}}</td>
 	              </tr>
 	              <tr>
 	                <td>7</td>
 	                <td>Jenis Kelamin</td>
-	                <td></td>
+	                <td>
+	                	@if($daita[0]->pkb_jk === 'l')
+	                		Laki-laki
+	                	@elseif($daita[0]->pkb_jk === 'p')
+	                		Perempuan
+	                	@else
+	                		Apache Helicopter
+	                	@endif
+	                </td>
 	              </tr>
 	              <tr>
 	                <td>8</td>
 	                <td>Pendidikan</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_pendidikan}}</td>
 	              </tr>
 	              <tr>
 	                <td>9</td>
 	                <td>Pengalaman</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_pengalaman}}</td>
 	              </tr>
 	              <tr>
 	                <td>10</td>
 	                <td>Keahlian Khusus</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_keahlian}}</td>
 	              </tr>
 	              <tr>
 	                <td>11</td>
 	                <td>Gaji</td>
-	                <td></td>
+	                <td>Rp. {{number_format($daita[0]->pkb_gaji,2,',','.')}}</td>
 	              </tr>
 	              <tr>
 	                <td>12</td>
 	                <td>Keterangan</td>
-	                <td></td>
+	                <td>{{$daita[0]->pkb_keterangan}}</td>
 	              </tr>
 			</table>
 
