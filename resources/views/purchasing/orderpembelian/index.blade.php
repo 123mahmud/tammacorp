@@ -71,6 +71,7 @@
 @endsection
 @section("extra_scripts")
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+<script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
 <script type="text/javascript">
   var save_method;
   $(document).ready(function() {
@@ -85,6 +86,18 @@
     $.extend($.fn.dataTableExt.oStdClasses, extensions);
       // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+    $.fn.maskFunc = function(){
+      $('.currency').inputmask("currency", {
+        radixPoint: ",",
+        groupSeparator: ".",
+        digits: 0,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+      });
+    }
 
     var date = new Date();
     var newdate = new Date(date);
@@ -459,12 +472,13 @@
                             +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_id+'" name="fieldIdPurchaseDt[]" class="form-control input-sm"/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_idpdt+'" name="fieldIdPlanDt[]" class="form-control input-sm"/></td>'
-                            +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm" id="qty_'+i+'" readonly/></td>'
+                            +'<td><input type="text" value="'+qtyCost+'" name="fieldQtyTxt[]" class="form-control currency input-sm" id="qtytxt_'+i+'" readonly style="text-align:right;"/>'
+                            +'<input type="hidden" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm" id="qty_'+i+'"/></td>'
                             +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuan[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'" name="fieldHargaPrev[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga numberinput"/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
-                            +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'" name="fieldHargaPrev[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga numberinput" style="text-align:right;"/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly style="text-align:right;"/></td>'
+                            +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
                             +'</tr>');
           i = randString(5);
@@ -614,6 +628,18 @@
       text += possible.charAt(Math.floor(Math.random() * possible.length));
 
     return text;
+  }
+
+  function formatAngka(decimal) 
+  {
+    var angka = parseInt(decimal);
+    var fAngka = '';        
+    var angkarev = angka.toString().split('').reverse().join('');
+    for(var i = 0; i < angkarev.length; i++){
+      if(i%3 == 0) fAngka += angkarev.substr(i,3)+'.';
+    } 
+    var hasil = fAngka.split('',fAngka.length-1).reverse().join('');
+    return hasil;
   }
 
   function convertDecimalToRupiah(decimal) 

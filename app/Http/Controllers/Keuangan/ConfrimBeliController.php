@@ -212,7 +212,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $plandt = d_purchasingplan_dt::find($request->fieldIdDt[$i]);
-                $plandt->d_pcspdt_qtyconfirm = $request->fieldConfirm[$i];
+                $plandt->d_pcspdt_qtyconfirm = str_replace('.', '', $request->fieldConfirm[$i]);
                 $plandt->d_pcspdt_updated = Carbon::now();
                 $plandt->d_pcspdt_isconfirm = "TRUE";
                 $plandt->save();
@@ -230,7 +230,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $plandt = d_purchasingplan_dt::find($request->fieldIdDt[$i]);
-                $plandt->d_pcspdt_qtyconfirm = $request->fieldConfirm[$i];
+                $plandt->d_pcspdt_qtyconfirm = str_replace('.', '', $request->fieldConfirm[$i]);
                 $plandt->d_pcspdt_updated = Carbon::now();
                 $plandt->d_pcspdt_isconfirm = "FALSE";
                 $plandt->save();
@@ -311,7 +311,11 @@ class ConfrimBeliController extends Controller
     })
     ->editColumn('hargaTotalNet', function ($data) 
     {
-      return 'Rp. '.number_format($data->d_pcs_total_net,2,",",".");
+      return '<div>Rp.
+                <span class="pull-right">
+                  '.number_format($data->d_pcs_total_net,2,",",".").'
+                </span>
+              </div>';
     })
     ->addColumn('action', function($data)
     {
@@ -332,7 +336,7 @@ class ConfrimBeliController extends Controller
               </div>'; 
       }
     })
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['status', 'action', 'hargaTotalNet'])
     ->make(true);
   }
 
@@ -425,7 +429,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $purchasedt = d_purchasing_dt::find($request->fieldIdDtOrder[$i]);
-                $purchasedt->d_pcsdt_qtyconfirm = $request->fieldConfirmOrder[$i];
+                $purchasedt->d_pcsdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmOrder[$i]);
                 $purchasedt->d_pcsdt_updated = Carbon::now();
                 $purchasedt->d_pcsdt_isconfirm = "TRUE";
                 $purchasedt->save();
@@ -443,7 +447,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $purchasedt = d_purchasing_dt::find($request->fieldIdDtOrder[$i]);
-                $purchasedt->d_pcsdt_qtyconfirm = $request->fieldConfirmOrder[$i];
+                $purchasedt->d_pcsdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmOrder[$i]);
                 $purchasedt->d_pcsdt_updated = Carbon::now();
                 $purchasedt->d_pcsdt_isconfirm = "FALSE";
                 $purchasedt->save();
@@ -655,7 +659,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $purchasedt = d_purchasingreturn_dt::find($request->fieldIdDtReturn[$i]);
-                $purchasedt->d_pcsrdt_qtyconfirm = $request->fieldConfirmReturn[$i];
+                $purchasedt->d_pcsrdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmReturn[$i]);
                 $purchasedt->d_pcsrdt_updated = Carbon::now();
                 $purchasedt->d_pcsrdt_isconfirm = "TRUE";
                 $purchasedt->save();
@@ -673,7 +677,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $purchasedt = d_purchasingreturn_dt::find($request->fieldIdDtReturn[$i]);
-                $purchasedt->d_pcsrdt_qtyconfirm = $request->fieldConfirmReturn[$i];
+                $purchasedt->d_pcsrdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmReturn[$i]);
                 $purchasedt->d_pcsrdt_updated = Carbon::now();
                 $purchasedt->d_pcsrdt_isconfirm = "FALSE";
                 $purchasedt->save();
@@ -744,7 +748,11 @@ class ConfrimBeliController extends Controller
     })
     ->editColumn('hargaTotal', function ($data) 
     {
-      return 'Rp. '.number_format($data->d_pcsh_totalprice,2,",",".");
+      return '<div>Rp.
+                <span class="pull-right">
+                  '.number_format($data->d_pcsh_totalprice,2,",",".").'
+                </span>
+              </div>';
     })
     ->addColumn('action', function($data)
     {
@@ -765,7 +773,7 @@ class ConfrimBeliController extends Controller
               </div>'; 
       }
     })
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['status', 'action', 'hargaTotal'])
     ->make(true);
   }
 
@@ -857,7 +865,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $bhariandt = d_purchasingharian_dt::find($request->fieldIdDtBelanja[$i]);
-                $bhariandt->d_pcshdt_qtyconfirm = $request->fieldConfirmBelanja[$i];
+                $bhariandt->d_pcshdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmBelanja[$i]);
                 $bhariandt->d_pcshdt_updated = Carbon::now();
                 $bhariandt->d_pcshdt_isconfirm = "TRUE";
                 $bhariandt->save();
@@ -875,7 +883,7 @@ class ConfrimBeliController extends Controller
             for ($i=0; $i < $hitung_field; $i++) 
             {
                 $bhariandt = d_purchasingharian_dt::find($request->fieldIdDtBelanja[$i]);
-                $bhariandt->d_pcshdt_qtyconfirm = $request->fieldConfirmBelanja[$i];
+                $bhariandt->d_pcshdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmBelanja[$i]);
                 $bhariandt->d_pcshdt_updated = Carbon::now();
                 $bhariandt->d_pcshdt_isconfirm = "FALSE";
                 $bhariandt->save();

@@ -141,12 +141,12 @@
                               <tr>
                                 <th style="text-align: center;" width="5%">No</th>
                                 <th width="25%">Kode | Barang</th>
-                                <th width="7%">Qty</th>
+                                <th width="10%">Qty</th>
                                 <th width="7%">Satuan</th>
                                 <th width="13%">Harga Prev</th>
                                 <th width="15%">Harga Satuan</th>
                                 <th width="15%">Total</th>
-                                <th width="8%">Stok Gudang</th>
+                                <th width="10%">Stok Gudang</th>
                                 <th style="text-align: center;" width="5%">Aksi</th>
                               </tr>
                             </thead>
@@ -163,7 +163,7 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                           <div class="form-group">
-                            <input type="text" readonly="" id="total_gross" class="input-sm form-control" name="totalGross" readonly>
+                            <input type="text" readonly="" id="total_gross" class="input-sm form-control" name="totalGross" readonly style="text-align:right;">
                           </div>
                         </div>
 
@@ -173,7 +173,7 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                           <div class="form-group">
-                            <input type="text" class="input-sm form-control numberinput" id="potongan_harga" name="potonganHarga" readonly>
+                            <input type="text" class="input-sm form-control numberinput" id="potongan_harga" name="potonganHarga" readonly style="text-align:right;">
                           </div>
                         </div>
 
@@ -183,7 +183,7 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                           <div class="form-group">
-                            <input type="text" class="input-sm form-control numberinput" id="diskon_harga" name="diskonHarga" readonly>
+                            <input type="text" class="input-sm form-control numberinput" id="diskon_harga" name="diskonHarga" readonly style="text-align:right;">
                           </div>
                         </div>
 
@@ -193,7 +193,7 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                           <div class="form-group">
-                            <input type="text" class="input-sm form-control numberinput" id="ppn_harga" name="ppnHarga" readonly>
+                            <input type="text" class="input-sm form-control numberinput" id="ppn_harga" name="ppnHarga" readonly style="text-align:right;">
                           </div>
                         </div>
 
@@ -203,7 +203,7 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12">
                           <div class="form-group">
-                            <input type="text" readonly="" class="input-sm form-control" id="total_nett" name="totalNett">
+                            <input type="text" readonly="" class="input-sm form-control" id="total_nett" name="totalNett" style="text-align:right;">
                           </div>
                         </div>
 
@@ -233,6 +233,7 @@
 @endsection
 @section("extra_scripts")
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+<script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     //fix to issue select2 on modal when opening in firefox
@@ -246,6 +247,18 @@
     $.extend($.fn.dataTableExt.oStdClasses, extensions);
     // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+    $.fn.maskFunc = function(){
+      $('.currency').inputmask("currency", {
+        radixPoint: ",",
+        groupSeparator: ".",
+        digits: 0,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+      });
+    }
 
     $('.datepicker').datepicker({
         format: "mm-yyyy",
@@ -381,13 +394,15 @@
                             +'<td><input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcspdt_id+'" name="fieldidPlanDt[]" class="form-control input-sm"/></td>'
-                            +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm" id="qty_'+i+'" readonly/></td>'
+                            +'<td>'
+                            +'<input type="text" value="'+qtyCost+'" name="fieldQtyTxt[]" class="form-control currency input-sm" id="qtytxt_'+i+'" readonly style="text-align:right;"/>'
+                            +'<input type="hidden" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm" id="qty_'+i+'"/></td>'
                             +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuan[]" class="form-control input-sm" readonly/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldIdSatuan[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost)+'" name="fieldHargaPrev[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost)+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga numberinput"/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost * qtyCost)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
-                            +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost)+'" name="fieldHargaPrev[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost)+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga numberinput" style="text-align:right;"/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost * qtyCost)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly style="text-align:right;"/></td>'
+                            +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
                             +'</tr>');
             i = randString(5);
@@ -399,6 +414,7 @@
           $('#ppn_harga').attr('readonly',false);
           totalPembelianGross();
           totalPembelianNett();
+          $(this).maskFunc();
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
@@ -518,7 +534,6 @@
         $('#divSelectPlan').addClass('has-error').removeClass('has-valid');
       }
     });
-
   //end jquery  
   });
   
@@ -559,6 +574,18 @@
 
   function convertDiscToAngka(disc) {
     return parseInt(disc.replace('%', ''), 10);
+  }
+
+  function formatAngka(decimal) 
+  {
+    var angka = parseInt(decimal);
+    var fAngka = '';        
+    var angkarev = angka.toString().split('').reverse().join('');
+    for(var i = 0; i < angkarev.length; i++){
+      if(i%3 == 0) fAngka += angkarev.substr(i,3)+'.';
+    } 
+    var hasil = fAngka.split('',fAngka.length-1).reverse().join('');
+    return hasil;
   }
 
   function totalPembelianGross(){

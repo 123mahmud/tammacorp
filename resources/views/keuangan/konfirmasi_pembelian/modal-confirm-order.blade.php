@@ -80,13 +80,13 @@
                 <tr>
                   <th style="text-align: center;" width="5%;">No</th>
                   <th width="20%;">Kode | Barang</th>
-                  <th width="5%;">Qty</th>
-                  <th width="5%;">Qty Confirm</th>
-                  <th width="10%;">Satuan</th>
-                  <th width="15%;">Harga prev</th>
-                  <th width="15%;">Harga Satuan</th>
+                  <th width="10%;">Qty</th>
+                  <th width="10%;">Qty Confirm</th>
+                  <th width="5%;">Satuan</th>
+                  <th width="10%;">Harga prev</th>
+                  <th width="10%;">Harga Satuan</th>
                   <th class="15%">Harga Total</th>
-                  <th width="5%;">Stok Gudang</th>
+                  <th width="10%;">Stok Gudang</th>
                   <th width="5%;">Aksi</th>
                 </tr>
               </thead>

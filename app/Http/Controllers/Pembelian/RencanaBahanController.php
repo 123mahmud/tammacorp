@@ -333,23 +333,6 @@ class RencanaBahanController extends Controller
           $dataHeader[$l]['tanggal2'] = $request->tgl2;
         }
       }
-
-      // foreach ($dataHeader as $value) {
-      //   $result[] = array(
-      //     'spk_item' => $value->spk_item,
-      //     'i_name' => $value->i_name,
-      //     'i_id' => $value->item_id,
-      //     'i_code' => $value->i_code,
-      //     'i_sat1' => $value->i_sat1,
-      //     'satuan' => $value->satuan,
-      //     'qtyOrderPlan' => number_format($value->qtyOrderPlan,0,",","."),
-      //     'stok' => number_format($value->stok,0,",","."),
-      //     'selisih' => number_format($value->selisih,0,",","."),
-      //     'tanggal1' => $value->tanggal1,
-      //     'tanggal3' => $value->tanggal2,
-      //     'fr_formula' => $value->fr_formula
-      //   );
-      // }
       
       return response()->json([
           'status' => 'sukses',
@@ -357,60 +340,6 @@ class RencanaBahanController extends Controller
           // 'data' => $result,
           'data' => $dataHeader,
       ]);
-    }
-
-    public function getDetailRencana($id)
-    {
-       $dataHeader = d_spk::join('m_item','d_spk.spk_item','=','m_item.i_id')
-                ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
-                ->join('d_productplan', 'd_spk.spk_ref', '=', 'd_productplan.pp_id')
-                ->select('d_spk.*', 'm_item.i_id', 'm_item.i_name','m_item.i_code', 'm_item.i_sat1', 'd_productplan.pp_qty')
-                ->where('d_spk.spk_id', '=', $id)
-                ->where('d_spk.spk_status', '=', 'DR')
-                ->orderBy('d_spk.spk_date', 'DESC')
-                ->get();
-
-        // foreach ($dataHeader as $val) 
-        // {
-        //   $data = array(
-        //       'hargaBruto' => 'Rp. '.number_format($val->d_pcs_total_gross,2,",","."),
-        //       'nilaiDiskon' => 'Rp. '.number_format($val->d_pcs_discount + $val->d_pcs_disc_value,2,",","."),
-        //       'nilaiPajak' => 'Rp. '.number_format($val->d_pcs_tax_value,2,",","."),
-        //       'hargaNet' => 'Rp. '.number_format($val->d_pcs_total_net,2,",",".")
-        //   );
-        // }
-
-        $dataIsi = spk_formula::join('d_spk', 'spk_formula.fr_spk', '=', 'd_spk.spk_id')
-                ->join('m_item', 'spk_formula.fr_formula', '=', 'm_item.i_id')
-                ->join('m_satuan', 'spk_formula.fr_scale', '=', 'm_satuan.m_sid')
-                ->select('spk_formula.*',
-                         'd_spk.*',
-                         'm_item.*',
-                         'm_satuan.*'
-                )
-                ->where('spk_formula.fr_spk', '=', $id)
-                ->get();
-
-        foreach ($dataIsi as $val) 
-        {
-          //cek item type
-          $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
-          //get satuan utama
-          $sat1[] = $val->i_sat1;
-        }
-
-        //variabel untuk count array
-        $counter = 0;
-        //ambil value stok by item type
-        $dataStok = $this->getStokByType($itemType, $sat1, $counter);
-        
-        return response()->json([
-            'status' => 'sukses',
-            'header' => $dataHeader,
-            'data_isi' => $dataIsi,
-            'data_stok' => $dataStok['val_stok'],
-            'data_satuan' => $dataStok['txt_satuan'],
-        ]);
     }
 
     public function submitData(Request $request)
@@ -473,22 +402,22 @@ class RencanaBahanController extends Controller
         return response()->json([
           'status' => 'sukses',
           'pesan' => 'Data berhasil diproses ke list rencana pembelian'
-        ]);          
-      }
+        ]);
+      }          
       catch (\Exception $e) 
       {
         DB::rollback();
         return response()->json([
             'status' => 'gagal',
-            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n : ".$e->getLine()
         ]);
       }
     }
 
 
     public function getStokByType($arrItemType, $arrSatuan, $counter)
-    {
-      foreach ($arrItemType as $val) 
+    { 
+      foreach ($arrItemType as $val)
       {
         if ($val->i_type == "BJ") //brg jual
         {
