@@ -37,9 +37,9 @@ class transaksi_bank_controller extends Controller
         // return json_encode($request->all());
 
         $idx = ($request->idx == 'BM') ? 'BBM' : 'BBK';
-        $tgl = date('Y-m-d', strtotime($request->tgl));
+        $tgl = date('m', strtotime($request->tgl));
 
-        $list_transaksi = transaksi::where(DB::raw('substring(no_bukti,1,3)'), $idx)->where('tanggal_transaksi', $tgl)->with('jurnal.detail')->get();
+        $list_transaksi = transaksi::where(DB::raw('substring(no_bukti,1,3)'), $idx)->where(DB::raw('month(tanggal_transaksi)'), $tgl)->with('jurnal.detail')->get();
 
         return response()->json($list_transaksi);
     }
