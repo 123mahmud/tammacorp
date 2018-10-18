@@ -61,7 +61,7 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <select name="statusConfirm" id="status_confirm" class="form-control">
+                <select name="statusConfirm" id="status_confirm" class="form-control input-sm">
                   <option value="WT">Waiting</option>
                   <option value="DE">Dapat diedit</option>
                   <option value="FN">Di setujui</option>

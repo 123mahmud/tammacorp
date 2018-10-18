@@ -108,7 +108,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" readonly="" id="total_gross" class="input-sm form-control" name="totalGrossEdit">
+                <input type="text" readonly="" id="total_gross" class="input-sm form-control" name="totalGrossEdit" style="text-align:right;">
               </div>
             </div>
 
@@ -118,7 +118,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="input-sm form-control numberinput" id="potongan_harga" name="potonganHargaEdit">
+                <input type="text" class="input-sm form-control numberinput" id="potongan_harga" name="potonganHargaEdit" style="text-align:right;">
               </div>
             </div>
 
@@ -128,7 +128,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="input-sm form-control numberinput" id="diskon_harga" name="diskonHargaEdit">
+                <input type="text" class="input-sm form-control numberinput" id="diskon_harga" name="diskonHargaEdit" style="text-align:right;">
               </div>
             </div>
 
@@ -138,7 +138,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" class="input-sm form-control numberinput" id="ppn_harga" name="ppnHargaEdit">
+                <input type="text" class="input-sm form-control numberinput" id="ppn_harga" name="ppnHargaEdit" style="text-align:right;">
               </div>
             </div>
 
@@ -148,21 +148,11 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" readonly="" class="input-sm form-control" id="total_nett" name="totalNettEdit">
+                <input type="text" readonly="" class="input-sm form-control" id="total_nett" name="totalNettEdit" style="text-align:right;">
               </div>
             </div>
 
-          </div>
-
-          <!-- <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-top:15px;margin-bottom: 25px;">
-            <input type="checkbox" name="">&nbsp;Di tolak&nbsp;<input type="checkbox" name="">&nbsp;Di Setujui&nbsp;<input type="checkbox" name="">&nbsp;Di revisi<br>
-            <div class="col-md-8 col-sm-8 col-xs-12" style="margin-top: 10px;">
-              <div class="form-group">  
-                <textarea class="form-control"></textarea>
-              </div>
-            </div>
-          </div> -->
-          
+          </div>          
         </div>
     
         <div class="modal-footer" style="border-top: none;">
