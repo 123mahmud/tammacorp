@@ -101,7 +101,7 @@ class POSRetailController extends Controller
     $term = $request->term;
     $results = array();
     $queries = m_customer::where('m_customer.c_name', 'LIKE', '%'.$term.'%')
-      ->take(15)->get();
+      ->take(25)->get();
 
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];

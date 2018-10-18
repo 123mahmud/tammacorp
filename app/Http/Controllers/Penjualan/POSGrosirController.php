@@ -106,7 +106,7 @@ class POSGrosirController extends Controller
 
     $queries = DB::table('m_customer')
       ->where('m_customer.c_name', 'LIKE', '%'.$term.'%')
-      ->take(15)->get();
+      ->take(25)->get();
 
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];

@@ -29,6 +29,7 @@ class stockController extends Controller
       })    
       ->where('i_type', '=',DB::raw("'BJ'"))
       ->orWhere('i_type', '=',DB::raw("'BP'"))   
+      ->where('i_isactive','TRUE')
       ->get();
       // dd($data[3]);
     return DataTables::of($data)
@@ -53,7 +54,7 @@ class stockController extends Controller
     ->orWhere('i_type', '=', DB::raw("'BJ'"))
     ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"')) 
     ->where('i_isactive','TRUE')      
-    ->take(10)->get();
+    ->take(25)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -91,7 +92,7 @@ class stockController extends Controller
     ->orWhere('i_type', '=',DB::raw("'BP'"))       
     ->where('i_name', 'like',DB::raw('"%'.$request->term.'%"'))
     ->orderBy('i_name')
-    ->take(15)
+    ->take(25)
     ->get();   
     
     if ($queries == null) {
