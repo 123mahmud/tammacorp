@@ -285,24 +285,24 @@ class PayrollmanController extends Controller
         //dd($hasil_menit);
         //hitung menit telat dan berapa nilainya
         $potongan = 0;
-        $ngentot = [];
+        $cu_phat_kai = [];
         $nilai_tunjangan = [];
         $potonganTxt = [];
         for ($y=0; $y <count($hasil_menit); $y++) 
         {   
-            $ngentot = $arr_pot;
+            $cu_phat_kai = $arr_pot;
             if ($hasil_menit[$y] > 0 && $hasil_menit[$y] <= 15) {
-                unset($ngentot[1]);
-                unset($ngentot[2]);
-                $potongan += array_sum($ngentot);
-                $potonganTxt[] = array('harian' => array_sum($ngentot),'harianmakan' => 0, 'harianmakantrans' => 0);
+                unset($cu_phat_kai[1]);
+                unset($cu_phat_kai[2]);
+                $potongan += array_sum($cu_phat_kai);
+                $potonganTxt[] = array('harian' => array_sum($cu_phat_kai),'harianmakan' => 0, 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 15 && $hasil_menit[$y] <= 30) {
-                unset($ngentot[2]);
-                $potongan += array_sum($ngentot);
-                $potonganTxt[] = array('harian' => 0,'harianmakan' => array_sum($ngentot), 'harianmakantrans' => 0);
+                unset($cu_phat_kai[2]);
+                $potongan += array_sum($cu_phat_kai);
+                $potonganTxt[] = array('harian' => 0,'harianmakan' => array_sum($cu_phat_kai), 'harianmakantrans' => 0);
             }elseif ($hasil_menit[$y] > 30) {
-                $potongan += array_sum($ngentot);
-                $potonganTxt[] = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($ngentot));
+                $potongan += array_sum($cu_phat_kai);
+                $potonganTxt[] = array('harian' => 0,'harianmakan' => 0, 'harianmakantrans' => array_sum($cu_phat_kai));
             }else{
                 $potongan += 0;
             }

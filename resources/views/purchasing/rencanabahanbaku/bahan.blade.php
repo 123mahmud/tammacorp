@@ -82,7 +82,7 @@
                           <th>Qty SPK</th>
                           <th>Stok</th>
                           <th>Kekurangan</th>
-                          <th>Order</th>
+                          <th>Rencana PO</th>
                           <th>Aksi</th>
                         </tr>
                       </thead>
@@ -183,11 +183,11 @@
         type: 'GET'
       },
       "columns" : [
-        {"data" : "i_name", "width" : "20%"},
-        {"data" : "qtyTotal", "width" : "10%"},
-        {"data" : "stok", "width" : "20%"},
-        {"data" : "kekurangan", "width" : "20%"},
-        {"data" : "kekurangan", "width" : "20%"},
+        {"data" : "i_name", "width" : "30%"},
+        {"data" : "qtyTotal", "width" : "15%"},
+        {"data" : "stok", "width" : "15%"},
+        {"data" : "kekurangan", "width" : "15%"},
+        {"data" : "qtyorderplan", "width" : "15%"},
         {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
       ],
       "responsive": true,
@@ -207,45 +207,45 @@
     });
   }
 
-  function detailRencana(id) 
+  function proses(id,tgl1,tgl2) 
   {
     $.ajax({
-      url : baseUrl + "/purchasing/rencanabahanbaku/get-detail-rencana/" + id,
+      url : baseUrl + "/purchasing/rencanabahanbaku/proses-purchase-plan",
+      data : {id:id, tgl1:tgl1, tgl2:tgl2},
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
-        var i = randString(5);
-        var key = 1;
-        $('#tgl_plan').val(data.header[0].spk_date);
-        $('#item').val(data.header[0].i_name);
-        $('#jumlah').val(data.header[0].pp_qty);
-        $('#id_spk').val(data.header[0].spk_code);
-        //loop data
-        Object.keys(data.data_isi).forEach(function(){
-          var qty_stok = parseFloat(data.data_stok[key-1].qtyStok);
-          var kebutuhan = parseFloat(data.data_isi[key-1].fr_value);
-          var sisaStok = parseFloat(qty_stok - kebutuhan).toFixed(2);
-          $('#tableFormula').append('<tr class="tbl_modal_row" id="row'+i+'">'
-                          +'<td>'+data.data_isi[key-1].i_name+'</td>'
-                          +'<td>'+data.data_isi[key-1].fr_value+'</td>'
-                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
-                          +'<td>'+data.data_stok[key-1].qtyStok+'</td>'
-                          +'<td>'+data.data_satuan[key-1]+'</td>'
-                          +'<td>'+sisaStok+'</td>'
-                          +'</tr>');
-          key++;  
-          i = randString(5);
-        });
-        $('#detail-data').modal('show');
       },
-      error: function (jqXHR, textStatus, errorThrown)
+      complete: function (argument) {
+        window.location = (this.url)
+      },
+      error: function ()
       {
-          alert('Error get data from ajax');
-      }
+      },
+      async: false
     });
-    $('#detail-data').modal('show');
   }
+
+  /*function edit(a) {
+      var parent = $(a).parents('tr');
+      var id = $(parent).find('.d_id').text();
+      console.log(id);
+      $.ajax({
+        type: "PUT",
+        url: '{{ url("hrd/manajemensurat/edit-phk") }}' + '/' + a,
+        data: { id },
+        success: function (data) {
+        },
+        complete: function (argument) {
+          window.location = (this.url)
+        },
+        error: function () {
+
+        },
+        async: false
+      });
+  }*/
 
   function gantiStatus(id, isPO) {
     iziToast.question({
