@@ -225,7 +225,7 @@
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <data-list :data_resource="data_table_resource" :columns="data_table_columns"></data-list>
+                      <xyz :data="list_transaksi" @get_data="get_data_pembayaran" :ajax_loading="on_ajax_loading" :sts_null="'Tidak Ada Transaksi Pembayaran Pada Supplier Yang Dipilih..'"></xyz>
                     </div>
                   </div>
                 </div>
@@ -241,7 +241,7 @@
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      {{-- <table-po :data="list_purchase" @get_data="get_data_po" :ajax_loading="on_ajax_loading" :sts_null="'Tidak Ada P.O Yang Belum Lunas Untuk Supplier Yang Dipilih..'"></table-po> --}}
+                      <table-po :data="list_purchase" @get_data="get_data_po" :ajax_loading="on_ajax_loading" :sts_null="'Tidak Ada P.O Yang Belum Lunas Untuk Supplier Yang Dipilih..'"></table-po>
                     </div>
                   </div>
                 </div>
@@ -255,7 +255,6 @@
   <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
   <script src="{{ asset("js/datepicker/datepicker.js") }}"></script>
   <script src="{{ asset("js/vue/vue.js") }}"></script>
-  <script src="{{ asset("js/vue/vue-datatable.js") }}"></script>
   <script src="{{ asset("js/axios/dist/axios.min.js") }}"></script>
   <script src="{{ asset("js/validator/bootstrapValidator.min.js") }}"></script>
   <script src="{{ asset("js/toast/dist/jquery.toast.min.js") }}"></script>
@@ -274,7 +273,82 @@
     </select>
   </script>
 
-  
+  <script type="text/x-template" id="table-template">
+      <table class="table table-striped table-bordered" style="font-size: 0.85em;">
+        <thead>
+          <tr>
+            <th width="25%" class="text-center">No.Pembayaran</th>
+            <th width="15%" class="text-center">Nomor P.O</th>
+            <th class="text-center">Tanggal Pembayaran</th>
+            <th class="text-center">keterangan</th>
+            <th width="25%" class="text-center">Nominal</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+            <tr v-if="ajax_loading">
+              <td colspan="5" class="text-center">
+                <i class="fa fa-clock-o fa-3x fa-fw"></i> &nbsp; Sedang Mencari Transaksi. Harap Tunggu..
+                <span class="sr-only">Loading...</span>
+              </td>
+            </tr>
+
+            <tr v-if="data.length == 0 && !ajax_loading">
+              <td colspan="5" class="text-center">
+                <i class="fa fa-frown-o fa-3x fa-fw"></i> &nbsp; @{{ sts_null }}
+                <span class="sr-only">Loading...</span>
+              </td>
+            </tr>
+
+            <tr v-for="transaksi in data">
+              <td class="text-center" style="cursor:pointer" @click="get_data(transaksi.payment_id)">@{{ transaksi.payment_code }}</td>
+              <td class="text-center">@{{ transaksi.payment_po }}</td>
+              <td class="text-center">@{{ transaksi.payment_date }}</td>
+              <td class="text-center">@{{ transaksi.payment_keterangan }}</td>
+              <td class="text-center" v-html="humanizePrice(transaksi.payment_value)"></td>
+            </tr>
+        </tbody>
+      </table>
+  </script>
+
+  <script type="text/x-template" id="table-po">
+      <table class="table table-striped table-bordered" style="font-size: 0.85em;">
+        <thead>
+          <tr>
+            <th width="25%" class="text-center">No.Purchase</th>
+            <th width="15%" class="text-center">Tanggal Transaksi</th>
+            <th width="15%" class="text-center">Jenis Tagihan</th>
+            <th class="text-center">Total Tagihan</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+            <tr v-if="ajax_loading">
+              <td colspan="4" class="text-center">
+                <i class="fa fa-clock-o fa-3x fa-fw"></i> &nbsp; Sedang Mencari Transaksi. Harap Tunggu..
+                <span class="sr-only">Loading...</span>
+              </td>
+            </tr>
+
+            <tr v-if="data.length == 0 && !ajax_loading">
+              <td colspan="4" class="text-center">
+                <i class="fa fa-frown-o fa-3x fa-fw"></i> &nbsp; @{{ sts_null }}
+                <span class="sr-only">Loading...</span>
+              </td>
+            </tr>
+
+            <tr v-for="transaksi in data">
+              <td class="text-center" style="cursor:pointer" @click="get_data(transaksi.d_pcs_id)">@{{ transaksi.d_pcs_code }}</td>
+              <td class="text-center">@{{ transaksi.d_pcs_date_created }}</td>
+              <td class="text-center">@{{ transaksi.d_pcs_method }}</td>
+              <td class="text-center" v-html="humanizePrice(transaksi.d_pcs_total_net)"></td>
+            </tr>
+        </tbody>
+      </table>
+  </script>
+
   <script type="text/javascript">  
 
     function register_validator(){
@@ -389,6 +463,82 @@
           
         }
     })
+
+    Vue.component('xyz', {
+      props: ['data', 'context', 'ajax_loading', 'sts_null'],
+      template: '#table-template',
+      mounted: function(){
+        // console.log(this.data)
+        // alert(this.ajax_loading);
+      },
+
+      watch: {
+        data: function(){
+          console.log(this.data);
+        }
+      },
+
+      methods: {
+        get_data: function(val){
+          this.$emit('get_data', val);
+        },
+
+        humanizePrice: function(alpha){
+          var bilangan = alpha;
+  
+          var number_string = bilangan.toString(),
+            sisa  = number_string.length % 3,
+            rupiah  = number_string.substr(0, sisa),
+            ribuan  = number_string.substr(sisa).match(/\d{3}/g);
+              
+          if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+          }
+
+          // Cetak hasil
+          return rupiah; // Hasil: 23.456.789
+        },
+      }
+    })
+
+    Vue.component('table-po', {
+      props: ['data', 'context', 'ajax_loading', 'sts_null'],
+      template: '#table-po',
+      mounted: function(){
+        // console.log(this.data)
+        // alert(this.ajax_loading);
+      },
+
+      watch: {
+        data: function(){
+          console.log(this.data);
+        }
+      },
+
+      methods: {
+        get_data: function(val){
+          this.$emit('get_data', val);
+        },
+
+        humanizePrice: function(alpha){
+          var bilangan = alpha;
+  
+          var number_string = bilangan.toString(),
+            sisa  = number_string.length % 3,
+            rupiah  = number_string.substr(0, sisa),
+            ribuan  = number_string.substr(sisa).match(/\d{3}/g);
+              
+          if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+          }
+
+          // Cetak hasil
+          return rupiah; // Hasil: 23.456.789
+        },
+      }
+    })
     
     var vm = new Vue({
 
@@ -399,9 +549,8 @@
         state: 'simpan',
         on_ajax_loading: false,
 
-        data_table_resource: [],
-        data_table_columns: [],
-
+        list_purchase: [],
+        list_transaksi: [],
         suppliers: [],
         akun_kas: [],
         akun_bank: [],
@@ -420,7 +569,6 @@
       mounted: function(){
         register_validator();
         $('.overlay.main').fadeIn(200);
-        // $('.overlay.transaksi_list').fadeIn(200);
         $('#load-status-text').text('Harap Tunggu. Sedang Menyiapkan Form');  
       },
 
@@ -596,39 +744,14 @@
         },
 
         open_list: function(){
-
-          this.data_table_columns = [
-            {name: 'No.Purchase', context: 'd_pcs_code', width: '30%', childStyle: 'text-align: center'},
-            {name: 'Tanggal', context: 'd_pcs_date_created', width: '15%', childStyle: 'text-align: center'},
-            {name: 'Jenis Tagihan', context: 'd_pcs_method', width: '25%', childStyle: 'text-align: center'},
-            {name: 'Total Tagihan', context: 'd_pcs_total_net', width: '30%', childStyle: 'text-align: right', override: function(el){
-                var bilangan = el;
-                var commas = bilangan.split('.')[1];
-
-                var number_string = bilangan.toString(),
-                  sisa  = number_string.length % 3,
-                  rupiah  = number_string.substr(0, sisa),
-                  ribuan  = number_string.substr(sisa).match(/\d{3}/g);
-                    
-                if (ribuan) {
-                  separator = sisa ? ',' : '';
-                  rupiah += separator + ribuan.join(',');
-                }
-
-                // Cetak hasil
-                return rupiah+'.'+commas; // Hasil: 23.456.789
-            }},
-          ]
-
-
           $('.overlay.transaksi_list').fadeIn(200);
-          this.data_table_resource = [];
+          this.list_transaksi = [];
           this.on_ajax_loading = true;
 
           axios.get(this.baseUrl+'/purchasing/pembayaran_hutang/get-transaksi?sp='+this.single_data.supplier+'&tgl='+$('#tanggal_pembayaran').val())
                   .then((response) => {
-                    // console.log(response.data);
-                    this.data_table_resource = response.data;
+                    console.log(response.data);
+                    this.list_transaksi = response.data;
                     this.on_ajax_loading = false;
                   }).catch((err) => {
                     alert(err);
@@ -688,23 +811,6 @@
           this.state = 'update';
 
           $('.overlay.transaksi_list').fadeOut(200);
-        },
-
-        humanizePrice: function(alpha){
-          var bilangan = alpha;
-  
-          var number_string = bilangan.toString(),
-            sisa  = number_string.length % 3,
-            rupiah  = number_string.substr(0, sisa),
-            ribuan  = number_string.substr(sisa).match(/\d{3}/g);
-              
-          if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-          }
-
-          // Cetak hasil
-          return rupiah; // Hasil: 23.456.789
         },
 
         form_reset: function(){
