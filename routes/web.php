@@ -35,7 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
 //rencana bahan baku
     Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\RencanaBahanController@index');
     Route::get('/purchasing/rencanabahanbaku/get-rencana-bytgl/{tgl1}/{tgl2}', 'Pembelian\RencanaBahanController@getRencanaByTgl');
-    Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
+    //Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
+    Route::get('/purchasing/rencanabahanbaku/proses-purchase-plan', 'Pembelian\RencanaBahanController@prosesPurchasePlan');
+    Route::get('/purchasing/rencanabahanbaku/suggest-item', 'Pembelian\RencanaBahanController@suggestItem');
     Route::post('/purchasing/rencanabahanbaku/ubah-status-spk', 'Pembelian\RencanaBahanController@ubahStatus');
 //order pembelian
     Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
@@ -225,7 +227,8 @@ Route::group(['middleware' => 'auth'], function () {
 //rizky
     Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
     Route::get('/produksi/spk/ubah-status-spk/{id}', 'Produksi\spkProductionController@ubahStatusSpk');
-    Route::get('/produksi/spk/get_spk_by_tgl/{tgl1}/{tgl2}/{stat}', 'Produksi\spkProductionController@getSpkByTgl');
+    Route::get('/produksi/spk/get_spk_by_tgl/{tgl1}/{tgl2}', 'Produksi\spkProductionController@getSpkByTgl');
+    Route::get('/produksi/spk/get_spk_by_tglCL/{tgl1}/{tgl2}', 'Produksi\spkProductionController@getSpkByTglCL');
 //rizky
 //mahmud
     Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
@@ -240,17 +243,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
     Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
     Route::get('/produksi/o_produksi/store', 'Produksi\ManOutputProduksiController@store');
-    Route::get('/produksi/o_produksi/getdata/tabel', 'Produksi\ManOutputProduksiController@tabelDetail');
-    Route::get('/produksi/o_produksi/getdata/tabel/kirim', 'Produksi\ManOutputProduksiController@tabelDetailKirim');
-    Route::get('/produksi/o_produksi/getdata/{x}', 'Produksi\ManOutputProduksiController@detail');
     Route::get('/produksi/o_produksi/getdata/kirim/{y}', 'Produksi\ManOutputProduksiController@detailKirim');
-    Route::get('/produksi/o_produksi/distroy/{id1}/{id2}', 'Produksi\ManOutputProduksiController@distroy');
     Route::get('/produksi/o_produksi/sending/{id1}/{id2}', 'Produksi\ManOutputProduksiController@sending');
-    Route::get('/produksi/o_produksi/edit/{id1}/{id2}', 'Produksi\ManOutputProduksiController@edit');
     Route::get('/produksi/o_produksi/lihat/tabelhasil', 'Produksi\ManOutputProduksiController@tabelHasil');
     Route::get('/produksi/o_produksi/select2/spk/{tgl1}', 'Produksi\ManOutputProduksiController@setSpk');
     Route::get('/produksi/o_produksi/select2/pilihspk/{x}', 'Produksi\ManOutputProduksiController@selectDataSpk');
-    Route::get('/produksi/o_produksi/save', 'Produksi\ManOutputProduksiController@editQty');
 //Pembuatan Surat Jalan
     Route::get('/produksi/suratjalan/index', 'Produksi\PengambilanItemController@SuratJalan');
     Route::get('/produksi/suratjalan/create/delivery', 'Produksi\PengambilanItemController@tabelDelivery');
@@ -480,7 +477,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/form_overhandle_print', 'Hrd\ManajemenSuratController@form_overhandle_print')->name('form_overhandle_print');
     // form permintaan
     Route::get('/hrd/manajemensurat/form_permintaan', 'Hrd\ManajemenSuratController@form_permintaan')->name('form_permintaan');
-    Route::get('/hrd/manajemensurat/form_permintaan_print', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
+    Route::get('/hrd/manajemensurat/form_permintaan_print/{id}', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
+    Route::get('/hrd/manajemensurat/tambah_form_permintaan', 'Hrd\ManajemenSuratController@tambah_form_permintaan');
+    Route::get('/hrd/manajemensurat/form_permintaan_datatable', 'Hrd\ManajemenSuratController@form_permintaan_datatable')->name('form_permintaan_datatable');
+    Route::get('/hrd/manajemensurat/hapus_form_permintaan/{id}', 'Hrd\ManajemenSuratController@hapus_form_permintaan')->name('hapus_form_permintaan');
     // form keterangan kerja
     Route::get('/hrd/manajemensurat/form_keterangan_kerja', 'Hrd\ManajemenSuratController@form_keterangan_kerja')->name('form_keterangan_kerja');
     Route::get('/hrd/manajemensurat/form_keterangan_kerja_print', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
@@ -1108,5 +1108,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
     Route::get('/produksi/spk/print/{spk_id}', 'Produksi\spkProductionController@print')->name('spk_print');
+
 // irA
 }); // End Route Groub middleware auth

@@ -385,6 +385,7 @@ class ManajemenSuratController extends Controller
         return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader');
     }
     public function form_laporan_leader_print(){
+        
         return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader_print');
     }
     public function form_overhandle(){
@@ -394,10 +395,42 @@ class ManajemenSuratController extends Controller
         return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle_print');
     }
     public function form_permintaan(){
-        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan');
+        $data = DB::table('m_jabatan')->select('c_id', 'c_posisi')->get()->toArray();
+
+        // return $data;
+
+        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan', ['daita' => $data]);
     }
-    public function form_permintaan_print(){
-        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan_print');
+    public function form_permintaan_datatable(){
+
+        $list = DB::table('d_permintaan_karyawan_baru')->select('pkb_id', 'pkb_departement', 'pkb_tgl_pengujian', 'pkb_tgl_masuk')->get();
+
+        $data = collect($list);
+
+        return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('aksi', function($data){
+            return  '<div class="btn-group btn-group-sm">'.
+                        '<a href="'.url('hrd/manajemensurat/form_permintaan_print/'.$data->pkb_id).'" target="_blank" class="btn btn-info"><i class="fa fa-print"></i></a>'.
+                        '<button class="btn btn-danger btn-hapus" onclick="hapus('. $data->pkb_id.')" type="button"><i class="fa fa-trash-o"></i></button>'.
+                    '</div>';
+        })
+        ->addColumn('tgl_masuk', function($data){
+            return  date('d M Y', strtotime($data->pkb_tgl_masuk));
+        })
+        ->addColumn('tgl_pengujian', function($data){
+            return  date('d M Y', strtotime($data->pkb_tgl_pengujian));
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+
+    }
+    public function form_permintaan_print($id){
+        $data = DB::table('d_permintaan_karyawan_baru')
+        ->where('pkb_id', $id)
+        ->get();
+        // return $data;
+        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan_print', ['daita' => $data]);
     }
     public function form_keterangan_kerja(){
         return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja');
@@ -450,5 +483,46 @@ class ManajemenSuratController extends Controller
             default:
                 return "masukan format bulan dengan benar";
         }
+    }
+    public function tambah_form_permintaan(Request $request){
+        // return $request;
+        $max_id = DB::table('d_permintaan_karyawan_baru')->select('pkb_id')->max('pkb_id');
+
+        $id = $max_id+1;
+
+        // return $id;
+        $tgl_pengujian = date('Y-m-d', strtotime($request->tgl_pengujian));
+
+        $tgl_masuk = date('Y-m-d', strtotime($request->tgl_masuk));
+
+        $gaji = str_replace(',', '', $request->gaji);
+        // $gaji = intval($request->gaji);
+        // $gaji = $request->gaji;
+
+        // return $gaji;
+
+        $data = DB::table('d_permintaan_karyawan_baru')->insert([
+            'pkb_id' => $id,
+            'pkb_departement' => $request->department,
+            'pkb_tgl_pengujian' => $tgl_pengujian,
+            'pkb_tgl_masuk' => $tgl_masuk,
+            'pkb_posisi' => $request->posisi,
+            'pkb_jumlah_butuh' => $request->jumlah_butuh,
+            'pkb_jumlah_karyawan' => $request->jumlah_karyawan,
+            'pkb_penambahan' => $request->penambahan,
+            'pkb_alasan' => $request->alasan,
+            'pkb_usia' => $request->usia,
+            'pkb_jk' => $request->jk,
+            'pkb_pendidikan' => $request->pendidikan,
+            'pkb_pengalaman' => $request->pengalaman,
+            'pkb_keahlian' => $request->keahlian,
+            'pkb_gaji' => $gaji,
+            'pkb_keterangan' => $request->keterangan
+        ]);
+    }
+    public function hapus_form_permintaan($id){
+        $data = DB::table('d_permintaan_karyawan_baru')->where('pkb_id', $id)->delete();
+
+        // return redirect('hrd.manajemensurat.surat.form_permintaan.form_permintaan');
     }
 }

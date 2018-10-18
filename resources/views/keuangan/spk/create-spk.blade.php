@@ -89,7 +89,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
           <button class="btn btn-primary draft" type="button" onclick="draft('DR')">Draft</button>
-          <button class="btn btn-primary final" type="button" onclick="final('FN')">Final</button>
+          <button class="btn btn-primary final" type="button" onclick="final('AP')">Final</button>
 
         </div>
 

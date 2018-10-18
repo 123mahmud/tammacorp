@@ -143,11 +143,12 @@
       dataStok = parseFloat(dataStok);
       dataValue = parseFloat(dataValue);
       var hasil = dataStok - dataValue;
-      hasil = parseFloat(hasil).toFixed(2);
+      hasil = parseFloat(hasil);
       if (hasil < 0.00) {
          $('.final').attr('disabled','disabled');
       }
-      $('input.hasil:text:eq('+getIndex+')').val(hasil);
+      var convHasil = convertToRupiah(hasil);
+      $('input.hasil:text:eq('+getIndex+')').val(convHasil);
     a++;
     })
   }
@@ -174,6 +175,7 @@
   }
 
   function tabelFormula(iditem, jumlah){
+    $('#tableFormula').dataTable().fnDestroy();
     $('#tableFormula').DataTable({
       responsive:true,
       destroy: true,
@@ -181,14 +183,21 @@
       serverSide: true,
         ajax: {
             url : baseUrl + "/produksi/lihatadonan/tabel/"+iditem+'/'+jumlah,
+             error: function (jqXHR, textStatus, errorThrown) {
+                $('#create-data').modal('hide');
+                iziToast.error({
+                    position: "topRight",
+                    title: '',
+                    message: 'Rumus Formula Belum di Buat!'
+                });
+
+            }
         },
         columns: [
-        // {data : 'DT_Row_Index', orderable: true, searchable: false},
         {data: 'f_bb', name: 'f_bb'},
         {data: 'f_value', name: 'f_value'},
         {data: 'm_sname', name: 'm_sname'},
         {data: 'd_stock', name: 'd_stock', orderable: false},
-        // {data: 'm_sname', name: 'm_sname'},
         {data: 'purchesing', name: 'purchesing', orderable: false},
         ],
       });
@@ -393,6 +402,14 @@
       }
     });
   }
+
+  function convertToRupiah(angka) {
+            var rupiah = '';
+            var angkarev = angka.toString().split('').reverse().join('');
+            for (var i = 0; i < angkarev.length; i++) if (i % 3 == 0) rupiah += angkarev.substr(i, 3) + '.';
+            var hasil = rupiah.split('', rupiah.length - 1).reverse().join('');
+            return hasil;
+        }
 
 </script>
 @endsection()
