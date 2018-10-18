@@ -166,16 +166,16 @@
 
                 <div class="overlay transaksi_list">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
-                    <div class="col-md-9" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5>List Data Transaksi</h5>
+                    <div class="col-md-9" style="background: white; color: rgba(0,0,0,0.5); padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <b>List Data Transaksi</b>
                     </div>
 
-                    <div class="col-md-3 text-right" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5><i class="fa fa-times" style="cursor: pointer;" @click="close_list"></i></h5>
+                    <div class="col-md-3 text-right" style="background: white; color: #ff4444; padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <i class="fa fa-times" style="cursor: pointer;" @click="close_list" title="Tutup Jendela"></i>
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <xyz :data="list_transaksi" @get_data="get_data" :ajax_loading="on_ajax_loading"></xyz>
+                      <data-list :data_resource="list_transaksi" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_data" :index_column="'id_transaksi'"></data-list>
                     </div>
                   </div>
                 </div>
@@ -185,10 +185,10 @@
 @endsection
 
 @section("extra_scripts")
-  <script src="{{ asset("js/chosen/chosen.jquery.js") }}"></script>
   <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
   <script src="{{ asset("js/datepicker/datepicker.js") }}"></script>
   <script src="{{ asset("js/vue/vue.js") }}"></script>
+  <script src="{{ asset("js/vue/vue-datatable.js") }}"></script>
   <script src="{{ asset("js/axios/dist/axios.min.js") }}"></script>
   <script src="{{ asset("js/validator/bootstrapValidator.min.js") }}"></script>
   <script src="{{ asset("js/toast/dist/jquery.toast.min.js") }}"></script>
@@ -205,44 +205,6 @@
     <select class="form-control" :name="name" :id="id">
       <option value="cek" v-for="(n, idx) in option" :value="n.id_akun">@{{ n.id_akun+' - '+n.nama_akun }}</option>
     </select>
-  </script>
-
-  <script type="text/x-template" id="table-template">
-      <table class="table table-striped table-bordered" style="font-size: 0.85em;">
-        <thead>
-          <tr>
-            <th width="25%" class="text-center">No.Bukti</th>
-            <th width="15%" class="text-center">Tanggal</th>
-            <th class="text-center">Nama Transaksi</th>
-            <th width="25%" class="text-center">Nominal</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-            <tr v-if="ajax_loading">
-              <td colspan="4" class="text-center">
-                <i class="fa fa-clock-o fa-3x fa-fw"></i> &nbsp; Sedang Mencari Transaksi. Harap Tunggu..
-                <span class="sr-only">Loading...</span>
-              </td>
-            </tr>
-
-            <tr v-if="data.length == 0 && !ajax_loading">
-              <td colspan="4" class="text-center">
-                <i class="fa fa-frown-o fa-3x fa-fw"></i> &nbsp; Tidak Ada Transaksi Yang Dimaksud Di Tanggal Yang Dipilih..
-                <span class="sr-only">Loading...</span>
-              </td>
-            </tr>
-
-            <tr v-for="transaksi in data">
-              <td class="text-center" style="cursor:pointer" @click="get_data(transaksi.id_transaksi)">@{{ transaksi.no_bukti }}</td>
-              <td class="text-center">@{{ transaksi.tanggal_transaksi }}</td>
-              <td class="text-center">@{{ transaksi.nama_transaksi }}</td>
-              <td class="text-center">@{{ transaksi.nominal }}</td>
-            </tr>
-        </tbody>
-      </table>
-    
   </script>
 
   <script type="text/javascript">  
@@ -341,6 +303,7 @@
       template: '#choosen-template',
       mounted: function(){
         var vm = this;
+        $(this.$el).select2();
       },
       watch: {
         model: function(){
@@ -350,27 +313,6 @@
       destroyed: function () {
           
         }
-    })
-
-    Vue.component('xyz', {
-      props: ['data', 'context', 'ajax_loading'],
-      template: '#table-template',
-      mounted: function(){
-        // console.log(this.data)
-        // alert(this.ajax_loading);
-      },
-
-      watch: {
-        data: function(){
-          console.log(this.data);
-        }
-      },
-
-      methods: {
-        get_data: function(val){
-          this.$emit('get_data', val);
-        }
-      }
     })
     
     var vm = new Vue({
@@ -385,6 +327,7 @@
         akun_perkiraan: [],
         akun_lawan: [],
         list_transaksi: [],
+        data_table_columns: [],
 
         single_data: {
 
@@ -428,30 +371,32 @@
           evt.preventDefault();
           this.btn_save_disabled = true;
 
-          if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/save', 
-              $('#data-form').serialize()
-            ).then((response) => {
-              console.log(response.data);
-              if(response.data.status == 'berhasil'){
-                $.toast({
-                    text: 'Data Transaksi Kas Anda Berhasil Disimpan.',
-                    showHideTransition: 'slide',
-                    position: 'top-right',
-                    icon: 'success'
-                })
+          console.log($('#data-form').serialize());
 
-                this.form_reset();
-              }
-            }).catch((err) => {
-              alert(err);
-              this.btn_save_disabled = false;
-            }).then(() => {
-              this.btn_save_disabled = false;
-            })
-          }else{
-            this.btn_save_disabled = false;
-          }
+          // if($('#data-form').data('bootstrapValidator').validate().isValid()){
+          //   axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/save', 
+          //     $('#data-form').serialize()
+          //   ).then((response) => {
+          //     console.log(response.data);
+          //     if(response.data.status == 'berhasil'){
+          //       $.toast({
+          //           text: 'Data Transaksi Kas Anda Berhasil Disimpan.',
+          //           showHideTransition: 'slide',
+          //           position: 'top-right',
+          //           icon: 'success'
+          //       })
+
+          //       this.form_reset();
+          //     }
+          //   }).catch((err) => {
+          //     alert(err);
+          //     this.btn_save_disabled = false;
+          //   }).then(() => {
+          //     this.btn_save_disabled = false;
+          //   })
+          // }else{
+          //   this.btn_save_disabled = false;
+          // }
         },
 
         update: function(evt){
@@ -537,13 +482,36 @@
         },
 
         open_list: function(){
+          this.data_table_columns = [
+            {name: 'No Bukti', context: 'no_bukti', width: '20%', childStyle: 'text-align: center'},
+            {name: 'Tgl. Transaksi', context: 'tanggal_transaksi', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Nama Transaksi', context: 'nama_transaksi', width: '40%', childStyle: 'text-align: center'},
+            {name: 'Nominal', context: 'nominal', width: '35%', childStyle: 'text-align: right', override: function(el){
+                var bilangan = el.toString();
+                var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
+
+                var number_string = bilangan.toString(),
+                  sisa  = number_string.length % 3,
+                  rupiah  = number_string.substr(0, sisa),
+                  ribuan  = number_string.substr(sisa).match(/\d{3}/g);
+                    
+                if (ribuan) {
+                  separator = sisa ? ',' : '';
+                  rupiah += separator + ribuan.join(',');
+                }
+
+                // Cetak hasil
+                return rupiah+'.'+commas; // Hasil: 23.456.789
+            }},
+          ];
+
           $('.overlay.transaksi_list').fadeIn(200);
           this.list_transaksi = [];
           this.on_ajax_loading = true;
 
           axios.get(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/list_transaksi?tgl='+$('#tanggal_transaksi').val()+'&idx='+this.single_data.jenis_transaksi)
                   .then((response) => {
-                    // console.log(response.data);
+                    console.log(response.data);
                     this.list_transaksi = response.data;
                     this.on_ajax_loading = false;
                   }).catch((err) => {

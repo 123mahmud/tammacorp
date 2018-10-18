@@ -216,32 +216,32 @@
 
                 <div class="overlay transaksi_list">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
-                    <div class="col-md-9" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5>List Data Pembayaran</h5>
+                    <div class="col-md-9" style="background: white; color: rgba(0,0,0,0.5); padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <b>List Data Pembayaran</b>
                     </div>
 
-                    <div class="col-md-3 text-right" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5><i class="fa fa-times" style="cursor: pointer;" @click="close_list"></i></h5>
+                    <div class="col-md-3 text-right" style="background: white; color: #ff4444; padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <i class="fa fa-times" style="cursor: pointer;" @click="close_list" title="Tutup Jendela"></i>
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <data-list :data_resource="data_table_resource" :columns="data_table_columns"></data-list>
+                      <data-list :data_resource="data_table_resource" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_data_pembayaran" :index_column="'payment_id'"></data-list>
                     </div>
                   </div>
                 </div>
 
                 <div class="overlay data_po">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
-                    <div class="col-md-9" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5>List Data Purchase Order (P.O)</h5>
+                    <div class="col-md-9" style="background: white; color: rgba(0,0,0,0.5); padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <b>List Data Purchase Order (P.O)</b>
                     </div>
 
-                    <div class="col-md-3 text-right" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5><i class="fa fa-times" style="cursor: pointer;" @click="close_list"></i></h5>
+                    <div class="col-md-3 text-right" style="background: white; color: #ff4444; padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <i class="fa fa-times" style="cursor: pointer;" @click="close_list" title="Tutup Jendela"></i>
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      {{-- <table-po :data="list_purchase" @get_data="get_data_po" :ajax_loading="on_ajax_loading" :sts_null="'Tidak Ada P.O Yang Belum Lunas Untuk Supplier Yang Dipilih..'"></table-po> --}}
+                      <data-list :data_resource="data_table_resource" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_data_po" :index_column="'d_pcs_id'"></data-list>
                     </div>
                   </div>
                 </div>
@@ -266,12 +266,6 @@
 
   <script type="text/x-template" id="inputmask-template">
     <input type="text" :name="name" class="form-control text-right" :id="id" :required="required" :readonly="readonly">
-  </script>
-
-  <script type="text/x-template" id="choosen-template">
-    <select class="form-control" :name="name" :id="id">
-      <option value="cek" v-for="(n, idx) in option" :value="n.id_akun">@{{ n.id_akun+' - '+n.nama_akun }}</option>
-    </select>
   </script>
 
   
@@ -373,22 +367,6 @@
 
       }
     });
-
-    Vue.component('chosen', {
-      props: ['option', 'name', 'id'],
-      template: '#choosen-template',
-      mounted: function(){
-        var vm = this;
-      },
-      watch: {
-        model: function(){
-          // $(this.$el).val(this.model);
-        }
-      },
-      destroyed: function () {
-          
-        }
-    })
     
     var vm = new Vue({
 
@@ -445,7 +423,7 @@
                 }
 
                 // console.log(this.single_data.akun_kas);
-
+                // $('#supplier').select2();
                 $('.overlay.main').fadeOut(200);
                 $('#tanggal_pembayaran').val('{{ date('d-m-Y') }}')
               }).catch(err => {
@@ -598,12 +576,13 @@
         open_list: function(){
 
           this.data_table_columns = [
-            {name: 'No.Purchase', context: 'd_pcs_code', width: '30%', childStyle: 'text-align: center'},
-            {name: 'Tanggal', context: 'd_pcs_date_created', width: '15%', childStyle: 'text-align: center'},
-            {name: 'Jenis Tagihan', context: 'd_pcs_method', width: '25%', childStyle: 'text-align: center'},
-            {name: 'Total Tagihan', context: 'd_pcs_total_net', width: '30%', childStyle: 'text-align: right', override: function(el){
-                var bilangan = el;
-                var commas = bilangan.split('.')[1];
+            {name: 'No.Transaksi', context: 'payment_code', width: '20%', childStyle: 'text-align: center'},
+            {name: 'No.Purchase', context: 'd_pcs_code', width: '20%', childStyle: 'text-align: center'},
+            {name: 'Tgl. Dibayarkan', context: 'd_pcs_date_created', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Jenis', context: 'd_pcs_method', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Total Pembayaran', context: 'payment_value', width: '30%', childStyle: 'text-align: right', override: function(el){
+                var bilangan = el.toString();
+                var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
 
                 var number_string = bilangan.toString(),
                   sisa  = number_string.length % 3,
@@ -618,12 +597,11 @@
                 // Cetak hasil
                 return rupiah+'.'+commas; // Hasil: 23.456.789
             }},
-          ]
-
+          ];
 
           $('.overlay.transaksi_list').fadeIn(200);
-          this.data_table_resource = [];
           this.on_ajax_loading = true;
+          this.data_table_resource = [];
 
           axios.get(this.baseUrl+'/purchasing/pembayaran_hutang/get-transaksi?sp='+this.single_data.supplier+'&tgl='+$('#tanggal_pembayaran').val())
                   .then((response) => {
@@ -641,15 +619,72 @@
             return false;
           }
 
-          $('.overlay.data_po').fadeIn(200);
+          this.data_table_columns = [
+            {name: 'No.Purchase', context: 'd_pcs_code', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Tgl. Transaksi', context: 'd_pcs_date_created', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Jenis', context: 'd_pcs_method', width: '10%', childStyle: 'text-align: center'},
+            {name: 'Total Tagihan', context: 'd_pcs_total_net', width: '20%', childStyle: 'text-align: right', override: function(el){
+                var bilangan = el.toString();
+                var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
 
-          this.list_purchase = [];
+                var number_string = bilangan.toString(),
+                  sisa  = number_string.length % 3,
+                  rupiah  = number_string.substr(0, sisa),
+                  ribuan  = number_string.substr(sisa).match(/\d{3}/g);
+                    
+                if (ribuan) {
+                  separator = sisa ? ',' : '';
+                  rupiah += separator + ribuan.join(',');
+                }
+
+                // Cetak hasil
+                return rupiah+'.'+commas; // Hasil: 23.456.789
+            }},
+            {name: 'Sudah Dibayar', context: 'd_pcs_payment', width: '20%', childStyle: 'text-align: right', override: function(el){
+                var bilangan = el;
+                var commas = bilangan.split('.')[1];var bilangan = el.toString();
+                var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
+
+                var number_string = bilangan.toString(),
+                  sisa  = number_string.length % 3,
+                  rupiah  = number_string.substr(0, sisa),
+                  ribuan  = number_string.substr(sisa).match(/\d{3}/g);
+                    
+                if (ribuan) {
+                  separator = sisa ? ',' : '';
+                  rupiah += separator + ribuan.join(',');
+                }
+
+                // Cetak hasil
+                return rupiah+'.'+commas; // Hasil: 23.456.789
+            }},
+            {name: 'Sisa Pelunasan', context: 'd_pcs_sisapayment', width: '20%', childStyle: 'text-align: right', override: function(el){
+                var bilangan = el.toString();
+                var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
+
+                var number_string = bilangan.toString(),
+                  sisa  = number_string.length % 3,
+                  rupiah  = number_string.substr(0, sisa),
+                  ribuan  = number_string.substr(sisa).match(/\d{3}/g);
+                    
+                if (ribuan) {
+                  separator = sisa ? ',' : '';
+                  rupiah += separator + ribuan.join(',');
+                }
+
+                // Cetak hasil
+                return rupiah+'.'+commas; // Hasil: 23.456.789
+            }},
+          ];
+
+          $('.overlay.data_po').fadeIn(200);
           this.on_ajax_loading = true;
+          this.data_table_resource = [];
 
           axios.get(this.baseUrl+'/purchasing/pembayaran_hutang/get-po?supplier='+this.single_data.supplier)
                   .then((response) => {
                     console.log(response.data);
-                    this.list_purchase = response.data;
+                    this.data_table_resource = response.data;
                     this.on_ajax_loading = false;
                   }).catch((err) => {
                     alert(err);
@@ -657,32 +692,32 @@
         },
 
         get_data_po: function(alpha){
-          let idx = this.list_purchase.findIndex(e => e.d_pcs_id == alpha);
+          let idx = this.data_table_resource.findIndex(e => e.d_pcs_id == alpha);
 
-          this.single_data.nomor_po = this.list_purchase[idx].d_pcs_code;
-          $('#total_tagihan').val(this.list_purchase[idx].d_pcs_total_net);
-          $('#sudah_dibayar').val(this.list_purchase[idx].d_pcs_payment);
-          $('#sisa_tagihan').val(this.list_purchase[idx].d_pcs_total_net - this.list_purchase[idx].d_pcs_payment); 
+          this.single_data.nomor_po = this.data_table_resource[idx].d_pcs_code;
+          $('#total_tagihan').val(this.data_table_resource[idx].d_pcs_total_net);
+          $('#sudah_dibayar').val(this.data_table_resource[idx].d_pcs_payment);
+          $('#sisa_tagihan').val(this.data_table_resource[idx].d_pcs_total_net - this.data_table_resource[idx].d_pcs_payment); 
           $('#data-form').data('bootstrapValidator').resetForm();
 
           $('.overlay.data_po').fadeOut(200);
         },
 
         get_data_pembayaran: function(alpha){
-          let idx = this.list_transaksi.findIndex(e => e.payment_id == alpha);
+          let idx = this.data_table_resource.findIndex(e => e.payment_id == alpha);
 
-          this.single_data.nomor_nota = this.list_transaksi[idx].payment_code;
-          this.single_data.supplier = this.list_transaksi[idx].s_id;
-          this.single_data.nomor_po = this.list_transaksi[idx].payment_po;
-          this.single_data.keterangan = this.list_transaksi[idx].payment_keterangan;
-          this.single_data.jenis = (this.list_transaksi[idx].payment_type  == "CASH") ? 'C' : 'T';
+          this.single_data.nomor_nota = this.data_table_resource[idx].payment_code;
+          this.single_data.supplier = this.data_table_resource[idx].s_id;
+          this.single_data.nomor_po = this.data_table_resource[idx].payment_po;
+          this.single_data.keterangan = this.data_table_resource[idx].payment_keterangan;
+          this.single_data.jenis = (this.data_table_resource[idx].payment_type  == "CASH") ? 'C' : 'T';
 
-          $('#tanggal_pembayaran').val(this.list_transaksi[idx].payment_date.split('-')[2]+'-'+this.list_transaksi[idx].payment_date.split('-')[1]+'-'+this.list_transaksi[idx].payment_date.split('-')[0])
+          $('#tanggal_pembayaran').val(this.data_table_resource[idx].payment_date.split('-')[2]+'-'+this.data_table_resource[idx].payment_date.split('-')[1]+'-'+this.data_table_resource[idx].payment_date.split('-')[0])
 
-          $('#nominal_pembayaran').val(this.list_transaksi[idx].payment_value);
-          $('#total_tagihan').val(this.list_transaksi[idx].d_pcs_total_net);
-          $('#sudah_dibayar').val(this.list_transaksi[idx].d_pcs_payment);
-          $('#sisa_tagihan').val(this.list_transaksi[idx].d_pcs_total_net - this.list_transaksi[idx].d_pcs_payment); 
+          $('#nominal_pembayaran').val(this.data_table_resource[idx].payment_value);
+          $('#total_tagihan').val(this.data_table_resource[idx].d_pcs_total_net);
+          $('#sudah_dibayar').val(this.data_table_resource[idx].d_pcs_payment);
+          $('#sisa_tagihan').val(this.data_table_resource[idx].d_pcs_total_net - this.data_table_resource[idx].d_pcs_payment); 
           $('#data-form').data('bootstrapValidator').resetForm();
 
           this.state = 'update';

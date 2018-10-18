@@ -133,8 +133,7 @@
       });
 
       //select2
-      $('.select2').select2({
-      });
+      $('.select2').select2({});
 
       $(".i_divisi").select2({
           placeholder: "Pilih Divisi",
