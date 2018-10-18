@@ -90,127 +90,8 @@
 
                                             </div>
                                             <!-- Modal -->
-                                            <div class="modal fade" id="create" role="dialog">
-                                                <div class="modal-dialog">
-                                                    <!-- Modal content-->
-                                                    <div class="modal-content">
-                                                        <div class="modal-header" style="background-color: #e77c38;">
-                                                            <button type="button" class="close" data-dismiss="modal">
-                                                                &times;
-                                                            </button>
-                                                            <h4 class="modal-title" style="color: white;">Tambah Hasil
-                                                                Produksi</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="table-responsive">
-                                                                <table class="table tabelan table-hover ">
-                                                                    <tbody>
-                                                                    <tr>
-                                                                        <td>
-                                                                            Tanggal SPK<font color="red">*</font>
-                                                                        </td>
-                                                                        <td>
-                                                                            <input type="text"
-                                                                                   class="form-control datepicker2"
-                                                                                   id="TanggalProduksi"
-                                                                                   onchange="SetTanggalProduksi()"
-                                                                                   name="Tanggal_Produksi">
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Nomor SPK<font color="red">*</font></td>
-                                                                        <td id="ubahselect">
-                                                                            <select class="form-control input-sm"
-                                                                                    id="cari_spk" name="cariSpk"
-                                                                                    style="width: 100%;">
-                                                                                <option>- Pilih Nomor SPK</option>
-                                                                            </select>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Nama Item</td>
-                                                                        <td>
-                                                                            <input type="text" name="" type="text"
-                                                                                   class="form-control" id="NamaItem"
-                                                                                   value="" readonly>
-                                                                            <input type="hidden" name=""
-                                                                                   class="form-control" id="id_item"
-                                                                                   value="" readonly>
-                                                                            <input type="hidden" name=""
-                                                                                   class="form-control" id="spk_id"
-                                                                                   value="" readonly>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Jumlah SPK</td>
-                                                                        <td>
-                                                                            <input type="text" name="" type="text"
-                                                                                   class="form-control"
-                                                                                   id="JumlahItemSpk" value="" readonly>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Jumlah Produksi</td>
-                                                                        <td>
-                                                                            <input type="text" name="" type="text"
-                                                                                   class="form-control"
-                                                                                   id="JumlahItemHasilSpk" value=""
-                                                                                   readonly>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Tanggal Produksi</td>
-                                                                        <td>
-                                                                            <input type="text" class="form-control"
-                                                                                   id="TanggalHasilProduksi" name=""
-                                                                                   value="{{ date('d-m-Y') }}" readonly>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Dari Produksi<font color="red">*</font></td>
-                                                                        <td>
-                                                                            <select class="form-control input-sm"
-                                                                                    id="prdt_produksi"
-                                                                                    name="prdt_produksi"
-                                                                                    style="width: 100%;">
-                                                                                @foreach ($data as $produksi)
-                                                                                    <option value="{{ $produksi->mp_id }}">{{ $produksi->mp_name }}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Jam Produksi<font color="red">*</font></td>
-                                                                        <td>
-                                                                            <input type="text"
-                                                                                   class="form-control timepicker"
-                                                                                   id="time" name="">
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Jumlah Item<font color="red">*</font></td>
-                                                                        <td>
-                                                                            <input type="number" class="form-control"
-                                                                                   id="JumlahItem" name=""
-                                                                                   style="text-align: right;"
-                                                                                   onkeyup="maxQty()">
-                                                                        </td>
-                                                                    </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-warning"
-                                                                    data-dismiss="modal">Close
-                                                            </button>
-                                                            <button class="btn btn-primary PostingHasil" type="submit"
-                                                                    onclick="simpanHasilProduct()">Posting
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            @include('produksi.o_produksi.modal-create')
+                                            
                                             <div class="panel-body">
                                                 <div class="table-responsive">
 
@@ -237,120 +118,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
 
-                            <!-- div note-hasil-produksi -->
-                            <div id="note-hasil-produksi" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="panel-body">
-
-                                        <div class="col-md-2 col-sm-3 col-xs-12">
-                                            <label class="tebal">Tanggal Belanja</label>
-                                        </div>
-
-                                        <div class="col-md-4 col-sm-6 col-xs-12">
-                                            <div class="form-group">
-                                                <div class="input-daterange input-group">
-                                                    <input id="tanggal3" class="form-control input-sm datepicker1"
-                                                           name="tanggal" type="text" value="{{ date('d-m-Y') }}">
-                                                    <span class="input-group-addon">-</span>
-                                                    <input id="tanggal4" class="input-sm form-control datepicker2"
-                                                           name="tanggal" type="text" value="{{ date('d-m-Y') }}">
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                                            <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"
-                                                    onclick="cariTanggalJual()">
-                                                <strong>
-                                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                                </strong>
-                                            </button>
-                                            <button class="btn btn-info btn-sm btn-flat" type="button">
-                                                <strong>
-                                                    <i class="fa fa-undo" aria-hidden="true"></i>
-                                                </strong>
-                                            </button>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="table tabelan table-bordered table-striped"
-                                                   id="tabelHasilProduksi" width="100%">
-                                                <thead>
-                                                <tr>
-                                                    <th>Tanggal Produksi</th>
-                                                    <th>Nomor SPK</th>
-                                                    <th>Nama Item</th>
-                                                    <th>Belum Terkirim</th>
-                                                    <th>Sudah Terkirim</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end div note-hasil-produksi -->
-                            <!--Modal Detail Belum Terkirim -->
-                            <div class="modal fade" id="modalDetailProduksi" role="dialog">
-                                <div class="modal-dialog modal-lg"
-                                     style="width: 90%;margin-left: auto;margin-top: 30px;">
-
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="background-color: #e77c38;">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title" style="color: white;">Nama Item</h4>
-
-                                        </div>
-                                        <div class="modal-body">
-                                            <div id="detailProduksi">
-
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-warning" data-dismiss="modal">Close
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!--Modal Detail Belum Terkirim -->
-                            <!--Modal Detail Belum Terkirim -->
-                            <div class="modal fade" id="modalDetailProduksiKirim" role="dialog">
-                                <div class="modal-dialog modal-lg"
-                                     style="width: 90%;margin-left: auto;margin-top: 30px;">
-
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="background-color: #e77c38;">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title" style="color: white;">Nama Itemm</h4>
-
-                                        </div>
-                                        <div class="modal-body">
-                                            <div id="detailProduksiKirim">
-
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-warning" data-dismiss="modal">Close
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <!--Modal tambah rencana-->
-
-                        @include('produksi.o_produksi.modal')
-                        <!--End Modal-->
-                            <!--Modal Detail Belum Terkirim -->
                         </div>
                     </div>
                 </div>
@@ -382,8 +150,8 @@
 
                             });
 
-                            $('#myModal').on('shown.bs.modal', function () {
-                                $('#prdt_qty').focus()
+                            $('#create').on('shown.bs.modal', function () {
+                                //fungsi
                             })
 
                         });
@@ -534,84 +302,9 @@
                             })
                         }
 
-                        function lihatDetail(idDetail) {
-                            $.ajax({
-                                url: baseUrl + "/produksi/o_produksi/getdata/tabel",
-                                type: 'get',
-                                data: {x: idDetail},
-                                success: function (response) {
-                                    $('#detailProduksi').html(response);
-                                }
-                            });
+                        function cariTanggal(){
+                            alert('a');
                         }
 
-                        function lihatDetailKirim(idDetail) {
-                            $.ajax({
-                                url: baseUrl + "/produksi/o_produksi/getdata/tabel/kirim",
-                                type: 'get',
-                                data: {y: idDetail},
-                                success: function (response) {
-                                    $('#detailProduksiKirim').html(response);
-                                }
-                            });
-                        }
-
-                        function edit(id1, id2) {
-                            $.ajax({
-                                type: "get",
-                                url: baseUrl + "/produksi/o_produksi/edit/" + id1 + '/' + id2,
-                                success: function (response) {
-                                    $('#prdt_productresult').val(response.prdt_productresult);
-                                    $('#prdt_detail').val(response.prdt_detail);
-                                    $('#i_name').val(response.i_name);
-                                    $('#prdt_qty').val(response.prdt_qty);
-                                }
-                            });
-                        }
-
-                        function simpanProduksiQty() {
-                            var myForm = $('#myForm :input').serialize();
-                            $.ajaxSetup({
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                }
-                            });
-                            $.ajax({
-                                type: "get",
-                                url: baseUrl + "/produksi/o_produksi/save",
-                                data: myForm,
-                                success: function (response) {
-                                    if (response.status == 'sukses') {
-                                        oProduct.ajax.reload();
-                                        iziToast.success({
-                                            timeout: 5000,
-                                            position: "topRight",
-                                            icon: 'fa fa-chrome',
-                                            title: '',
-                                            message: 'Berhasil update.'
-                                        });
-                                        $('#myModal').modal('hide');
-                                    } else {
-                                        iziToast.error({
-                                            position: "topRight",
-                                            title: '',
-                                            message: 'Gagal update.'
-                                        });
-                                    }
-
-                                }
-
-                            });
-                        }
-
-                        function hapus(id1, id2) {
-                            $.ajax({
-                                type: "get",
-                                url: baseUrl + "/produksi/o_produksi/distroy/" + id1 + '/' + id2,
-                                success: function () {
-                                    oTable.ajax.reload();
-                                }
-                            });
-                        }
                     </script>
 @endsection()

@@ -179,7 +179,13 @@
 <body>
 	<div class="div-page-break-after">
 
+		@php
 
+		setlocale(LC_ALL, "id_ID");
+
+		
+
+		@endphp
 
 		<div class="btn-print" align="right">
 			<button onclick="javascript:window.print();">Print</button>
@@ -193,7 +199,7 @@
 		<div class="div-width">
 
 			<h2 class="text-center underline" style="margin: 30px 0 0 0;">SURAT SERAH TERIMA TUGAS</h2>
-			<small class="text-center" style="display: block;">No : 000/STT/HRD/VII/2018</small>
+			<small class="text-center" style="display: block;">No : {{$daita[0]->foh_surat}}</small>
 
 			<table class="border-none" width="100%" style="margin-top: 30px;" cellpadding="5px">
 				<tr>
@@ -202,60 +208,60 @@
 				<tr>
 					<td width="20%">Nama</td>
 					<td width="1%">:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_nama1}}</td>
 				</tr>
 				<tr>
 					<td>Jabatan</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_posisi1}}</td>
 				</tr>
 				<tr>
 					<td>NIP</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_nik1}}</td>
 				</tr>
 				<tr>
 					<td>Alamat</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_alamat1}}</td>
 				</tr>
 				<tr>
 					<td>No. KTP/SIM</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_ktp1}}</td>
 				</tr>
 				<tr>
 					<td colspan="3" style="padding: 10px 5px 10px 5px;">
-						Telah Melakukan serah terima tugas sebagai (................) CV. Tamma Robah Indonesia, sebagai berikut :
+						Telah Melakukan serah terima tugas sebagai {{$daita[0]->foh_tugas}} CV. Tamma Robah Indonesia, sebagai berikut :
 					</td>
 				</tr>
 				<tr>
 					<td>Nama</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_nama2}}</td>
 				</tr>
 				<tr>
 					<td>Jabatan</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_posisi2}}</td>
 				</tr>
 				<tr>
 					<td>NIP</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_nik2}}</td>
 				</tr>
 				<tr>
 					<td>Alamat</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fohdt_alamat2}}</td>
 				</tr>
 				<tr>
 					<td>No. KTP/SIM</td>
 					<td>:</td>
-					<td></td>
+					<td>{{$daita[0]->fohdt_ktp2}}</td>
 				</tr>
 				<tr>
-					<td colspan="3" style="padding: 10px 5px 10px 5px;">Serah terima tugas ini dilakukan sehubungan dengan Pelaksanaan Cuti/Izin selama (.....) hari, terhitung tanggal (.......) sampai dengan (.........) </td>
+					<td colspan="3" style="padding: 10px 5px 10px 5px;">Serah terima tugas ini dilakukan sehubungan dengan Pelaksanaan Cuti/Izin selama {{$count_day}} hari, terhitung tanggal {{strftime("%A, %e %B %Y", strtotime($daita[0]->foh_awal_tanggal))}} sampai dengan {{strftime("%A, %e %B %Y", strtotime($daita[0]->foh_akhir_tanggal))}} </td>
 				</tr>
 				<tr>
 					<td colspan="3" style="padding: 10px 5px 10px 5px;">Apabila karyawan yang diberi surat serah terima tidak melaksanakan tugasnya dengan baik maka tidak mendapatkan uang makan selama sehari. </td>
@@ -266,12 +272,12 @@
 				<tr>
 					<td>Dibuat di</td>
 					<td>:</td>
-					<td></td>
+					<td>{{$daita[0]->foh_dibuat_di}}</td>
 				</tr>
 				<tr>
 					<td>Tanggal</td>
 					<td>:</td>
-					<td></td>
+					<td>{{strftime("%A, %e %B %Y", strtotime($daita[0]->foh_tanggal))}}</td>
 				</tr>
 			</table>
 			<table width="100%" class="border-none" cellpadding="5px">

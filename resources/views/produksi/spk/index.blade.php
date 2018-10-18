@@ -103,13 +103,12 @@
                     function cariTanggal() {
                         var tgl1 = $('#tanggal1').val();
                         var tgl2 = $('#tanggal2').val();
-                        var stat = 'FN';
                         var indexTable = $('#data1').DataTable({
                             "destroy": true,
                             "processing": true,
                             "serverside": true,
                             "ajax": {
-                                url: baseUrl + "/produksi/spk/get_spk_by_tgl/" + tgl1 + '/' + tgl2 + '/' + stat,
+                                url: baseUrl + "/produksi/spk/get_spk_by_tgl/" + tgl1 + '/' + tgl2,
                                 type: 'GET'
                             },
                             "columns": [
@@ -139,13 +138,12 @@
                     function cariTanggal2() {
                         var tgl1 = $('#tanggal3').val();
                         var tgl2 = $('#tanggal4').val();
-                        var stat = 'CL';
                         var finishTable = $('#data3').DataTable({
                             "destroy": true,
                             "processing": true,
                             "serverside": true,
                             "ajax": {
-                                url: baseUrl + "/produksi/spk/get_spk_by_tgl/" + tgl1 + '/' + tgl2 + '/' + stat,
+                                url: baseUrl + "/produksi/spk/get_spk_by_tglCL/" + tgl1 + '/' + tgl2,
                                 type: 'GET'
                             },
                             "columns": [
@@ -173,8 +171,20 @@
                     }
 
                     function ubahStatus(id) {
-                        if (confirm('Anda yakin ubah status transaksi ?')) {
-                            // ajax delete data to database
+                        iziToast.show({
+                          color: 'red',
+                          title: 'Peringatan',
+                          message: 'yakin ingin merubah status SPK!',
+                          position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                          progressBarColor: 'rgb(0, 255, 184)',
+                          buttons: [
+                            [
+                              '<button>Ok</button>',
+                              function (instance, toast) {
+                                instance.hide({
+                                  transitionOut: 'fadeOutUp'
+                                }, toast);
+                                                // ajax delete data to database
                             $.ajax({
                                 url: baseUrl + "/produksi/spk/ubah-status-spk/" + id,
                                 type: "get",
@@ -182,14 +192,25 @@
                                 success: function (response) {
                                     if (response.status == "sukses") {
                                         refreshTabel();
-                                        refreshTabel2();
                                     }
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {
                                     alert('Error updating data');
                                 }
                             });
-                        }
+                            }
+                            ],
+                            [
+                              '<button>Close</button>',
+                               function (instance, toast) {
+                                instance.hide({
+                                  transitionOut: 'fadeOutUp'
+                                }, toast);
+                              }
+                            ]
+                          ]
+                        });
+                        
                     }
 
                     function refreshTabel() {

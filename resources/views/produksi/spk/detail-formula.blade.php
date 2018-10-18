@@ -73,7 +73,7 @@
                    <tr>
                         <td>{{ $formula[$i]['i_code'] }}</td>
                         <td>{{ $formula[$i]['i_name'] }}</td>
-                        <td class="text-right">{{ $formula[$i]['fr_value'] }}</td>
+                        <td class="text-right">{{ number_format( $formula[$i]['fr_value'],0,',','.')}}</td>
                         <td>{{ $formula[$i]['m_sname'] }}</td>
                         <td>Rp.
                             <span class="pull-right">
@@ -95,7 +95,9 @@
     <a class="btn btn-primary" target="_blank" href="{{route('spk_print', ['spk_id' => $item->spk_id])}}"><i
                 class="fa fa-print"></i>&nbsp;Print</a>
     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-
+    @if ($ket == 'AP')
+            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="ubahStatus({{ $id }})">Proses</button>
+    @endif
 </div>
 
 

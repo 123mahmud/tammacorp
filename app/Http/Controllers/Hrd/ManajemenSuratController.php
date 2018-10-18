@@ -385,19 +385,236 @@ class ManajemenSuratController extends Controller
         return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader');
     }
     public function form_laporan_leader_print(){
+        
         return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader_print');
     }
     public function form_overhandle(){
-        return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle');
+        $month = date('m');
+
+        $year = date('Y');
+
+        $id = DB::table('d_form_overhandle')->select('foh_id')->max('foh_id');
+
+        $max_id = $id+1;
+
+        if($max_id < 10){
+            $id_awal = '00'.$max_id;
+        } elseif($max_id < 100){
+            $id_awal = '0'.$max_id;
+        } else {
+            $id_awal = $max_id;
+        }
+
+        switch ($month) {
+            case '01':
+                $month_kurawal = 'I';
+                break;
+            case '02':
+                $month_kurawal = 'II';
+                break;
+            case '03':
+                $month_kurawal = 'III';
+                break;
+            case '04':
+                $month_kurawal = 'IV';
+                break;
+            case '05':
+                $month_kurawal = 'V';
+                break;
+            case '06':
+                $month_kurawal = 'VI';
+                break;
+            case '07':
+                $month_kurawal = 'VII';
+                break;
+            case '08':
+                $month_kurawal = 'VIII';
+                break;
+            case '09':
+                $month_kurawal = 'IX';
+                break;
+            case '10':
+                $month_kurawal = 'X';
+                break;
+            case '11':
+                $month_kurawal = 'XI';
+                break;
+            case '12':
+                $month_kurawal = 'XII';
+                break;
+        }
+
+        $kode = $id_awal.'/STT/HRD/'.$month_kurawal.'/'.$year;
+
+        $karyawan = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_ktp', 'c_alamat', 'c_posisi', 'c_nik')
+        ->get();
+
+        // return $karyawan;
+        return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle', ['code' => $kode, 'pegawai' => $karyawan]);
     }
-    public function form_overhandle_print(){
-        return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle_print');
+    public function form_overhandle_tambah(Request $request){
+        $tgl_awal = date("Y-m-d", strtotime($request->tgl_awal));
+
+        $tgl_akhir = date("Y-m-d", strtotime($request->tgl_akhir));
+
+        $tanggal = date("Y-m-d", strtotime($request->tanggal));
+
+        // return $request;
+
+        $id = DB::table('d_form_overhandle')->select('foh_id')->max('foh_id');
+
+        $max_id = $id+1;
+
+        $table1 = DB::table('d_form_overhandle')
+        ->insert([
+            'foh_id' => $max_id,
+            'foh_surat' => $request->kode,
+            'foh_karyawan1' => $request->karyawan1,
+            'foh_tugas' => $request->tugas,
+            'foh_karyawan2' => $request->karyawan2,
+            'foh_awal_tanggal' => $tgl_awal,
+            'foh_akhir_tanggal' => $tgl_akhir,
+            'foh_dibuat_di' => $request->dibuat,
+            'foh_tanggal' => $tanggal
+        ]);
+
+        $table2 = DB::table('d_form_overhandle_dt')
+        ->insert([
+            'fohdt_id' => $max_id,
+            'fohdt_karyawan1' => $request->karyawan1,
+            'fohdt_nama1' => $request->nama1,
+            'fohdt_alamat1' => $request->alamat1,
+            'fohdt_ktp1' => $request->ktp1,
+            'fohdt_nik1' => $request->nik1,
+            'fohdt_karyawan2' => $request->karyawan2,
+            'fohdt_nama2' => $request->nama2,
+            'fohdt_alamat2' => $request->alamat2,
+            'fohdt_ktp2' => $request->ktp2,
+            'fohdt_nik2' => $request->nik2,
+            'fohdt_posisi1' => $request->posisi1,
+            'fohdt_posisi2' => $request->posisi2
+
+        ]);
+    }
+    public function form_overhandle_datatable(){
+        $list = DB::table('d_form_overhandle')->select('foh_id', 'foh_surat', 'foh_tanggal', 'fohdt_nama1', 'fohdt_nama2')
+        ->join('d_form_overhandle_dt', 'd_form_overhandle.foh_karyawan1', '=', 'd_form_overhandle_dt.fohdt_karyawan1')
+        ->get();
+
+        $data = collect($list);
+
+        return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('aksi', function($data){
+            return  '<div class="btn-group btn-group-sm">'.
+                        '<a href="'.url('hrd/manajemensurat/form_overhandle_print/'.$data->foh_id).'" target="_blank" class="btn btn-info"><i class="fa fa-print"></i></a>'.
+                        '<button class="btn btn-danger btn-hapus" onclick="hapus('. $data->foh_id.')" type="button"><i class="fa fa-trash-o"></i></button>'.
+                    '</div>';
+        })
+        ->addColumn('tgl', function($data){
+            return date("d M Y", strtotime($data->foh_tanggal));
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+    }
+    public function form_overhandle_autocomplete(Request $request){
+        // return $request->id_karyawan1;
+        $karyawan = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_ktp', 'c_alamat', 'c_posisi', 'c_nik')
+        ->where('m_pegawai_man.c_id', $request->id_karyawan1)
+        ->get();
+
+        return $karyawan;
+    }
+    public function form_overhandle_autocomplete2(Request $request){
+        // return $request->id_karyawan1;
+        $karyawan = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_ktp', 'c_alamat', 'c_posisi', 'c_nik')
+        ->where('m_pegawai_man.c_id', $request->id_karyawan2)
+        ->get();
+
+        return $karyawan;
+    }
+    public function form_overhandle_print($id){
+        $data = DB::table('d_form_overhandle')
+        ->select('foh_tanggal',
+         'foh_awal_tanggal',
+         'foh_akhir_tanggal',
+         'foh_surat',
+         'foh_tugas',
+         'foh_dibuat_di',
+         'fohdt_nama1',
+         'fohdt_nama2',
+         'fohdt_ktp2',
+         'fohdt_ktp1',
+         'fohdt_alamat2',
+         'fohdt_alamat1',
+         'fohdt_posisi2',
+         'fohdt_posisi1',
+         'fohdt_nik2',
+         'fohdt_nik1')
+        ->join('d_form_overhandle_dt', 'd_form_overhandle.foh_karyawan1', '=', 'd_form_overhandle_dt.fohdt_karyawan1')
+        ->where('foh_id', $id)
+        ->get();
+
+        // return $data;
+
+        $tanggal_awal = date_create($data[0]->foh_awal_tanggal);
+        $tanggal_akhir = date_create($data[0]->foh_akhir_tanggal);
+
+        $hitung_hari = date_diff($tanggal_awal, $tanggal_akhir);
+
+        $hasil_hari = $hitung_hari->format("%a");
+        
+
+        return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle_print', ['daita'=> $data, 'count_day' => $hasil_hari]);
     }
     public function form_permintaan(){
-        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan');
+        $data = DB::table('m_jabatan')->select('c_id', 'c_posisi')->get()->toArray();
+
+        // return $data;
+
+        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan', ['daita' => $data]);
     }
-    public function form_permintaan_print(){
-        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan_print');
+    public function hapus_form_overhandle($id){
+        $data = DB::table('d_form_overhandle')->where('foh_id', $id)->delete();
+        $data1 = DB::table('d_form_overhandle_dt')->where('fohdt_id', $id)->delete();
+
+    }
+    public function form_permintaan_datatable(){
+
+        $list = DB::table('d_permintaan_karyawan_baru')->select('pkb_id', 'pkb_departement', 'pkb_tgl_pengujian', 'pkb_tgl_masuk')->get();
+
+        $data = collect($list);
+
+        return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('aksi', function($data){
+            return  '<div class="btn-group btn-group-sm">'.
+                        '<a href="'.url('hrd/manajemensurat/form_permintaan_print/'.$data->pkb_id).'" target="_blank" class="btn btn-info"><i class="fa fa-print"></i></a>'.
+                        '<button class="btn btn-danger btn-hapus" onclick="hapus('. $data->pkb_id.')" type="button"><i class="fa fa-trash-o"></i></button>'.
+                    '</div>';
+        })
+        ->addColumn('tgl_masuk', function($data){
+            return  date('d M Y', strtotime($data->pkb_tgl_masuk));
+        })
+        ->addColumn('tgl_pengujian', function($data){
+            return  date('d M Y', strtotime($data->pkb_tgl_pengujian));
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+
+    }
+    public function form_permintaan_print($id){
+        $data = DB::table('d_permintaan_karyawan_baru')
+        ->where('pkb_id', $id)
+        ->get();
+        // return $data;
+        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan_print', ['daita' => $data]);
     }
     public function form_keterangan_kerja(){
         return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja');
@@ -450,5 +667,46 @@ class ManajemenSuratController extends Controller
             default:
                 return "masukan format bulan dengan benar";
         }
+    }
+    public function tambah_form_permintaan(Request $request){
+        // return $request;
+        $max_id = DB::table('d_permintaan_karyawan_baru')->select('pkb_id')->max('pkb_id');
+
+        $id = $max_id+1;
+
+        // return $id;
+        $tgl_pengujian = date('Y-m-d', strtotime($request->tgl_pengujian));
+
+        $tgl_masuk = date('Y-m-d', strtotime($request->tgl_masuk));
+
+        $gaji = str_replace(',', '', $request->gaji);
+        // $gaji = intval($request->gaji);
+        // $gaji = $request->gaji;
+
+        // return $gaji;
+
+        $data = DB::table('d_permintaan_karyawan_baru')->insert([
+            'pkb_id' => $id,
+            'pkb_departement' => $request->department,
+            'pkb_tgl_pengujian' => $tgl_pengujian,
+            'pkb_tgl_masuk' => $tgl_masuk,
+            'pkb_posisi' => $request->posisi,
+            'pkb_jumlah_butuh' => $request->jumlah_butuh,
+            'pkb_jumlah_karyawan' => $request->jumlah_karyawan,
+            'pkb_penambahan' => $request->penambahan,
+            'pkb_alasan' => $request->alasan,
+            'pkb_usia' => $request->usia,
+            'pkb_jk' => $request->jk,
+            'pkb_pendidikan' => $request->pendidikan,
+            'pkb_pengalaman' => $request->pengalaman,
+            'pkb_keahlian' => $request->keahlian,
+            'pkb_gaji' => $gaji,
+            'pkb_keterangan' => $request->keterangan
+        ]);
+    }
+    public function hapus_form_permintaan($id){
+        $data = DB::table('d_permintaan_karyawan_baru')->where('pkb_id', $id)->delete();
+
+        // return redirect('hrd.manajemensurat.surat.form_permintaan.form_permintaan');
     }
 }
