@@ -84,10 +84,10 @@
                                   <table class="table tabelan table-bordered no-padding" id="listTransfer" width="100%">
                                       <thead>
                                         <tr>
-                                          <th width="7%">Tanggal</th>
+                                          <th width="15%">Tanggal</th>
                                           <th width="10%">Kode</th>              
-                                          <th width="43%">Catatan</th>
-                                          <th width="7%">Waktu</th>
+                                          <th width="35%">Catatan</th>
+                                         {{--  <th width="7%">Waktu</th> --}}
                                           <th width="10%">Status</th>              
                                           <th width="10%">Aksi</th>
                                         </tr>
@@ -136,10 +136,10 @@
                                      <table class="table tabelan table-bordered no-padding" id="terimaTransfer" width="100%">
                                         <thead>
                                           <tr>
-                                            <th width="7%">Tanggal</th>
+                                            <th width="15%">Tanggal</th>
                                             <th width="10%">Kode</th>              
-                                            <th width="43%">Catatan</th>
-                                            <th width="7%">Waktu</th>
+                                            <th width="35%">Catatan</th>
+                                        {{--     <th width="7%">Waktu</th> --}}
                                             <th width="10%">Status</th>              
                                             <th width="10%">Aksi</th>
                                           </tr>
@@ -583,10 +583,10 @@ tablePenerimaan=$('#detail-terima').DataTable();
         url : baseUrl + "/transfer/penerimaan/table_transfer/"+tgl1+'/'+tgl2+'/'+tampil,
     },
     columns: [
-      {data: 'ti_date', name: 'ti_date'},
+      {data: 'ti_time', name: 'ti_time'},
       {data: 'ti_code', name: 'ti_code'},
       {data: 'ti_note', name: 'ti_note'},
-      {data: 'ti_time', name: 'ti_time'},
+      // {data: 'ti_time', name: 'ti_time'},
       {data: 'status', name: 'status'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
@@ -618,10 +618,10 @@ tablePenerimaan=$('#detail-terima').DataTable();
         url : baseUrl + "/transfer/penerimaan/terima_transfer/"+tgl3+'/'+tgl4+'/'+tampil1,
     },
     columns: [
-      {data: 'ti_date', name: 'ti_date', width:'7%'},
+      {data: 'ti_time', name: 'ti_time', width:'7%'},
       {data: 'ti_code', name: 'ti_code', width:'10%'},
       {data: 'ti_note', name: 'ti_note', width:'43%'},
-      {data: 'ti_time', name: 'ti_time', width:'7%'},
+      // {data: 'ti_time', name: 'ti_time', width:'7%'},
       {data: 'status', name: 'status', width:'10%'},
       {data: 'action', name: 'action', width:'10%', orderable: false, searchable: false},
     ],

@@ -46,7 +46,7 @@
     <p class="bold">
         Kepada : {{$sales->c_name}} <br>
         {{$sales->c_address}}<br>
-        HP {{$sales->c_hp}}
+        HP {{$sales->c_hp1}} , {{$sales->c_hp2}}
     </p>
     <h1 class="red underline">MAKANAN BEKU</h1>
 </div>

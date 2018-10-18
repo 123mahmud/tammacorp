@@ -39,12 +39,12 @@ class transferItemGrosirController extends Controller
       $tgl2 = $y2.'-'.$m2.'-'.$d2; 
 
     if ($tampil == 'Semua') {
-      $data = d_transferItem::where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+      $data = d_transferItem::whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->get();
     }elseif ($tampil == 'Waiting') {
-       $data = d_transferItem::where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+       $data = d_transferItem::whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','N')
                     ->where('ti_issent','N')
@@ -52,8 +52,8 @@ class transferItemGrosirController extends Controller
               })
         ->get();
     }elseif ($tampil == 'Approved') {
-       $data = d_transferItem::where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+       $data = d_transferItem::whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','Y')
                     ->where('ti_issent','N')
@@ -61,8 +61,8 @@ class transferItemGrosirController extends Controller
               })
         ->get();
     }elseif ($tampil == 'Send') {
-       $data = d_transferItem::where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+       $data = d_transferItem::whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','Y')
                     ->where('ti_issent','Y')
@@ -70,8 +70,8 @@ class transferItemGrosirController extends Controller
               })
         ->get();
     }elseif ($tampil == 'Received') {
-       $data = d_transferItem::where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+       $data = d_transferItem::whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','Y')
                     ->where('ti_issent','Y')
@@ -83,9 +83,9 @@ class transferItemGrosirController extends Controller
 
     return DataTables::of($data)
 
-    ->editColumn('ti_date', function ($data) {
-      return date('d M Y', strtotime($data->ti_date));
-    })
+    ->editColumn('ti_time', function ($user) {
+                return date('d M Y', strtotime($user->ti_time)) . ', ' . date('H:i:s', strtotime($user->ti_time));
+            })
     
     ->addColumn('status', function($data){
 
@@ -142,7 +142,7 @@ class transferItemGrosirController extends Controller
                 </div>';                   
 
       })
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['ti_time', 'status', 'action'])
 
     ->make(true);
 
@@ -323,7 +323,7 @@ class transferItemGrosirController extends Controller
 
     d_transferItem::create([
                 'ti_id'         =>$ti_id,
-                'ti_time'       =>date('Y-m-d',strtotime($request->tf_tanggal)), 
+                'ti_time'       =>Carbon::now(), 
                 'ti_code'       =>$idreq, 
                 'ti_order'      =>'GR',
                 'ti_note'       =>$request->tf_keterangan,
@@ -446,7 +446,10 @@ class transferItemGrosirController extends Controller
       $tgl4 = $y2.'-'.$m2.'-'.$d2;
 
     if ($tampil1 == 'Semua') {
-      $data = d_transferItem::all();
+      $data = d_transferItem::
+        whereDate('ti_time','>=',$tgl3)
+        ->whereDate('ti_time','<=',$tgl4)
+        ->get();
 
     }elseif ($tampil1 == 'Send') {
       $data = d_transferItem::
@@ -455,6 +458,8 @@ class transferItemGrosirController extends Controller
                     ->where('ti_issent','Y')
                     ->where('ti_isreceived','N');
         })
+        ->whereDate('ti_time','>=',$tgl3)
+        ->whereDate('ti_time','<=',$tgl4)
         ->get();
     }elseif ($tampil1 == 'Received') {
       $data = d_transferItem::
@@ -463,15 +468,21 @@ class transferItemGrosirController extends Controller
                     ->where('ti_issent','Y')
                     ->where('ti_isreceived','Y');
         })
+        ->whereDate('ti_time','>=',$tgl3)
+        ->whereDate('ti_time','<=',$tgl4)
         ->get();
       }
 
     
     return DataTables::of($data)
 
-    ->editColumn('ti_date', function ($data) {
-      return date('d M Y', strtotime($data->ti_date));
-    })
+    // ->editColumn('ti_date', function ($data) {
+    //   return date('d M Y', strtotime($data->ti_date));
+    // })
+
+    ->editColumn('ti_time', function ($user) {
+                return date('d M Y', strtotime($user->ti_time)) . ', ' . date('H:i:s', strtotime($user->ti_time));
+            })
     
     ->addColumn('status', function($data){
 
@@ -490,11 +501,6 @@ class transferItemGrosirController extends Controller
       })
 
     ->addColumn('action', function($data){
-                //       <a  onclick="hapusTransferGrosir('.$data->ti_id.')" 
-                //     class="btn btn-danger btn-sm" 
-                //     title="Hapus">
-                //     <i class="glyphicon glyphicon-trash"></i>
-                // </a>
       return '<div class="text-center">
                 <a  onclick="editTransferGrosir('.$data->ti_id.')" 
                     class="btn btn-warning btn-sm" 
@@ -505,7 +511,7 @@ class transferItemGrosirController extends Controller
 
     })
 
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['ti_time','status', 'action'])
 
     ->make(true);     
 
