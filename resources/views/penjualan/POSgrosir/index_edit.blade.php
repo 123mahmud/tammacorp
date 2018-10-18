@@ -167,12 +167,12 @@
                                                        onblur="setRupiah(event,'i_price')"
                                                        onclick="setAwal('event','i_price')">
                                             </td>
-                                            <td>
+                               {{--              <td>
                                                 <button type="button" class="btn btn-info" onclick="tambahPayment()"><i
                                                             class="glyphicon glyphicon-plus"></i></button>
                                                 <button type="button" class="btn btn-danger hapus" disabled><i
                                                             class="glyphicon glyphicon-minus"></i></button>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         </tbody>
                                     </table>
