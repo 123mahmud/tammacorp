@@ -1,6 +1,6 @@
 <div id="list-tab" class="tab-pane fade in">
   <div class="table-responsive">
-    <table class="table tabelan table-bordered table-hover table-striped data-table">
+    <table class="table tabelan table-bordered table-hover table-striped" id="tabel_overhandle">
       <thead>
         <tr>
           <th>No</th>
@@ -12,19 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>26 Sep 2018</td>
-          <td>000/STT/HRD/VII/2018</td>
-          <td>Charlie</td>
-          <td>Alpha</td>
-          <td align="center">
-            <div class="btn-group btn-group-sm">
-              <a href="{{route('form_overhandle_print')}}" target="_blank" class="btn btn-info" title="Print"><i class="fa fa-print"></i></a>
-              <button class="btn btn-danger" title="Hapus"><i class="fa fa-trash-o"></i></button>
-            </div>
-          </td>
-        </tr>
+        
        
       </tbody>
     </table>
