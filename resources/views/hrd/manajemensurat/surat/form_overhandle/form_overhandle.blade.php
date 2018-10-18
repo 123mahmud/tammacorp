@@ -85,24 +85,26 @@
   $.extend($.fn.dataTableExt.oStdClasses, extensions);
   // Used when bJQueryUI is true
   $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-  $('#tbl_jabatan').DataTable({
+  $('#tabel_overhandle').DataTable({
     processing: true,
     // responsive:true,
     serverSide: true,
     ajax: {
-      url: '{{ url("hrd/datajabatan/data-jabatan") }}',
+      url: '{{ url("hrd/manajemensurat/form_overhandle_datatable") }}',
     },
     columnDefs: [
       {
         targets: 0,
-        className: 'center d_id'
+        className: 'center id'
       },
     ],
     "columns": [
-      { "data": "kode" },
-      { "data": "c_posisi" },
-      { "data": "c_divisi" },
-      { "data": "action" },
+      { "data": "DT_Row_Index" },
+      { "data": "tgl" },
+      { "data": "foh_surat" },
+      { "data": "fohdt_nama1" },
+      { "data": "fohdt_nama2" },
+      { "data": "aksi" }
     ],
     "responsive": true,
     "pageLength": 10,
@@ -127,12 +129,151 @@
 
   $('.select2').select2();
 
+  function nav_table(){
+    $('#tabel_overhandle').DataTable().ajax.reload();
+  }
+
+  $('a[href="#list-tab"]').on('click', function(){
+    nav_table();
+  });
+
+    function hapus(id)
+        {
+          $.ajax({
+            url : baseUrl + '/hrd/manajemensurat/hapus_form_overhandle/' + id,
+            async: false,
+            data: {
+                "id":id,
+                "_method": 'DELETE',
+                "_token": '{{ csrf_token() }}'
+              },
+            dataType : "JSON",
+            success:function(response){
+              iziToast.success({
+                title:"Sukses!",
+                message:"Data Berhasil Dihapus"
+              });
+              nav_table();
+            },
+            error:function(response){
+              iziToast.error({
+                title:"Gagal!",
+                message:"Data Gagal Dihapus"
+              });
+            }
+          });
+        }
+
   $(document).ready(function(){
     
         $('.input-daterange').datepicker({
           'format': 'dd-mm-yyyy',
         });
-      
+    $('#karyawan1').on('change', function(){
+      $('.btn-simpan').attr("disabled", true);
+      var id_karyawan1 = $('#karyawan1').val();
+
+      if (!(id_karyawan1 === '') ) {
+
+       $.ajax({
+        url: baseUrl+"/hrd/manajemensurat/form_overhandle_autocomplete/",
+        data:{id_karyawan1},
+        dataType: "JSON",
+        success:function(response){
+          $('.btn-simpan').attr('disabled', false);
+          // return response;
+          $('#nama1').val(response[0].c_nama);
+          $('#alamat1').val(response[0].c_alamat);
+          $('#nik1').val(response[0].c_nik);
+          $('#ktp1').val(response[0].c_ktp);
+          $('#posisi1').val(response[0].c_posisi);
+        },
+        error:function(){
+          $('.btn-simpan').attr('disabled', false);
+        }
+
+       });
+      }else{
+        $('#posisi1').val('');
+        $('#nama1').val('');
+        $('#alamat1').val('');
+        $('#nik1').val('');
+        $('#ktp1').val('');
+
+      }
+
+    });
+
+    $('#karyawan2').on('change', function(){
+      $('.btn-simpan').attr("disabled", true);
+      var id_karyawan2 = $('#karyawan2').val();
+      if (!(id_karyawan2 === '') ) {
+       $.ajax({
+        url: baseUrl+"/hrd/manajemensurat/form_overhandle_autocomplete2/",
+        data:{id_karyawan2},
+        dataType: "JSON",
+        success:function(response){
+          // return response;
+          $('.btn-simpan').attr('disabled', false);
+          $('#nama2').val(response[0].c_nama);
+          $('#alamat2').val(response[0].c_alamat);
+          $('#nik2').val(response[0].c_nik);
+          $('#ktp2').val(response[0].c_ktp);
+          $('#posisi2').val(response[0].c_posisi);
+        },
+        error:function(){
+          $('.btn-simpan').attr('disabled', false);
+        }
+
+       });
+     }else{
+        $('#posisi2').val('');
+        $('#nama2').val('');
+        $('#alamat2').val('');
+        $('#nik2').val('');
+        $('#ktp2').val('');
+
+      }
+    });
+
+    $('.btn-simpan').on('click', function(){
+      var forum_overhandle = $('#forum_overhandle').serialize();
+
+      $.ajax({
+        url : baseUrl + '/hrd/manajemensurat/form_overhandle_tambah',
+        dataType : "JSON",
+        mathod:"GET",
+        data: forum_overhandle,
+        success:function(response){
+          $('#forum_overhandle')[0].reset();
+          $('#posisi1').val('');
+          $('#nama1').val('');
+          $('#alamat1').val('');
+          $('#nik1').val('');
+          $('#ktp1').val('');
+          $('#posisi2').val('');
+          $('#nama2').val('');
+          $('#alamat2').val('');
+          $('#nik2').val('');
+          $('#ktp2').val('');
+
+          $("html, body").animate({ scrollTop: 0 }, "slow");
+          $('#generalTab').find('a[href="#list-tab"]').click();
+          iziToast.success({
+            title:"Sukses!",
+            message:"Data Berhasil Disimpan"
+          });
+        },
+        error:function(response){
+          iziToast.error({
+            title:"Gagal!",
+            message:"Data Gagal Disimpan"
+          });
+        }
+
+      })
+    });
+
   });
 </script> 
 @endsection

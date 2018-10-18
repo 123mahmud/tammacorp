@@ -474,7 +474,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/form_laporan_leader_print', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');
     // form overhandle
     Route::get('/hrd/manajemensurat/form_overhandle', 'Hrd\ManajemenSuratController@form_overhandle')->name('form_overhandle');
-    Route::get('/hrd/manajemensurat/form_overhandle_print', 'Hrd\ManajemenSuratController@form_overhandle_print')->name('form_overhandle_print');
+    Route::get('/hrd/manajemensurat/hapus_form_overhandle/{id}', 'Hrd\ManajemenSuratController@hapus_form_overhandle')->name('hapus_form_overhandle');
+    
+    Route::get('/hrd/manajemensurat/form_overhandle_datatable', 'Hrd\ManajemenSuratController@form_overhandle_datatable')->name('form_overhandle_datatable');
+    Route::get('/hrd/manajemensurat/form_overhandle_tambah', 'Hrd\ManajemenSuratController@form_overhandle_tambah')->name('form_overhandle_tambah');
+    Route::get('/hrd/manajemensurat/form_overhandle_print/{id}', 'Hrd\ManajemenSuratController@form_overhandle_print')->name('form_overhandle_print');
+    Route::get('hrd/manajemensurat/form_overhandle_autocomplete', 'Hrd\ManajemenSuratController@form_overhandle_autocomplete')->name('form_overhandle_autocomplete');
+    Route::get('hrd/manajemensurat/form_overhandle_autocomplete2', 'Hrd\ManajemenSuratController@form_overhandle_autocomplete2')->name('form_overhandle_autocomplete2');
     // form permintaan
     Route::get('/hrd/manajemensurat/form_permintaan', 'Hrd\ManajemenSuratController@form_permintaan')->name('form_permintaan');
     Route::get('/hrd/manajemensurat/form_permintaan_print/{id}', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
