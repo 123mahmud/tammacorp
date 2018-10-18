@@ -12,6 +12,8 @@ use DataTables;
 use Auth;
 use App\d_spk;
 use App\spk_formula;
+use App\d_purchasingplan;
+use App\d_purchasingplan_dt;
 
 class RencanaBahanController extends Controller
 {
@@ -31,19 +33,22 @@ class RencanaBahanController extends Controller
       $tanggal1 = date('Y-m-d',strtotime($tgl1));
       $tanggal2 = date('Y-m-d',strtotime($tgl2));
 
-      $dataHeader = d_spk::join('spk_formula', 'd_spk.spk_id', '=', 'spk_formula.fr_spk')
+      $dataHeader = spk_formula::join('d_spk', 'spk_formula.fr_spk', '=', 'd_spk.spk_id')
                 ->join('m_item','spk_formula.fr_formula','=','m_item.i_id')
                 ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
-                ->join('d_purchasingplan_dt', 'spk_formula.fr_formula', '=', 'd_purchasingplan_dt.d_pcspdt_item')
                 ->select(
                     'd_spk.*',
-                    DB::raw('SUM(fr_value) as total'),
                     'spk_formula.*',
                     'm_item.i_id as item_id',
                     'm_item.i_name',
                     'm_item.i_code',
                     'm_item.i_sat1',
-                    'd_purchasingplan_dt.d_pcspdt_item',
+                    DB::raw('IFNULL(
+                              (SELECT SUM(fr_value) FROM spk_formula 
+                              JOIN d_spk on spk_formula.fr_spk = d_spk.spk_id 
+                              WHERE spk_date BETWEEN "'.$tanggal1.'" AND "'.$tanggal2.'"
+                              AND fr_formula = item_id), "0")
+                              as total'),
                     DB::raw("IFNULL( 
                               (SELECT SUM(d_pcspdt_qtyconfirm) 
                                 FROM d_purchasingplan_dt 
@@ -408,33 +413,66 @@ class RencanaBahanController extends Controller
         ]);
     }
 
-    public function ubahStatus(Request $request)
+    public function submitData(Request $request)
     {
       //dd($request->all());
       DB::beginTransaction();
       try 
       {
-        $tanggal = date("Y-m-d h:i:s");
-        if ($request->isPO == 'done') {
-            $status = 'FALSE';
-            $pesan = 'Data SPK dirubah status menjadi BELUM PO';
-        }else{
-            $status = 'TRUE';
-            $pesan = 'Data SPK dirubah status menjadi SUDAH PO';
+        $kode_plan = $this->kodeRencanaPembelian();
+        $id_peg = Auth::User()->m_id;
+
+        //insert to table d_purchasingplan
+        $plan = new d_purchasingplan;
+        $plan->d_pcsp_code = $kode_plan;
+        $plan->d_pcsp_sup = $request->i_sup;
+        $plan->d_pcsp_mid = $id_peg;
+        $plan->d_pcsp_datecreated = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        $plan->d_pcsp_created = Carbon::now('Asia/Jakarta');
+        $plan->save();
+
+        //get last id plan then insert id to d_purchasingplan_dt
+        $lastIdPlan = d_purchasingplan::select('d_pcsp_id')->max('d_pcsp_id');
+        if ($lastIdPlan == 0 || $lastIdPlan == '') 
+        {
+          $lastIdPlan  = 1;
         }
         
-        //update d_spk
-        DB::table('d_spk')
-            ->where('spk_id','=',$request->id)
-            ->update([
-                'spk_ispo' => $status,
-                'spk_update' => $tanggal
-            ]);
+        for ($i=0; $i < count($request->itemid); $i++) 
+        {
+          $plandt = new d_purchasingplan_dt;
+          $plandt->d_pcspdt_idplan = $lastIdPlan;
+          $plandt->d_pcspdt_item = $request->itemid[$i];
+          $plandt->d_pcspdt_sat = $request->satuanid[$i];
+          $plandt->d_pcspdt_qty = str_replace('.', '', $request->qtyreq[$i]);
+          //get prev cost
+          $prevCost = DB::table('d_stock_mutation')
+                          ->select('sm_hpp', 'sm_qty')
+                          ->where('sm_item', '=', $request->itemid)
+                          ->where('sm_mutcat', '=', "14")
+                          ->orderBy('sm_date', 'desc')
+                          ->limit(1)
+                          ->first();
+
+          if ($prevCost == null) 
+          {
+            $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', '=', $request->itemid)->first();
+            $hargaLalu = $default_cost->m_pbuy1;
+          }
+          else
+          {
+            $hargaLalu = $prevCost->sm_hpp;
+          }
+          //end get prev cost
+          $plandt->d_pcspdt_prevcost = $hargaLalu;
+          $plandt->d_pcspdt_created = Carbon::now('Asia/Jakarta');
+          $plandt->save();
+        }
 
         DB::commit();
         return response()->json([
           'status' => 'sukses',
-          'pesan' => $pesan
+          'pesan' => 'Data berhasil diproses ke list rencana pembelian'
         ]);          
       }
       catch (\Exception $e) 
@@ -483,6 +521,27 @@ class RencanaBahanController extends Controller
 
       $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
       return $data;
+    }
+
+    public function kodeRencanaPembelian()
+    {
+      $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_pcsp_code,4)) as kode_max from d_purchasingplan WHERE DATE_FORMAT(d_pcsp_datecreated, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
+      $kd = "";
+
+        if(count($query)>0)
+        {
+          foreach($query as $k)
+          {
+            $tmp = ((int)$k->kode_max)+1;
+            $kd = sprintf("%05s", $tmp);
+          }
+        }
+        else
+        {
+          $kd = "00001";
+        }
+
+        return $codePlan = "ROR-".date('ym')."-".$kd;
     }
 
     public function konvertRp($value)
