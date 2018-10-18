@@ -104,14 +104,16 @@ class spkFinancialController extends Controller
     ->editColumn('status', function ($data) {
       if ($data->spk_status == "DR") {
         return '<span class="label label-warning">Draft</span>';
-      }elseif ($data->spk_status == "FN") {
-        return '<span class="label label-info">Proses</span>';
-      }elseif ($data->spk_status == "CL") {
+      }elseif ($data->spk_status == "AP") {
+        return '<span class="label label-info">di Setujui</span>';
+      } elseif ($data->spk_status == "PB") {
+        return '<span class="label label-warning">Proses</span>';
+      } elseif ($data->spk_status == "FN") {
         return '<span class="label label-success">Selesai</span>';
       }
     })
     ->addColumn('action', function($data){
-        if ($data->spk_status == 'CL') {
+        if ($data->spk_status == 'AP') {
           return '<div class="text-center">
                       <button class="btn btn-sm btn-success"
                               title="Detail"
@@ -243,10 +245,16 @@ class spkFinancialController extends Controller
     ->editColumn('f_value', function ($data) {
       return '<input  name="id_value[]"
                       readonly
-                      class="form-control text-right f_value"
+                      class="form-control text-right f_value hidden"
                       onkeyup="total(this, event)";
-                      value="'.round($data->butuh, 2).'">';
+                      value="'.round($data->butuh, 2).'">
+              <input  name=""
+                      readonly
+                      class="form-control text-right"
+                      value="'.number_format( $data->butuh ,0,',','.').'">';
+                      
     })
+
 
     ->editColumn('m_sname', function ($data) {
       return '<input  name=""
@@ -261,9 +269,13 @@ class spkFinancialController extends Controller
 
     ->addColumn('d_stock', function($data){
       return  '<input name="d_stock[]"
-                      class="form-control text-right d_stock"
+                      class="form-control text-right d_stock hidden"
                       readonly
-                      value="'.round($data->s_qty, 2).'">';
+                      value="'.round($data->s_qty, 2).'">
+              <input name=""
+                      class="form-control text-right"
+                      readonly
+                      value="'.number_format( $data->s_qty ,0,',','.').'">';
     })
 
     ->addColumn('purchesing', function($data){
@@ -310,12 +322,12 @@ class spkFinancialController extends Controller
                     'fr_scale' => $scale[$i]
       ]);
 
-    if(mutasi::mutasiStok(  $formula[$i],
-                            $value[$i],
-                            $comp=3,
-                            $position=3,
-                            $flag=2,
-                            $request->id_spk)){}
+    // if(mutasi::mutasiStok(  $formula[$i],
+    //                         $value[$i],
+    //                         $comp=3,
+    //                         $position=3,
+    //                         $flag=2,
+    //                         $request->id_spk)){}
 
     }
 
@@ -432,16 +444,16 @@ class spkFinancialController extends Controller
     $scale = $request->scale;
     $data = d_spk::where('spk_id',$id)->first();
     $data->update([
-      'spk_status' => 'FN'
+      'spk_status' => 'AP'
     ]);
 
     for ($i=0; $i < count($formula) ; $i++) {
-    if(mutasi::mutasiStok(  $formula[$i],
-                            $value[$i],
-                            $comp=3,
-                            $position=3,
-                            $flag=2,
-                            $data->spk_code)){}
+    // if(mutasi::mutasiStok(  $formula[$i],
+    //                         $value[$i],
+    //                         $comp=3,
+    //                         $position=3,
+    //                         $flag=2,
+    //                         $data->spk_code)){}
     }
 
     DB::commit();

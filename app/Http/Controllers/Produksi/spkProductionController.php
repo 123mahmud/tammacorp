@@ -15,6 +15,7 @@ use App\spk_formula;
 use App\spk_actual;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use App\lib\mutasi;
 
 class spkProductionController extends Controller
 {
@@ -68,7 +69,7 @@ class spkProductionController extends Controller
     }
 
 
-    public function getSpkByTgl($tgl1, $tgl2, $stat)
+    public function getSpkByTgl($tgl1, $tgl2)
     {
         $y = substr($tgl1, -4);
         $m = substr($tgl1, -7, -5);
@@ -83,7 +84,8 @@ class spkProductionController extends Controller
         $spk = d_spk::join('m_item', 'spk_item', '=', 'i_id')
             ->join('d_productplan', 'pp_id', '=', 'spk_ref')
             ->select('spk_id', 'spk_date', 'i_name', 'pp_qty', 'spk_code', 'spk_status')
-            ->where('spk_status', '=', $stat)
+            ->where('spk_status', 'AP')
+            ->orWhere('spk_status', 'PB')
             ->where('spk_date', '>=', $tanggal1)
             ->where('spk_date', '<=', $tanggal2)
             ->orderBy('spk_date', 'DESC')
@@ -92,30 +94,45 @@ class spkProductionController extends Controller
         return DataTables::of($spk)
             ->addIndexColumn()
             ->editColumn('status', function ($data) {
-                if ($data->spk_status == "FN") {
-                    return '<span class="label label-info">Proses</span>';
-                } elseif ($data->spk_status == "CL") {
+                if ($data->spk_status == "AP") {
+                    return '<span class="label label-info">di Setujui</span>';
+                } elseif ($data->spk_status == "PB") {
+                    return '<span class="label label-warning">Proses</span>';
+                } elseif ($data->spk_status == "FN") {
                     return '<span class="label label-success">Selesai</span>';
                 }
             })
+
             ->addColumn('action', function ($data) {
-                if ($data->spk_status == "FN") {
+                if ($data->spk_status == "AP") {
                     return '<div class="text-center">
-                  <button class="btn btn-sm btn-success"
+                    <button class="btn btn-sm btn-success"
                           title="Detail"
                           type="button"
                           data-toggle="modal"
                           data-target="#myModalView"
                           onclick=detailManSpk("' . $data->spk_id . '")>
                           <i class="fa fa-eye"></i>
-                  </button>&nbsp;
-                  <button class="btn btn-sm btn-info"
-                          title="Ubah Status"
-                          onclick=ubahStatus("' . $data->spk_id . '")>
-                          <i class="glyphicon glyphicon-ok"></i>
-                  </button>
+                    </button>
+             
           </div>';
-                } else {
+                } elseif ($data->spk_status == "PB") {
+                    return '<div class="text-center">
+                    <button class="btn btn-sm btn-success"
+                              title="Detail"
+                              type="button"
+                              data-toggle="modal"
+                              data-target="#myModalView"
+                              onclick=detailManSpk("' . $data->spk_id . '")>
+                              <i class="fa fa-eye"></i>
+                    </button>&nbsp;
+                    <button class="btn btn-sm btn-info"
+                              title="Ubah Status"
+                              onclick=ubahStatus("' . $data->spk_id . '")>
+                              <i class="glyphicon glyphicon-ok"></i>
+                    </button>
+                </div>';
+                } else{
                     return '<div class="text-center">
                     <button class="btn btn-sm btn-success"
                               title="Detail"
@@ -143,18 +160,84 @@ class spkProductionController extends Controller
             ->make(true);
     }
 
+    public function getSpkByTglCL($tgl1, $tgl2)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7, -5);
+        $d = substr($tgl1, 0, 2);
+        $tanggal1 = $y . '-' . $m . '-' . $d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7, -5);
+        $d2 = substr($tgl2, 0, 2);
+        $tanggal2 = $y2 . '-' . $m2 . '-' . $d2;
+
+        $spk = d_spk::join('m_item', 'spk_item', '=', 'i_id')
+            ->join('d_productplan', 'pp_id', '=', 'spk_ref')
+            ->select('spk_id', 'spk_date', 'i_name', 'pp_qty', 'spk_code', 'spk_status')
+            ->where('spk_status', 'FN')
+            ->where('spk_date', '>=', $tanggal1)
+            ->where('spk_date', '<=', $tanggal2)
+            ->orderBy('spk_date', 'DESC')
+            ->get();
+
+        return DataTables::of($spk)
+            ->addIndexColumn()
+            ->editColumn('status', function ($data) {
+                    return '<span class="label label-success">Selesai</span>';
+            })
+            ->addColumn('action', function ($data) {
+                    return '<div class="text-center">
+                    <button class="btn btn-sm btn-success"
+                              title="Detail"
+                              type="button"
+                              data-toggle="modal"
+                              data-target="#myModalView"
+                              onclick=detailManSpk("' . $data->spk_id . '")>
+                              <i class="fa fa-eye"></i>
+                    </button>&nbsp;
+                    <button class="btn btn-sm btn-info"
+                            title=Input data"
+                            type="button"
+                            data-toggle="modal"
+                            data-target="#myModalActual"
+                            onclick=inputData("' . $data->spk_id . '")>
+                            <i class="fa fa-check-square-o"></i>
+                    </button>
+                </div>';
+            })
+            ->editColumn('spk_date', function ($user) {
+                return $user->spk_date ? with(new Carbon($user->spk_date))->format('d M Y') : '';
+            })
+            ->rawColumns(['status', 'action'])
+            ->make(true);
+    }
+
     public function ubahStatusSpk($spk_id)
     {
-
         d_productplan::where('pp_id', $spk_id)
             ->update([
                 'pp_isspk' => 'C'
             ]);
         $spk = d_spk::find($spk_id);
-        if ($spk->spk_status == "FN") {
-            //update status to CL
+        $spkDt = spk_formula::where('fr_spk', $spk->spk_id)
+            ->get();
+        // dd($spk);
+        if ($spk->spk_status == "AP") {
+            //update status to PB
+            for ($i=0; $i <count($spkDt) ; $i++) { 
+                $a[] = $spkDt[$i]->fr_value;
+                if(mutasi::mutasiStok(  $spkDt[$i]->fr_formula,
+                                        $spkDt[$i]->fr_value,
+                                        $comp=3,
+                                        $position=3,
+                                        $flag=2,
+                                        $spk->spk_code)){}
+            }
+            
+
             $spk = d_spk::find($spk_id);
-            $spk->spk_status = 'CL';
+            $spk->spk_status = 'PB';
             $spk->save();
         } else {
             //update status to FN
@@ -175,7 +258,8 @@ class spkProductionController extends Controller
             'i_name',
             'pp_qty',
             'spk_code',
-            'spk_id')
+            'spk_id',
+            'spk_status')
             ->where('spk_id', $request->x)
             ->join('m_item', 'i_id', '=', 'spk_item')
             ->join('d_productplan', 'pp_id', '=', 'spk_ref')
@@ -235,7 +319,10 @@ class spkProductionController extends Controller
             $bambang[] = $formula[$i]['fr_value'] * $cabangPurnama;
         }
 
-        return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang'));
+        $ket = $spk[0]->spk_status;
+        $id = $spk[0]->spk_id;
+
+        return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang','ket','id'));
 
     }
 

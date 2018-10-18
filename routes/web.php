@@ -227,7 +227,8 @@ Route::group(['middleware' => 'auth'], function () {
 //rizky
     Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
     Route::get('/produksi/spk/ubah-status-spk/{id}', 'Produksi\spkProductionController@ubahStatusSpk');
-    Route::get('/produksi/spk/get_spk_by_tgl/{tgl1}/{tgl2}/{stat}', 'Produksi\spkProductionController@getSpkByTgl');
+    Route::get('/produksi/spk/get_spk_by_tgl/{tgl1}/{tgl2}', 'Produksi\spkProductionController@getSpkByTgl');
+    Route::get('/produksi/spk/get_spk_by_tglCL/{tgl1}/{tgl2}', 'Produksi\spkProductionController@getSpkByTglCL');
 //rizky
 //mahmud
     Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
@@ -242,17 +243,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
     Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
     Route::get('/produksi/o_produksi/store', 'Produksi\ManOutputProduksiController@store');
-    Route::get('/produksi/o_produksi/getdata/tabel', 'Produksi\ManOutputProduksiController@tabelDetail');
-    Route::get('/produksi/o_produksi/getdata/tabel/kirim', 'Produksi\ManOutputProduksiController@tabelDetailKirim');
-    Route::get('/produksi/o_produksi/getdata/{x}', 'Produksi\ManOutputProduksiController@detail');
     Route::get('/produksi/o_produksi/getdata/kirim/{y}', 'Produksi\ManOutputProduksiController@detailKirim');
-    Route::get('/produksi/o_produksi/distroy/{id1}/{id2}', 'Produksi\ManOutputProduksiController@distroy');
     Route::get('/produksi/o_produksi/sending/{id1}/{id2}', 'Produksi\ManOutputProduksiController@sending');
-    Route::get('/produksi/o_produksi/edit/{id1}/{id2}', 'Produksi\ManOutputProduksiController@edit');
     Route::get('/produksi/o_produksi/lihat/tabelhasil', 'Produksi\ManOutputProduksiController@tabelHasil');
     Route::get('/produksi/o_produksi/select2/spk/{tgl1}', 'Produksi\ManOutputProduksiController@setSpk');
     Route::get('/produksi/o_produksi/select2/pilihspk/{x}', 'Produksi\ManOutputProduksiController@selectDataSpk');
-    Route::get('/produksi/o_produksi/save', 'Produksi\ManOutputProduksiController@editQty');
 //Pembuatan Surat Jalan
     Route::get('/produksi/suratjalan/index', 'Produksi\PengambilanItemController@SuratJalan');
     Route::get('/produksi/suratjalan/create/delivery', 'Produksi\PengambilanItemController@tabelDelivery');
