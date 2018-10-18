@@ -48,7 +48,7 @@ class ManOutputProduksiController extends Controller
         $dataSpk = DB::table('d_spk')
             ->join('m_item', 'm_item.i_id', '=', 'd_spk.spk_item')
             ->join('d_productplan', 'd_productplan.pp_id', '=', 'd_spk.spk_ref')
-            ->where('spk_status', 'FN')
+            ->where('spk_status', 'PB')
             ->where('spk_date', '=', $tgll)
             ->get();
 
@@ -80,71 +80,6 @@ class ManOutputProduksiController extends Controller
         return Response::json($d_spk);
     }
 
-
-    public function tabelDetail(Request $request)
-    {
-        $getid = DB::table('d_productresult')
-            ->select('pr_id')
-            ->where('pr_id', '=', $request->x[0])
-            ->get();
-
-        return view('produksi.o_produksi.detail', compact('getid'));
-    }
-
-    public function tabelDetailKirim(Request $request)
-    {
-
-        $getid = DB::table('d_productresult')
-            ->select('pr_id')
-            ->where('pr_id', '=', $request->y[0])
-            ->get();
-
-        return view('produksi.o_produksi.detailKirim', compact('getid'));
-    }
-
-    public function distroy($id1, $id2)
-    {
-        $d_productresult_dt = d_productresult_dt::
-        where('prdt_productresult', $id1)
-            ->where('prdt_detail', $id2)
-            ->first();
-
-        $gudangProduksi = d_stock::
-        where('s_comp', '6')
-            ->where('s_position', '6')
-            ->where('s_item', $d_productresult_dt->prdt_item)
-            ->first();
-
-        $gudangBaru = $gudangProduksi->s_qty - $d_productresult_dt->prdt_qty;
-
-        d_stock::
-        where('s_comp', '6')
-            ->where('s_position', '6')
-            ->where('s_item', $d_productresult_dt->prdt_item)
-            ->update([
-                's_qty' => $gudangBaru
-            ]);
-
-        d_productresult_dt::
-        where('prdt_productresult', $id1)
-            ->where('prdt_detail', $id2)
-            ->delete();
-    }
-
-    public function edit($id1, $id2)
-    {
-        $data = d_productresult_dt::
-        select('prdt_productresult',
-            'prdt_detail',
-            'i_name',
-            'prdt_qty')
-            ->join('m_item', 'i_id', '=', 'prdt_item')
-            ->where('prdt_productresult', $id1)
-            ->where('prdt_detail', $id2)
-            ->first();
-        // dd($data);
-        return Response::json($data);
-    }
 
     public function tabel()
     {
@@ -227,6 +162,7 @@ class ManOutputProduksiController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $cek = DB::table('d_productresult')
@@ -312,6 +248,7 @@ class ManOutputProduksiController extends Controller
 
             }
 
+
             $stockProduksi = d_stock::where('s_comp', '6')
                 ->where('s_position', '6')
                 ->where('s_item', $request->spk_item)
@@ -384,6 +321,34 @@ class ManOutputProduksiController extends Controller
 
             }
 
+            $cek = d_productresult::select(
+                'pr_id',
+                'pr_spk',
+                'prdt_qty')
+                ->where('pr_spk',$request->spk_id)
+                ->join('d_productresult_dt','d_productresult_dt.prdt_productresult','=','pr_id')
+                ->get();
+
+            for ($i=0; $i <count($cek) ; $i++) { 
+                $totalHasil = 0;
+                $totalHasil += $cek[$i]->prdt_qty;
+            }
+
+            $autoStatus = d_spk::select('spk_id',
+                'spk_ref',
+                'spk_status',
+                'pp_qty')
+                ->where('spk_id',$request->spk_id)
+                ->join('d_productplan','d_productplan.pp_id','=','spk_ref')
+                ->first();
+
+            if ($autoStatus->pp_qty == $totalHasil) {
+                $autoStatus->update([
+                    'spk_status' => 'FN'
+                ]);
+            }
+
+
             DB::commit();
             return response()->json([
                 'status' => 'sukses'
@@ -395,11 +360,6 @@ class ManOutputProduksiController extends Controller
                 'data' => $e
             ]);
         }
-    }
-
-    public function saveActual(Request $request)
-    {
-        dd($request->all());
     }
 
 }
