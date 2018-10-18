@@ -44,13 +44,13 @@ class transferItemController extends Controller
 
     if ($tampil == 'Semua') {
       $data = d_transferItem::where('ti_order',DB::raw("'RT'"))
-        ->where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+        ->whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->get();
     }elseif ($tampil == 'Waiting') {
       $data = d_transferItem::where('ti_order',DB::raw("'RT'"))
-        ->where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+        ->whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','N')
                     ->where('ti_issent','N')
@@ -59,8 +59,8 @@ class transferItemController extends Controller
         ->get();
     }elseif ($tampil == 'Approved') {
       $data = d_transferItem::where('ti_order',DB::raw("'RT'"))
-        ->where('ti_date','>=',$tgll)
-        ->where('ti_date','<=',$tgl2)
+        ->whereDate('ti_time','>=',$tgll)
+        ->whereDate('ti_time','<=',$tgl2)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','Y')
                     ->where('ti_issent','N')
@@ -69,8 +69,8 @@ class transferItemController extends Controller
         ->get();
     }elseif ($tampil == 'Send') {
       $data = d_transferItem::where('ti_order',DB::raw("'RT'"))
-      ->where('ti_date','>=',$tgll)
-      ->where('ti_date','<=',$tgl2)
+      ->whereDate('ti_time','>=',$tgll)
+      ->whereDate('ti_time','<=',$tgl2)
       ->where(function ($b) use ($term) {
                 $b->where('ti_isapproved','Y')
                   ->where('ti_issent','Y')
@@ -79,8 +79,8 @@ class transferItemController extends Controller
       ->get();
     }elseif ($tampil == 'Received') {
       $data = d_transferItem::where('ti_order',DB::raw("'RT'"))
-      ->where('ti_date','>=',$tgll)
-      ->where('ti_date','<=',$tgl2)
+      ->whereDate('ti_time','>=',$tgll)
+      ->whereDate('ti_time','<=',$tgl2)
       ->where(function ($b) use ($term) {
                 $b->where('ti_isapproved','Y')
                   ->where('ti_issent','Y')
@@ -91,8 +91,8 @@ class transferItemController extends Controller
 
     return DataTables::of($data)
 
-    ->editColumn('ti_date', function ($data) {
-      return date('d M Y', strtotime($data->ti_date));
+    ->editColumn('ti_time', function ($data) {
+       return date('d M Y', strtotime($data->ti_time)) . ', ' . date('H:i:s', strtotime($data->ti_time));
     })
     
     ->addColumn('status', function($data){
@@ -149,7 +149,7 @@ class transferItemController extends Controller
                 </div>';
 
       })
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['ti_time','status', 'action'])
 
     ->make(true);
 
@@ -287,8 +287,8 @@ class transferItemController extends Controller
   }
 
   public function dataPenerimaanTransfer(Request $request, $tgl3, $tgl4, $tampil1){
-    $term = $request->$tampil1;
-
+    $term = $tampil1;
+    // dd($term);
     $y = substr($tgl3, -4);
     $m = substr($tgl3, -7,-5);
     $d = substr($tgl3,0,2);
@@ -301,9 +301,13 @@ class transferItemController extends Controller
 
     if ($tampil1 == 'Semua') {
       $data = d_transferItem::where('ti_issent','Y')
+        ->whereDate('ti_time','>=',$tgl3)
+        ->whereDate('ti_time','<=',$tgl4)
         ->get();
     }elseif ($tampil1 == 'Send') {
       $data = d_transferItem::where('ti_issent','Y')
+        ->whereDate('ti_time','>=',$tgl3)
+        ->whereDate('ti_time','<=',$tgl4)
         ->where(function ($b) use ($term) {
                 $b->where('ti_isapproved','Y')
                   ->where('ti_issent','Y')
@@ -312,6 +316,8 @@ class transferItemController extends Controller
         ->get();
     }elseif ($tampil1 == 'Received') {
       $data = d_transferItem::where('ti_issent','Y')
+        ->whereDate('ti_time','>=',$tgl3)
+        ->whereDate('ti_time','<=',$tgl4)
         ->where(function ($b) use ($term) {
                   $b->where('ti_isapproved','Y')
                     ->where('ti_issent','Y')
@@ -322,8 +328,8 @@ class transferItemController extends Controller
     
     return DataTables::of($data)
 
-    ->editColumn('ti_date', function ($data) {
-      return date('d M Y', strtotime($data->ti_date));
+    ->editColumn('ti_time', function ($data) {
+      return date('d M Y', strtotime($data->ti_time)) . ', ' . date('H:i:s', strtotime($data->ti_time));
     })
     
     ->addColumn('status', function($data){
@@ -367,7 +373,7 @@ class transferItemController extends Controller
 
 
       })
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['ti_time','status', 'action'])
 
     ->make(true);    
 

@@ -362,7 +362,7 @@ class POSGrosirController extends Controller
 
   public function sal_save_final(Request $request){
     // dd($request->all());
-    return json_encode($request->all());
+    // return json_encode($request->all());
     DB::beginTransaction();
             try {
     $s_id = d_sales::max('s_id') + 1;
@@ -1527,7 +1527,8 @@ class POSGrosirController extends Controller
   public function print_awas_barang_panas($id){
     $sales = d_sales::select( 'c_name',
                               'c_address',
-                              'c_hp')
+                              'c_hp1',
+                              'c_hp2')
       ->join('m_customer','c_id','=','s_customer')
       ->where('s_id',$id)
       ->first();
