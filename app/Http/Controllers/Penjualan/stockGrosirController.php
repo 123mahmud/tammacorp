@@ -29,6 +29,7 @@ class stockGrosirController extends Controller
       })    
       ->where('i_type', '=',DB::raw("'BJ'"))
       ->orWhere('i_type', '=',DB::raw("'BP'"))   
+      ->where('i_isactive','TRUE')
       ->get();
 
     return DataTables::of($data)
