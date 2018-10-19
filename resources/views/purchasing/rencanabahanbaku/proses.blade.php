@@ -96,6 +96,7 @@
                               <input type="hidden" class="form-control input-sm" name="itemid[]" value="{{$data[0]['item_id']}}" id="i_itemid">
                               <input type="hidden" class="form-control input-sm" name="tgl1[]" id="tgl_1" value="{{$data[0]['tanggal1']}}">
                               <input type="hidden" class="form-control input-sm" name="tgl2[]" id="tgl_2" value="{{$data[0]['tanggal2']}}">
+                              <input type="hidden" class="form-control input-sm" name="id_spk[]" id="id_spk" value="{{$data[0]['fr_spk']}}">
                             </td>
                             <td>
                               <input type="text" class="form-control input-sm" readonly="" name="satuan[]" value="{{$data[0]['satuan']}}">
@@ -210,9 +211,10 @@
     var item = $('#i_itemid').val();
     var tgl1 = $('#tgl_1').val();
     var tgl2 = $('#tgl_2').val();
+    var idspk = $('#id_spk').val();
     $.ajax({
       url : baseUrl + "/purchasing/rencanabahanbaku/suggest-item",
-      data : {idsup:idsup, item:item, tgl1:tgl1, tgl2:tgl2},
+      data : {idsup:idsup, item:item, tgl1:tgl1, tgl2:tgl2, idspk:idspk},
       type: "GET",
       dataType: "JSON",
       success: function(data)
