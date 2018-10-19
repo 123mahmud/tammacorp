@@ -243,8 +243,11 @@ class RencanaBahanController extends Controller
       for ($i=0; $i <count($list_item); $i++) 
       { 
         $aa = DB::table('m_item')->select('i_id','i_name','i_code')->where('i_id', $list_item[$i])->first();
+        $bb = DB::table('spk_formula')->select('fr_formula')->where('fr_spk', $request->idspk)->where('fr_formula', $list_item[$i])->first();
         if ($request->item != $aa->i_id) {
-          $d_item[] = array('item_id' => $aa->i_id, 'item_txt'=> $aa->i_name, 'item_code'=> $aa->i_code);
+          if (!empty($bb->fr_formula)) {
+            $d_item[] = array('item_id' => $aa->i_id, 'item_txt'=> $aa->i_name, 'item_code'=> $aa->i_code);
+          }
         }
       }
 
