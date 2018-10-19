@@ -69,7 +69,7 @@
 
                     <td>{{ $data->i_code }}</td>
                     <td>{{ $data->i_name }}</td>
-                    <td class="text-right">{{ $data->fr_value }}</td>
+                    <td class="text-right">{{ number_format( $data->fr_value,0,',','.')}}</td>
                     <td>{{ $data->m_sname }}</td>
 
                   </tr>
