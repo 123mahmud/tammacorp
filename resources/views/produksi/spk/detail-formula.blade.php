@@ -78,7 +78,7 @@
                         <td>Rp.
                             <span class="pull-right">
                                
-                                {{ number_format($bambang[$i],3,',','.')}}
+                                {{ number_format($bambang[$i],2,',','.')}}
                           {{--    {{ $bambang[$i] }} --}}
                             </span>
                         </td>
