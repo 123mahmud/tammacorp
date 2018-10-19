@@ -315,10 +315,10 @@ class spkProductionController extends Controller
         }
         // dd($formula[0]['fr_value']);
         for ($i = 0; $i < count($hargaLalu); $i++) {
-            $cabangPurnama = $hargaLalu[$i] / $qty[$i];
+            $cabangPurnama = $hargaLalu[$i] * $qty[$i];
             $bambang[] = $formula[$i]['fr_value'] * $cabangPurnama;
         }
-        // dd($bambang);
+        dd($bambang);
 
         $ket = $spk[0]->spk_status;
         $id = $spk[0]->spk_id;
