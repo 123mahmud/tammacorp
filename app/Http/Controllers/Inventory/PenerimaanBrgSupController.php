@@ -283,7 +283,7 @@ class PenerimaanBrgSupController extends Controller
         {
             // Cek Jurnal 
 
-            $err = true; $acc = []; $total = 0;
+            /*$err = true; $acc = []; $total = 0;
 
             foreach($request->fieldItemId as $acc_key => $data){
                 $cek = DB::table('m_item')
@@ -318,7 +318,7 @@ class PenerimaanBrgSupController extends Controller
                 'td_acc'    => '301.01',
                 'td_posisi' => 'K',
                 'value'     => $total
-            ];
+            ];*/
 
             // return json_encode($acc);
 

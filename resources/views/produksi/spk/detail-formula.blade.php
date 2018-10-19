@@ -77,9 +77,11 @@
                         <td>{{ $formula[$i]['m_sname'] }}</td>
                         <td>Rp.
                             <span class="pull-right">
-                                {{ number_format($bambang[$i],2,',','.')}}
+                               
+                                {{ number_format($bambang[$i],3,',','.')}}
+                          {{--    {{ $bambang[$i] }} --}}
                             </span>
-                                </td>
+                        </td>
                             </tr>
                 @endfor
 
