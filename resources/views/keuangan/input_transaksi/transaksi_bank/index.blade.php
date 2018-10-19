@@ -76,11 +76,11 @@
                                               </select>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Lakukan Pencarian Berdasarkan Jenis dan Bulan (dari tanggal yang dipilih)"> 
                                               <i class="fa fa-search" @click="open_list"></i>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Bersihkan Form"> 
                                               <i class="fa fa-times" v-if="state == 'update'" @click="form_reset"></i>
                                             </div>
                                           </div>
@@ -89,8 +89,12 @@
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Tanggal Transaksi</label>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
+                                            <div class="col-md-5 col-sm-9 col-xs-12 mb-3" style="background:;">
                                                 <datepicker :placeholder="'Plih Tanggal Transaksi'" :name="'tanggal_transaksi'" :id="'tanggal_transaksi'" :disabled="state == 'update'"></datepicker>
+                                            </div>
+
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: help;" title="Bulan Yang Dipilih Untuk Tanggal Ini Juga Digunakan Sebagai Parameter Pencarian"> 
+                                              <i class="fa fa-exclamation-circle"></i>
                                             </div>
                                           </div>
 

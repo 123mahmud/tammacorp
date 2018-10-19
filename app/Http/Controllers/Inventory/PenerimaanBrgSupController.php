@@ -285,40 +285,42 @@ class PenerimaanBrgSupController extends Controller
 
             $err = true; $acc = []; $total = 0;
 
-            foreach($request->fieldItemId as $acc_key => $data){
-                $cek = DB::table('m_item')
-                    ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
-                    ->where('i_id', $data)
-                    ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
-                    ->first();
+            if(jurnal_setting()->allow_jurnal_to_execute){
+                foreach($request->fieldItemId as $acc_key => $data){
+                    $cek = DB::table('m_item')
+                        ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                        ->where('i_id', $data)
+                        ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+                        ->first();
 
-                $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
+                    $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
 
-                if(!$cek || !$cek2){
-                    $err = false;
-                }else{
-                    $acc[$acc_key] = [
-                        'td_acc'    => $cek->m_akun_persediaan,
-                        'td_posisi' => 'D',
-                        'value'     => $request->fieldHargaTotalRaw[$acc_key]
-                    ];
+                    if(!$cek || !$cek2){
+                        $err = false;
+                    }else{
+                        $acc[$acc_key] = [
+                            'td_acc'    => $cek->m_akun_persediaan,
+                            'td_posisi' => 'D',
+                            'value'     => $request->fieldHargaTotalRaw[$acc_key]
+                        ];
 
-                    $total += $request->fieldHargaTotalRaw[$acc_key];
+                        $total += $request->fieldHargaTotalRaw[$acc_key];
+                    }
                 }
-            }
 
-            if(!$err){
-                return response()->json([
-                    'status' => 'gagal',
-                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
-                ]);
-            }
+                if(!$err){
+                    return response()->json([
+                        'status' => 'gagal',
+                        'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+                    ]);
+                }
 
-            $acc[count($acc)] = [
-                'td_acc'    => '301.01',
-                'td_posisi' => 'K',
-                'value'     => $total
-            ];
+                $acc[count($acc)] = [
+                    'td_acc'    => '301.01',
+                    'td_posisi' => 'K',
+                    'value'     => $total
+                ];
+            }
 
             // return json_encode($acc);
 
@@ -464,7 +466,9 @@ class PenerimaanBrgSupController extends Controller
           ]);
         }
 
-        $state_jurnal = _initiateJournal_self_detail($kode, 'MM', date('Y-m-d', strtotime($request->headTglTerima)), 'Penerimaan Bahan Persediaan Dari '.$request->headSupplier.' '.date('d/m/Y', strtotime($request->headTglTerima)), $acc);
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $state_jurnal = _initiateJournal_self_detail($kode, 'MM', date('Y-m-d', strtotime($request->headTglTerima)), 'Penerimaan Bahan Persediaan Dari '.$request->headSupplier.' '.date('d/m/Y', strtotime($request->headTglTerima)), $acc);
+        }
             
             // return json_encode($state_jurnal);
 
@@ -562,7 +566,7 @@ class PenerimaanBrgSupController extends Controller
           //cek pada table purchasingdt, jika isreceived semua tbl header ubah status ke RC
           $this->cek_status_purchasing($query2->d_tb_pid);
 
-           _delete_jurnal($query2->d_tb_code);
+          _delete_jurnal($query2->d_tb_code);
           
           DB::commit();
           return response()->json([

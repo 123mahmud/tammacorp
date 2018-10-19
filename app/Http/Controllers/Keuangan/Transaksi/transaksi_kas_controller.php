@@ -94,22 +94,23 @@ class transaksi_kas_controller extends Controller
             ]);
 
     		// Pembukuan Jurnal
+                if(jurnal_setting()->allow_jurnal_to_execute){
+                    $acc = [
+                        [
+                            "td_acc"    => $request->perkiraan,
+                            "td_posisi" => 'D',
+                            'value'     => str_replace('.', '', explode(',', $request->nominal)[0])
+                        ],
 
-                $acc = [
-                    [
-                        "td_acc"    => $request->perkiraan,
-                        "td_posisi" => 'D',
-                        'value'     => str_replace('.', '', explode(',', $request->nominal)[0])
-                    ],
+                        [
+                            "td_acc"    => $request->akun_lawan,
+                            "td_posisi" => "K",
+                            "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
+                        ]
+                    ];
 
-                    [
-                        "td_acc"    => $request->akun_lawan,
-                        "td_posisi" => "K",
-                        "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
-                    ]
-                ];
-
-                _initiateJournal_self_detail($bukti, "KM", $request->tanggal_transaksi, $request->keterangan, $acc);
+                    _initiateJournal_self_detail($bukti, "KM", $request->tanggal_transaksi, $request->keterangan, $acc);
+                }
 
 	    		
 	    	// Pembukuan Jurnal End
@@ -165,23 +166,23 @@ class transaksi_kas_controller extends Controller
             ]);
 
             // Pembukuan Jurnal
+                if(jurnal_setting()->allow_jurnal_to_execute){
+                    $acc = [
+                        [
+                            "td_acc"    => $request->perkiraan,
+                            "td_posisi" => 'K',
+                            'value'     => str_replace('.', '', explode(',', $request->nominal)[0])
+                        ],
 
-                $acc = [
-                    [
-                        "td_acc"    => $request->perkiraan,
-                        "td_posisi" => 'K',
-                        'value'     => str_replace('.', '', explode(',', $request->nominal)[0])
-                    ],
+                        [
+                            "td_acc"    => $request->akun_lawan,
+                            "td_posisi" => "D",
+                            "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
+                        ]
+                    ];
 
-                    [
-                        "td_acc"    => $request->akun_lawan,
-                        "td_posisi" => "D",
-                        "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
-                    ]
-                ];
-
-                _initiateJournal_self_detail($bukti, "KK", $request->tanggal_transaksi, $request->keterangan, $acc);
-
+                    _initiateJournal_self_detail($bukti, "KK", $request->tanggal_transaksi, $request->keterangan, $acc);
+                }
             // Pembukuan Jurnal End
 
     		return response()->json([
@@ -260,72 +261,72 @@ class transaksi_kas_controller extends Controller
             ]);
         }
 
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            // Pembukuan Jurnal
+                $jurnal = jurnal::where('jurnal_ref', $transaksi->first()->no_bukti);
 
-        // Pembukuan Jurnal
-            $jurnal = jurnal::where('jurnal_ref', $transaksi->first()->no_bukti);
-
-            $jurnal->update([
-                'keterangan'    => $request->keterangan
-            ]);
-
-            jurnal_dt::where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
-
-            if(substr($jurnal->first()->no_jurnal, 0, 2) == 'KM'){
-                jurnal_dt::insert([
-                    'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
-                    'jrdt_no'       => 1,
-                    'jrdt_acc'      => $request->perkiraan,
-                    'jrdt_value'    => str_replace('.', '', explode(',', $request->nominal)[0]),
-                    'jrdt_dk'       => 'D'
+                $jurnal->update([
+                    'keterangan'    => $request->keterangan
                 ]);
 
-                $akun = DB::table('d_akun')->where('id_akun', $request->akun_lawan)->first();
-                $pos = "K";
-                $val = str_replace('.', '', explode(',', $request->nominal)[0]);
+                jurnal_dt::where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
 
-                if($akun->posisi_akun != $pos){
-                    $val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
+                if(substr($jurnal->first()->no_jurnal, 0, 2) == 'KM'){
+                    jurnal_dt::insert([
+                        'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
+                        'jrdt_no'       => 1,
+                        'jrdt_acc'      => $request->perkiraan,
+                        'jrdt_value'    => str_replace('.', '', explode(',', $request->nominal)[0]),
+                        'jrdt_dk'       => 'D'
+                    ]);
+
+                    $akun = DB::table('d_akun')->where('id_akun', $request->akun_lawan)->first();
+                    $pos = "K";
+                    $val = str_replace('.', '', explode(',', $request->nominal)[0]);
+
+                    if($akun->posisi_akun != $pos){
+                        $val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
+                    }
+
+                    // return json_encode($akun);
+
+                    jurnal_dt::insert([
+                        'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
+                        'jrdt_no'       => 2,
+                        'jrdt_acc'      => $request->akun_lawan,
+                        'jrdt_value'    => $val,
+                        'jrdt_dk'       => $pos
+                    ]);
+                }else{
+                    jurnal_dt::insert([
+                        'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
+                        'jrdt_no'       => 1,
+                        'jrdt_acc'      => $request->perkiraan,
+                        'jrdt_value'    => '-'.str_replace('.', '', explode(',', $request->nominal)[0]),
+                        'jrdt_dk'       => 'K'
+                    ]);
+
+                    $akun = DB::table('d_akun')->where('id_akun', $request->akun_lawan)->first();
+                    $pos = "D";
+                    $val = str_replace('.', '', explode(',', $request->nominal)[0]);
+
+                    if($akun->posisi_akun != $pos){
+                        $val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
+                    }
+
+                    // return json_encode($akun);
+
+                    jurnal_dt::insert([
+                        'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
+                        'jrdt_no'       => 2,
+                        'jrdt_acc'      => $request->akun_lawan,
+                        'jrdt_value'    => $val,
+                        'jrdt_dk'       => $pos
+                    ]);
                 }
 
-                // return json_encode($akun);
-
-                jurnal_dt::insert([
-                    'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
-                    'jrdt_no'       => 2,
-                    'jrdt_acc'      => $request->akun_lawan,
-                    'jrdt_value'    => $val,
-                    'jrdt_dk'       => $pos
-                ]);
-            }else{
-                jurnal_dt::insert([
-                    'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
-                    'jrdt_no'       => 1,
-                    'jrdt_acc'      => $request->perkiraan,
-                    'jrdt_value'    => '-'.str_replace('.', '', explode(',', $request->nominal)[0]),
-                    'jrdt_dk'       => 'K'
-                ]);
-
-                $akun = DB::table('d_akun')->where('id_akun', $request->akun_lawan)->first();
-                $pos = "D";
-                $val = str_replace('.', '', explode(',', $request->nominal)[0]);
-
-                if($akun->posisi_akun != $pos){
-                    $val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
-                }
-
-                // return json_encode($akun);
-
-                jurnal_dt::insert([
-                    'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
-                    'jrdt_no'       => 2,
-                    'jrdt_acc'      => $request->akun_lawan,
-                    'jrdt_value'    => $val,
-                    'jrdt_dk'       => $pos
-                ]);
-            }
-
-
-        // Pembukuan Jurnal End
+            // Pembukuan Jurnal End
+        }
 
 
         // return json_encode($jurnal);

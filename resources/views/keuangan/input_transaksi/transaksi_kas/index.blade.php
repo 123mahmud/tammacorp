@@ -76,11 +76,11 @@
                                               </select>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Lakukan Pencarian Berdasarkan Jenis dan Bulan (dari tanggal yang dipilih)"> 
                                               <i class="fa fa-search" @click="open_list"></i>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Bersihkan Form"> 
                                               <i class="fa fa-times" v-if="state == 'update'" @click="form_reset"></i>
                                             </div>
                                           </div>
@@ -89,8 +89,12 @@
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Tanggal Transaksi</label>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
+                                            <div class="col-md-5 col-sm-8 col-xs-12 mb-3" style="background:;">
                                                 <datepicker :placeholder="'Plih Tanggal Transaksi'" :name="'tanggal_transaksi'" :id="'tanggal_transaksi'" :disabled="state == 'update'"></datepicker>
+                                            </div>
+
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: help;" title="Bulan Yang Dipilih Untuk Tanggal Ini Juga Digunakan Sebagai Parameter Pencarian"> 
+                                              <i class="fa fa-exclamation-circle"></i>
                                             </div>
                                           </div>
 
@@ -371,32 +375,32 @@
           evt.preventDefault();
           this.btn_save_disabled = true;
 
-          console.log($('#data-form').serialize());
+          // console.log($('#data-form').serialize());
 
-          // if($('#data-form').data('bootstrapValidator').validate().isValid()){
-          //   axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/save', 
-          //     $('#data-form').serialize()
-          //   ).then((response) => {
-          //     console.log(response.data);
-          //     if(response.data.status == 'berhasil'){
-          //       $.toast({
-          //           text: 'Data Transaksi Kas Anda Berhasil Disimpan.',
-          //           showHideTransition: 'slide',
-          //           position: 'top-right',
-          //           icon: 'success'
-          //       })
+          if($('#data-form').data('bootstrapValidator').validate().isValid()){
+            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/save', 
+              $('#data-form').serialize()
+            ).then((response) => {
+              console.log(response.data);
+              if(response.data.status == 'berhasil'){
+                $.toast({
+                    text: 'Data Transaksi Kas Anda Berhasil Disimpan.',
+                    showHideTransition: 'slide',
+                    position: 'top-right',
+                    icon: 'success'
+                })
 
-          //       this.form_reset();
-          //     }
-          //   }).catch((err) => {
-          //     alert(err);
-          //     this.btn_save_disabled = false;
-          //   }).then(() => {
-          //     this.btn_save_disabled = false;
-          //   })
-          // }else{
-          //   this.btn_save_disabled = false;
-          // }
+                this.form_reset();
+              }
+            }).catch((err) => {
+              alert(err);
+              this.btn_save_disabled = false;
+            }).then(() => {
+              this.btn_save_disabled = false;
+            })
+          }else{
+            this.btn_save_disabled = false;
+          }
         },
 
         update: function(evt){
