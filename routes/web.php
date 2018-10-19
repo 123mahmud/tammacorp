@@ -489,7 +489,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/hapus_form_permintaan/{id}', 'Hrd\ManajemenSuratController@hapus_form_permintaan')->name('hapus_form_permintaan');
     // form keterangan kerja
     Route::get('/hrd/manajemensurat/form_keterangan_kerja', 'Hrd\ManajemenSuratController@form_keterangan_kerja')->name('form_keterangan_kerja');
-    Route::get('/hrd/manajemensurat/form_keterangan_kerja_print', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_hapus/{id}', 'Hrd\ManajemenSuratController@form_keterangan_kerja_hapus')->name('form_keterangan_kerja_hapus');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_tambah', 'Hrd\ManajemenSuratController@form_keterangan_kerja_tambah')->name('form_keterangan_kerja_tambah');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_datatable', 'Hrd\ManajemenSuratController@form_keterangan_kerja_datatable')->name('form_keterangan_kerja_datatable');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_autocomplete', 'Hrd\ManajemenSuratController@form_keterangan_kerja_autocomplete')->name('form_keterangan_kerja_autocomplete');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_autocomplete2', 'Hrd\ManajemenSuratController@form_keterangan_kerja_autocomplete2')->name('form_keterangan_kerja_autocomplete2');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_print/{id}', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
     
 
 

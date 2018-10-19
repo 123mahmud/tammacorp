@@ -1,6 +1,6 @@
 <div id="list-tab" class="tab-pane fade in">
   <div class="table-responsive">
-    <table class="table tabelan table-bordered table-hover table-striped" id="tabel_overhandle">
+    <table class="table tabelan table-bordered table-hover table-striped" id="tabel_overhandle" width="100%">
       <thead>
         <tr>
           <th>No</th>

@@ -193,7 +193,7 @@
 		<div class="div-width">
 
 			<h2 class="text-center underline" style="margin: 30px 0 0 0;">SURAT KETERANGAN KERJA</h2>
-			<small class="text-center" style="display: block;">No : 001/SKK-HRD/VII/2018</small>
+			<small class="text-center" style="display: block;">No : {{$daita[0]->fkj_kode}}</small>
 
 			<table class="border-none" width="100%" style="margin-top: 30px;" cellpadding="5px">
 				<tr>
@@ -202,17 +202,17 @@
 				<tr>
 					<td width="20%">Nama</td>
 					<td width="1%">:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_nama1}}</td>
 				</tr>
 				<tr>
 					<td>Jabatan</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_jabatan1}}</td>
 				</tr>
 				<tr>
 					<td>Alamat</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_alamat1}}</td>
 				</tr>
 				<tr>
 					<td colspan="3" style="padding: 30px 5px 10px 5px;">
@@ -222,33 +222,38 @@
 				<tr>
 					<td>Nama</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_nama2}}</td>
 				</tr>
 				<tr>
 					<td>Jenis Kelamin</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">
+						@if($daita[0]->fkjdt_jk2 === 'l')
+						Laki-laki
+						@elseif($daita[0]->fkjdt_jk2 === 'P')
+						Perempuan
+						@else
+						Apache Helicopter
+						@endif
+					</td>
 				</tr>
 				<tr>
 					<td>Tempat/Tanggal Lahir</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_ttl2}}</td>
 				</tr>
 				<tr>
 					<td>Alamat</td>
 					<td>:</td>
-					<td class="border-bottom-dotted"></td>
+					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_alamat2}}</td>
 				</tr>
 				<tr>
-					<td colspan="3" style="padding: 30px 5px 10px 5px;">Merupakan karyawan CV. Tamma Robbah Indonesia dari bulan (..........) hingga (...........) saat ini dengan posisi sebagai (..........) </td>
+					<td colspan="3" style="padding: 30px 5px 10px 5px;">Merupakan karyawan CV. Tamma Robbah Indonesia dari bulan {{$daita[0]->fkj_tanggal_awal}} hingga {{$daita[0]->fkj_tanggal_akhir}} saat ini dengan posisi sebagai {{$daita[0]->fkjdt_posisi2}} </td>
 				</tr>
 				<tr>
 					<td colspan="3" style="padding: 10px 5px 10px 5px;">Demikian surat keterangan ini kami buat agar digunakan sebagaimana mestinya. </td>
 				</tr>
 				
-				<tr>
-					<td>Tanggal :</td>
-				</tr>
 			</table>
 			<table width="100%" class="border-none" cellpadding="5px">
 				<tr>
