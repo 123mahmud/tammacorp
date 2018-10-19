@@ -158,7 +158,6 @@ class RencanaBahanController extends Controller
       $dataHeader = d_spk::join('spk_formula', 'd_spk.spk_id', '=', 'spk_formula.fr_spk')
                     ->join('m_item','spk_formula.fr_formula','=','m_item.i_id')
                     ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
-                    ->join('d_purchasingplan_dt', 'spk_formula.fr_formula', '=', 'd_purchasingplan_dt.d_pcspdt_item')
                     ->select(
                         'd_spk.*',
                         DB::raw('SUM(fr_value) as total'),
@@ -167,7 +166,6 @@ class RencanaBahanController extends Controller
                         'm_item.i_name',
                         'm_item.i_code',
                         'm_item.i_sat1',
-                        'd_purchasingplan_dt.d_pcspdt_item',
                         DB::raw("IFNULL( 
                                   (SELECT SUM(d_pcspdt_qtyconfirm) 
                                     FROM d_purchasingplan_dt 
