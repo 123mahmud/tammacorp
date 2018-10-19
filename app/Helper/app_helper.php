@@ -1,4 +1,29 @@
 <?php
+
+	// Jurnal Setting
+		
+		function jurnal_setting(){
+			
+			// ! penting (Pliss . Jangan Diubah Sebelum Konfirmasi Ke Pihak Yang Mengerjakan Keuangan)
+
+			$setting = [
+				'allow_jurnal_to_execute'	=> 'aa',
+			];
+
+
+			return (object) $setting;
+		}
+		
+	// end jurnal setting
+
+
+
+
+	// -----------------------------------------------------------------------------------------------------------------
+
+	// Fungsi Fungsi Helper
+
+	// -----------------------------------------------------------------------------------------------------------------
 	
 	function _initiateJournal_from_transaksi($referensi, $tanggal_jurnal, $keterangan, $id_transaksi, $value){
 

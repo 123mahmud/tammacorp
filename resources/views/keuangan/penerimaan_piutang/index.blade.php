@@ -19,12 +19,12 @@
                 <!--BEGIN TITLE & BREADCRUMB PAGE-->
                 <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
                     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-                        <div class="page-title">Form Input Data Pelunasan Hutang Supplier</div>
+                        <div class="page-title">Form Input Data Penerimaan Piutang Customer</div>
                     </div>
                     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
                         <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
                         <li> &nbsp;Keuangan&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-                        <li class="active">Input Pelunasan Hutang Supplier</li>
+                        <li class="active">Input Penerimaan Piutang Customer</li>
                     </ol>
                     <div class="clearfix"></div>
                 </div>
@@ -49,7 +49,7 @@
                               <div class="row">
                                 <div class="col-md-12" style="margin-top: -10px;margin-bottom: 20px;">
                                    <div class="col-md-5 col-sm-6 col-xs-8">
-                                     <h4>Transaksi Pelunasan Hutang Supplier</h4>
+                                     <h4>Transaksi Penerimaan Piutang Customer</h4>
                                    </div>
                                    <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
                                      <a href="{{ url('/keuangan/p_inputtransaksi/index') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
@@ -84,15 +84,15 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Pilih Supplier</label>
+                                              <label class="tebal">Pilih Customer</label>
                                             </div>
                                             <div class="col-md-6 col-sm-9 col-xs-12 mb-3" style="background:;">
                                                 <select class="form-control" name="supplier" v-model="single_data.supplier" id="supplier" :disabled="state == 'update'">
-                                                  <option :value="supplier.s_id" v-for="supplier in suppliers" v-html="supplier.s_company"></option>
+                                                  <option :value="supplier.c_id" v-for="supplier in suppliers" v-html="supplier.c_name"></option>
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: help;" title="Supplier Yang Dipilih Juga Digunakan Sebagai Parameter Pencarian"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: help;" title="Customer Yang Dipilih Juga Digunakan Sebagai Parameter Pencarian"> 
                                               <i class="fa fa-exclamation-circle"></i>
                                             </div>
                                           </div>
@@ -112,10 +112,10 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Nomor P.O</label>
+                                              <label class="tebal">Nota Transaksi</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <input type="text" name="nomor_po" class="form-control" placeholder="Pilih Nomor P.O" readonly style="cursor: pointer;" @click="get_po" id="nomor_po" v-model="single_data.nomor_po" required>
+                                                <input type="text" name="nomor_po" class="form-control" placeholder="Pilih Nota Transaksi" readonly style="cursor: pointer;" @click="get_po" id="nomor_po" v-model="single_data.nomor_po" required>
                                             </div>
                                           </div>
 
@@ -130,7 +130,7 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Jenis Pembayaran</label>
+                                              <label class="tebal">Jenis Penerimaan</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
                                                 <select class="form-control" name="jenis_pembayaran" id="jenis_pembayaran" v-model="single_data.jenis">
@@ -164,7 +164,7 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Nominal Pembayaran</label>
+                                              <label class="tebal">Nominal Penerimaan</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
                                                 <inputmask :name="'nominal_pembayaran'" :id="'nominal_pembayaran'" :required="true" :readonly="false"></inputmask>
@@ -172,7 +172,7 @@
                                           </div>
                                         </div>
 
-                                        <div class="col-md-5 col-md-offset-1" style="background: white; padding: 10px;">
+                                        <div class="col-md-5 col-md-offset-1" style="background: white; padding: 10px;"> 
                                           <div class="row">
                                             <div class="col-md-4 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Total Tagihan</label>
@@ -225,7 +225,7 @@
                 <div class="overlay transaksi_list">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
                     <div class="col-md-9" style="background: white; color: rgba(0,0,0,0.5); padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
-                      <b>List Data Pelunasan @{{ nama_supplier }}</b>
+                      <b>List Data Pelunasan Piutang Dari @{{ nama_supplier }}</b>
                     </div>
 
                     <div class="col-md-3 text-right" style="background: white; color: #ff4444; padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
@@ -241,7 +241,7 @@
                 <div class="overlay data_po">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
                     <div class="col-md-9" style="background: white; color: rgba(0,0,0,0.5); padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
-                      <b>List Data Purchase Order (P.O) @{{ nama_supplier }}</b>
+                      <b>List Data Transaksi Hutang @{{ nama_supplier }}</b>
                     </div>
 
                     <div class="col-md-3 text-right" style="background: white; color: #ff4444; padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
@@ -411,13 +411,13 @@
       },
 
       created: function(){
-        axios.get(this.baseUrl+'/purchasing/pembayaran_hutang/form-resource')
+        axios.get(this.baseUrl+'/penjualan/penerimaan_piutang/form-resource')
               .then((response) => {
                 console.log(response.data);
 
                 if(response.data.supplier.length > 0){
                   this.suppliers = response.data.supplier;
-                  this.single_data.supplier = response.data.supplier[0].s_id;
+                  this.single_data.supplier = response.data.supplier[0].c_id;
                 }
 
                 if(response.data.akun_kas.length > 0){
@@ -443,8 +443,8 @@
 
       computed: {
         nama_supplier: function(){
-          var idx = this.suppliers.findIndex(x => x.s_id === this.single_data.supplier);
-          return (idx >= 0) ? this.suppliers[idx].s_company : '';
+          var idx = this.suppliers.findIndex(x => x.c_id === this.single_data.supplier);
+          return (idx >= 0) ? this.suppliers[idx].c_name : '';
         },
       },
 

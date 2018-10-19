@@ -290,49 +290,51 @@ class POSRetailController extends Controller
       $fatkur = 'XX'  . $year . $month . $date . $s_id;
       $err = true;
 
-      $akun = [
-        [
-          'td_acc'    => $request->sp_method[0],
-          'td_posisi' => 'D',
-          'value'     => $this->konvertRp($request->s_net)
-        ],
-      ];
-
-    // start jurnal
-
-      foreach($request->kode_item as $acc_key => $data){
-          $cek = DB::table('m_item')
-              ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
-              ->where('i_id', $data)
-              ->select('m_group.m_akun_penjualan', 'm_group.m_gid')
-              ->first();
-
-          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_penjualan)->first();
-
-          if(!$cek || !$cek2){
-              $err = false;
-          }else{
-              $akun[count($akun)] = [
-                  'td_acc'    => $cek->m_akun_penjualan,
-                  'td_posisi' => 'K',
-                  'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key]),
-              ];
-          }
-      }
-
-      if(!$err){
-          return response()->json([
-              'status' => 'gagal',
-              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
-          ]);
-      }
-
-      if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
-        $akun[count($akun)] = [
-            'td_acc'    => '501.01',
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        $akun = [
+          [
+            'td_acc'    => $request->sp_method[0],
             'td_posisi' => 'D',
-            'value'     => $this->konvertRp($request->totalDiscount),
+            'value'     => $this->konvertRp($request->s_net)
+          ],
         ];
+
+      // start jurnal
+
+        foreach($request->kode_item as $acc_key => $data){
+            $cek = DB::table('m_item')
+                ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->where('i_id', $data)
+                ->select('m_group.m_akun_penjualan', 'm_group.m_gid')
+                ->first();
+
+            $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_penjualan)->first();
+
+            if(!$cek || !$cek2){
+                $err = false;
+            }else{
+                $akun[count($akun)] = [
+                    'td_acc'    => $cek->m_akun_penjualan,
+                    'td_posisi' => 'K',
+                    'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key]),
+                ];
+            }
+        }
+
+        if(!$err){
+            return response()->json([
+                'status' => 'gagal',
+                'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
+            ]);
+        }
+
+        if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
+          $akun[count($akun)] = [
+              'td_acc'    => '501.01',
+              'td_posisi' => 'D',
+              'value'     => $this->konvertRp($request->totalDiscount),
+          ];
+        }
       }
 
       // return json_encode(substr($request->sp_method[0], 0, 3));
@@ -488,7 +490,9 @@ class POSRetailController extends Controller
       $sts = 'Hutang';
     }
 
-    $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, $akun);
+    if(jurnal_setting()->allow_jurnal_to_execute){
+      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, $akun);
+    }
 
     return response()->json([
         'status' => 'sukses',

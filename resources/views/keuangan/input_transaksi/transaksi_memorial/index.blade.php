@@ -76,11 +76,11 @@
                                               </select>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Lakukan Pencarian Berdasarkan Jenis dan Bulan (dari tanggal yang dipilih)"> 
                                               <i class="fa fa-search" @click="open_list"></i>
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Bersihkan Form"> 
                                               <i class="fa fa-times" v-if="state == 'update'" @click="form_reset"></i>
                                             </div>
                                           </div>
@@ -89,8 +89,12 @@
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Tanggal Transaksi</label>
                                             </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
+                                            <div class="col-md-5 col-sm-9 col-xs-12 mb-3" style="background:;">
                                                 <datepicker :placeholder="'Plih Tanggal Transaksi'" :name="'tanggal_transaksi'" :id="'tanggal_transaksi'" :disabled="state == 'update'"></datepicker>
+                                            </div>
+
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: help;" title="Bulan Yang Dipilih Untuk Tanggal Ini Juga Digunakan Sebagai Parameter Pencarian"> 
+                                              <i class="fa fa-exclamation-circle"></i>
                                             </div>
                                           </div>
 
@@ -166,12 +170,12 @@
 
                 <div class="overlay transaksi_list">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
-                    <div class="col-md-9" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5>List Data Transaksi</h5>
+                    <div class="col-md-9" style="background: white; color: rgba(0,0,0,0.5); padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <b>List Data Transaksi</b>
                     </div>
 
-                    <div class="col-md-3 text-right" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
-                      <h5><i class="fa fa-times" style="cursor: pointer;" @click="close_list"></i></h5>
+                    <div class="col-md-3 text-right" style="background: white; color: #ff4444; padding: 15px 20px; border-bottom: 1px solid #aaa; font-size: 12pt;">
+                      <i class="fa fa-times" style="cursor: pointer;" @click="close_list" title="Tutup Jendela"></i>
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">

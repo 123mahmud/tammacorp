@@ -408,40 +408,42 @@ class ReturnPembelianController extends Controller
 
       $err = true; $acc = []; $total = 0;
 
-      foreach($request->fieldItemId as $acc_key => $data){
-          $cek = DB::table('m_item')
-              ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
-              ->where('i_id', $data)
-              ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
-              ->first();
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        foreach($request->fieldItemId as $acc_key => $data){
+            $cek = DB::table('m_item')
+                ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->where('i_id', $data)
+                ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+                ->first();
 
-          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
+            $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
 
-          if(!$cek || !$cek2){
-              $err = false;
-          }else{
-              $acc[$acc_key] = [
-                  'td_acc'    => $cek->m_akun_persediaan,
-                  'td_posisi' => 'K',
-                  'value'     => $request->fieldHargaTotalRaw[$acc_key]
-              ];
+            if(!$cek || !$cek2){
+                $err = false;
+            }else{
+                $acc[$acc_key] = [
+                    'td_acc'    => $cek->m_akun_persediaan,
+                    'td_posisi' => 'K',
+                    'value'     => $request->fieldHargaTotalRaw[$acc_key]
+                ];
 
-              $total += $request->fieldHargaTotalRaw[$acc_key];
-          }
+                $total += $request->fieldHargaTotalRaw[$acc_key];
+            }
+        }
+
+        if(!$err){
+            return response()->json([
+                'status' => 'gagal',
+                'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+            ]);
+        }
+
+        $acc[count($acc)] = [
+            'td_acc'    => '301.01',
+            'td_posisi' => 'D',
+            'value'     => $total
+        ];
       }
-
-      if(!$err){
-          return response()->json([
-              'status' => 'gagal',
-              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
-          ]);
-      }
-
-      $acc[count($acc)] = [
-          'td_acc'    => '301.01',
-          'td_posisi' => 'D',
-          'value'     => $total
-      ];
 
       //insert to table d_purchasingreturn
       $dataHeader = new d_purchasingreturn;
@@ -547,7 +549,9 @@ class ReturnPembelianController extends Controller
       ]);
     }
 
-    $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Pemotongan Nota Dari '.$request->namaSup.' Atas Nomor '.$pcs->d_pcs_code, $acc);
+    if(jurnal_setting()->allow_jurnal_to_execute){
+      $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Pemotongan Nota Dari '.$request->namaSup.' Atas Nomor '.$pcs->d_pcs_code, $acc);
+    }
 
     return response()->json([
         'status' => 'sukses',
@@ -563,40 +567,42 @@ class ReturnPembelianController extends Controller
 
       $err = true; $acc = []; $total = 0;
 
-      foreach($request->fieldIdItem as $acc_key => $data){
-          $cek = DB::table('m_item')
-              ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
-              ->where('i_id', $data)
-              ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
-              ->first();
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        foreach($request->fieldIdItem as $acc_key => $data){
+            $cek = DB::table('m_item')
+                ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->where('i_id', $data)
+                ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+                ->first();
 
-          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
+            $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
 
-          if(!$cek || !$cek2){
-              $err = false;
-          }else{
-              $acc[$acc_key] = [
-                  'td_acc'    => $cek->m_akun_persediaan,
-                  'td_posisi' => 'K',
-                  'value'     => $request->fieldHargaTotalRaw[$acc_key]
-              ];
+            if(!$cek || !$cek2){
+                $err = false;
+            }else{
+                $acc[$acc_key] = [
+                    'td_acc'    => $cek->m_akun_persediaan,
+                    'td_posisi' => 'K',
+                    'value'     => $request->fieldHargaTotalRaw[$acc_key]
+                ];
 
-              $total += $request->fieldHargaTotalRaw[$acc_key];
-          }
+                $total += $request->fieldHargaTotalRaw[$acc_key];
+            }
+        }
+
+        if(!$err){
+            return response()->json([
+                'status' => 'gagal',
+                'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+            ]);
+        }
+
+        $acc[count($acc)] = [
+            'td_acc'    => '301.01',
+            'td_posisi' => 'D',
+            'value'     => $total
+        ];
       }
-
-      if(!$err){
-          return response()->json([
-              'status' => 'gagal',
-              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
-          ]);
-      }
-
-      $acc[count($acc)] = [
-          'td_acc'    => '301.01',
-          'td_posisi' => 'D',
-          'value'     => $total
-      ];
 
       //update to table d_purchasingreturn
       $data_header = d_purchasingreturn::find($request->idReturn);
@@ -672,7 +678,9 @@ class ReturnPembelianController extends Controller
 
     $jrn = DB::table('d_jurnal')->where('jurnal_ref', $request->codeReturn)->select('*')->first();
 
-    $state_jurnal = _updateJournal_self_detail($request->codeReturn, 'MM', $jrn->tanggal_jurnal, $jrn->keterangan, $acc);
+    if(jurnal_setting()->allow_jurnal_to_execute){
+      $state_jurnal = _updateJournal_self_detail($request->codeReturn, 'MM', $jrn->tanggal_jurnal, $jrn->keterangan, $acc);
+    }
 
     return response()->json([
           'status' => 'sukses',

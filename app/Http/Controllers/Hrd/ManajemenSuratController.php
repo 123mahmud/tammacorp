@@ -405,44 +405,7 @@ class ManajemenSuratController extends Controller
             $id_awal = $max_id;
         }
 
-        switch ($month) {
-            case '01':
-                $month_kurawal = 'I';
-                break;
-            case '02':
-                $month_kurawal = 'II';
-                break;
-            case '03':
-                $month_kurawal = 'III';
-                break;
-            case '04':
-                $month_kurawal = 'IV';
-                break;
-            case '05':
-                $month_kurawal = 'V';
-                break;
-            case '06':
-                $month_kurawal = 'VI';
-                break;
-            case '07':
-                $month_kurawal = 'VII';
-                break;
-            case '08':
-                $month_kurawal = 'VIII';
-                break;
-            case '09':
-                $month_kurawal = 'IX';
-                break;
-            case '10':
-                $month_kurawal = 'X';
-                break;
-            case '11':
-                $month_kurawal = 'XI';
-                break;
-            case '12':
-                $month_kurawal = 'XII';
-                break;
-        }
+        $month_kurawal = $this->convertMonthToGreek($month);
 
         $kode = $id_awal.'/STT/HRD/'.$month_kurawal.'/'.$year;
 
@@ -470,10 +433,11 @@ class ManajemenSuratController extends Controller
         $table1 = DB::table('d_form_overhandle')
         ->insert([
             'foh_id' => $max_id,
+            'fohdt_id' => $max_id,
             'foh_surat' => $request->kode,
-            'foh_karyawan1' => $request->karyawan1,
+            
             'foh_tugas' => $request->tugas,
-            'foh_karyawan2' => $request->karyawan2,
+            
             'foh_awal_tanggal' => $tgl_awal,
             'foh_akhir_tanggal' => $tgl_akhir,
             'foh_dibuat_di' => $request->dibuat,
@@ -483,12 +447,12 @@ class ManajemenSuratController extends Controller
         $table2 = DB::table('d_form_overhandle_dt')
         ->insert([
             'fohdt_id' => $max_id,
-            'fohdt_karyawan1' => $request->karyawan1,
+            
             'fohdt_nama1' => $request->nama1,
             'fohdt_alamat1' => $request->alamat1,
             'fohdt_ktp1' => $request->ktp1,
             'fohdt_nik1' => $request->nik1,
-            'fohdt_karyawan2' => $request->karyawan2,
+            
             'fohdt_nama2' => $request->nama2,
             'fohdt_alamat2' => $request->alamat2,
             'fohdt_ktp2' => $request->ktp2,
@@ -497,10 +461,34 @@ class ManajemenSuratController extends Controller
             'fohdt_posisi2' => $request->posisi2
 
         ]);
+
+        $month = date('m');
+
+        $year = date('Y');
+
+        $max_idx = $max_id+1;
+
+        if($max_idx < 10){
+            $id_awal = '00'.$max_idx;
+        } elseif($max_idx < 100){
+            $id_awal = '0'.$max_idx;
+        } else {
+            $id_awal = $max_idx;
+        }
+
+        $month_kurawal = $this->convertMonthToGreek($month);
+
+        $kode = array();
+
+        $kode[] = $id_awal.'/STT/HRD/'.$month_kurawal.'/'.$year;
+
+        return Response::json($kode);
+
     }
     public function form_overhandle_datatable(){
         $list = DB::table('d_form_overhandle')->select('foh_id', 'foh_surat', 'foh_tanggal', 'fohdt_nama1', 'fohdt_nama2')
-        ->join('d_form_overhandle_dt', 'd_form_overhandle.foh_karyawan1', '=', 'd_form_overhandle_dt.fohdt_karyawan1')
+        ->join('d_form_overhandle_dt', 'd_form_overhandle.foh_id', '=', 'd_form_overhandle_dt.fohdt_id')
+        ->orderBy('foh_id', 'DESC')
         ->get();
 
         $data = collect($list);
@@ -557,7 +545,7 @@ class ManajemenSuratController extends Controller
          'fohdt_posisi1',
          'fohdt_nik2',
          'fohdt_nik1')
-        ->join('d_form_overhandle_dt', 'd_form_overhandle.foh_karyawan1', '=', 'd_form_overhandle_dt.fohdt_karyawan1')
+        ->join('d_form_overhandle_dt', 'd_form_overhandle.foh_id', '=', 'd_form_overhandle_dt.fohdt_id')
         ->where('foh_id', $id)
         ->get();
 
@@ -584,10 +572,36 @@ class ManajemenSuratController extends Controller
         $data = DB::table('d_form_overhandle')->where('foh_id', $id)->delete();
         $data1 = DB::table('d_form_overhandle_dt')->where('fohdt_id', $id)->delete();
 
+        $id = DB::table('d_form_overhandle')->select('foh_id')->max('foh_id');
+
+        $max_id = $id+1;
+
+        $month = date('m');
+
+        $year = date('Y');
+
+        if($max_id < 10){
+            $id_awal = '00'.$max_id;
+        } elseif($max_id < 100){
+            $id_awal = '0'.$max_id;
+        } else {
+            $id_awal = $max_id;
+        }
+
+        $month_kurawal = $this->convertMonthToGreek($month);
+
+        $kode = array();
+
+        $kode[] = $id_awal.'/STT/HRD/'.$month_kurawal.'/'.$year;
+
+        return Response::json($kode);
+
     }
     public function form_permintaan_datatable(){
 
-        $list = DB::table('d_permintaan_karyawan_baru')->select('pkb_id', 'pkb_departement', 'pkb_tgl_pengujian', 'pkb_tgl_masuk')->get();
+        $list = DB::table('d_permintaan_karyawan_baru')->select('pkb_id', 'pkb_departement', 'pkb_tgl_pengujian', 'pkb_tgl_masuk')
+        ->orderBy('pkb_id', 'DESC')
+        ->get();
 
         $data = collect($list);
 
@@ -617,13 +631,170 @@ class ManajemenSuratController extends Controller
         return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan_print', ['daita' => $data]);
     }
     public function form_keterangan_kerja(){
-        return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja');
+        $karyawan = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_alamat', 'c_posisi', 'c_lahir')
+        ->get();
+
+        $id = DB::table('d_form_keterangan_kerja')->select('fkj_id')->max('fkj_id');
+
+        $max_id = $id+1;
+
+        $month = date('m');
+
+        $bulan = $this->convertMonthToGreek($month);
+
+        $tahun = date('Y');
+
+        if($max_id < 10){
+            $kode_awal = '00'.$max_id;
+        } elseif($max_id < 100){
+            $kode_awal = '0'.$max_id;
+        } else {
+            $kode_awal = $max_id;
+        }
+
+        $kode  = $kode_awal.'/SKK-HRD/'.$bulan.'/'.$tahun;
+
+        // return $kode;
+
+        return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja', ['pegawai' => $karyawan, 'kode_surat' => $kode]);
     }
-    public function form_keterangan_kerja_print(){
-        return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja_print');
+    public function form_keterangan_kerja_print($id){
+        $list = DB::table('d_form_keterangan_kerja')
+        ->select('fkj_id', 'fkj_kode', 'fkj_tanggal_awal', 'fkj_tanggal_akhir', 'fkjdt_nama1', 'fkjdt_nama2', 'fkjdt_jabatan1', 'fkjdt_alamat1', 'fkjdt_alamat2', 'fkjdt_jk2', 'fkjdt_ttl2', 'fkjdt_posisi2')
+        ->join('d_form_keterangan_kerja_dt', 'd_form_keterangan_kerja.fkj_id' ,'=', 'd_form_keterangan_kerja_dt.fkjdt_id')
+        ->where('fkj_id', $id)
+        ->get();
+
+        // return $list;
+        return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja_print', ['daita' => $list]);
+    }
+    public function form_keterangan_kerja_autocomplete(Request $request){
+        // return $request->id_karyawan1;
+        $karyawan = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_ktp', 'c_alamat', 'c_posisi', 'c_lahir')
+        ->where('m_pegawai_man.c_id', $request->karyawan1)
+        ->get();
+
+        return $karyawan;
+    }
+    public function form_keterangan_kerja_autocomplete2(Request $request){
+        // return $request->id_karyawan1;
+        $karyawan = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_ktp', 'c_alamat', 'c_posisi', 'c_lahir')
+        ->where('m_pegawai_man.c_id', $request->karyawan2)
+        ->get();
+
+        return $karyawan;
+    }
+    public function form_keterangan_kerja_tambah(Request $request){
+        $id = DB::table('d_form_keterangan_kerja')->select('fkj_id')->max('fkj_id');
+
+        $max_id = $id+1;
+
+        // return $request;
+
+        $tgl_awal = date("Y-m-d", strtotime($request->tgl_awal));
+        $tgl_akhir = date("Y-m-d", strtotime($request->tgl_akhir));
+
+        $insert = DB::table('d_form_keterangan_kerja')
+        ->insert([
+            'fkj_id' => $max_id,
+            'fkjdt_id' => $max_id,
+            'fkj_kode' => $request->kode,
+            'fkj_tanggal_awal' => $tgl_awal,
+            'fkj_tanggal_akhir' => $tgl_akhir
+        ]);
+
+        $insert2 = DB::table('d_form_keterangan_kerja_dt')
+        ->insert([
+            'fkjdt_id' => $max_id,
+            'fkjdt_nama1' => $request->nama1,
+            'fkjdt_jabatan1' => $request->posisi1,
+            'fkjdt_alamat1' => $request->alamat1,
+            'fkjdt_nama2' => $request->nama2,
+            'fkjdt_jk2' => $request->jk2,
+            'fkjdt_ttl2' => $request->ttl2,
+            'fkjdt_alamat2' => $request->alamat2,
+            'fkjdt_posisi2' => $request->posisi2
+        ]);
+        $month = date('m');
+
+        $year = date('Y');
+
+        $max_idx = $max_id+1;
+
+        if($max_idx < 10){
+            $id_awal = '00'.$max_idx;
+        } elseif($max_idx < 100){
+            $id_awal = '0'.$max_idx;
+        } else {
+            $id_awal = $max_idx;
+        }
+
+        $month_kurawal = $this->convertMonthToGreek($month);
+
+        $kode_surat_keterangan = array();
+
+        $kode_surat_keterangan[] = $id_awal.'/SKK-HRD/'.$month_kurawal.'/'.$year;
+
+        return Response::json($kode_surat_keterangan);
     }
     public function form_application_print(){
         return view('hrd/manajemensurat/surat/form_application/form_application');
+    }
+    public function form_keterangan_kerja_datatable(){
+        $list = DB::table('d_form_keterangan_kerja')->select('fkj_id', 'fkj_kode', 'fkjdt_nama1', 'fkjdt_nama2', 'd_form_keterangan_kerja.CREATED_AT')
+        ->join('d_form_keterangan_kerja_dt', 'd_form_keterangan_kerja.fkjdt_id', '=', 'd_form_keterangan_kerja_dt.fkjdt_id')
+        ->orderBy('fkj_id', 'DESC')
+        ->get();
+
+        $data = collect($list);
+
+        setlocale(LC_ALL, "id_ID");
+
+        return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('aksi', function($data){
+            return  '<div class="btn-group btn-group-sm">'.
+                        '<a href="'.url('hrd/manajemensurat/form_keterangan_kerja_print/'.$data->fkj_id).'" target="_blank" class="btn btn-info"><i class="fa fa-print"></i></a>'.
+                        '<button class="btn btn-danger btn-hapus" onclick="hapus('. $data->fkj_id.')" type="button"><i class="fa fa-trash-o"></i></button>'.
+                    '</div>';
+        })
+        ->addColumn('tanggal_buat', function($data){
+            return strftime("%A, %e %B %Y %H:%M:%S", strtotime($data->CREATED_AT));
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+    }
+    public function form_keterangan_kerja_hapus($id){
+        $data = DB::table('d_form_keterangan_kerja')->where('fkj_id', $id)->delete();
+        $data1 = DB::table('d_form_keterangan_kerja_dt')->where('fkjdt_id', $id)->delete();
+
+        $id = DB::table('d_form_keterangan_kerja')->select('fkj_id')->max('fkj_id');
+
+        $max_id = $id+1;
+
+        $month = date('m');
+
+        $bulan = $this->convertMonthToGreek($month);
+
+        $tahun = date('Y');
+
+        if($max_id < 10){
+            $kode_awal = '00'.$max_id;
+        } elseif($max_id < 100){
+            $kode_awal = '0'.$max_id;
+        } else {
+            $kode_awal = $max_id;
+        }
+
+        $kode  = $kode_awal.'/SKK-HRD/'.$bulan.'/'.$tahun;
+
+        return Response::json($kode);
     }
     public function convertMonthToGreek($bulan)
     {
@@ -670,7 +841,7 @@ class ManajemenSuratController extends Controller
     }
     public function tambah_form_permintaan(Request $request){
         // return $request;
-        $max_id = DB::table('d_permintaan_karyawan_baru')->select('pkb_id')->max('pkb_id');
+        $max_id = DB::table('d_form_permintaan_karyawan_baru')->select('pkb_id')->max('pkb_id');
 
         $id = $max_id+1;
 
@@ -685,8 +856,9 @@ class ManajemenSuratController extends Controller
 
         // return $gaji;
 
-        $data = DB::table('d_permintaan_karyawan_baru')->insert([
+        $data = DB::table('d_form_permintaan_karyawan_baru')->insert([
             'pkb_id' => $id,
+            'pkbdt_id' => $id,
             'pkb_departement' => $request->department,
             'pkb_tgl_pengujian' => $tgl_pengujian,
             'pkb_tgl_masuk' => $tgl_masuk,
@@ -705,7 +877,7 @@ class ManajemenSuratController extends Controller
         ]);
     }
     public function hapus_form_permintaan($id){
-        $data = DB::table('d_permintaan_karyawan_baru')->where('pkb_id', $id)->delete();
+        $data = DB::table('d_form_permintaan_karyawan_baru')->where('pkb_id', $id)->delete();
 
         // return redirect('hrd.manajemensurat.surat.form_permintaan.form_permintaan');
     }

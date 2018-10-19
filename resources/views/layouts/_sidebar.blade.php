@@ -337,7 +337,7 @@
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Pembayaran Hutang','ma_read'))
-                                        Pembayaran Hutang
+                                        Pelunasan Hutang
                                     @endif
 
                             </span>
@@ -383,7 +383,7 @@
                                 {{-- @if(Auth::user()->punyaAkses('Return Pembelian','ma_read')) --}}
                                     <li class="{{ Request::is('purchasing/pembayaran_hutang') ? 'active' : '' || Request::is('purchasing/pembayaran_hutang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/pembayaran_hutang') }}"><span
-                                                    class="submenu-title">Pembayaran Hutang</span><span class="hidden">Purchasing</span></a>
+                                                    class="submenu-title">Pelunasan Hutang</span><span class="hidden">Purchasing</span></a>
                                     </li>
                             </ul>
                         </li>
@@ -656,6 +656,10 @@
                                         Mutasi Stock & Retail
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Penerimaan Piutang','ma_read'))
+                                        Penerimaan Piutang
+                                    @endif
+
                             </span>
 
                             </a>
@@ -680,6 +684,14 @@
                                     <li class="{{ Request::is('penjualan/POSgrosir/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/POSgrosir/index') }}"><span
                                                     class="submenu-title">POS Penjualan Grosir / Online</span><span
+                                                    class="hidden">Penjualan</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Penerimaan Piutang','ma_read'))
+                                    <li class="{{ Request::is('penjualan/penerimaan_piutang/*') ? 'active' : ''}}"><a
+                                                href="{{ url('/penjualan/penerimaan_piutang') }}"><span
+                                                    class="submenu-title">Penerimaan Piutang</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif

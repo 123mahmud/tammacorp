@@ -154,6 +154,7 @@
                 message:"Data Berhasil Dihapus"
               });
               nav_table();
+              $('#kode').val(response);
             },
             error:function(response){
               iziToast.error({
@@ -164,11 +165,6 @@
           });
         }
 
-  $(document).ready(function(){
-    
-        $('.input-daterange').datepicker({
-          'format': 'dd-mm-yyyy',
-        });
     $('#karyawan1').on('change', function(){
       $('.btn-simpan').attr("disabled", true);
       var id_karyawan1 = $('#karyawan1').val();
@@ -243,8 +239,10 @@
         url : baseUrl + '/hrd/manajemensurat/form_overhandle_tambah',
         dataType : "JSON",
         mathod:"GET",
+        async: false,
         data: forum_overhandle,
         success:function(response){
+          // return response;
           $('#forum_overhandle')[0].reset();
           $('#posisi1').val('');
           $('#nama1').val('');
@@ -256,7 +254,9 @@
           $('#alamat2').val('');
           $('#nik2').val('');
           $('#ktp2').val('');
-
+          $('#kode').attr('readonly', false);
+          $('#kode').val(response);
+          $('#kode').attr('readonly', true);
           $("html, body").animate({ scrollTop: 0 }, "slow");
           $('#generalTab').find('a[href="#list-tab"]').click();
           iziToast.success({
@@ -271,8 +271,17 @@
           });
         }
 
-      })
+      });
     });
+
+  $(document).ready(function(){
+    
+        $('.input-daterange').datepicker({
+          'format': 'dd-mm-yyyy',
+        });
+
+
+    
 
   });
 </script> 

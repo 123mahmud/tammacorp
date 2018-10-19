@@ -50,19 +50,21 @@ class pembayaran_hutang_controller extends Controller
 
         $akun = ($request->jenis_pembayaran == 'T') ? $request->akun_bank : $request->akun_kas;
 
-        $acc = [
-            [
-                'td_acc'    => $akun,
-                'td_posisi' => 'K',
-                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
-            ],
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $acc = [
+                [
+                    'td_acc'    => $akun,
+                    'td_posisi' => 'K',
+                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                ],
 
-            [
-                'td_acc'    => '301.01',
-                'td_posisi' => 'D',
-                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
-            ]
-        ];
+                [
+                    'td_acc'    => '301.01',
+                    'td_posisi' => 'D',
+                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                ]
+            ];
+        }
 
     	$cek = (payment::max('payment_id')) ? (payment::max('payment_id') + 1) : 1;
     	$cek2 = payment::where(DB::raw('month(payment_date)'), date('m', strtotime($request->tanggal_pembayaran)))
@@ -95,7 +97,9 @@ class pembayaran_hutang_controller extends Controller
     		'd_pcs_sisapayment'		=> $purchase->d_pcs_total_net - $payment,
     	]);
 
-        $state_jurnal = _initiateJournal_self_detail($no_pp, $state, date('Y-m-d', strtotime($request->tanggal_pembayaran)), $request->keterangan_pembayaran, $acc);
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $state_jurnal = _initiateJournal_self_detail($no_pp, $state, date('Y-m-d', strtotime($request->tanggal_pembayaran)), $request->keterangan_pembayaran, $acc);
+        }
 
     	return json_encode([
     		'status'	=> 'berhasil',
@@ -148,19 +152,21 @@ class pembayaran_hutang_controller extends Controller
 
         $akun = ($request->jenis_pembayaran == 'T') ? $request->akun_bank : $request->akun_kas;
 
-        $acc = [
-            [
-                'td_acc'    => $akun,
-                'td_posisi' => 'K',
-                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
-            ],
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $acc = [
+                [
+                    'td_acc'    => $akun,
+                    'td_posisi' => 'K',
+                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                ],
 
-            [
-                'td_acc'    => '301.01',
-                'td_posisi' => 'D',
-                'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
-            ]
-        ];
+                [
+                    'td_acc'    => '301.01',
+                    'td_posisi' => 'D',
+                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                ]
+            ];
+        }
 
         $state = ($request->jenis_pembayaran == 'T') ? 'BK' : 'KK';
 
@@ -181,7 +187,9 @@ class pembayaran_hutang_controller extends Controller
     		'd_pcs_sisapayment'		=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_pcs_payment + $update_payment),
     	]);
 
-        $state_jurnal = _updateJournal_self_detail($transaksi->first()->payment_code, $state, $transaksi->first()->payment_date, $request->keterangan_pembayaran, $acc);
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $state_jurnal = _updateJournal_self_detail($transaksi->first()->payment_code, $state, $transaksi->first()->payment_date, $request->keterangan_pembayaran, $acc);
+        }
 
     	return json_encode([
     		'status'	=> 'berhasil',
