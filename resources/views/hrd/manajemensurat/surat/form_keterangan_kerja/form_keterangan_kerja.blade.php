@@ -85,12 +85,12 @@
   $.extend($.fn.dataTableExt.oStdClasses, extensions);
   // Used when bJQueryUI is true
   $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-  $('#tbl_jabatan').DataTable({
+  $('#tabel_keterangan').DataTable({
     processing: true,
     // responsive:true,
     serverSide: true,
     ajax: {
-      url: '{{ url("hrd/datajabatan/data-jabatan") }}',
+      url: '{{ url("hrd/manajemensurat/form_keterangan_kerja_datatable") }}',
     },
     columnDefs: [
       {
@@ -99,10 +99,12 @@
       },
     ],
     "columns": [
-      { "data": "kode" },
-      { "data": "c_posisi" },
-      { "data": "c_divisi" },
-      { "data": "action" },
+      { "data": "DT_Row_Index" },
+      { "data": "tanggal_buat"},
+      { "data": "fkj_kode" },
+      { "data": "fkjdt_nama1" },
+      { "data": "fkjdt_nama2"},
+      { "data": "aksi" }
     ],
     "responsive": true,
     "pageLength": 10,
@@ -127,13 +129,127 @@
 
   $('.select2').select2();
 
-  $(document).ready(function(){
-    
-        $('.input-daterange').datepicker({
-          'format': 'dd-mm-yyyy',
-          changeMonth : true
+
+  $('.input-daterange').datepicker({
+    'format': 'dd-mm-yyyy',
+    changeMonth : true
+  });
+
+  function nav_table(){
+    $('#tabel_keterangan').DataTable().ajax.reload();
+  }
+
+  $('a[href="#list-tab"]').on('click', function(){
+    nav_table();
+  });
+
+  function hapus(id){
+    $.ajax({
+      url: baseUrl+'/hrd/manajemensurat/form_keterangan_kerja_hapus/'+id,
+      dataType:"JSON",
+      async:false,
+      data:{
+        "id":id,
+        "method":"DELETE",
+        "_token":"{{csrf_token()}}"
+      },
+      success:function(response){
+        iziToast.success({
+          title:"Sukses!",
+          message:"Data Berhasil Dihapus"
         });
-      
+        $('#kode').attr('readonly', false);
+        $('#kode').val(response);
+        $('#kode').attr('readonly', true);
+        nav_table();
+      },
+      error:function(response){
+        iziToast.error({
+          title:"Gagal!",
+          message:"Data Gagal Dihapus"
+        });
+      }
+
+    })
+  }
+
+  $('#karyawan1').on('change', function(){
+    var karyawan1 = $('#karyawan1').val();
+    $('.btn-simpan').attr('disabled', true);
+    $.ajax({
+      url : baseUrl + '/hrd/manajemensurat/form_keterangan_kerja_autocomplete',
+      dataType : "JSON",
+      data : {karyawan1},
+      success : function(response){
+        $('.btn-simpan').attr('disabled', false);
+        $('#nama1').val(response[0].c_nama);
+        $('#posisi1').val(response[0].c_posisi);
+        $('#alamat1').val(response[0].c_alamat);
+      },
+      error: function(response){
+        $('.btn-simpan').attr('disabled', true);
+      }
+    })
+
+  });
+
+  $('#karyawan2').on('change', function(){
+    var karyawan2 = $('#karyawan2').val();
+    $('.btn-simpan').attr('disabled', true);
+    $.ajax({
+      url : baseUrl + '/hrd/manajemensurat/form_keterangan_kerja_autocomplete2',
+      dataType : "JSON",
+      data : {karyawan2},
+      success : function(response){
+        $('.btn-simpan').attr('disabled', false);
+        $('#nama2').val(response[0].c_nama);
+        $('#posisi2').val(response[0].c_posisi);
+        $('#alamat2').val(response[0].c_alamat);
+        $('#ttl2').val(response[0].c_lahir);
+      },
+      error: function(response){
+        $('.btn-simpan').attr('disabled', true);
+      }
+    })
+
+  });
+
+  $('.btn-simpan').on('click', function(){
+    var forum_keterangan_kerja = $('#forum_keterangan_kerja').serialize();
+
+    $.ajax({
+
+      url: baseUrl+'/hrd/manajemensurat/form_keterangan_kerja_tambah',
+      dataType: "JSON",
+      data: forum_keterangan_kerja,
+      success:function(response){
+        
+        $('#forum_keterangan_kerja')[0].reset();
+        $('#nama1').val('');
+        $('#posisi1').val('');
+        $('#alamat1').val('');
+        $('#nama2').val('');
+        $('#posisi2').val('');
+        $('#alamat2').val('');
+        $('#ttl2').val('');
+        $('#kode').attr('readonly', false);
+        $('#kode').val(response[0]);
+        $('#kode').attr('readonly', true);
+        $('#generalTab').find('a[href="#list-tab"]').click();
+        $('html, body').animate({scrollTop:0},"slow");
+        iziToast.success({
+          title:"Sukses!",
+          message:"Data Berhasil Disimpan"
+        });
+      },
+      error:function(response){
+        iziToast.error({
+          title:"Gagal!",
+          message: "Data Gagal Disimpan"
+        });
+      }
+
+    });
   });
 </script> 
 @endsection
