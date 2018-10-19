@@ -34,7 +34,7 @@ class RencanaBahanController extends Controller
       $tanggal1 = date('Y-m-d',strtotime($tgl1));
       $tanggal2 = date('Y-m-d',strtotime($tgl2));
 
-      $tanggalMenti1 = date('Y-m-d '.$menit ,strtotime($tgl1));
+      $tanggalMenit1 = date('Y-m-d '.$menit ,strtotime($tgl1));
       $tanggalMenit2 = date('Y-m-d '.$menit ,strtotime($tgl2));
 
       $dataHeader = spk_formula::join('d_spk', 'spk_formula.fr_spk', '=', 'd_spk.spk_id')
@@ -56,7 +56,7 @@ class RencanaBahanController extends Controller
                     DB::raw("IFNULL( 
                               (SELECT SUM(d_pcspdt_qtyconfirm) 
                                 FROM d_purchasingplan_dt 
-                                WHERE d_pcspdt_created BETWEEN '".$tanggalMenti1."' AND '".$tanggalMenit2."'
+                                WHERE d_pcspdt_created BETWEEN '".$tanggalMenit1."' AND '".$tanggalMenit2."'
                                 AND d_pcspdt_item = item_id) ,'0') 
                                 as qtyOrderPlan")
                 )
@@ -151,7 +151,7 @@ class RencanaBahanController extends Controller
     public function prosesPurchasePlan(Request $request)
     {
       $menit = Carbon::now('Asia/Jakarta')->format('H:i:s');
-      $tanggalMenti1 = date('Y-m-d '.$menit ,strtotime($request->tgl1));
+      $tanggalMenit1 = date('Y-m-d '.$menit ,strtotime($request->tgl1));
       $tanggalMenit2 = date('Y-m-d '.$menit ,strtotime($request->tgl2));
 
       $sup = DB::table('m_item')->select('i_sup_list')->where('i_id', $request->id)->first();
@@ -177,7 +177,7 @@ class RencanaBahanController extends Controller
                         DB::raw("IFNULL( 
                                   (SELECT SUM(d_pcspdt_qtyconfirm) 
                                     FROM d_purchasingplan_dt 
-                                    WHERE d_pcspdt_created BETWEEN '".$tanggalMenti1."' AND '".$tanggalMenti2."'
+                                    WHERE d_pcspdt_created BETWEEN '".$tanggalMenit1."' AND '".$tanggalMenit2."'
                                     AND d_pcspdt_item = item_id) ,'0') 
                                     as qtyOrderPlan")
                     )
@@ -246,7 +246,7 @@ class RencanaBahanController extends Controller
     public function suggestItem(Request $request)
     {
       $menit = Carbon::now('Asia/Jakarta')->format('H:i:s');
-      $tanggalMenti1 = date('Y-m-d '.$menit ,strtotime($request->tgl1));
+      $tanggalMenit1 = date('Y-m-d '.$menit ,strtotime($request->tgl1));
       $tanggalMenit2 = date('Y-m-d '.$menit ,strtotime($request->tgl2));
 
       $item = DB::table('d_supplier')->select('s_item_list')->where('s_id', $request->idsup)->first();
@@ -285,7 +285,7 @@ class RencanaBahanController extends Controller
                                 DB::raw("IFNULL( 
                                         (SELECT SUM(d_pcspdt_qtyconfirm) 
                                           FROM d_purchasingplan_dt 
-                                          WHERE d_pcspdt_created BETWEEN '".$tanggalMenti1."' AND '".$tanggalMenti2."'
+                                          WHERE d_pcspdt_created BETWEEN '".$tanggalMenit1."' AND '".$tanggalMenit2."'
                                           AND d_pcspdt_item = item_id) ,'0') 
                                           as qtyOrderPlan")
                               )
