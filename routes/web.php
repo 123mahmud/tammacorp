@@ -746,6 +746,45 @@ Route::group(['middleware' => 'auth'], function () {
 
         // End Pembayaran Hutang
 
+        // Penerimaan Piutang
+
+            Route::get('/penjualan/penerimaan_piutang', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@index',
+                'as'    => 'penerimaan_piutang.index'
+            ]);
+
+            Route::get('/penjualan/penerimaan_piutang/form-resource', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@form_resource',
+                'as'    => 'penerimaan_piutang.form_resource'
+            ]);
+
+            Route::get('/penjualan/penerimaan_piutang/get-po', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@get_po',
+                'as'    => 'penerimaan_piutang.get_po'
+            ]);
+
+            Route::get('/penjualan/penerimaan_piutang/get-transaksi', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@get_transaksi',
+                'as'    => 'penerimaan_piutang.get_transaksi'
+            ]);
+
+            Route::post('/penjualan/penerimaan_piutang/save', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@save',
+                'as'    => 'penerimaan_piutang.save'
+            ]);
+
+            Route::post('/penjualan/penerimaan_piutang/update', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@update',
+                'as'    => 'penerimaan_piutang.update'
+            ]);
+
+            Route::post('/penjualan/penerimaan_piutang/delete', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@delete',
+                'as'    => 'penerimaan_piutang.delete'
+            ]);
+
+        // End Penerimaan Piutang
+
         // Master Transaksi
 
             Route::get('master/keuangan/master_transaksi', [

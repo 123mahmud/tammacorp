@@ -78,7 +78,7 @@ Vue.component('data-list',{
         </div>
 
         <div class="col-md-4 col-md-offset-2 text-right" style="padding:0px 10px; background: none;">
-          <input type="text" class="form-control text-right" :value="dataTab.length+' Data Ditemukan'" style="height: 0.9em; font-size: 8pt; border: 0px; border-bottom: 1px solid #ccc; background:white; color: #888;" disabled>
+          <input type="text" class="form-control text-right" :value="'Berhasil Menemukan '+dataTab.length+' Data, Dari Total Data '+data_resource.length" style="height: 0.9em; font-size: 8pt; border: 0px; border-bottom: 1px solid #ccc; background:white; color: #888;" disabled>
         </div>
 
         <div class="col-md-12" style="padding: 0px 10px 0px 10px; background: none; height: 400px; overflow-y: scroll; margin-top: 8px;">
