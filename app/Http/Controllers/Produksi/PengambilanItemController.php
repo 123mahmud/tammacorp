@@ -324,6 +324,17 @@ class PengambilanItemController extends Controller
 
     public function print()
     {
+
+        // nota do
+        $year = carbon::now()->format('y');
+        $month = carbon::now()->format('m');
+        $date = carbon::now()->format('d');
+
+        $maxiddo = d_delivery_order::select('do_id')->max('do_id') + 1;
+
+        $nota_do = 'DO' . $year . $month . $date . '-' . '000' . '-' . $maxiddo;
+        // end nota do
+        // dd($nota_do);
         $data = d_productresult_dt::select('m_item.i_code',
             'm_item.i_name',
             'd_productresult_dt.prdt_qty',
@@ -348,7 +359,7 @@ class PengambilanItemController extends Controller
             ->get()->toArray();
         // return $data;
         // return $total;
-        return view('produksi.PemSuratJalan.print', compact('data', 'total'));
+        return view('produksi.PemSuratJalan.print', compact('data', 'total','nota_do'));
     }
 
 }

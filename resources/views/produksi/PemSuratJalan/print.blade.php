@@ -125,7 +125,7 @@
 							Gudang Tujuan : <label class="bold"></label><br>
 						</td>
 						<td>
-							No. Bukti : <label class="bold"></label><br>
+							No. Bukti : <label class="bold">{{ $nota_do }}</label><br>
 							Tanggal : <label class="bold">{{date('d M Y')}}</label><br>
 							No. Permintaan : <label class="bold"></label>
 						</td>
