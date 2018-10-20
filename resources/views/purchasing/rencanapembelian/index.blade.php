@@ -360,7 +360,7 @@
       close: false,
       overlay: true,
       displayMode: 'once',
-      title: 'Update data',
+      title: 'Hapus data',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [

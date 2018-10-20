@@ -390,7 +390,7 @@ class RencanaBahanController extends Controller
           //get prev cost
           $prevCost = DB::table('d_stock_mutation')
                           ->select('sm_hpp', 'sm_qty')
-                          ->where('sm_item', '=', $request->itemid)
+                          ->where('sm_item', '=', $request->itemid[$i])
                           ->where('sm_mutcat', '=', "14")
                           ->orderBy('sm_date', 'desc')
                           ->limit(1)
@@ -398,7 +398,7 @@ class RencanaBahanController extends Controller
 
           if ($prevCost == null) 
           {
-            $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', '=', $request->itemid)->first();
+            $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', '=', $request->itemid[$i])->first();
             $hargaLalu = $default_cost->m_pbuy1;
           }
           else
