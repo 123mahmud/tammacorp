@@ -82,7 +82,7 @@
                           {{--    {{ $bambang[$i] }} --}}
                             </span>
                         </td>
-                            </tr>
+                    </tr>
                 @endfor
 
 

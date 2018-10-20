@@ -300,25 +300,33 @@ class spkProductionController extends Controller
             $idItem = $val->i_id;
             $prevCost = DB::table('d_stock_mutation')
                 // ->select(DB::raw('MAX(sm_hpp) as hargaPrev'))
-                ->select('sm_hpp', 'sm_qty')
+                ->select('sm_hpp', 'sm_qty','sm_item')
                 ->where('sm_item', '=', $idItem)
                 ->where('sm_mutcat', '=', "14")
                 ->orderBy('sm_date', 'desc')
                 ->limit(1)
-                ->get();
+                ->first();
 
-            foreach ($prevCost as $value) {
-                $hargaLalu[] = $value->sm_hpp;
-                $qty[] = $value->sm_qty;
-            }
+             // foreach ($prevCost as $value) {
+                if (empty($prevCost->sm_hpp)) 
+                  {
+                    $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $idItem)->first();
+                    $hargaLalu[] = $default_cost->m_pbuy1;
+                    $qty[] = 0;
+                    $sm_item[] = $idItem;
+                  }
+                  else
+                  {
+                    $hargaLalu[] = $prevCost->sm_hpp;
+                    $qty[] = $prevCost->sm_qty;
+                    $sm_item[] = $prevCost->sm_item;
+                  }
 
         }
-        // dd($formula[0]['fr_value']);
         for ($i = 0; $i < count($hargaLalu); $i++) {
             $cabangPurnama = $hargaLalu[$i];
             $bambang[] = $formula[$i]['fr_value'] * $cabangPurnama;
         }
-        // dd($bambang);
 
         $ket = $spk[0]->spk_status;
         $id = $spk[0]->spk_id;
