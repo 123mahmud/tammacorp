@@ -315,7 +315,7 @@ class spkProductionController extends Controller
         }
         // dd($formula[0]['fr_value']);
         for ($i = 0; $i < count($hargaLalu); $i++) {
-            $cabangPurnama = $hargaLalu[$i] / $qty[$i];
+            $cabangPurnama = $hargaLalu[$i];
             $bambang[] = $formula[$i]['fr_value'] * $cabangPurnama;
         }
         // dd($bambang);
