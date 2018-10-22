@@ -668,6 +668,8 @@ class ManajemenSuratController extends Controller
         ->get();
 
         // return $list;
+
+        // return $list[0]->fkj_tanggal_awal;
         return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja_print', ['daita' => $list]);
     }
     public function form_keterangan_kerja_autocomplete(Request $request){

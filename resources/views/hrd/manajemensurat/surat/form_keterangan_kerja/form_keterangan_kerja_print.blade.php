@@ -179,7 +179,9 @@
 <body>
 	<div class="div-page-break-after">
 
-
+		@php
+		setlocale(LC_ALL, "id_ID");
+		@endphp
 
 		<div class="btn-print" align="right">
 			<button onclick="javascript:window.print();">Print</button>
@@ -248,7 +250,7 @@
 					<td class="border-bottom-dotted">{{$daita[0]->fkjdt_alamat2}}</td>
 				</tr>
 				<tr>
-					<td colspan="3" style="padding: 30px 5px 10px 5px;">Merupakan karyawan CV. Tamma Robbah Indonesia dari bulan {{$daita[0]->fkj_tanggal_awal}} hingga {{$daita[0]->fkj_tanggal_akhir}} saat ini dengan posisi sebagai {{$daita[0]->fkjdt_posisi2}} </td>
+					<td colspan="3" style="padding: 30px 5px 10px 5px;">Merupakan karyawan CV. Tamma Robbah Indonesia dari bulan {{strftime("%B %Y", strtotime($daita[0]->fkj_tanggal_awal))}} hingga {{strftime("%B %Y", strtotime($daita[0]->fkj_tanggal_akhir))}} saat ini dengan posisi sebagai {{$daita[0]->fkjdt_posisi2}} </td>
 				</tr>
 				<tr>
 					<td colspan="3" style="padding: 10px 5px 10px 5px;">Demikian surat keterangan ini kami buat agar digunakan sebagaimana mestinya. </td>
