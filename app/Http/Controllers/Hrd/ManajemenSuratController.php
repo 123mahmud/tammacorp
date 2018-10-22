@@ -382,11 +382,102 @@ class ManajemenSuratController extends Controller
     //==============================================END KENAIKAN GAJI==========================================================
     
     public function form_laporan_leader(){
-        return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader');
+        $pic = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_posisi')
+        ->get();
+        // return $list;
+
+        return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader', ['pic' => $pic]);
     }
-    public function form_laporan_leader_print(){
+    public function form_laporan_leader_hapus($id){
+        DB::table('d_form_laporan_leader')->where('fll_id', $id)->delete();
+        DB::table('d_form_laporan_leader_dt')->where('fll_id', $id)->delete();
+    }
+    public function form_laporan_leader_autocomplete(Request $request){
+        // return $request;
+
+        $pic = DB::table('m_pegawai_man')
+        ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=' , 'm_jabatan.c_id')
+        ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
+        ->select('m_pegawai_man.c_id', 'c_nama', 'c_posisi', 'c_divisi')
+        ->where('m_pegawai_man.c_id', $request->pic)
+        ->get();
+        // return $list;
+
+        return $pic;
+    }
+    public function form_laporan_leader_tambah(Request $request){
+        // return $request;
+        $id = DB::table('d_form_laporan_leader')->select('fll_id')->max('fll_id');
+
+        $max_id = $id+1;
+
+        $hari = date("Y-m-d", strtotime($request->hari));
+
+        DB::table('d_form_laporan_leader')->insert([
+            'fll_id' => $max_id,
+            'fll_pic' => $request->nama,
+            'fll_hari' => $hari,
+            'fll_divisi' => $request->divisi
+        ]);
+
         
-        return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader_print');
+        for ($i=0; $i < count($request->aktifitas); $i++) { 
+            $idx = DB::table('d_form_laporan_leader_dt')->select('flldt_id')->max('flldt_id');
+
+            $max_idx = $idx+1;
+
+            DB::table('d_form_laporan_leader_dt')->insert([
+                'flldt_id' => $max_idx,
+                'fll_id' => $max_id,
+                'flldt_aktifitas' => $request->aktifitas[$i],
+                'flldt_keterangan' => $request->keterangan[$i]
+            ]);
+        }
+
+        
+    }
+
+    public function form_laporan_leader_datatable(){
+        $list = DB::table('d_form_laporan_leader')->select('fll_id', 'fll_divisi', 'fll_hari', 'fll_pic')
+        ->orderBy('fll_id', 'DESC')
+        ->get();
+
+        $data = collect($list);
+
+        setlocale(LC_ALL, "id_ID");
+
+        return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('aksi', function($data){
+            return  '<div class="btn-group btn-group-sm">'.
+                        '<a href="'.url('hrd/manajemensurat/form_laporan_leader_print/'.$data->fll_id).'" target="_blank" class="btn btn-info"><i class="fa fa-print"></i></a>'.
+                        '<button class="btn btn-danger btn-hapus" onclick="hapus('. $data->fll_id.')" type="button"><i class="fa fa-trash-o"></i></button>'.
+                    '</div>';
+        })
+        ->addColumn('hari', function($data){
+            return strftime("%A, %e %B %Y", strtotime($data->fll_hari));
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+    }
+
+    public function form_laporan_leader_print($id){
+
+        $head = DB::table('d_form_laporan_leader')
+        ->select('fll_hari', 'fll_pic', 'fll_divisi')
+        ->where('fll_id', $id)
+        ->get();
+
+        $list = DB::table('d_form_laporan_leader_dt')
+        ->select('flldt_aktifitas', 'flldt_keterangan')
+        ->where('fll_id', $id)
+        ->get()->toArray();
+        
+        // return $head;
+        // return $list;
+        return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader_print', ['head' => $head, 'list' => $list]);
     }
     public function form_overhandle(){
         $month = date('m');
