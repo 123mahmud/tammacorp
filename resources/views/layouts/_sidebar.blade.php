@@ -978,16 +978,16 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa Progress Terhadap Perencanaan','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}">
+                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa Progress Terhadap Perencanaan">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
-                                                    class="submenu-title">Analisa Progress Terhadap Perencanaan</span><span
+                                                    class="submenu-title">Analisa PTP</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa Net Profit Terhadap OCF','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}">
+                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit Terhadap OCF">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
-                                                    class="submenu-title">Analisa Net Profit Terhadap OCF</span><span
+                                                    class="submenu-title">Analisa Net Profit / OCF</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
@@ -1005,9 +1005,9 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa Common Size dan Index','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}">
+                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa Common Size dan Index">
                                         <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
-                                                    class="submenu-title">Analisa Common Size dan Index</span><span
+                                                    class="submenu-title">Analisa CSI</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
