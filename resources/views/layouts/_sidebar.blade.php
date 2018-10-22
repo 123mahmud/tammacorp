@@ -191,6 +191,10 @@
                                         Data Barang
                                     @endif
 
+                                     @if(Auth::user()->punyaAkses('Data Barang & Supplier','ma_read'))
+                                        Data Relasi Barang & Supplier
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Item Produksi','ma_read'))
                                         Data Item Produksi
                                     @endif
@@ -283,6 +287,13 @@
                                 @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
                                     <li class="{{ Request::is('master/databarang/barang') ? 'active' : '' || Request::is('master/databarang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/databarang/barang') }}"><span class="submenu-title">Data Barang </span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Barang & Supplier','ma_read'))
+                                    <li class="{{ Request::is('master/databrgsup/index') ? 'active' : '' || Request::is('master/databrgsup/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/databrgsup/index') }}"><span class="submenu-title">Data Relasi Barang & Supplier </span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif

@@ -1104,6 +1104,25 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datalowongan/lookup-data-divisi', 'Master\LowonganController@lookup_divisi');
     Route::get('/master/datalowongan/lookup-data-level', 'Master\LowonganController@lookup_level');
     Route::get('/master/datalowongan/lookup-data-jabatan', 'Master\LowonganController@lookup_jabatan');
+ //Master Data Relasi Barang Supplier
+    Route::get('/master/databrgsup/index', 'Master\BrgsupController@index');
+    Route::get('/master/databrgsup/autocomplete-barang', 'Master\BrgsupController@autoCompleteBarang');
+    Route::get('/master/databrgsup/autocomplete-supplier', 'Master\BrgsupController@autoCompleteSupplier');
+    Route::get('/master/databrgsup/index', 'Master\BrgsupController@index');
+    Route::get('/master/databrgsup/datatable-index', 'Master\BrgsupController@get_datatable_index');
+    Route::get('/master/databrgsup/tambah-barang', 'Master\BrgsupController@tambah_barang');
+    Route::post('/master/databrgsup/simpan-relasi-barang', 'Master\BrgsupController@simpan_barang');
+    Route::get('/master/databrgsup/edit-barang', 'Master\BrgsupController@edit_barang');
+    Route::get('/master/databrgsup/detail-barang', 'Master\BrgsupController@detail_barang');
+    Route::post('/master/databrgsup/update-relasi-barang/{id}', 'Master\BrgsupController@update_barang');
+    Route::post('/master/databrgsup/delete-barang', 'Master\BrgsupController@delete_barang');
+    Route::get('/master/databrgsup/datatable-supplier', 'Master\BrgsupController@get_datatable_supplier');
+    Route::get('/master/databrgsup/tambah-supplier', 'Master\BrgsupController@tambah_supplier');
+    Route::post('/master/databrgsup/simpan-relasi-supplier', 'Master\BrgsupController@simpan_supplier');
+    Route::get('/master/databrgsup/edit-supplier', 'Master\BrgsupController@edit_supplier');
+    Route::get('/master/databrgsup/get-form-editsup', 'Master\BrgsupController@get_form_supplier');
+    Route::post('/master/databrgsup/update-relasi-supplier/{id}', 'Master\BrgsupController@update_supplier');
+    Route::post('/master/databrgsup/delete-supplier', 'Master\BrgsupController@delete_supplier');
 //*Data Jabatan*/
     Route::get('/master/datajabatan', 'Master\JabatanController@index');
     Route::get('/master/datajabatan/data-jabatan', 'Master\JabatanController@jabatanData');
