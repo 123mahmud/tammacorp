@@ -504,11 +504,9 @@ class PenerimaanBrgProdController extends Controller
                   ->update(['s_qty' => $stok_akhir_gdgGrosir]);
 
               $sm_detailid = d_stock_mutation::select('sm_detailid')
-                ->where('sm_item',$request->idItemMasuk)
-                ->where('sm_comp','2')
-                ->where('sm_position','2')
+                ->where('sm_stock',$id_stock->s_id)
                 ->max('sm_detailid')+1;
-              // dd($sm_detailid);
+                
               d_stock_mutation::create([
                     'sm_stock' => $id_stock->s_id,
                     'sm_detailid' => $sm_detailid,
