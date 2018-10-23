@@ -31,6 +31,10 @@
     <script src="{{ asset ('assets/script/highcharts-more.js') }}"></script>
     <script src="{{ asset ('assets/script/charts-highchart-pie.js') }}"></script>
     <script src="{{ asset ('assets/script/charts-highchart-more.js') }}"></script>
+    <script src="{{ asset ('assets/script/chartjs/Chart.bundle.js') }}"></script>
+    <script src="{{ asset ('assets/script/chartjs/Chart.bundle.min.js') }}"></script>
+    <script src="{{ asset ('assets/script/chartjs/Chart.js') }}"></script>
+    <script src="{{ asset ('assets/script/chartjs/Chart.min.js') }}"></script>
     <!--CORE JAVASCRIPT-->
     <script src="{{ asset ('assets/script/main.js') }}"></script>
     <script src="{{ asset ('assets/script/timepicker.min.js') }}"></script>
