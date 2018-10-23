@@ -1,5 +1,12 @@
 @extends('main') 
 
+@section('extra_styles')
+<style type="text/css">
+  .vmiddle{
+    vertical-align: middle !important;
+  }
+</style>
+@endsection
 
 @section('content')
 <!--BEGIN PAGE WRAPPER-->
@@ -73,12 +80,12 @@
   $.extend($.fn.dataTableExt.oStdClasses, extensions);
   // Used when bJQueryUI is true
   $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-  $('#tbl_jabatan').DataTable({
+  $('#tabel_laporan_leader').DataTable({
     processing: true,
     // responsive:true,
     serverSide: true,
     ajax: {
-      url: '{{ url("hrd/datajabatan/data-jabatan") }}',
+      url: '{{ url("hrd/manajemensurat/form_laporan_leader_datatable") }}',
     },
     columnDefs: [
       {
@@ -87,10 +94,11 @@
       },
     ],
     "columns": [
-      { "data": "kode" },
-      { "data": "c_posisi" },
-      { "data": "c_divisi" },
-      { "data": "action" },
+      { "data": "DT_Row_Index" },
+      { "data": "hari" },
+      { "data": "fll_pic" },
+      { "data": "fll_divisi"},
+      { "data": "aksi" }
     ],
     "responsive": true,
     "pageLength": 10,
@@ -108,11 +116,94 @@
       }
     }
   });
+
+  function hapus(id){
+    $.ajax({
+      url:baseUrl+'/hrd/manajemensurat/form_laporan_leader_hapus/' +id,
+      data:{
+        "id":id,
+        "method":"delete",
+        "_token": '{{csrf_token()}}'
+    },
+      dataType:"JSON",
+      success:function(response){
+        nav_table();
+        iziToast.success({
+          title:"Sukses!",
+          message:"Data Berhasil Dihapus"
+        });
+      },
+      error:function(response){
+        iziToast.error({
+          title:"Gagal!",
+          message:"Data Gagal Dihapus"
+        });
+      }
+
+    });
+  }
   
   $('.datepicker').datepicker({
     format : 'dd-mm-yyyy'
   });
   $('.select2').select2();
+
+  $('.btn-simpan').on('click', function(){
+    var forum_laporan_leader = $('#forum_laporan_leader').serialize();
+
+    $.ajax({
+      url: baseUrl + '/hrd/manajemensurat/form_laporan_leader_tambah',
+      data: forum_laporan_leader,
+      dataType:"JSON",
+      success:function(response){
+        $('html, body').animate({scrollTop:0}, "slow");
+        $('#generalTab').find('a[href="#list-tab"]').click();
+        $('#forum_laporan_leader')[0].reset();
+        $('#nama').val('');
+        $('#divisi').val('');
+        iziToast.success({
+          title:"Sukses!",
+          message:"Data Berhasil Disimpan"
+        });
+        $('.hapus').click();
+      },
+      error:function(response){
+        iziToast.error({
+          title:"Gagal!",
+          message:"Data Gagal Disimpan"
+        });
+      }
+    });
+  });
+
+  function nav_table(){
+    $('#tabel_laporan_leader').DataTable().ajax.reload();
+  }
+
+  $('a[href="#list-tab"]').on('click', function(){
+    nav_table();
+  });
+
+  $('#pic').on('change', function(){
+    var pic = $('#pic').val();
+
+    $('.btn-simpan').attr('disabled', true);
+
+    $.ajax({
+      url:baseUrl+'/hrd/manajemensurat/form_laporan_leader_autocomplete',
+      data:{pic},
+      dataType:"JSON",
+      success:function(response){
+        $('.btn-simpan').attr('disabled', false);
+        $('#nama').val(response[0].c_nama);
+        $('#divisi').val(response[0].c_divisi);
+      },
+      error:function(response){
+        $('.btn-simpan').attr('disabled', false);
+      }
+    });
+
+  });
 
   $(document).ready(function(){
     var plus_append = 1;
@@ -121,10 +212,10 @@
         plus_append+=1;
         $('#tabel_aktifitas tbody').append(
           '<tr>'+
-            '<td>#</td>'+
-            '<td><textarea class="form-control" rows="3"></textarea></td>'+
-            '<td><textarea class="form-control" rows="3"></textarea></td>'+
-            '<td><button class="btn btn-danger hapus"><i class="fa fa-trash-o"></i></button>'+
+            '<td class="vmiddle">#</td>'+
+            '<td><textarea class="form-control" name="aktifitas[]" rows="3"></textarea></td>'+
+            '<td><textarea class="form-control" name="keterangan[]" rows="3"></textarea></td>'+
+            '<td class="vmiddle"><button type="button" class="btn btn-danger hapus"><i class="fa fa-trash-o"></i></button>'+
           '</tr>'
           );
       } else {
