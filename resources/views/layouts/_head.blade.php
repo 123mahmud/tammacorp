@@ -69,4 +69,8 @@
         .select2-container{
             width: 100% !important;
         }
+
+        .centered-text {
+            text-align: center;
+        }
     </style>
