@@ -418,4 +418,17 @@ class BrgsupController extends Controller
         }
     }
 
+    public function detail_supplier(Request $request)
+    {
+        $data = DB::table('d_supplier_brg')
+                    ->join('d_supplier', 'd_supplier_brg.d_sb_supid', '=', 'd_supplier.s_id')
+                    ->join('m_item', 'd_supplier_brg.d_sb_itemid', '=', 'm_item.i_id')
+                    ->select('d_supplier_brg.*', 'm_item.i_name', 'm_item.i_code', 'd_supplier.s_company', 'd_supplier.s_address')
+                    ->where('d_sb_supid','=',$request->id)->get();
+
+        return response()->json([
+          'data' => $data
+      ]);
+    }
+
 }

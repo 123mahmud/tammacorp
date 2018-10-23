@@ -42,6 +42,7 @@
   </div>
   <!--END PAGE WRAPPER-->
   @include('master.databrgsup.modal-barang')
+  @include('master.databrgsup.modal-supplier')
 </div>
 
 @endsection
@@ -374,6 +375,38 @@
           instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
         }],
       ]
+    });
+  }
+
+  function detailSup(id) 
+  {
+    $.ajax({
+      url : baseUrl + "/master/databrgsup/detail-supplier/",
+      type: "GET",
+      dataType: "JSON",
+      data : {id:id},
+      success: function(data)
+      {
+        var i = randString(5);
+        var key = 1;
+        $('#lblNamaSup').text(data.data[0].s_company);
+        $('#lblAlamatSup').text(data.data[0].s_address);
+        //loop data
+        Object.keys(data.data).forEach(function(){
+          $('#tabel-detail-supplier').append('<tr class="tbl_modal_row" id="row'+i+'">'
+                          +'<td align="center">'+key+'</td>'
+                          +'<td>'+data.data[key-1].i_code+'</td>'
+                          +'<td>'+data.data[key-1].i_name+'</td>'
+                          +'</tr>');
+          key++;  
+          i = randString(5);
+        });
+        $('#modal-supplier').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
     });
   }
 

@@ -46,7 +46,19 @@
             <div id="alert-tab" class="tab-pane fade in active">
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-
+                  <div class="col-md-12 col-sm-12 col-xs-12">  
+                    @if ($message = Session::has('sukses'))
+                      <div class="alert alert-success alert-dismissible">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Sukses!</strong> {{ Session::get('sukses') }}
+                      </div>
+                    @elseif($message = Session::has('gagal'))
+                      <div class="alert alert-danger alert-dismissible">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Gagal!</strong> {{ Session::get('gagal') }}
+                      </div>
+                    @endif
+                  </div>
                   <div class="col-md-2 col-sm-3 col-xs-12">
                     <label class="tebal">Tanggal SPK</label>
                   </div>
