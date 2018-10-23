@@ -927,6 +927,10 @@
                                         Analisa Net Profit Terhadap OCF
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
+                                        Analisa OCF Terhadap Net Profit
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
                                         Analisa Pertumbuhan Aset
                                     @endif
@@ -1002,10 +1006,24 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2b') ? 'active' : '' || Request::is('keuangan/analisaocf/analisa2b/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/analisaocf/analisa2b') }}"><span
+                                                    class="submenu-title">Analisa OCF Terhadap Net Profit</span><span
+                                                    class="hidden">Keuangan</span></a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaaset/analisa3') ? 'active' : '' || Request::is('keuangan/analisaaset/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisaaset/analisa3') }}"><span
+                                    <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/analisaaset/analisa3a') }}"><span
                                                     class="submenu-title">Analisa Pertumbuhan Aset</span><span
+                                                    class="hidden">Keuangan</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Analisa Aset Terhadap Ekuitas','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisaaset/analisa3b') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3b/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/analisaaset/analisa3b') }}"><span
+                                                    class="submenu-title">Analisa Aset Terhadap Ekuitas</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
@@ -1042,6 +1060,13 @@
                                                     class="submenu-title">Analisa ROE</span><span class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisahutangpiutang/analisa9') ? 'active' : '' || Request::is('keuangan/analisahutangpiutang/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/analisahutangpiutang/analisa9') }}"><span
+                                                    class="submenu-title">Analisa Hutang Piutang</span><span class="hidden">Keuangan</span></a>
+                                    </li>
+                                @endif
+                               
                                 @if(Auth::user()->punyaAkses('Konfirmasi Data Pembelian','ma_read'))
                                     <li class="{{ Request::is('keuangan/konfirmasipembelian/konfirmasi-purchase') ? 'active' : '' || Request::is('keuangan/konfirmasipembelian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/konfirmasipembelian/konfirmasi-purchase') }}"><span

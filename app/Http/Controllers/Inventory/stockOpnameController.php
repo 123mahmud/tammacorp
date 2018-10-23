@@ -56,6 +56,7 @@ class stockOpnameController extends Controller
                           'label' => $query->i_code .' - '.$query->i_name,
                           'i_code' => $query->i_code,
                           'i_name' => $query->i_name,
+                          's_qtykw' => number_format($query->s_qty,0,',','.'),
                           's_qty' => $query->s_qty,
                           'm_sname' => $query->m_sname,
                       ];

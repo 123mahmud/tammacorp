@@ -45,14 +45,34 @@ class KeuanganController extends Controller
         return view('/keuangan/analisaprogress/analisa');
     }
 
-    public function analisa2()
+    // public function analisa2()
+    // {
+    //     return view('/keuangan/analisaocf/analisa2');
+    // }
+
+    public function analisa2a()
     {
-        return view('/keuangan/analisaocf/analisa2');
+        return view('/keuangan/analisaocf/analisa2a');
     }
 
-    public function analisa3()
+    public function analisa2b()
     {
-        return view('/keuangan/analisaaset/analisa3');
+        return view('/keuangan/analisaocf/analisa2b');
+    }
+
+    // public function analisa3()
+    // {
+    //     return view('/keuangan/analisaaset/analisa3');
+    // }
+
+    public function analisa3a()
+    {
+        return view('/keuangan/analisaaset/analisa3a');
+    }
+
+    public function analisa3b()
+    {
+        return view('/keuangan/analisaaset/analisa3b');
     }
 
     public function analisa4()
@@ -78,6 +98,11 @@ class KeuanganController extends Controller
     public function analisa8()
     {
         return view('/keuangan/analisaroe/analisa8');
+    }
+
+    public function analisa9()
+    {
+        return view('/keuangan/analisahutangpiutang/analisa9');
     }
 
     public function pembatalanPenerimaan()

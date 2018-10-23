@@ -20,9 +20,9 @@
                          <td>{{$index + 1}}</td>
                          <td>{{$opname->i_code}} - {{$opname->i_name}}</td>
                          <td>{{$opname->i_type}}</td>
-                         <td>Rp.
+                         <td>
                              <span class="pull-right">
-                                 {{ number_format($opname->od_opname,2,',','.')}}
+                                 {{ number_format($opname->od_opname,0,',','.')}}
                              </span>
                          </td>
                          <td>{{$opname->m_sname}}</td>
