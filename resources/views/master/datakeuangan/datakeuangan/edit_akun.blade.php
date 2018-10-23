@@ -105,14 +105,14 @@
                                             <label class="tebal">Group Neraca</label>
                                           </div>
                                           <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                           <select name="group_neraca_detail" id="group_neraca_detail" class="form-control"></select>
+                                           <select name="group_neraca_detail" id="group_neraca_detail" class="form-control select-2"></select>
                                           </div>
 
                                           <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
                                             <label class="tebal">Group Laba Rugi</label>
                                           </div>
                                           <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                            <select name="group_laba_rugi_detail" id="group_laba_rugi_detail" class="form-control"></select>
+                                            <select name="group_laba_rugi_detail" id="group_laba_rugi_detail" class="form-control select-2"></select>
                                           </div>
 
                                           {{-- <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
@@ -156,10 +156,7 @@
 
       generate_neraca_akun();
       generate_laba_rugi_akun();
-
-
-      $("#group_neraca_detail").val('{{$akun->group_neraca}}');
-      $("#group_laba_rugi_detail").val('{{$akun->group_laba_rugi}}');
+      $('.select-2').select2();
       $('#posisi_akun').val('{{$akun->posisi_akun}}');
 
       $('.currency').inputmask("currency", {
@@ -233,10 +230,11 @@
       })
 
       function generate_neraca_akun(identity){
-        html = '';
+        html = '<option value="-">Tidak Memiliki Grup Neraca</option>';
 
         $.each(dataGroupNeraca, function(i, n){
-            html = html +'<option value="'+n.value+'">'+n.text+' ('+n.value+')</option>';
+            selected = (n.value == '{{$akun->group_neraca}}') ? 'selected' : '';
+            html = html +'<option value="'+n.value+'" '+selected+'>'+n.value+' / '+n.text+'</option>';
           })
 
         $("#group_neraca_detail").html(html);
@@ -244,10 +242,11 @@
       }
 
       function generate_laba_rugi_akun(identity){
-        html = '';
+        html = '<option value="-">Tidak Memiliki Grup Laba Rugi</option>';
 
         $.each(dataGroupLabaRugi, function(i, n){
-            html = html +'<option value="'+n.value+'">'+n.text+' ('+n.value+')</option>';
+            selected = (n.value == '{{$akun->group_laba_rugi}}') ? 'selected' : '';
+            html = html +'<option value="'+n.value+'" '+selected+'>'+n.value+' / '+n.text+'</option>';
           })
 
         $("#group_laba_rugi_detail").html(html);

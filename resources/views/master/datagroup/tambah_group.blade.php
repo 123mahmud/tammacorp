@@ -65,15 +65,15 @@
 
                                 </div>
 
-                                <div class="col-md-2 col-sm-3 col-xs-12">
+                               <div class="col-md-2 col-sm-3 col-xs-12">
                                      <label class="tebal">Akun Persediaan</label>
                                </div>
-                               <div class="col-md-4 col-sm-9 col-xs-12">
+                               <div class="col-md-5 col-sm-9 col-xs-12">
                                  <div class="form-group">
-                                     <select name="akun" class="form-control" id="item">
+                                     <select name="akun" class="form-control select-2" id="item">
                                           <option value="">-- Pilih Akun Persediaan</option>
                                        @foreach ($item as $e)
-                                           <option value="{{ $e->id_akun }}">{{ $e->nama_akun }}</option>
+                                           <option value="{{ $e->id_akun }}">{{ $e->id_akun }} - {{ $e->nama_akun }}</option>
                                        @endforeach
                                      </select>
                                  </div>
@@ -83,19 +83,37 @@
 
                                 </div>
 
-                                <div class="col-md-12">
+                               <div class="col-md-2 col-sm-3 col-xs-12">
+                                     <label class="tebal">Akun Beban</label>
+                               </div>
+                               <div class="col-md-5 col-sm-9 col-xs-12">
+                                 <div class="form-group">
+                                     <select name="akun_beban" class="form-control select-2" id="item">
+                                          <option value="">-- Pilih Akun Beban</option>
+                                       @foreach ($beban as $e)
+                                           <option value="{{ $e->id_akun }}">{{ $e->id_akun }} - {{ $e->nama_akun }}</option>
+                                       @endforeach
+                                     </select>
+                                 </div>
+                               </div>
 
-                                </div>
+                               <div class="col-md-12">
+
+                               </div>
+
+                               <div class="col-md-12">
+
+                               </div>
                                 
                                 <div class="col-md-2 col-sm-3 col-xs-12">
                                      <label class="tebal">Akun Penjualan</label>
                                </div>
-                               <div class="col-md-4 col-sm-9 col-xs-12">
+                               <div class="col-md-5 col-sm-9 col-xs-12">
                                  <div class="form-group">
-                                     <select name="akun_penjualan" class="form-control" id="penjualan">
+                                     <select name="akun_penjualan" class="form-control select-2" id="penjualan">
                                       <option value="">-- Pilih Akun Penjualan</option>
                                        @foreach ($penjualan as $e)
-                                           <option value="{{ $e->id_akun }}">{{ $e->nama_akun }}</option>
+                                           <option value="{{ $e->id_akun }}">{{ $e->id_akun }} - {{ $e->nama_akun }}</option>
                                        @endforeach
                                      </select>
                                  </div>
@@ -124,6 +142,8 @@
 @endsection
 @section("extra_scripts")
 <script type="text/javascript">
+
+    $('.select-2').select2();
 
     function simpan (){
       var a = $('#form-save').serialize();

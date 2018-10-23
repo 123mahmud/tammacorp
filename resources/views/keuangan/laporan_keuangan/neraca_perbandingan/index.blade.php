@@ -258,7 +258,7 @@
 
 	        		<td style="text-align: center; padding: 8px 0px; font-weight: bold; border: 1px dotted #888; border-top: 1px dotted #888;" width="13%">
 	        			
-	        			Net Cash Value
+	        			Net Cash
 
 	        		</td>
 	        	</tr>

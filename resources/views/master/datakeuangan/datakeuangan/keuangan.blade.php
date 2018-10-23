@@ -43,12 +43,51 @@ tr.details td.details-control {
             </div>
                     
             <ul id="generalTab" class="nav nav-tabs">
+              <li><a href="#general-tab" data-toggle="tab" {{-- onclick="daftarTabelOrder()" --}}>Data Akun Type General</a></li>
               <li class="active"><a href="#alert-tab" data-toggle="tab">Master Data Akun Keuangan</a></li>
-              <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
-                <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->
+              {{-- <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> --}}
             </ul>
             
             <div id="generalTabContent" class="tab-content responsive">
+
+              <div id="general-tab" class="tab-pane fade in">
+                <div class="row" style="margin-top:-20px;">
+                  <div align="right" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:10px;">
+                    {{-- <a href="{{ url('master/datakeuangan/tambah_akun') }}">
+                      <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
+                        <i class="fa fa-plus" aria-hidden="true">
+                         &nbsp;
+                        </i>Tambah Data
+                      </button>
+                    </a> --}}
+                  </div>
+
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    <div class="table-responsive">
+                      <table class="table tabelan table-hover table-responsive table-bordered" width="100%" cellspacing="0" id="tbl_General">
+                        <thead>
+                          <tr>
+                            {{-- <th class="sorting_disabled"></th> --}}
+                            <th class="wd-15p text-center">Nomor Akun</th>
+                            <th class="wd-15p text-center">Nama Akun</th>
+                            <th class="wd-15p text-center">Kelompok Akun</th>
+                            <th class="wd-15p text-center">Debet/Kredit</th>
+                          </tr>
+                        </thead>
+                       
+                        <tbody>
+
+                        </tbody>
+          
+                      </table> 
+                    </div>
+
+                  </div>
+                
+                </div>
+              </div>
+
               <div id="alert-tab" class="tab-pane fade in active">
                 <div class="row" style="margin-top:-20px;">
                   <div align="right" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:10px;">
@@ -90,6 +129,7 @@ tr.details td.details-control {
                 
                 </div>
               </div>
+
             </div>
 
           </div>
@@ -103,7 +143,7 @@ tr.details td.details-control {
 @section("extra_scripts")
   <script type="text/javascript">
     var extensions = {
-           "sFilterInput": "form-control input-sm",
+          "sFilterInput": "form-control input-sm",
           "sLengthSelect": "form-control input-sm"
       }
       // Used when bJQueryUI is false
@@ -111,55 +151,97 @@ tr.details td.details-control {
       // Used when bJQueryUI is true
       $.extend($.fn.dataTableExt.oJUIClasses, extensions);
       
-  $('#tbl_customer').DataTable({
+      $('#tbl_customer').DataTable({
             processing: true,
             // responsive:true,
             serverSide: true,
             ajax: {
-                url:'{{ route('datatable_akun') }}',
+                url:'{{ route('datatable_akun', 'list=detail') }}',
             },
              columnDefs: [
                   {"className": "center d_id", "targets": 0},
                   {"className": "center", "targets": "_all"}
                 ],
             "columns": [
-            { "data": "id_akun" },
-            { "data": "nama_akun" },
-            { "data": "kelompok_akun" },
-            { "data": "posisi_akun" },
-            { "data": "group_neraca" },
-            { "data": "group_laba_rugi" },
-            { "data": "action" },
+              { "data": "id_akun" },
+              { "data": "nama_akun" },
+              { "data": "kelompok_akun" },
+              { "data": "posisi_akun" },
+              { "data": "group_neraca" },
+              { "data": "group_laba_rugi" },
+              { "data": "action" },
             ],
             "responsive":true,
-
-                  "pageLength": 10,
-                "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-                "language": {
-                    "searchPlaceholder": "Cari Data",
-                    "emptyTable": "Tidak ada data",
-                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                    "sSearch": '<i class="fa fa-search"></i>',
-                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                    "infoEmpty": "",
-                    "paginate": {
-                            "previous": "Sebelumnya",
-                            "next": "Selanjutnya",
-                         }
-                  }
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "language": {
+                "searchPlaceholder": "Cari Data",
+                "emptyTable": "Tidak ada data",
+                "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                "sSearch": '<i class="fa fa-search"></i>',
+                "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                "infoEmpty": "",
+                "paginate": {
+                    "previous": "Sebelumnya",
+                    "next": "Selanjutnya",
+                }
+            }
       });
 
-        function hapus(a) {
-          var parent = $(a).parents('tr');
-          var id = $(parent).find('.d_id').text();
-          console.log(id);
+      $('#tbl_General').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route('datatable_akun', 'list=general') }}',
+            },
+             columnDefs: [
+                  {"className": "center d_id", "targets": 0},
+                  {"className": "center", "targets": "_all"}
+                ],
+            "columns": [
+              { "data": "id_akun" },
+              { "data": "nama_akun" },
+              { "data": "kelompok_akun" },
+              { "data": "posisi_akun" },
+              // { "data": "group_neraca" },
+              // { "data": "group_laba_rugi" },
+              // { "data": "action" },
+            ],
+            "responsive":true,
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "language": {
+                "searchPlaceholder": "Cari Data",
+                "emptyTable": "Tidak ada data",
+                "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                "sSearch": '<i class="fa fa-search"></i>',
+                "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                "infoEmpty": "",
+                "paginate": {
+                    "previous": "Sebelumnya",
+                    "next": "Selanjutnya",
+                }
+            }
+      });
+
+      function hapus(a) {
+        var parent = $(a).parents('tr');
+        var id = $(parent).find('.d_id').text();
+        var cfrm = confirm('Apakah Anda Yakin, Data yang Dihapus Tidak Bisa Dikembalikan ?');
+
+        if(cfrm){
           $.ajax({
                type: "get",
                url: '{{ route('hapus_akun') }}',
                data: {id},
                success: function(data){
-                  if (data.status == 1) {
-                      location.reload();
+                  if(data.status == 1) {
+                    location.reload();
+                  }else if(data.status == 2){
+                    alert('Akun Yang Dipilih Tidak Bisa Dihapus Karena Digunakan Sebagai Data Jurnal...')
+                  }else if(data.status == 2){
+                    alert('Ups. Data Akun Yang Dipilih Tidak Bisa Kami Temukan...')
                   }
                   
                },
@@ -172,27 +254,28 @@ tr.details td.details-control {
                async: false
              });  
         }
+      }
 
 
-         function edit(a) {
-          var parent = $(a).parents('tr');
-          var id = $(parent).find('.d_id').text();
-          console.log(id);
-          $.ajax({
-               type: "get",
-               url: '{{ route('edit_akun') }}',
-               data: {id},
-               success: function(data){
-               },
-               complete:function (argument) {
-                window.location=(this.url)
-               },
-               error: function(){
-               
-               },
-               async: false
-             });  
-        }
+      function edit(a) {
+        var parent = $(a).parents('tr');
+        var id = $(parent).find('.d_id').text();
+        console.log(id);
+        $.ajax({
+             type: "get",
+             url: '{{ route('edit_akun') }}',
+             data: {id},
+             success: function(data){
+             },
+             complete:function (argument) {
+              window.location=(this.url)
+             },
+             error: function(){
+             
+             },
+             async: false
+           });  
+     }
     
 </script>
 @endsection

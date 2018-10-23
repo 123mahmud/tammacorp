@@ -118,7 +118,7 @@
 
                                     <div class="col-md-3 transaksi-wrapper">
                                       <div class="col-md-12 icon">
-                                        <i class="fa fa-file-text" style="color: #00695c;"></i>
+                                        <i class="fa fa-level-up" style="color: #00695c;"></i>
                                       </div>
 
                                       <div class="col-md-12 text">
@@ -258,7 +258,7 @@
                         </div>
 
                         <div class="col-md-9 durasi_bulan_buku_besar">
-                          <select id="akun_1" class="form-control" name="akun_1">
+                          <select id="akun_1" class="form-control select-2" name="akun_1">
                             @foreach($data as $key => $akun)
                               <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                             @endforeach
@@ -273,7 +273,7 @@
                         </div>
 
                         <div class="col-md-9 durasi_bulan_buku_besar">
-                          <select id="akun_2" class="form-control" name="akun_2">
+                          <select id="akun_2" class="form-control select-2" name="akun_2">
                               @foreach($data as $key => $akun)
                                 <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                               @endforeach
@@ -542,6 +542,8 @@
 
 
       // modal buku besar
+
+        $('.select-2').select2();
 
         $('#d2_buku_besar').datepicker( {
             format: "yyyy-mm",
