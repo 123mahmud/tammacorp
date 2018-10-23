@@ -204,8 +204,6 @@
   });
 
   $(document).on('click','#refresh',function(){
-    $('#tanggal1').val('');
-    $('#tanggal2').val('');
     myTable.fnDraw();
   });
 

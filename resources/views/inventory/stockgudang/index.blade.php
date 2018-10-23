@@ -97,8 +97,8 @@
                        {data: 'DT_Row_Index', name: 'DT_Row_Index', orderable: false, width: '5%'},
                        {data: 'item', name: 'item'},
                        {data: 'type', name: 'type'},
-                       {data: 's_qty', name: 's_qty', orderable: false},
-                       {data: 'm_sname', name: 'm_sname', orderable: false},
+                       {data: 's_qty', name: 's_qty'},
+                       {data: 'm_sname', name: 'm_sname'},
                    ],
            });
                 }
