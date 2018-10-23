@@ -471,7 +471,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
     // form laporan leader
     Route::get('/hrd/manajemensurat/form_laporan_leader', 'Hrd\ManajemenSuratController@form_laporan_leader')->name('form_laporan_leader');
-    Route::get('/hrd/manajemensurat/form_laporan_leader_print', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');
+    Route::get('/hrd/manajemensurat/form_laporan_leader_autocomplete', 'Hrd\ManajemenSuratController@form_laporan_leader_autocomplete');
+    Route::get('/hrd/manajemensurat/form_laporan_leader_hapus/{id}', 'Hrd\ManajemenSuratController@form_laporan_leader_hapus');
+    
+    Route::get('/hrd/manajemensurat/form_laporan_leader_datatable', 'Hrd\ManajemenSuratController@form_laporan_leader_datatable');
+    Route::get('/hrd/manajemensurat/form_laporan_leader_print/{id}', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');
+    Route::get('/hrd/manajemensurat/form_laporan_leader_tambah', 'Hrd\ManajemenSuratController@form_laporan_leader_tambah');
     // form overhandle
     Route::get('/hrd/manajemensurat/form_overhandle', 'Hrd\ManajemenSuratController@form_overhandle')->name('form_overhandle');
     Route::get('/hrd/manajemensurat/hapus_form_overhandle/{id}', 'Hrd\ManajemenSuratController@hapus_form_overhandle')->name('hapus_form_overhandle');

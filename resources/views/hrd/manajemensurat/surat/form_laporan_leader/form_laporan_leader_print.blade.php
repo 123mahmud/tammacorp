@@ -175,6 +175,10 @@
 	</style>
 </head>
 <body>
+	@php
+	setlocale(LC_ALL, "id_ID");
+	@endphp
+
 	<div class="btn-print">
 		<button onclick="javascript:window.print();">Print</button>
 	</div>
@@ -190,17 +194,17 @@
 			<tr>
 				<td>PIC</td>
 				<td>:</td>
-				<td>Alpha</td>
+				<td>{{$head[0]->fll_pic}}</td>
 			</tr>
 			<tr>
 				<td>Divisi</td>
 				<td>:</td>
-				<td>1</td>
+				<td>{{$head[0]->fll_divisi}}</td>
 			</tr>
 			<tr>
 				<td>Hari</td>
 				<td>:</td>
-				<td>28 Sep 2018</td>
+				<td>{{strftime("%A, %e %B %Y", strtotime($head[0]->fll_hari))}}</td>
 			</tr>
 			<tr>
 				<td class="italic" colspan="3">(Tuliskan 6 pekerjaan harian rutin dan 6 pekerjaan yang akan di lakukan besok)</td>
@@ -208,7 +212,7 @@
 			
 		</table>
 
-		<table width="100%" style="margin-bottom: 15px;">
+		<table width="100%" style="margin-bottom: 15px;" cellpadding="3px">
 			<thead class="top">
 				<tr>
 					<th width="5%" style="height: 30px;">No</th>
@@ -217,66 +221,22 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td align="center">1</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">2</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">3</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">4</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">5</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">6</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">7</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">8</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">9</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">10</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">11</td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td align="center">12</td>
-					<td></td>
-					<td></td>
-				</tr>
+				@for($i=0;$i<count($list);$i++)
+					<tr>
+						<td align="center">{{$i+1}}</td>
+						<td>{{$list[$i]->flldt_aktifitas}}</td>
+						<td>{{$list[$i]->flldt_keterangan}}</td>
+					</tr>
+				@endfor
+
+
+				@for($k=count($list);$k<12;$k++)
+					<tr>
+						<td align="center">{{$k+1}}</td>
+						<td></td>
+						<td></td>
+					</tr>
+				@endfor
 			</tbody>
 		</table>
 
