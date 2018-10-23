@@ -690,7 +690,7 @@ class ManajemenSuratController extends Controller
     }
     public function form_permintaan_datatable(){
 
-        $list = DB::table('d_permintaan_karyawan_baru')->select('pkb_id', 'pkb_departement', 'pkb_tgl_pengujian', 'pkb_tgl_masuk')
+        $list = DB::table('d_form_permintaan_karyawan_baru')->select('pkb_id', 'pkb_departement', 'pkb_tgl_pengujian', 'pkb_tgl_masuk')
         ->orderBy('pkb_id', 'DESC')
         ->get();
 
@@ -715,7 +715,7 @@ class ManajemenSuratController extends Controller
 
     }
     public function form_permintaan_print($id){
-        $data = DB::table('d_permintaan_karyawan_baru')
+        $data = DB::table('d_form_permintaan_karyawan_baru')
         ->where('pkb_id', $id)
         ->get();
         // return $data;
