@@ -61,6 +61,7 @@
 		    }
 
 		    #table-data td{
+		    	border: 1px solid rgba(0,0,0,0.08);
 		    	border-right: 1px solid #555;
 		    	padding: 5px;
 		    }
@@ -190,13 +191,13 @@
 			<thead>
 				<tr>
 					<th width="8%">Tanggal</th>
-					<th width="12%">No.Bukti</th>
-					<th width="8%">No.Perkiraan</th>
+					<th width="10%">No.Bukti</th>
+					<th>Uraian</th>
+					<th width="6%">No.Perkiraan</th>
 
 					@if($request->nama_perkiraan)
 						<th width="20%">Nama Perkiraan</th>
 					@endif
-					<th>Uraian</th>
 
 					<th width="11%">Debet</th>
 					<th width="11%">Kredit</th>
@@ -210,15 +211,16 @@
 					<?php $tot_debet = $tot_kredit = 0; ?>
 					@foreach($detail[$data_jr->jurnal_id] as $key => $data_detail)
 						<tr>
-							<td style="padding-left: 3px;">{{ date('d-m-Y', strtotime($data_jr->tanggal_jurnal)) }}</td>
-							<td style="padding-left: 3px;">{{ $data_jr->no_jurnal }}</td>
-							<td style="padding-left: 3px;">{{ $data_detail->jrdt_acc }}</td>
+							<td style="padding-left: 3px;" class="text-center">{{ date('d-m-Y', strtotime($data_jr->tanggal_jurnal)) }}</td>
+							<td style="padding-left: 3px;" class="text-center">{{ $data_jr->jurnal_ref }}</td>
+							<td style="padding-left: 3px;">
+								{{ $data_jr->keterangan }}
+							</td>
+							<td style="padding-left: 3px;" class="text-center">{{ $data_detail->jrdt_acc }}</td>
 
 							@if($request->nama_perkiraan)
 								<td style="padding-left: 3px;">{{ $data_detail->nama_akun }}</td>
 							@endif
-
-							<td style="padding-left: 3px;">{{ $data_jr->keterangan }}</td>
 							
 							<?php 
 								$deb = $kre = 0;
@@ -234,17 +236,17 @@
 							?>
 
 							<td class="currency">{{ number_format($deb, 2) }}</td>
-							<td class="currency no-border">{{ number_format($kre, 2) }}</td>
+							<td class="currency">{{ number_format($kre, 2) }}</td>
 						</tr>
 					@endforeach
 
 					<tr>
-						<td style="background: #f1f1f1;">&nbsp;</td>
-						<td style="background: #f1f1f1;">&nbsp;</td>
-						<td style="background: #f1f1f1;">&nbsp;</td>
+						<td style="background: rgba(0,0,0,0.2);">&nbsp;</td>
+						<td style="background: rgba(0,0,0,0.2);">&nbsp;</td>
+						<td style="background: rgba(0,0,0,0.2);">&nbsp;</td>
 
 						@if($request->nama_perkiraan)
-							<td style="background: #f1f1f1;">&nbsp;</td>
+							<td style="background: rgba(0,0,0,0.2);">&nbsp;</td>
 						@endif
 
 						<?php
@@ -254,9 +256,9 @@
 								$not = "not-same"
 						?>
 
-						<td style="background: #f1f1f1;">&nbsp;</td>
+						<td style="background: rgba(0,0,0,0.2);">&nbsp;</td>
 						<td class="currency total {{$not}}">{{ number_format($tot_debet, 2) }}</td>
-						<td class="currency total no-border {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
+						<td class="currency total {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
 					</tr>
 
 				@endforeach

@@ -75,7 +75,7 @@
                                           <label class="tebal">Kelompok Akun</label>
                                         </div>
                                         <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                          <select class="form-control" name="kelompok_akun" id="kelompok_akun" name="kelompok_akun"></select>
+                                          <select class="form-control select-2" name="kelompok_akun" id="kelompok_akun" name="kelompok_akun"></select>
                                           <input type="hidden" id="nama_kelompok" readonly name="nama_kelompok">
                                         </div>
 
@@ -106,35 +106,19 @@
                                           </select>
                                         </div>
 
-                                        <div id="add_general">
-                                          <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
-                                            <label class="tebal">Group Neraca</label>
-                                          </div>
-                                          <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                            <input type="text" class="form-control" placeholder="Inputkan Group Neraca" aria-describedby="basic-addon1" name="group_neraca_general">
-                                          </div>
-
-                                          <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
-                                            <label class="tebal">Group Laba Rugi</label>
-                                          </div>
-                                          <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                            <input type="text" class="form-control" placeholder="Inputkan Group Laba Rugi" aria-describedby="basic-addon1" name="group_laba_rugi_general">
-                                          </div>
-                                        </div>
-
                                         <div id="add_detail" style="display: none;">
                                           <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
                                             <label class="tebal">Group Neraca</label>
                                           </div>
                                           <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                           <select name="group_neraca_detail" id="group_neraca_detail" class="form-control"></select>
+                                           <select name="group_neraca_detail" id="group_neraca_detail" class="form-control select-2"></select>
                                           </div>
 
                                           <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
                                             <label class="tebal">Group Laba Rugi</label>
                                           </div>
                                           <div class="col-md-4 col-sm-9 col-xs-12 mb-3">
-                                            <select name="group_laba_rugi_detail" id="group_laba_rugi_detail" class="form-control"></select>
+                                            <select name="group_laba_rugi_detail" id="group_laba_rugi_detail" class="form-control select-2"></select>
                                           </div>
 
                                           <div class="col-md-2 col-sm-3 col-xs-12 mb-3"> 
@@ -188,6 +172,7 @@
       // console.log(dataGroupLabaRugi);
 
       generate_kelompok_akun("GENERAL");
+      $('.select-2').select2();
 
       $('.currency').inputmask("currency", {
           radixPoint: ",",
@@ -220,8 +205,20 @@
         event.preventDefault();
         // alert('okee');
 
-        $("#id_default").text($(this).val()+'.');
-        $('#nama_kelompok').val($(this).children('option:selected').text())
+        if($('#type_akun').val() == "GENERAL")
+          $("#id_default").text($(this).val());
+        else
+          $("#id_default").text($(this).val()+'.');
+
+        if($('#type_akun').val() == "GENERAL"){
+          var idx = dataGeneral.findIndex(x => x.value === $(this).val());
+          var nama = dataGeneral[idx].text;
+        }else{
+          var idx = dataDetail.findIndex(x => x.value === $(this).val());
+          var nama = dataDetail[idx].text;
+        }
+
+        $('#nama_kelompok').val(nama);
       })
 
       $('#simpan').click(function(event){
@@ -290,18 +287,22 @@
 
         if(identity == "GENERAL"){
           $.each(dataGeneral, function(i, n){
-            html = html +'<option value="'+n.value+'">'+n.text+'</option>';
+            html = html +'<option value="'+n.value+'">'+n.value+' - '+n.text+'</option>';
           })
 
-          nama = dataGeneral[0].text;
-          id_default = dataGeneral[0].value+'.';
+          if(dataGeneral.length > 0){
+            nama = dataGeneral[0].text;
+            id_default = dataGeneral[0].value;
+          }
         }else{
           $.each(dataDetail, function(i, n){
-            html = html +'<option value="'+n.value+'">'+n.text+'</option>';
+            html = html +'<option value="'+n.value+'">'+n.value+' - '+n.text+'</option>';
           })
 
-          nama = dataDetail[0].text;
-          id_default = dataDetail[0].value+'.';
+          if(dataDetail.length > 0){
+            nama = dataDetail[0].text;
+            id_default = dataDetail[0].value+'.';
+          }
         }
 
         $("#id_default").text(id_default);
@@ -311,10 +312,10 @@
       }
 
       function generate_neraca_akun(identity){
-        html = '';
+        html = '<option value="-">Tidak Memiliki Grup Neraca</option>';
 
         $.each(dataGroupNeraca, function(i, n){
-            html = html +'<option value="'+n.value+'">'+n.text+' ('+n.value+')</option>';
+            html = html +'<option value="'+n.value+'">'+n.value+' / '+n.text+'</option>';
           })
 
         $("#group_neraca_detail").html(html);
@@ -322,10 +323,10 @@
       }
 
       function generate_laba_rugi_akun(identity){
-        html = '';
+        html = '<option value="-">Tidak Memiliki Grup Laba Rugi</option>';
 
         $.each(dataGroupLabaRugi, function(i, n){
-            html = html +'<option value="'+n.value+'">'+n.text+' ('+n.value+')</option>';
+            html = html +'<option value="'+n.value+'">'+n.value+' / '+n.text+'</option>';
           })
 
         $("#group_laba_rugi_detail").html(html);

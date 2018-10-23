@@ -7,7 +7,7 @@
 			// ! penting (Pliss . Jangan Diubah Sebelum Konfirmasi Ke Pihak Yang Mengerjakan Keuangan)
 
 			$setting = [
-				'allow_jurnal_to_execute'	=> 'aa',
+				'allow_jurnal_to_execute'	=> true,
 			];
 
 
