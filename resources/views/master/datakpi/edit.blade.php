@@ -116,7 +116,12 @@
 
                       <div class="col-md-9 col-sm-8 col-xs-12">
                         <div class="form-group">
-                          <input type="text" id="e_deadline" name="e_deadline" class="form-control input-sm datepicker2" value="{{ date('d-m-Y',strtotime($data->kpix_deadline)) }}">
+                          @if ($data->kpix_deadline != null)
+                            <input type="text" id="e_deadline" name="e_deadline" class="form-control input-sm datepicker2" value="{{ date('d-m-Y',strtotime($data->kpix_deadline)) }}">
+                          @else
+                            <input type="text" id="e_deadline" name="e_deadline" class="form-control input-sm datepicker2">
+                          @endif
+                          
                         </div>
                       </div>
 

@@ -16,6 +16,8 @@ class KpiController extends Controller
 {
     public function index()
     {
+        //update deadline jika hari ini sudah melebihi deadline
+        DB::statement("UPDATE m_kpix SET kpix_deadline = NULL WHERE kpix_deadline < DATE_FORMAT(CURRENT_DATE(), '%Y-%m-%d')");
         return view('master/datakpi/index');
     }
 
