@@ -131,6 +131,7 @@
                         $('#i_name').val(ui.item.i_name);
                         $('#m_sname').val(ui.item.m_sname);
                         $('#s_qty').val(ui.item.s_qty);
+                        $('#s_qtykw').val(ui.item.s_qtykw);
                         $("input[name='qtyReal']").focus();
                     }
                 });
@@ -140,6 +141,7 @@
                 $("#i_name").val('');
                 $("#m_sname").val('');
                 $("#s_qty").val('');
+                $("#s_qtykw").val('');
                 $("#qtyReal").val('');
               });
             });
@@ -165,6 +167,7 @@
                     $("#i_name").val('');
                     $("#m_sname").val('');
                     $("#s_qty").val('');
+                    $("#s_qtyKw").val('');
                     $('#qtyReal').val('');
                     $("input[name='item']").focus();
                     return false;
@@ -177,10 +180,15 @@
           var i_id = $("#i_id").val();
           var namaitem = $('#namaitem').val();
           var s_qty = $('#s_qty').val();
+          var s_qtykw = $('#s_qtykw').val();
           var m_sname = $('#m_sname').val();
           var qtyReal = $('#qtyReal').val();
           var opname = parseFloat(qtyReal) - parseFloat(s_qty);
           opname = opname.toFixed(2);
+          var opnameKw = parseFloat(qtyReal) - parseFloat(s_qty);
+          opnameKw = opnameKw;
+          // opnameKw = parseInt(opname);
+          opnameKw = convertToRupiah(opnameKw);
           var Hapus = '<div class="text-center"><button type="button" class="btn btn-danger hapus" onclick="hapus(this)"><i class="fa fa-trash-o"></i></button></div>';
           var index = tamp.indexOf(i_id);
 
@@ -188,13 +196,13 @@
           tableOpname.row.add([
             namaitem+'<input type="hidden" name="i_id[]" id="" class="i_id" value="'+i_id+'">',
 
-            '<input type="number" name="qty" id="s-qty" class="form-control text-right s-qty-' + i_id + '" readonly value="'+s_qty+'">',
+            '<input type="hidden" name="qty" id="s-qty" class="form-control text-right s-qty-' + i_id + '" readonly value="'+s_qty+'"><input type="text" name="qtykw" id="s-qtykw" class="form-control text-right" readonly value="'+s_qtykw+'">',
 
             m_sname,
 
             '<input type="number" name="real" id="real" class="form-control text-right qty-real-' + i_id + '" onkeyup="hitungOpname(\'' + i_id + '\', \'' + s_qty + '\')" value="'+qtyReal+'">',
 
-            '<input type="number" name="opname[]" id="opname" class="form-control text-right opname-' + i_id + '" readonly value="'+opname+'">',
+            '<input type="hidden" name="opname[]" id="opname" class="form-control text-right opname-' + i_id + '" readonly value="'+opname+'"><input type="text" name="" id="opnameKw" class="form-control text-right opnameKw-' + i_id + '" readonly value="'+opnameKw+'">',
 
             Hapus
             ]);
@@ -211,6 +219,7 @@
             $("#i_name").val('');
             $("#m_sname").val('');
             $("#s_qty").val('');
+            $("#s_qtyKw").val('');
             $("#qtyReal").val('');
             $("input[name='item']").focus();
           }
@@ -296,6 +305,11 @@
           var opname = real - qty;
           opname = opname.toFixed(2);
           $('.opname-'+id).val(opname);
+          //kw
+          var opnameKw = real - qty;
+          opnameKw = convertToRupiah(opnameKw);
+          $('.opnameKw-'+id).val(opnameKw);
+          
         }
 
         function OpnameDet(id) {
@@ -317,6 +331,18 @@
                   return input.value;
               });
           tamp = names;
+        }
+
+        function convertToRupiah(angka) {
+            var rupiah = '';
+            var angkarev = angka.toString().split('').reverse().join('');
+            for (var i = 0; i < angkarev.length; i++) if (i % 3 == 0) rupiah += angkarev.substr(i, 3) + '.';
+            var hasil = rupiah.split('', rupiah.length - 1).reverse().join('');
+            return hasil;
+        }
+
+        function convertToAngka(rupiah) {
+            return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
         }
 
     </script>

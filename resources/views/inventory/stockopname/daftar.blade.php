@@ -74,7 +74,8 @@
               <div class="col-md-3">
                   <label class="control-label tebal" name="qty">Qty Sistem</label>
                   <div class="input-group input-group-sm" style="width: 100%;">
-                      <input type="number" id="s_qty" name="s_qty" class="form-control" readonly>
+                      <input type="text" id="s_qtykw" name="s_qtykw" class="form-control" readonly>
+                      <input type="hidden" id="s_qty" name="s_qty" class="form-control" readonly>
                   </div>
               </div>
             </div>
