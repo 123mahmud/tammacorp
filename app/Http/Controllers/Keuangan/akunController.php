@@ -150,15 +150,16 @@ class akunController extends Controller
 	    		"group_laba_rugi"	=> (isset($request->group_laba_rugi_detail)) ? $request->group_laba_rugi_detail : null,
 	    	];
 
-	    	$saldo = [
-	    		"id_akun"			=> $request->kelompok_akun.".".$request->nomor_akun,
-	    		"bulan"				=> date("m"),
-	    		"tahun"				=> date("Y"),
-	    		"saldo"				=> str_replace(".", "", explode(',', $request->saldo_bulan_ini)[0])
-	    	];
+            // return json_encode($data);
+
+	    	// $saldo = [
+	    	// 	"id_akun"			=> $request->kelompok_akun.".".$request->nomor_akun,
+	    	// 	"bulan"				=> date("m"),
+	    	// 	"tahun"				=> date("Y"),
+	    	// 	"saldo"				=> str_replace(".", "", explode(',', $request->saldo_bulan_ini)[0])
+	    	// ];
 
 	    	DB::table("d_akun")->insert($data);
-	    	DB::table("d_akun_saldo")->insert($saldo);
     	}
 
     	return json_encode($response);

@@ -210,7 +210,15 @@
         else
           $("#id_default").text($(this).val()+'.');
 
-        $('#nama_kelompok').val($(this).children('option:selected').text())
+        if($('#type_akun').val() == "GENERAL"){
+          var idx = dataGeneral.findIndex(x => x.value === $(this).val());
+          var nama = dataGeneral[idx].text;
+        }else{
+          var idx = dataDetail.findIndex(x => x.value === $(this).val());
+          var nama = dataDetail[idx].text;
+        }
+
+        $('#nama_kelompok').val(nama);
       })
 
       $('#simpan').click(function(event){

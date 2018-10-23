@@ -71,6 +71,7 @@ tr.details td.details-control {
                             <th class="wd-15p">Kode</th>
                             <th class="wd-15p">Nama</th>
                             <th class="wd-15p">Akun Persediaan</th>
+                            <th class="wd-15p">Akun Beban</th>
                             <th class="wd-15p">Akun Penjualan</th>
                             <th class="wd-15p">Aksi</th>
                           </tr>
@@ -117,8 +118,9 @@ tr.details td.details-control {
                 ],
             "columns": [
             { "data": "m_gcode", "width": "10%" },
-            { "data": "m_gname", "width": "30%" },
+            { "data": "m_gname", "width": "20%" },
             { "data": "persediaan", "width": "20%" },
+            { "data": "beban", "width": "20%" },
             { "data": "penjualan", "width": "20%" },
             { "data": "aksi", "width": "10%", "className": "center"  },
             ]

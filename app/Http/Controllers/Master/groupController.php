@@ -27,7 +27,8 @@ class groupController extends Controller
                    'm_gcode',
                    'm_gname',
                    'c.nama_akun as persediaan',
-                   'd.nama_akun as penjualan')
+                   'd.nama_akun as penjualan',
+                   'e.nama_akun as beban')
          ->leftjoin('d_akun as c', function($join) {
              $join->on('c.id_akun', '=', 'm_group.m_akun_persediaan')
                ->where('c.type_akun','DETAIL');
@@ -36,9 +37,13 @@ class groupController extends Controller
              $join->on('d.id_akun', '=', 'm_group.m_akun_penjualan')
                ->where('d.type_akun','DETAIL');
            })
+         ->leftjoin('d_akun as e', function($join) {
+             $join->on('e.id_akun', '=', 'm_group.m_akun_beban')
+               ->where('e.type_akun','DETAIL');
+           })
          ->get();
 
-        // return $list;
+        // return json_encode($list);
         $data = collect($list);
 
         // return $data;
@@ -96,7 +101,16 @@ class groupController extends Controller
           ->where(DB::raw('substring(id_akun, 1, 3)'), '500')
           ->get();
 
-        return view('/master/datagroup/tambah_group',compact('nota','item','penjualan'));
+        $beban = DB::table('d_akun')
+          ->select('id_akun',
+                  'nama_akun')
+          ->where('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '550')
+          ->orWhere('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '551')
+          ->get();
+
+        return view('/master/datagroup/tambah_group',compact('nota','item','penjualan', 'beban'));
     }
     public function simpan_group(Request $request)
     {
@@ -116,6 +130,7 @@ class groupController extends Controller
                       'm_gcode'=>'0'. $request->id,
                       'm_gname'=>$request->nama,
                       'm_akun_persediaan'=>$request->akun,
+                      'm_akun_beban'=>$request->akun_beban,
                       'm_akun_penjualan'=>$request->akun_penjualan,
                       'm_gcreate'=>Carbon::now(),
                     ]);
@@ -135,8 +150,10 @@ class groupController extends Controller
                  'm_akun_persediaan',
                  'c.id_akun as persediaan',
                  'd.id_akun as penjualan',
+                 'e.id_akun as beban',
                  'c.nama_akun as persediaan_nama',
-                 'd.nama_akun as penjualan_nama')
+                 'd.nama_akun as penjualan_nama',
+                 'e.nama_akun as beban_nama')
         ->leftjoin('d_akun as c', function($join) {
             $join->on('c.id_akun', '=', 'm_group.m_akun_persediaan')
               ->where('c.type_akun','DETAIL');
@@ -144,6 +161,10 @@ class groupController extends Controller
         ->leftjoin('d_akun as d', function($join) {
             $join->on('d.id_akun', '=', 'm_group.m_akun_penjualan')
               ->where('d.type_akun','DETAIL');
+          })
+        ->leftjoin('d_akun as e', function($join) {
+            $join->on('e.id_akun', '=', 'm_group.m_akun_beban')
+              ->where('e.type_akun','DETAIL');
           })
         ->where('m_gid','=',$id)
         ->first();
@@ -164,9 +185,18 @@ class groupController extends Controller
           ->where(DB::raw('substring(id_akun, 1, 3)'), '500')
           ->get();
 
+      $beban = DB::table('d_akun')
+          ->select('id_akun',
+                  'nama_akun')
+          ->where('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '550')
+          ->orWhere('type_akun','DETAIL')
+          ->where(DB::raw('substring(id_akun, 1, 3)'), '551')
+          ->get();
+
       json_encode($data);
 
-      return view('master/datagroup/edit_group',compact('data','item','penjualan'));
+      return view('master/datagroup/edit_group',compact('data','item','penjualan', 'beban'));
     }
     public function update_group(Request $request)
     {
@@ -178,6 +208,7 @@ class groupController extends Controller
                   ->update([
                       'm_gname'=>$request->nama,
                       'm_akun_persediaan'=>$request->akun,
+                      'm_akun_beban'=>$request->beban,
                       'm_akun_penjualan'=>$request->penjualan,
                       'm_gupdate'=>$tanggal,
                     ]);
