@@ -192,6 +192,7 @@
     
     $('#index_sup').change(function(event) {
       $('#i_sup').val($(this).val());
+      $('.tbl_form_row').remove();
     });
 
   });//end jquery
@@ -219,9 +220,10 @@
       dataType: "JSON",
       success: function(data)
       {
-        var i = randString(5);
-        var key = 1;
-        Object.keys(data.data).forEach(function(){
+        if (data.status == 'sukses'){
+          var i = randString(5);
+          var key = 1;
+          Object.keys(data.data).forEach(function(){
             $('#tbody_append').append(
                 '<tr class="tbl_form_row" id="row'+i+'">'
                   +'<td>'
@@ -253,6 +255,14 @@
             key++;
           });
           $(this).maskFunc();
+        }else{
+          iziToast.error({
+            position: 'center',
+            title: 'Pemberitahuan',
+            icon: 'fa fa-exclamation-triangle',
+            message: 'Tidak dapat Barang Rencana Bahan terhadap supplier terpilih'
+          });
+        }
       },
       error: function ()
       {

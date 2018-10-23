@@ -1128,6 +1128,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/databrgsup/get-form-editsup', 'Master\BrgsupController@get_form_supplier');
     Route::post('/master/databrgsup/update-relasi-supplier/{id}', 'Master\BrgsupController@update_supplier');
     Route::post('/master/databrgsup/delete-supplier', 'Master\BrgsupController@delete_supplier');
+    Route::get('/master/databrgsup/detail-supplier', 'Master\BrgsupController@detail_supplier');
 //*Data Jabatan*/
     Route::get('/master/datajabatan', 'Master\JabatanController@index');
     Route::get('/master/datajabatan/data-jabatan', 'Master\JabatanController@jabatanData');
