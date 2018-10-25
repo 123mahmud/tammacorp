@@ -1097,9 +1097,9 @@
                                         Manajemen User
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
+                              {{--       @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
                                         Manajemen Hak Akses
-                                    @endif
+                                    @endif --}}
 
                                     @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
                                         Profil Perusahaan
@@ -1121,12 +1121,12 @@
                                                     class="hidden">System</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
+                           {{--      @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
                                     <li class="{{ Request::is('system/hakakses/akses') ? 'active' : '' || Request::is('system/hakakses/*') ? 'active' : '' }}">
                                         <a href="{{ url('/system/hakakses/akses') }}"><span class="submenu-title">Manajemen Hak Akses</span><span
                                                     class="hidden">System</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
                                     <li class="{{ Request::is('system/profilperusahaan/profil') ? 'active' : '' || Request::is('system/profilperusahaan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/system/profilperusahaan/profil') }}"><span
