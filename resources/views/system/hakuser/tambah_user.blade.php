@@ -55,29 +55,32 @@
                                                  style="padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
 
                                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                                    <label class="tebal">Username</label>
+                                                    <label class="tebal">Username<font
+                                                                    color="red">*</font></label>
                                                 </div>
 
                                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control input-sm" name=""
+                                                        <input type="text" class="form-control input-sm" name="username"
                                                         value="" id="username">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                                    <label class="tebal">Password</label>
+                                                    <label class="tebal">Password<font
+                                                                    color="red">*</font></label>
                                                 </div>
 
                                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                                     <div class="form-group">
-                                                        <input type="text" class="form-control input-sm" name=""
+                                                        <input type="text" class="form-control input-sm" name="password"
                                                         value="" id="password">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                                    <label class="tebal">Nama Lengkap</label>
+                                                    <label class="tebal">Nama Lengkap<font
+                                                                    color="red">*</font></label>
                                                 </div>
 
                                                 <div class="col-md-3 col-sm-8 col-xs-12">
@@ -88,7 +91,8 @@
                                                 </div>
                                                 <div class="col-md-3 col-sm-4 col-xs-12">
 
-                                                    <label class="tebal">Tanggal Lahir</label>
+                                                    <label class="tebal">Tanggal Lahir<font
+                                                                    color="red">*</font></label>
                                                 </div>
                                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                                     <div class="form-group">
@@ -99,7 +103,8 @@
                                                 </div>
 
                                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                                    <label class="tebal">Alamat</label>
+                                                    <label class="tebal">Alamat<font
+                                                                    color="red">*</font></label>
                                                 </div>
 
                                                 <div class="col-md-9 col-sm-8 col-xs-12">
@@ -108,8 +113,23 @@
                                                     </div>
                                                 </div>
 
-
                                                 <div class="col-md-3 col-sm-4 col-xs-12">
+                                                    <label class="tebal">Jabatan/Posisi:</label>
+                                                </div>
+
+                                                <div class="col-md-9 col-sm-8 col-xs-12">
+                                                <div class="form-group">
+                                                  <select name="pp_jabatan" id="tampil_data" class="form-control input-sm">
+                                                        <option value="" class="form-control input-sm">-Pilih Jabatan</option>
+                                                    @foreach ($jabatan as $nama)
+                                                        <option value="{{ $nama->c_id }}" class="form-control input-sm">{{ $nama->c_posisi }}</option>
+                                                    @endforeach
+                                                  </select>
+                                                </div>
+                                                </div>
+
+
+{{--                                                 <div class="col-md-3 col-sm-4 col-xs-12">
 
                                                     <label class="tebal">Pilih Akses Grub</label>
                                                 </div>
@@ -122,7 +142,7 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
 
                                                 <div align="right" style="padding-top:10px;">
@@ -147,11 +167,11 @@
                                                     <tr>
                                                         <th>Nama Menu</th>
                                                         <th>Lihat</th>
-                                                        <th>Tambah</th>
+                                               {{--          <th>Tambah</th>
                                                         <th>Perbarui</th>
                                                         <th>Hapus</th>
                                                         <th>Laporan</th>
-                                                        <th>Unlock</th>
+                                                        <th>Unlock</th> --}}
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -169,16 +189,13 @@
                                                                     {{$nomor}}. &nbsp;
                                                                     <strong>{{$data->a_name}}</strong>
                                                                 </td>
-                                                                <td>
-
-                                                                    <input type="hidden" value="N" class="checkbox"
-                                                                           name="view[]" id="view-{{$data->a_id}}">
+                                                                <td class="text-center">
+                                                                    <input type="hidden" value="N" class="checkbox" name="view[]" id="view-{{$data->a_id}}">
                                                                     <input type="checkbox" class="checkbox"
-                                                                           onchange="simpanView('{{$data->a_id}}')"
+                                                                    onchange="simpanView('{{$data->a_id}}')"
                                                                            id="view1-{{$data->a_id}}">
-
                                                                 </td>
-                                                                <td>
+                                                                {{-- <td>
                                                                     <input type="hidden" value="N" class="checkbox"
                                                                            name="insert[]" id="insert-{{$data->a_id}}">
                                                                 </td>
@@ -200,7 +217,7 @@
                                                                     <input type="hidden" value="N" class="checkbox"
                                                                            name="unlock[]" id="unlock-{{$data->a_id}}">
 
-                                                                </td>
+                                                                </td> --}}
                                                                 @php
                                                                     $nomor++;
                                                                 @endphp
@@ -213,13 +230,13 @@
                                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$data->a_name}}
                                                                 </td>
                                                                 <td class="text-center">
+                                                                    <input type="hidden" value="N" class="checkbox" name="view[]" id="view-{{$data->a_id}}">
                                                                     <input type="checkbox" class="checkbox"
-                                                                           onchange="simpanView('{{$data->a_id}}')"
-                                                                           id="view1-{{$data->a_id}}">
-                                                                    <input type="hidden" value="N" class="checkbox"
-                                                                           name="view[]" id="view-{{$data->a_id}}">
+                                                                    onchange="simpanView('{{$data->a_id}}')"
+                                                                           id="view1-{{$data->a_id}}"
+                                                                           >
                                                                 </td>
-                                                                <td class="text-center">
+                                                                {{-- <td class="text-center">
                                                                     <input type="checkbox" class="checkbox"
                                                                            onchange="simpanInsert('{{$data->a_id}}')"
                                                                            id="insert1-{{$data->a_id}}">
@@ -255,7 +272,7 @@
                                                                            name="unlock[]"
                                                                            onchange="simpanUnlock('{{$data->a_id}}')"
                                                                            value="1" id="unlock-{{$data->a_id}}">
-                                                                </td>
+                                                                </td> --}}
                                                             </tr>
                                                         @endif
 
@@ -279,19 +296,49 @@
 
                 @endsection
                 @section("extra_scripts")
+{{--                     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script> --}}
                     <script type="text/javascript">
+                        $(document).ready(function () {
+                            var extensions = {
+                                "sFilterInput": "form-control input-sm",
+                                "sLengthSelect": "form-control input-sm"
+                            }
+                            // Used when bJQueryUI is false
+                            $.extend($.fn.dataTableExt.oStdClasses, extensions);
+                            // Used when bJQueryUI is true
+                            $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+
+
+                            
+                        });
+
+
                         function simpanDataUser() {
                             var dataUser = $('#data-user :input').serialize();
                             var dataDetail = $('#data-detail :input').serialize()
                             $.ajax({
                                 url: baseUrl + '/system/hakuser/tambah_user/simpan-user',
-                                type: 'get',
+                                type: 'POST',
                                 timeout: 10000,
                                 data: dataUser + '&' + dataDetail,
                                 dataType: 'json',
                                 success: function (response) {
                                     if (response.status == 'sukses') {
                                         window.location = baseUrl + '/system/hakuser/user';
+                                        iziToast.success({
+                                            timeout: 5000,
+                                            position: "topRight",
+                                            icon: 'fa fa-chrome',
+                                            title: '',
+                                            message: 'User Baru Tersimpan.'
+                                        });
+                                    }else{
+                                        iziToast.error({
+                                            position: "topRight",
+                                            title: '',
+                                            message: 'Mohon melengkapi data.'
+                                        });
                                     }
                                 }
                             });
@@ -305,100 +352,34 @@
                             }
                         }
 
-                        function simpanInsert(id) {
-                            if ($('#insert1-' + id).prop('checked')) {
-                                $('#insert-' + id).val('Y')
-                            } else {
-                                $('#insert-' + id).val('N')
-                            }
-                        }
+
+                        // function simpanInsert(id) {
+                        //     if ($('#insert1-' + id).prop('checked')) {
+                        //         $('#insert-' + id).val('Y')
+                        //     } else {
+                        //         $('#insert-' + id).val('N')
+                        //     }
+                        // }
 
 
-                        function simpanUpdate(id) {
+                        // function simpanUpdate(id) {
 
-                            if ($('#update1-' + id).prop('checked')) {
-                                $('#update-' + id).val('Y')
-                            } else {
-                                $('#update-' + id).val('N')
-                            }
-                        }
+                        //     if ($('#update1-' + id).prop('checked')) {
+                        //         $('#update-' + id).val('Y')
+                        //     } else {
+                        //         $('#update-' + id).val('N')
+                        //     }
+                        // }
 
-                        function simpanDelete(id) {
-                            if ($('#delete1-' + id).prop('checked')) {
-                                $('#delete-' + id).val('Y')
-                            } else {
-                                $('#delete-' + id).val('N')
-                            }
-                        }
+                        // function simpanDelete(id) {
+                        //     if ($('#delete1-' + id).prop('checked')) {
+                        //         $('#delete-' + id).val('Y')
+                        //     } else {
+                        //         $('#delete-' + id).val('N')
+                        //     }
+                        // }
 
-
-                        $(document).ready(function () {
-                            var extensions = {
-                                "sFilterInput": "form-control input-sm",
-                                "sLengthSelect": "form-control input-sm"
-                            }
-                            // Used when bJQueryUI is false
-                            $.extend($.fn.dataTableExt.oStdClasses, extensions);
-                            // Used when bJQueryUI is true
-                            $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-                            $('#data').dataTable({
-                                "responsive": true,
-
-                                "pageLength": 10,
-                                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
-
-                            });
-                            $('#data2').dataTable({
-                                "responsive": true,
-
-                                "pageLength": 10,
-                                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
-
-                            });
-                            $('#data3').dataTable({
-                                "responsive": true,
-
-                                "pageLength": 10,
-                                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
-
-                            });
-                        });
+                        
 
                         $("#perusahaan").load("/master/datasuplier/tambah_suplier", function () {
                             $("#perusahaan").focus();
