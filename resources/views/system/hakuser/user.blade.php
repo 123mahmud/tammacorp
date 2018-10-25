@@ -53,7 +53,7 @@
                                                     <th>Nama</th>
                                                     <th>Tanggal Lahir</th>
                                                     <th>Alamat</th>
-                                                    <th>Akses Grub</th>
+                                                  {{--   <th>Akses Grub</th> --}}
                                                     <th>Aksi</th>
                                                 </tr>
                                                 </thead>
@@ -64,11 +64,11 @@
                                                         <td>{{$data->m_name}}</td>
                                                         <td>{{date('d-m-Y',strtotime($data->m_birth_tgl))}}</td>
                                                         <td>{{$data->m_addr}}</td>
-                                                        <td>{{$data->g_name}}</td>
+                                                     {{--    <td>{{$data->g_name}}</td> --}}
                                                         <td>
-                                                            <button class="btn btn-warning btn-sm" title="Edit"
+                                                           {{--  <button class="btn btn-warning btn-sm" title="Edit"
                                                                     onclick="editUser('{{$data->m_id}}')"><i
-                                                                        class="fa fa-pencil"></i></button>
+                                                                        class="fa fa-pencil"></i></button> --}}
                                                             <button class="btn btn-danger btn-sm" title="Hapus"
                                                                     onclick="hapusUser('{{$data->m_id}}')"><i
                                                                         class="fa fa-trash-o"></i></button>
@@ -144,44 +144,7 @@
                                 }
 
                             });
-                            $('#data2').dataTable({
-                                "responsive": true,
 
-                                "pageLength": 10,
-                                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
-
-                            });
-                            $('#data3').dataTable({
-                                "responsive": true,
-
-                                "pageLength": 10,
-                                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
-
-                            });
                         });
                         $('.datepicker').datepicker({
                             format: "mm",
