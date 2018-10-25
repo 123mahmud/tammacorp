@@ -961,7 +961,7 @@ Route::group(['middleware' => 'auth'], function () {
     /*System*/
     Route::get('/system/hakuser/user', 'ManUser\aksesUserController@indexAksesUser');
     Route::get('/system/hakuser/tambah_user', 'ManUser\aksesUserController@tambah_user');
-    Route::get('/system/hakuser/tambah_user/simpan-user', 'ManUser\aksesUserController@simpanUser');
+    Route::post('/system/hakuser/tambah_user/simpan-user', 'ManUser\aksesUserController@simpanUser');
     Route::get('/system/hakakses/edit-user-akses/{id}/edit', 'ManUser\aksesUserController@editUserAkses');
     Route::get('/system/hakuser/perbarui-user/perbarui-user/{id}', 'ManUser\aksesUserController@perbaruiUser');
     Route::get('/system/hakakses/simpan-user-akses', 'ManUser\aksesUserController@simpanUserAkses');
