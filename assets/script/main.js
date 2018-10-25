@@ -1,30 +1,57 @@
-$(document).ready(function () {
+$(function () {
+
     //BEGIN MENU SIDEBAR
     $('#sidebar').css('min-height', '100%');
     $('#side-menu').metisMenu();
-       if($(window).width() > 768){
-        $('.sidebar-collapse').collapse('show');
-      }else if($(window).width() <= 768){
-        $('.sidebar-collapse').collapse('hide');
-    }         
-    $(window).resize( function () {
-        if ($(this).width() < 768) {
 
-            $('.sidebar-collapse').collapse('hide');
-            if($('body').hasClass('left-side-collapsed')){
-                $('body').removeClass('left-side-collapsed');
+    var cachedWidth = $(window).width();
+
+    
+
+
+
+    $(window).on('resize',function(){
+        var newWidth = $(window).width();
+        if(newWidth !== cachedWidth){
+            //DO RESIZE HERE
+            cachedWidth = newWidth;
+            // alert('3');
+            if (cachedWidth < 768) {
+                // alert('d');
+                $('.sidebar-collapse').collapse('hide');
+                if($('body').hasClass('left-side-collapsed')){
+                    $('body').removeClass('left-side-collapsed');
+                    // alert('e');
+                }
+                // console.log($(window).width());     
+            } else {
+                // alert('f');
+                $('.sidebar-collapse').collapse('show');
             }
-            // console.log($(window).width());     
-        } else {
-            
-            $('.sidebar-collapse').collapse('show');
-        }
-        if($('body').hasClass('sidebar-icons')){
-            $('#menu-toggle').hide();
-        } else{
-            $('#menu-toggle').show();
+            if($('body').hasClass('sidebar-icons')){
+                // alert('g');
+                $('#menu-toggle').hide();
+            } else{
+                // alert('h');
+                $('#menu-toggle').show();
+            }
         }
     });
+    
+    if (cachedWidth < 768) {
+        // alert('2');
+        // $('.sidebar-collapse').collapse('hide');
+        $('div.sidebar-collapse').addClass('collapse');
+
+        
+        // console.log($(window).width());     
+    } else {
+        // alert('c');
+        $('.sidebar-collapse').collapse('show');
+        $('div.sidebar-collapse').removeClass('collapse');
+    }      
+
+        
     //END MENU SIDEBAR
 
     //BEGIN TOPBAR DROPDOWN
