@@ -49,6 +49,7 @@
 
 		$detail = DB::table('m_transaksi_detail')->where('td_transaksi', $id_transaksi)->get();
 
+		$num = 0;
 		foreach ($detail as $key => $detail_data) {
 			$akun = DB::table('d_akun')->where('id_akun', $detail_data->td_acc)->first();
     		$pos = $detail_data->td_posisi;
@@ -62,11 +63,13 @@
 
     		DB::table('d_jurnal_dt')->insert([
     			'jrdt_jurnal'	=> $id_jurnal,
-    			'jrdt_no'		=> ($key+1),
+    			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data->td_acc,
     			'jrdt_value'	=> $val,
     			'jrdt_dk'		=> $pos
     		]);
+
+    		$num++;
 		}
 		return 'okee';
 	}
@@ -91,6 +94,7 @@
 			'keterangan'		 => $keterangan
 		]);
 
+		$num = 0;
 		foreach ($detail as $key => $detail_data) {
 			$akun = DB::table('d_akun')->where('id_akun', $detail_data['td_acc'])->first();
     		$pos = $detail_data['td_posisi'];
@@ -104,11 +108,13 @@
 
     		DB::table('d_jurnal_dt')->insert([
     			'jrdt_jurnal'	=> $id_jurnal,
-    			'jrdt_no'		=> ($key+1),
+    			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data["td_acc"],
     			'jrdt_value'	=> $val,
     			'jrdt_dk'		=> $pos
     		]);
+
+    		$num++;
 		}
 
 		return 'okee';
@@ -139,6 +145,7 @@
 		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
 		$detail = DB::table('m_transaksi_detail')->where('td_transaksi', $id_transaksi)->get();
 
+		$num = 0;
 		foreach ($detail as $key => $detail_data) {
 			$akun = DB::table('d_akun')->where('id_akun', $detail_data->td_acc)->first();
     		$pos = $detail_data->td_posisi;
@@ -152,11 +159,13 @@
 
     		DB::table('d_jurnal_dt')->insert([
     			'jrdt_jurnal'	=> $jurnal->first()->jurnal_id,
-    			'jrdt_no'		=> ($key+1),
+    			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data->td_acc,
     			'jrdt_value'	=> $val,
     			'jrdt_dk'		=> $pos
     		]);
+
+    		$num++;
 		}
 		return 'okee';
 	}
@@ -184,6 +193,7 @@
 
 		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
 
+		$num = 0;
 		foreach ($detail as $key => $detail_data) {
 			$akun = DB::table('d_akun')->where('id_akun', $detail_data['td_acc'])->first();
     		$pos = $detail_data['td_posisi'];
@@ -197,11 +207,13 @@
 
     		DB::table('d_jurnal_dt')->insert([
     			'jrdt_jurnal'	=> $jurnal->first()->jurnal_id,
-    			'jrdt_no'		=> ($key+1),
+    			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data["td_acc"],
     			'jrdt_value'	=> $val,
     			'jrdt_dk'		=> $pos
     		]);
+
+    		$num++;
 		}
 
 		return 'okee';

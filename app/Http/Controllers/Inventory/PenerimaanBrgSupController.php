@@ -295,7 +295,7 @@ class PenerimaanBrgSupController extends Controller
 
                     $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
 
-                    if(!$cek || !$cek2){
+                    if(!$cek || !$cek2 || !$cek->m_akun_persediaan){
                         $err = false;
                     }else{
                         $acc[$acc_key] = [
