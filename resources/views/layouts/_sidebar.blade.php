@@ -639,20 +639,24 @@
                                         POS Penjualan Retail
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('POS Penjualan Grosir / Online','ma_read'))
-                                        POS Penjualan Grosir / Online
+                                    @if(Auth::user()->punyaAkses('POS Penjualan Grosir/Online','ma_read'))
+                                        POS Penjualan Grosir/Online
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Penerimaan Piutang','ma_read'))
+                                        Penerimaan Piutang
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Laporan Penjualan Retail','ma_read'))
                                         Laporan Penjualan Retail
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir / Online','ma_read'))
-                                        Laporan Penjualan Grosir / Online
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir/Online','ma_read'))
+                                        Laporan Penjualan Grosir/Online
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Retail / Grosir','ma_read'))
-                                        Laporan Penjualan Retail / Grosir
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Retail & Grosir','ma_read'))
+                                        Laporan Penjualan Retail & Grosir
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Monitoring Order & Stock','ma_read'))
@@ -667,9 +671,6 @@
                                         Mutasi Stock & Retail
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Penerimaan Piutang','ma_read'))
-                                        Penerimaan Piutang
-                                    @endif
 
                             </span>
 
@@ -691,10 +692,10 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('POS Penjualan Grosir / Online','ma_read'))
+                                @if(Auth::user()->punyaAkses('POS Penjualan Grosir/Online','ma_read'))
                                     <li class="{{ Request::is('penjualan/POSgrosir/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/POSgrosir/index') }}"><span
-                                                    class="submenu-title">POS Penjualan Grosir / Online</span><span
+                                                    class="submenu-title">POS Penjualan Grosir/Online</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
@@ -707,7 +708,7 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Laporan POS Penjualan Retail','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Penjualan Retail','ma_read'))
                                     <li class="{{ Request::is('penjualan/laporanRetail/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/laporanRetail/index') }}"><span
                                                     class="submenu-title">Laporan Penjualan Retail</span><span
@@ -715,18 +716,18 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Laporan POS Penjualan Grosir / Online','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir/Online','ma_read'))
                                     <li class="{{ Request::is('penjualan/laporanGrosir/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/laporanGrosir/index') }}"><span
-                                                    class="submenu-title">Laporan Penjualan Grosir / Online</span><span
+                                                    class="submenu-title">Laporan Penjualan Grosir/Online</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Laporan POS Penjualan Retail / Grosir','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Penjualan Retail & Grosir','ma_read'))
                                     <li class="{{ Request::is('penjualan/laporan_penjualan/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/laporan_penjualan/laporan_penjualan') }}"><span
-                                                    class="submenu-title">Laporan POS Penjualan Retail / Grosir</span><span
+                                                    class="submenu-title">Laporan Penjualan Retail & Grosir</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
