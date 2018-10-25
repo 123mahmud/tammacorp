@@ -147,7 +147,7 @@
 
                                                 <div align="right" style="padding-top:10px;">
                                                     <div id="div_button_save" class="form-group">
-                                                        <button type="button" id="button_save" class="btn btn-primary"
+                                                        <button type="button" id="button_save" class="btn btn-primary div_button_save"
                                                                 onclick="simpanDataUser()">Simpan Data
                                                         </button>
                                                     </div>
@@ -315,6 +315,7 @@
 
 
                         function simpanDataUser() {
+                            $('.div_button_save').attr('disabled', 'disabled');
                             $.ajaxSetup({
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -331,6 +332,7 @@
                                 success: function (response) {
                                     if (response.status == 'sukses') {
                                         window.location = baseUrl + '/system/hakuser/user';
+                                        $('.div_button_save').removeAttr('disabled', 'disabled');
                                         iziToast.success({
                                             timeout: 5000,
                                             position: "topRight",
@@ -339,6 +341,7 @@
                                             message: 'User Baru Tersimpan.'
                                         });
                                     }else{
+                                        $('.div_button_save').removeAttr('disabled', 'disabled');
                                         iziToast.error({
                                             position: "topRight",
                                             title: '',
