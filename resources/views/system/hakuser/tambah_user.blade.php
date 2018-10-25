@@ -315,6 +315,11 @@
 
 
                         function simpanDataUser() {
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
                             var dataUser = $('#data-user :input').serialize();
                             var dataDetail = $('#data-detail :input').serialize()
                             $.ajax({
