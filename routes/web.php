@@ -968,6 +968,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/system/hakakses/tambah-akses-group', 'ManAkses\groupAksesController@tambah_akses');
     Route::get('/system/hakakses/tambah_akses-group/simpan-group', 'ManAkses\groupAksesController@simpanGroup');
     Route::get('/system/hakakses/tambah_akses-group/simpan-group-detail', 'ManAkses\groupAksesController@simpanGroupDetail');
+// profil perushaaan
+    Route::get('/system/profilperusahaan/profil', 'SystemController@profil');
+// Finansial
+    Route::get('/system/thnfinansial/finansial', 'SystemController@finansial');
 //nota Transfer
     Route::get('transfer/no-nota', 'transferItemController@noNota');
 //transfer retail
