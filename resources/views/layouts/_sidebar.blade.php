@@ -611,7 +611,7 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Data Actual SPK','ma_read'))
+                                @if(Auth::user()->punyaAkses('Data Garapan Produksi','ma_read'))
                                     <li class="{{ Request::is('produksi/garapan/index') ? 'active' : '' || Request::is('produksi/garapan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/produksi/garapan/index') }}"><span
                                                     class="submenu-title">Data Garapan Produksi</span><span
