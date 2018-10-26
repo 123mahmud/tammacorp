@@ -162,7 +162,7 @@ class ManOutputProduksiController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         DB::beginTransaction();
         try {
             $cek = DB::table('d_productresult')

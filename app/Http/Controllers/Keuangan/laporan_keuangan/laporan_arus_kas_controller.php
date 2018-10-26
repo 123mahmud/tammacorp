@@ -40,8 +40,8 @@ class laporan_arus_kas_controller extends Controller
                                                   ->whereIn('d_jurnal_dt.jrdt_jurnal', function($query){
                                                   	$query->select(DB::raw('distinct(jrdt_jurnal)'))
                                                   				->from('d_jurnal_dt')
-										    					->where(DB::raw('substring(jrdt_acc,1,3)'), '100')
-										    					->orWhere(DB::raw('substring(jrdt_acc,1,3)'), '101')->get();
+                        										    					->where(DB::raw('substring(jrdt_acc,1,3)'), '100')
+                        										    					->orWhere(DB::raw('substring(jrdt_acc,1,3)'), '101')->get();
                                                   })
                                                   ->groupBy('jrdt_acc', 'opening_date')
                                                   ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
