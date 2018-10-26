@@ -268,7 +268,7 @@ class ConfrimBeliController extends Controller
     {
       if ($data->d_pcs_status == "WT") 
       {
-        return '<span class="label label-info">Waiting</span>';
+        return '<span class="label label-default">Waiting</span>';
       }
       elseif ($data->d_pcs_status == "DE") 
       {
@@ -280,11 +280,11 @@ class ConfrimBeliController extends Controller
       }
       elseif ($data->d_pcs_status == "RC") 
       {
-        return '<span class="label label-success">Received</span>';
+        return '<span class="label label-info">Received</span>';
       }
       else
       {
-        return '<span class="label label-warning">Revisi</span>';
+        return '<span class="label label-primary">Revisi</span>';
       }
     })
     ->editColumn('tglOrder', function ($data) 
