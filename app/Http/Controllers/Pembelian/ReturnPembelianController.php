@@ -421,11 +421,19 @@ class ReturnPembelianController extends Controller
             if(!$cek || !$cek2){
                 $err = false;
             }else{
-                $acc[$acc_key] = [
+              if(array_key_exists($cek->m_akun_persediaan, $acc)){
+                $acc[$cek->m_akun_persediaan] = [
+                    'td_acc'    => $cek->m_akun_persediaan,
+                    'td_posisi' => 'K',
+                    'value'     => $acc[$cek->m_akun_persediaan]['value'] + $request->fieldHargaTotalRaw[$acc_key]
+                ];
+              }else{
+                $acc[$cek->m_akun_persediaan] = [
                     'td_acc'    => $cek->m_akun_persediaan,
                     'td_posisi' => 'K',
                     'value'     => $request->fieldHargaTotalRaw[$acc_key]
                 ];
+              }
 
                 $total += $request->fieldHargaTotalRaw[$acc_key];
             }
@@ -438,7 +446,7 @@ class ReturnPembelianController extends Controller
             ]);
         }
 
-        $acc[count($acc)] = [
+        $acc['301.01'] = [
             'td_acc'    => '301.01',
             'td_posisi' => 'D',
             'value'     => $total
@@ -550,7 +558,7 @@ class ReturnPembelianController extends Controller
     }
 
     if(jurnal_setting()->allow_jurnal_to_execute){
-      $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Pemotongan Nota Dari '.$request->namaSup.' Atas Nomor '.$pcs->d_pcs_code, $acc);
+      $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Potong Nota Dari '.$request->namaSup.' Atas '.$pcs->d_pcs_code, $acc);
     }
 
     return response()->json([
@@ -580,11 +588,19 @@ class ReturnPembelianController extends Controller
             if(!$cek || !$cek2){
                 $err = false;
             }else{
-                $acc[$acc_key] = [
+              if(array_key_exists($cek->m_akun_persediaan, $acc)){
+                $acc[$cek->m_akun_persediaan] = [
+                    'td_acc'    => $cek->m_akun_persediaan,
+                    'td_posisi' => 'K',
+                    'value'     => $acc[$cek->m_akun_persediaan]['value'] + $request->fieldHargaTotalRaw[$acc_key]
+                ];
+              }else{
+                $acc[$cek->m_akun_persediaan] = [
                     'td_acc'    => $cek->m_akun_persediaan,
                     'td_posisi' => 'K',
                     'value'     => $request->fieldHargaTotalRaw[$acc_key]
                 ];
+              }
 
                 $total += $request->fieldHargaTotalRaw[$acc_key];
             }
@@ -597,7 +613,7 @@ class ReturnPembelianController extends Controller
             ]);
         }
 
-        $acc[count($acc)] = [
+        $acc['301.01'] = [
             'td_acc'    => '301.01',
             'td_posisi' => 'D',
             'value'     => $total

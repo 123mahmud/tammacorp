@@ -217,10 +217,10 @@ class spkProductionController extends Controller
     {
         // return json_encode("asd");
 
-        // d_productplan::where('pp_id', $spk_id)
-        //     ->update([
-        //         'pp_isspk' => 'C'
-        //     ]);
+        d_productplan::where('pp_id', $spk_id)
+            ->update([
+                'pp_isspk' => 'C'
+            ]);
 
         $hpp = []; $err = true; $acc_temp = []; $acc_temp2 = [];
         $spk = d_spk::find($spk_id);
@@ -268,13 +268,13 @@ class spkProductionController extends Controller
                             $acc_temp[$item->m_akun_persediaan] = [
                                 'td_acc'      => $item->m_akun_persediaan,
                                 'td_posisi'   => "K",
-                                'value'    => $acc_temp[$item->m_akun_persediaan]['value'] + ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
+                                'value'       => $acc_temp[$item->m_akun_persediaan]['value'] + ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
                             ];
                         }else{
                             $acc_temp[$item->m_akun_persediaan] = [
                                 'td_acc'      => $item->m_akun_persediaan,
                                 'td_posisi'   => "K",
-                                'value'    => ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
+                                'value'       => ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
                             ];
                         }
 
@@ -282,13 +282,13 @@ class spkProductionController extends Controller
                             $acc_temp2[$item->m_akun_beban] = [
                                 'td_acc'      => $item->m_akun_beban,
                                 'td_posisi'   => "D",
-                                'value'    => $acc_temp2[$item->m_akun_beban]['value'] + ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
+                                'value'       => $acc_temp2[$item->m_akun_beban]['value'] + ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
                             ];
                         }else{
                             $acc_temp2[$item->m_akun_beban] = [
                                 'td_acc'      => $item->m_akun_beban,
                                 'td_posisi'   => "D",
-                                'value'    => ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
+                                'value'       => ($default_cost->m_pbuy1 * $spkDt[$i]->fr_value)
                             ];
                         }
                       }
@@ -298,13 +298,13 @@ class spkProductionController extends Controller
                             $acc_temp[$item->m_akun_persediaan] = [
                                 'td_acc'      => $item->m_akun_persediaan,
                                 'td_posisi'   => "K",
-                                'value'    => $acc_temp[$item->m_akun_persediaan]['value'] + ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
+                                'value'       => $acc_temp[$item->m_akun_persediaan]['value'] + ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
                             ];
                         }else{
                             $acc_temp[$item->m_akun_persediaan] = [
                                 'td_acc'      => $item->m_akun_persediaan,
                                 'td_posisi'   => "K",
-                                'value'    => ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
+                                'value'       => ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
                             ];
                         }
 
@@ -312,13 +312,13 @@ class spkProductionController extends Controller
                             $acc_temp2[$item->m_akun_beban] = [
                                 'td_acc'      => $item->m_akun_beban,
                                 'td_posisi'   => "D",
-                                'value'    => $acc_temp2[$item->m_akun_beban]['value'] + ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
+                                'value'       => $acc_temp2[$item->m_akun_beban]['value'] + ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
                             ];
                         }else{
                             $acc_temp2[$item->m_akun_beban] = [
                                 'td_acc'      => $item->m_akun_beban,
                                 'td_posisi'   => "D",
-                                'value'    => ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
+                                'value'       => ($prevCost->sm_hpp * $spkDt[$i]->fr_value)
                             ];
                         }
                       }
@@ -335,24 +335,6 @@ class spkProductionController extends Controller
                 'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan Atau Akun Beban.'
             ]);
         }
-
-        if(jurnal_setting()->allow_jurnal_to_execute){
-            $item_spk = m_item::where('i_id', $spk->spk_item)->first();
-
-            if($item_spk){
-                $state_jurnal = _initiateJournal_self_detail($spk->spk_code, 'MM', date('Y-m-d', strtotime($spk->spk_date)), 'Proses Produksi '.$item_spk->i_name.' '.date('Y/m/d', strtotime($spk->spk_date)), array_merge($acc_temp, $acc_temp2));
-            }else{
-                return response()->json([
-                    'status' => 'gagal',
-                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Barang Yang Akan Diproduksi Tidak Bisa Ditemukan....'
-                ]);
-            }
-        }
-
-        return response()->json([
-            'status' => 'sukses',
-            'pesan' => 'Status SPK telah berhasil diubah',
-        ]);
 
         // return json_encode(array_merge($acc, $acc_2));
 
@@ -372,13 +354,32 @@ class spkProductionController extends Controller
 
             $spk = d_spk::find($spk_id);
             $spk->spk_status = 'PB';
-            // $spk->save();
+            $spk->save();
         } else {
             //update status to FN
             $spk = d_spk::find($spk_id);
             $spk->spk_status = 'FN';
-            // $spk->save();
+            $spk->save();
         }
+
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $item_spk = m_item::where('i_id', $spk->spk_item)->first();
+
+            if($item_spk){
+                // return "aa";
+                $state_jurnal = _initiateJournal_self_detail($spk->spk_code, 'MM', date('Y-m-d', strtotime($spk->spk_date)), 'Proses Produksi '.$item_spk->i_name.' '.date('Y/m/d', strtotime($spk->spk_date)), array_merge($acc_temp, $acc_temp2));
+            }else{
+                return response()->json([
+                    'status' => 'gagal',
+                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Barang Yang Akan Diproduksi Tidak Bisa Ditemukan....'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => 'sukses',
+            'pesan' => 'Status SPK telah berhasil diubah',
+        ]);
 
     }
 
