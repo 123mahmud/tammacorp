@@ -961,7 +961,7 @@ Route::group(['middleware' => 'auth'], function () {
     /*System*/
     Route::get('/system/hakuser/user', 'ManUser\aksesUserController@indexAksesUser');
     Route::get('/system/hakuser/tambah_user', 'ManUser\aksesUserController@tambah_user');
-    Route::get('/system/hakuser/tambah_user/simpan-user', 'ManUser\aksesUserController@simpanUser');
+    Route::post('/system/hakuser/tambah_user/simpan-user', 'ManUser\aksesUserController@simpanUser');
     Route::get('/system/hakakses/edit-user-akses/{id}/edit', 'ManUser\aksesUserController@editUserAkses');
     Route::get('/system/hakuser/perbarui-user/perbarui-user/{id}', 'ManUser\aksesUserController@perbaruiUser');
     Route::get('/system/hakakses/simpan-user-akses', 'ManUser\aksesUserController@simpanUserAkses');
@@ -973,6 +973,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/system/hakakses/tambah-akses-group', 'ManAkses\groupAksesController@tambah_akses');
     Route::get('/system/hakakses/tambah_akses-group/simpan-group', 'ManAkses\groupAksesController@simpanGroup');
     Route::get('/system/hakakses/tambah_akses-group/simpan-group-detail', 'ManAkses\groupAksesController@simpanGroupDetail');
+// profil perushaaan
+    Route::get('/system/profilperusahaan/profil', 'SystemController@profil');
+// Finansial
+    Route::get('/system/thnfinansial/finansial', 'SystemController@finansial');
 //nota Transfer
     Route::get('transfer/no-nota', 'transferItemController@noNota');
 //transfer retail

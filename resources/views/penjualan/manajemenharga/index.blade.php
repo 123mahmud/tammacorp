@@ -32,17 +32,18 @@
                     <div class="row">
                       <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="table-responsive">
-                          <table class="table tabelan table-bordered table-hover" id="data-harga">
+                          <table class="table tabelan table-bordered table-hover" id="data-harga" width="100%">
                             <thead>
                               <tr>
                                 <th>No</th>
-                                <th>Kode Item</th>
+                                <th>Kode - Nama Item</th>
                                 <th>Item Type</th>
                                 <th>Item Group</th>
-                                <th>Nama Item</th>
                                 <th>Harga A</th>
                                 <th>Harga B</th>
                                 <th>Harga C</th>
+                                <th>HPP</th>
+                                <th>Barang Rusak</th>
                                 <th>Aksi</th>
                               </tr>
                             </thead>
@@ -138,13 +139,14 @@
     },
     columns: [
       {data: 'DT_Row_Index', name: 'DT_Row_Index'},
-      {data: 'i_code', name: 'i_code'},
+      {data: 'i_name', name: 'i_name'},
       {data: 'i_type', name: 'i_type'},
       {data: 'm_gname', name: 'm_gname'},
-      {data: 'i_name', name: 'i_name'},
       {data: 'm_psell1', name: 'm_psell1'},
       {data: 'm_psell2', name: 'm_psell2'},
       {data: 'm_psell3', name: 'm_psell3'},
+      {data: 'm_hpp', name: 'm_hpp'},
+      {data: 'm_barang_rusak', name: 'm_barang_rusak'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
     language: {

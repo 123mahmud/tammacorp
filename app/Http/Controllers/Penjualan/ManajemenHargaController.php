@@ -21,6 +21,8 @@ class ManajemenHargaController extends Controller
                               'm_psell1',
                               'm_psell2',
                               'm_psell3',
+                              'm_hpp',
+                              'm_barang_rusak',
                               'i_type',
                               'i_name')
 			->join('m_item','i_id','=','m_pitem')
@@ -31,6 +33,37 @@ class ManajemenHargaController extends Controller
 
 		return DataTables::of($data)
     ->addIndexColumn()
+    ->addColumn('i_name', function($data){
+      return $data->i_code .' - '. $data->i_name ;
+    })
+    ->editColumn('m_psell1', function ($data) {
+      return '<div class="text-right">
+      <input readonly class="form-control text-right" value="'.number_format( $data->m_psell1 ,2,',','.').'">
+      </div>';
+    })
+    ->editColumn('m_psell2', function ($data) {
+      return '<div class="text-right">
+      <input readonly class="form-control text-right" value="'.number_format( $data->m_psell2 ,2,',','.').'">
+      </div>';
+    })
+    ->editColumn('m_psell3', function ($data) {
+      return '<div class="text-right">
+      <input readonly class="form-control text-right" value="'.number_format( $data->m_psell3 ,2,',','.').'">
+      </div>';
+    })
+
+    ->editColumn('m_hpp', function ($data) {
+      return '<div class="text-right">
+      <input readonly class="form-control text-right" value="'.number_format( $data->m_hpp ,2,',','.').'">
+      </div>';
+    })
+
+    ->editColumn('m_barang_rusak', function ($data) {
+      return '<div class="text-right">
+      <input readonly class="form-control text-right" value="'.number_format( $data->m_barang_rusak ,2,',','.').'">
+      </div>';
+    })
+
     ->addColumn('action', function($data){
       return '<div class="text-center">
                   <button style="margin-left:5px;" 
@@ -44,22 +77,7 @@ class ManajemenHargaController extends Controller
                   </button>
             </div>';
     })
-    ->editColumn('m_psell1', function ($data) {
-      return '<div class="text-right">
-      <input readonly class="form-control text-right" value="Rp.'.number_format( $data->m_psell1 ,2,',','.').'">
-      </div>';
-    })
-    ->editColumn('m_psell2', function ($data) {
-      return '<div class="text-right">
-      <input readonly class="form-control text-right" value="Rp.'.number_format( $data->m_psell2 ,2,',','.').'">
-      </div>';
-    })
-    ->editColumn('m_psell3', function ($data) {
-      return '<div class="text-right">
-      <input readonly class="form-control text-right" value="Rp.'.number_format( $data->m_psell3 ,2,',','.').'">
-      </div>';
-    })
-    ->rawColumns(['action','m_psell1','m_psell2','m_psell3'])
+    ->rawColumns(['i_name','action','m_psell1','m_psell2','m_psell3','m_hpp','m_barang_rusak'])
     ->make(true);
 	}
 
@@ -73,12 +91,13 @@ class ManajemenHargaController extends Controller
     $data = m_price::select('*')
       ->join('m_item','i_id','=','m_pitem')
       ->where('m_pid',$id)
-      ->first();
+      ->first();  
     
     return view('penjualan.manajemenharga.modal-edit',compact('data'));
   }
 
   public function updateMpsell(Request $request){
+    // dd($request->all());
     DB::beginTransaction();
         try {
     m_price::where('m_pid',$request->m_pid)
@@ -86,6 +105,8 @@ class ManajemenHargaController extends Controller
         'm_psell1' => ($this->konvertRp($request->m_psell1)),
         'm_psell2' => ($this->konvertRp($request->m_psell2)),
         'm_psell3' => ($this->konvertRp($request->m_psell3)),
+        'm_hpp' => ($this->konvertRp($request->m_psell4)),
+        'm_barang_rusak' => ($this->konvertRp($request->m_psell5)),
         'm_pupdated' => Carbon::now()
       ]);
     DB::commit();
