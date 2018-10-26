@@ -908,20 +908,24 @@
                                         Manajemen SPK
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Proses Input Produksi','ma_read'))
-                                        Proses Input Produksi
+                                    @if(Auth::user()->punyaAkses('Proses Input Transaksi','ma_read'))
+                                        Proses Input Transaksi
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Laporan Hutang Piutang','ma_read'))
                                         Laporan Hutang Piutang
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Laporan(Jurnal,Buku Besar,Neraca,DLL)','ma_read'))
-                                        Laporan(Jurnal,Buku Besar,Neraca,DLL)
+                                    @if(Auth::user()->punyaAkses('Laporan Keuangan','ma_read'))
+                                        Laporan Keuangan
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa Progress Terhadap Perencanaan','ma_read'))
-                                        Analisa Progress Terhadap Perencanaan
+                                    @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                        Analisa PTP
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
+                                        Analisa Net Profit / OCF
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Analisa Net Profit Terhadap OCF','ma_read'))
@@ -936,12 +940,16 @@
                                         Analisa Pertumbuhan Aset
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Analisa Aset Terhadap Ekuitas','ma_read'))
+                                        Analisa Aset Terhadap Ekuitas
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
                                         Analisa Cashflow
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa Common Size dan Index','ma_read'))
-                                        Analisa Common Size dan Index
+                                    @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
+                                        Analisa CSI
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Analisa Rasio Keuangan','ma_read'))
@@ -954,6 +962,10 @@
 
                                     @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
                                         Analisa ROE
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
+                                        Analisa Hutang Piutang
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Konfirmasi Data Pembelian','ma_read'))
@@ -987,20 +999,20 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Laporan (Jurnal,Buku Besar,Neraca,DLL)','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Keuangan','ma_read'))
                                     <li class="{{ Request::is('keuangan/laporan_keuangan') ? 'active' : '' || Request::is('keuangan/laporan_keuangan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/laporan_keuangan') }}"><span class="submenu-title">Laporan Keuangan    </span><span
+                                        <a href="{{ url('/keuangan/laporan_keuangan') }}"><span class="submenu-title">Laporan Keuangan</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa Progress Terhadap Perencanaan','ma_read'))
+                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa Progress Terhadap Perencanaan">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
                                                     class="submenu-title">Analisa PTP</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa Net Profit Terhadap OCF','ma_read'))
+                                @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit Terhadap OCF">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
                                                     class="submenu-title">Analisa Net Profit / OCF</span><span
@@ -1034,7 +1046,7 @@
                                                     class="submenu-title">Analisa Cashflow</span><span class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa Common Size dan Index','ma_read'))
+                                @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa Common Size dan Index">
                                         <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
                                                     class="submenu-title">Analisa CSI</span><span
