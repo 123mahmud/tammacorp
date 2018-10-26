@@ -295,14 +295,22 @@ class PenerimaanBrgSupController extends Controller
 
                     $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
 
-                    if(!$cek || !$cek2){
+                    if(!$cek || !$cek2 || !$cek->m_akun_persediaan){
                         $err = false;
                     }else{
-                        $acc[$acc_key] = [
-                            'td_acc'    => $cek->m_akun_persediaan,
-                            'td_posisi' => 'D',
-                            'value'     => $request->fieldHargaTotalRaw[$acc_key]
-                        ];
+                        if(array_key_exists($cek->m_akun_persediaan, $acc)){
+                            $acc[$cek->m_akun_persediaan] = [
+                                'td_acc'    => $cek->m_akun_persediaan,
+                                'td_posisi' => 'D',
+                                'value'     => $acc[$cek->m_akun_persediaan]['value'] + $request->fieldHargaTotalRaw[$acc_key]
+                            ];
+                        }else{
+                            $acc[$cek->m_akun_persediaan] = [
+                                'td_acc'    => $cek->m_akun_persediaan,
+                                'td_posisi' => 'D',
+                                'value'     => $request->fieldHargaTotalRaw[$acc_key]
+                            ];
+                        }
 
                         $total += $request->fieldHargaTotalRaw[$acc_key];
                     }
@@ -315,16 +323,17 @@ class PenerimaanBrgSupController extends Controller
                     ]);
                 }
 
-                $acc[count($acc)] = [
+                $acc[count('301.01')] = [
                     'td_acc'    => '301.01',
                     'td_posisi' => 'K',
                     'value'     => $total
                 ];
             }
 
-            // return json_encode($acc);
+            
 
-            // // cek jurnal end
+            // return json_encode($state_jurnal);
+            // cek jurnal end
 
             //code penerimaan
             $kode = $this->kodePenerimaanAuto();
@@ -474,7 +483,7 @@ class PenerimaanBrgSupController extends Controller
 
         return response()->json([
             'status' => 'sukses',
-            'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
+            'pesan'  => 'Data Penerimaan Pembelian Berhasil Disimpan'
         ]);
     }
     public function deletePenerimaan(Request $request)

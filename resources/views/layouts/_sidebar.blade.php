@@ -611,7 +611,7 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Data Actual SPK','ma_read'))
+                                @if(Auth::user()->punyaAkses('Data Garapan Produksi','ma_read'))
                                     <li class="{{ Request::is('produksi/garapan/index') ? 'active' : '' || Request::is('produksi/garapan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/produksi/garapan/index') }}"><span
                                                     class="submenu-title">Data Garapan Produksi</span><span
@@ -639,20 +639,24 @@
                                         POS Penjualan Retail
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('POS Penjualan Grosir / Online','ma_read'))
-                                        POS Penjualan Grosir / Online
+                                    @if(Auth::user()->punyaAkses('POS Penjualan Grosir/Online','ma_read'))
+                                        POS Penjualan Grosir/Online
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Penerimaan Piutang','ma_read'))
+                                        Penerimaan Piutang
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Laporan Penjualan Retail','ma_read'))
                                         Laporan Penjualan Retail
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir / Online','ma_read'))
-                                        Laporan Penjualan Grosir / Online
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir/Online','ma_read'))
+                                        Laporan Penjualan Grosir/Online
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Retail / Grosir','ma_read'))
-                                        Laporan Penjualan Retail / Grosir
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Retail & Grosir','ma_read'))
+                                        Laporan Penjualan Retail & Grosir
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Monitoring Order & Stock','ma_read'))
@@ -667,9 +671,6 @@
                                         Mutasi Stock & Retail
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Penerimaan Piutang','ma_read'))
-                                        Penerimaan Piutang
-                                    @endif
 
                             </span>
 
@@ -691,10 +692,10 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('POS Penjualan Grosir / Online','ma_read'))
+                                @if(Auth::user()->punyaAkses('POS Penjualan Grosir/Online','ma_read'))
                                     <li class="{{ Request::is('penjualan/POSgrosir/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/POSgrosir/index') }}"><span
-                                                    class="submenu-title">POS Penjualan Grosir / Online</span><span
+                                                    class="submenu-title">POS Penjualan Grosir/Online</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
@@ -707,7 +708,7 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Laporan POS Penjualan Retail','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Penjualan Retail','ma_read'))
                                     <li class="{{ Request::is('penjualan/laporanRetail/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/laporanRetail/index') }}"><span
                                                     class="submenu-title">Laporan Penjualan Retail</span><span
@@ -715,18 +716,18 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Laporan POS Penjualan Grosir / Online','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir/Online','ma_read'))
                                     <li class="{{ Request::is('penjualan/laporanGrosir/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/laporanGrosir/index') }}"><span
-                                                    class="submenu-title">Laporan Penjualan Grosir / Online</span><span
+                                                    class="submenu-title">Laporan Penjualan Grosir/Online</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Laporan POS Penjualan Retail / Grosir','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Penjualan Retail & Grosir','ma_read'))
                                     <li class="{{ Request::is('penjualan/laporan_penjualan/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/laporan_penjualan/laporan_penjualan') }}"><span
-                                                    class="submenu-title">Laporan POS Penjualan Retail / Grosir</span><span
+                                                    class="submenu-title">Laporan Penjualan Retail & Grosir</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
@@ -907,24 +908,24 @@
                                         Manajemen SPK
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Proses Input Produksi','ma_read'))
-                                        Proses Input Produksi
+                                    @if(Auth::user()->punyaAkses('Proses Input Transaksi','ma_read'))
+                                        Proses Input Transaksi
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Laporan Hutang Piutang','ma_read'))
                                         Laporan Hutang Piutang
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Laporan(Jurnal,Buku Besar,Neraca,DLL)','ma_read'))
-                                        Laporan(Jurnal,Buku Besar,Neraca,DLL)
+                                    @if(Auth::user()->punyaAkses('Laporan Keuangan','ma_read'))
+                                        Laporan Keuangan
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa Progress Terhadap Perencanaan','ma_read'))
-                                        Analisa Progress Terhadap Perencanaan
+                                    @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                        Analisa PTP
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa Net Profit Terhadap OCF','ma_read'))
-                                        Analisa Net Profit Terhadap OCF
+                                    @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
+                                        Analisa Net Profit / OCF
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
@@ -935,12 +936,16 @@
                                         Analisa Pertumbuhan Aset
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Analisa Aset Terhadap Ekuitas','ma_read'))
+                                        Analisa Aset Terhadap Ekuitas
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
                                         Analisa Cashflow
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa Common Size dan Index','ma_read'))
-                                        Analisa Common Size dan Index
+                                    @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
+                                        Analisa CSI
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Analisa Rasio Keuangan','ma_read'))
@@ -953,6 +958,10 @@
 
                                     @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
                                         Analisa ROE
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
+                                        Analisa Hutang Piutang
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Konfirmasi Data Pembelian','ma_read'))
@@ -986,21 +995,21 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Laporan (Jurnal,Buku Besar,Neraca,DLL)','ma_read'))
+                                @if(Auth::user()->punyaAkses('Laporan Keuangan','ma_read'))
                                     <li class="{{ Request::is('keuangan/laporan_keuangan') ? 'active' : '' || Request::is('keuangan/laporan_keuangan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/laporan_keuangan') }}"><span class="submenu-title">Laporan Keuangan    </span><span
+                                        <a href="{{ url('/keuangan/laporan_keuangan') }}"><span class="submenu-title">Laporan Keuangan</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa Progress Terhadap Perencanaan','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa Progress Terhadap Perencanaan">
+                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
                                                     class="submenu-title">Analisa PTP</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa Net Profit Terhadap OCF','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit Terhadap OCF">
+                                @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit / OCF">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
                                                     class="submenu-title">Analisa Net Profit / OCF</span><span
                                                     class="hidden">Keuangan</span></a>
@@ -1033,8 +1042,8 @@
                                                     class="submenu-title">Analisa Cashflow</span><span class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa Common Size dan Index','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa Common Size dan Index">
+                                @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa CSI">
                                         <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
                                                     class="submenu-title">Analisa CSI</span><span
                                                     class="hidden">Keuangan</span></a>
@@ -1097,9 +1106,9 @@
                                         Manajemen User
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
+                              {{--       @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
                                         Manajemen Hak Akses
-                                    @endif
+                                    @endif --}}
 
                                     @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
                                         Profil Perusahaan
@@ -1121,12 +1130,12 @@
                                                     class="hidden">System</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
+                           {{--      @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
                                     <li class="{{ Request::is('system/hakakses/akses') ? 'active' : '' || Request::is('system/hakakses/*') ? 'active' : '' }}">
                                         <a href="{{ url('/system/hakakses/akses') }}"><span class="submenu-title">Manajemen Hak Akses</span><span
                                                     class="hidden">System</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
                                     <li class="{{ Request::is('system/profilperusahaan/profil') ? 'active' : '' || Request::is('system/profilperusahaan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/system/profilperusahaan/profil') }}"><span

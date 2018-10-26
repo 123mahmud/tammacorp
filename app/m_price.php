@@ -15,7 +15,9 @@ class m_price extends Model
                             'm_pbuy3', 
                             'm_psell1',
                             'm_psell2',
-                            'm_psell3'];
+                            'm_psell3',
+                            'm_hpp',
+                            'm_barang_rusak'];
                             
     const CREATED_AT = 'm_pcreated';
     const UPDATED_AT = 'm_pupdated';

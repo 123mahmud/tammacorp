@@ -162,7 +162,7 @@ class ManOutputProduksiController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         DB::beginTransaction();
         try {
             $cek = DB::table('d_productresult')
@@ -328,9 +328,10 @@ class ManOutputProduksiController extends Controller
                 ->where('pr_spk',$request->spk_id)
                 ->join('d_productresult_dt','d_productresult_dt.prdt_productresult','=','pr_id')
                 ->get();
-
+            
+            $totalHasil = 0;
             for ($i=0; $i <count($cek) ; $i++) { 
-                $totalHasil = 0;
+                
                 $totalHasil += $cek[$i]->prdt_qty;
             }
 
@@ -341,7 +342,7 @@ class ManOutputProduksiController extends Controller
                 ->where('spk_id',$request->spk_id)
                 ->join('d_productplan','d_productplan.pp_id','=','spk_ref')
                 ->first();
-
+           // dd($totalHasil);
             if ($autoStatus->pp_qty == $totalHasil) {
                 $autoStatus->update([
                     'spk_status' => 'FN'

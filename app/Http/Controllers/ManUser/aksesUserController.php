@@ -11,6 +11,7 @@ use App\d_group;
 use App\d_mem_access;
 
 use App\mMember;
+use App\m_jabatan;
 
 use Auth;
 
@@ -20,6 +21,7 @@ class aksesUserController extends Controller
 {
      public function indexAksesUser()
     {
+        //mMember::with('access')
     	$mem=mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
     		 ->Leftjoin('d_group',function($join){
                     $join->on('ma_group','=','g_id');
@@ -35,33 +37,30 @@ class aksesUserController extends Controller
     {
     	$group =d_group::get();
     	$access=d_access::get();
-        return view('/system/hakuser/tambah_user',compact('access','group'));
+        $jabatan = m_jabatan::all();
+        return view('/system/hakuser/tambah_user',compact('access','group','jabatan'));
     }
- /*    public function simpanGroupDetail(Request $request){
-		$chek=d_group_access::where('ga_group',$request->g_id)->where('ga_access',$request->id_access);
-		  if($chek->first()){
-		  		$chek->update([
-		  			$request->keterangan => $request->nilai
-		  				]);
-		  }else{
-		    		d_group_access::create([
-		    				'ga_access' => $request->id_access,
-		    				'ga_group' => $request->g_id,
-		    				$request->keterangan => $request->nilai,
-			    	]);
-		    	}
-    }*/
 
      public function simpanUser(Request $request){
-        return DB::transaction(function () use ($request) {
-
-     			$m_id=mMember::max('m_id')+1;
-     			$passwd= sha1(md5('passwordAllah').$request->Password);
+        // dd($request->all());
+        DB::beginTransaction();
+            try {
+                $tgl1 = $request->TanggalLahir;
+                $y = substr($tgl1, -4);
+                $m = substr($tgl1, -7,-5);
+                $d = substr($tgl1,0,2);
+                 $tgll = $y.'-'.$m.'-'.$d;
+     			$passwd= sha1(md5('passwordAllah').$request->password);
+                $m_id=(int)mMember::max('m_id')+1;
      			mMember::create([
-     				'm_id'=>$m_id,
-     				'm_username' =>$request->Username,
-     				'm_passwd' =>$passwd,
-     				'm_name' =>$request->NamaLengkap,
+                    'm_id'=>$m_id,
+                    'm_pegawai_id' => $request->pp_jabatan,
+     				'm_username' => $request->username,
+     				'm_passwd' => $passwd,
+     				'm_name' => $request->NamaLengkap,
+                    'm_birth_tgl' => $tgll,
+                    'm_addr' => $request->alamat,
+
      			]);
 
          			$hakAkses=d_group::join('d_group_access','ga_group','=','g_id')
@@ -70,9 +69,9 @@ class aksesUserController extends Controller
 
 
     			for ($i=0; $i < count($hakAkses) ; $i++) {
-    				$ma_id=d_mem_access::max('ma_id')+1;
+    				// $ma_id=d_mem_access::max('ma_id')+1;
     				d_mem_access::create([
-    					   'ma_id' =>$ma_id,
+    					   // 'ma_id' =>$ma_id,
     					   'ma_mem' =>$m_id,
     					   'ma_access'=>$hakAkses[$i]->a_id,
     					   'ma_group' =>$hakAkses[$i]->g_id ,
@@ -88,9 +87,9 @@ class aksesUserController extends Controller
                 if($request->groupAkses==null){
                     $hakAkses=d_access::get();
 
-                    $ma_id=d_mem_access::max('ma_id')+1;
+                    // $ma_id=d_mem_access::max('ma_id')+1;
                     d_mem_access::create([
-                           'ma_id' =>$ma_id,
+                           // 'ma_id' =>$ma_id,
                            'ma_mem' =>$m_id,
                            'ma_access'=>$hakAkses[$i]->a_id,
                            'ma_group' =>0 ,
@@ -113,32 +112,19 @@ class aksesUserController extends Controller
                                 'ma_delete'=>$request->delete[$i],
                         ]);
         }
-
-    			$data=['status'=>'sukses','m_id'=>$m_id];
-    			return json_encode($data);
-            });
+        DB::commit();
+        return response()->json([
+              'status' => 'sukses'
+          ]);
+        } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'data' => $e
+          ]);
+        }
      }
 
-     /*public function  simpanUserAkses(Request $request){
-
-     		$chek=d_mem_access::where('ma_mem',$request->m_id)->where('ma_access',$request->id_access);
-			if($chek->first()){
-			  		$chek->update([
-			  			$request->keterangan => $request->nilai
-			  				]);
-			}else{
-			    		d_mem_access::create([
-			    				'ma_mem' =>$request->m_id,
-			    				'ma_access' => $request->id_access,
-			    				'ma_group' => $request->g_id,
-			    				'ma_type'  =>'M',
-			    				$request->keterangan => $request->nilai,
-				    	]);
-			}
-
-    			$data=['status'=>'sukses'];
-    			return json_encode($data);
-     }*/
 
     public function editUserAkses($id){
         return DB::transaction(function () use ($id) {
