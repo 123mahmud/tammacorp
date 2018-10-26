@@ -107,7 +107,7 @@
                       </div>
                       
                       <div class="col-md-6 col-sm-12 col-xs-12">
-                        <a href="{{ url('hrd/payroll/set-tunjangan-pegawai-man') }}" class="btn btn-danger btn-block"> Kembali </a>
+                        <a href="{{ url('master/databrgsup/index') }}" class="btn btn-danger btn-block"> Kembali </a>
                       </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">
                         <input type="submit" value="Simpan" class="btn btn-primary btn-block">

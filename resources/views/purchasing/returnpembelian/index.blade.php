@@ -517,14 +517,34 @@
         Object.keys(data.data_isi).forEach(function(){
           $('#tabel-order').append('<tr class="tbl_modal_row" id="row'+i+'">'
                           +'<td>'+key+'</td>'
-                          +'<td>'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'</td>'
-                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_pcsdt_qty+'</td>'
-                          +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
-                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'</td>'
-                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'</td>'
-                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'</td>'
-                          +'</tr>');
+                          +'<td>'
+                            +data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name
+                            +'<input type="hidden" class="input-sm form-control" name="ip_item[]" value="'+data.data_isi[key-1].i_id+'">'
+                          +'</td>'
+                          +'<td>'
+                            +data.data_isi[key-1].m_sname
+                            +'<input type="hidden" class="input-sm form-control" name="ip_sid[]" value="'+data.data_isi[key-1].m_sid+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_qty)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_qty[]" value="'+data.data_isi[key-1].d_pcsdt_qty+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_prevcost)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_prevcost[]" value="'+data.data_isi[key-1].d_pcsdt_prevcost+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_price)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_price[]" value="'+data.data_isi[key-1].d_pcsdt_price+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_total[]" value="'+data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty+'">'
+                          +'</td>'
+                        +'</tr>');
           key++;  
           i = randString(5);
         });
@@ -550,14 +570,15 @@
       // id: 'question',
       // zindex: 999,
       title: 'Peringatan!!',
-      message: 'Anda akan merubah status barang dari revisi ke diterima',
+      message: 'Anda akan merivisi PO lama sesuai dengan data tertampil',
       position: 'center',
       buttons: [
         ['<button><b>Ya</b></button>', function (instance, toast) {
+            var dataform = $('#form-revisi-po').serialize();
             $.ajax({
               type: "POST",
               url : baseUrl + "/purchasing/returnpembelian/ubah-status-po/" + id,
-              data: {id:id, "_token": "{{ csrf_token() }}"},
+              data: dataform,
               success: function(response){
                 if(response.status == "sukses")
                 {
@@ -621,6 +642,18 @@
     for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
     var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
     return hasil+',00';
+  }
+
+  function formatAngka(decimal) 
+  {
+    var angka = parseInt(decimal);
+    var fAngka = '';        
+    var angkarev = angka.toString().split('').reverse().join('');
+    for(var i = 0; i < angkarev.length; i++){
+      if(i%3 == 0) fAngka += angkarev.substr(i,3)+'.';
+    } 
+    var hasil = fAngka.split('',fAngka.length-1).reverse().join('');
+    return hasil;
   }
 
   function convertToAngka(rupiah)
