@@ -690,12 +690,39 @@ class ReturnPembelianController extends Controller
 
   public function getDetailRevisi($id)
   {
-      $dataHeader = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+      $dataHeader = d_purchasing::join('d_purchasingreturn','d_purchasing.d_pcs_id','=','d_purchasingreturn.d_pcsr_pcsid')
+              ->join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
               ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
-              ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name','d_mem.m_id','d_mem.m_name')
+              ->select('d_purchasing.*',
+                       'd_purchasingreturn.d_pcsr_id',
+                       'd_purchasingreturn.d_pcsr_code',
+                       'd_purchasingreturn.d_pcsr_pricetotal',
+                       'd_purchasingreturn.d_pcsr_priceresult',
+                       'd_supplier.s_company',
+                       'd_supplier.s_name',
+                       'd_mem.m_id',
+                       'd_mem.m_name'
+                     )
               ->where('d_pcs_id', '=', $id)
               ->orderBy('d_pcs_date_created', 'DESC')
               ->get();
+
+      $datareturdt = DB::table('d_purchasingreturn_dt')
+      ->join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
+      ->select('d_purchasingreturn_dt.*',
+               'd_purchasingreturn.*',
+               'd_purchasingreturn_dt.d_pcsrdt_item as item',
+               DB::raw('(SELECT d_pcsdt_price FROM d_purchasing_dt WHERE d_pcs_id = "'.$id.'" AND i_id = item) as harganondiskon'))
+      ->where('d_pcsrdt_idpcsr', $dataHeader[0]->d_pcsr_id)->get();
+      $hargaTotRetur = 0;
+      for ($i=0; $i <count($datareturdt); $i++) 
+      { 
+        $hargaTotRetur += (int)$datareturdt[$i]->d_pcsrdt_qtyconfirm * $datareturdt[$i]->harganondiskon;
+      }
+
+      // return response()->json([
+      //   'data' => $datareturdt,
+      // ]);
 
       $statusLabel = $dataHeader[0]->d_pcs_status;
       if ($statusLabel == "WT") 
@@ -723,15 +750,14 @@ class ReturnPembelianController extends Controller
         $spanTxt = 'PO revisi';
         $spanClass = 'label-warning';
       }
-      
 
       foreach ($dataHeader as $val) 
       {
         $data = array(
-            'hargaBruto' => 'Rp. '.number_format($val->d_pcs_total_gross,2,",","."),
-            'nilaiDiskon' => 'Rp. '.number_format($val->d_pcs_discount + $val->d_pcs_disc_value,2,",","."),
-            'nilaiPajak' => 'Rp. '.number_format($val->d_pcs_tax_value,2,",","."),
-            'hargaNet' => 'Rp. '.number_format($val->d_pcs_total_net,2,",",".")
+            'hargaBruto' => number_format($val->d_pcs_total_gross - $hargaTotRetur,2,",","."),
+            'nilaiDiskon' => number_format(($val->d_pcs_total_gross - $hargaTotRetur) * $val->d_pcs_disc_percent / 100 ,2,",","."),
+            'nilaiPajak' => number_format($val->d_pcs_tax_value,2,",","."),
+            'hargaNet' => number_format(($val->d_pcs_total_gross - $hargaTotRetur) - (($val->d_pcs_total_gross - $hargaTotRetur) * $val->d_pcs_disc_percent / 100) + $val->d_pcs_tax_value,2,",","."),
         );
       }
 
@@ -754,12 +780,24 @@ class ReturnPembelianController extends Controller
               ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
               ->get();
 
+      /*for ($i=0; $i <count($dataIsi); $i++) { 
+        if ($dataIsi[$i]->i_id == $data) {
+          # code...
+        }
+      }*/
+
       foreach ($dataIsi as $val) 
       {
           //cek item type
           $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
           //get satuan utama
           $sat1[] = $val->i_sat1;
+          //compare dengan data returdt, jika sama replace qty
+          for ($i=0; $i <count($datareturdt); $i++) { 
+            if ($val->i_id == $datareturdt[$i]->d_pcsrdt_item) {
+              $dataIsi[$i]->d_pcsdt_qty = $val->d_pcsdt_qty - $datareturdt[$i]->d_pcsrdt_qtyconfirm;
+            }
+          }
       }
 
       //variabel untuk count array
@@ -776,30 +814,49 @@ class ReturnPembelianController extends Controller
           'data_satuan' => $dataStok['txt_satuan'],
           'spanTxt' => $spanTxt,
           'spanClass' => $spanClass,
+          // 'qtyRev' => $qtyRev
       ]);
   }
 
-  public function ubahStatusPo(Request $request)
+  public function ubahStatusPo(Request $request, $id)
   {
-    //dd($request->all());
     DB::beginTransaction();
     try 
     {   
-        $tanggal = date("Y-m-d h:i:s");
-        
+        $tanggal = Carbon::now('Asia/Jakarta');
         //update d_purchasing
-        $update = DB::table('d_purchasing')
-            ->where('d_pcs_id','=',$request->id)
-            ->update([
-                'd_pcs_updated' => $tanggal,
-                'd_pcs_status' => 'RC'
-            ]);
+        $tblHeader = d_purchasing::find($id);
+        $tblHeader->d_pcs_total_gross = str_replace('.', '', $request->totalHarga);
+        $tblHeader->d_pcs_disc_value = str_replace('.', '', $request->diskonHarga);
+        $tblHeader->d_pcs_total_net = str_replace('.', '', $request->totalHargaFinal);
+        $tblHeader->d_pcs_sisapayment = str_replace('.', '', $request->totalHargaFinal);
+        $tblHeader->d_pcs_status = 'RC';
+        $tblHeader->d_pcs_updated = $tanggal;
+        $tblHeader->save();
+
+        //update d_purchasing_dt
+        for ($i=0; $i <count($request->ip_item); $i++) {
+          $item = $request->ip_item[$i];
+          $tblDetail = d_purchasing_dt::where(function ($query) use ($id, $item) {
+                          $query->where('d_pcs_id', '=', $id);
+                          $query->where('i_id', '=', $item);
+                        })->first();
+          $tblDetail->i_id = $item;
+          $tblDetail->d_pcsdt_sat = $request->ip_sid[$i];
+          $tblDetail->d_pcsdt_qty = $request->ip_qty[$i];
+          $tblDetail->d_pcsdt_qtyconfirm = $request->ip_qty[$i];
+          $tblDetail->d_pcsdt_prevcost = $request->ip_prevcost[$i];
+          $tblDetail->d_pcsdt_price = $request->ip_price[$i];
+          $tblDetail->d_pcsdt_total = $request->ip_total[$i];
+          $tblDetail->d_pcsdt_updated = $tanggal;
+          $update = $tblDetail->save();
+        }
 
         if ($update) 
         {
-          $pesan = 'Status PO telah diubah menjadi Telah Diterima';
+          $pesan = 'PO Berhasil direvisi';
         }else{
-          $pesan = 'Status PO gagal diubah';
+          $pesan = 'PO gagal direvisi';
         }
 
         DB::commit();

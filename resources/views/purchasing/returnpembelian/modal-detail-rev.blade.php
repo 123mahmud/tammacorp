@@ -1,7 +1,6 @@
 <div class="modal fade" id="modal-detail-rev" role="dialog">
-  <div class="modal-dialog" style="width: 90%;margin: auto;">
-      
-    <form method="get" action="#">
+  <div class="modal-dialog" style="width: 90%;margin: auto;"> 
+    <form method="post" id="form-revisi-po">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: #e77c38;">
@@ -12,7 +11,8 @@
         <div class="modal-body">
           <label class="tebal">Status : </label>&nbsp;&nbsp;
           <span class="" id="txt_span_status_detail_rev"></span>
-          <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-top:10px;padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">                          
+          <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-top:10px;padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
+            {{ csrf_field() }}
             <div class="col-md-3 col-sm-12 col-xs-12">
               <label class="tebal">No Order Pembelian</label>
             </div>
@@ -81,7 +81,7 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" readonly="" class="input-sm form-control" name="totalHarga">
+                <input type="text" readonly="" class="input-sm form-control" name="totalHarga" style="text-align: right;">
               </div>
             </div>
 
@@ -91,7 +91,7 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" readonly="" class="input-sm form-control" name="diskonHarga">
+                <input type="text" readonly="" class="input-sm form-control" name="diskonHarga" style="text-align: right;">
               </div>
             </div>
 
@@ -101,7 +101,7 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" readonly="" class="input-sm form-control" name="ppnHarga">
+                <input type="text" readonly="" class="input-sm form-control" name="ppnHarga" style="text-align: right;">
               </div>
             </div>
 
@@ -111,7 +111,7 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" readonly="" class="input-sm form-control" name="totalHargaFinal">
+                <input type="text" readonly="" class="input-sm form-control" name="totalHargaFinal" style="text-align: right;">
               </div>
             </div>
 
