@@ -16,9 +16,9 @@ class mMember extends Model implements AuthenticatableContract, CanResetPassword
         CanResetPassword;
 
     protected $table = 'd_mem';
-    protected $primaryKey = 'm_pegawai_id';
+    protected $primaryKey = 'm_id';
 
-    protected $fillable = [ 
+    protected $fillable = [ 'm_id',
                             'm_pegawai_id',
                             'm_username',
                             'm_passwd',

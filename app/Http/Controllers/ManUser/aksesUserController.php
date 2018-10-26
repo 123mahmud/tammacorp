@@ -51,9 +51,9 @@ class aksesUserController extends Controller
                 $d = substr($tgl1,0,2);
                  $tgll = $y.'-'.$m.'-'.$d;
      			$passwd= sha1(md5('passwordAllah').$request->password);
-                // $passwd= md5($request->Password);
-                // dd($passwd);
+                $m_id=(int)mMember::max('m_id')+1;
      			mMember::create([
+                    'm_id'=>$m_id,
                     'm_pegawai_id' => $request->pp_jabatan,
      				'm_username' => $request->username,
      				'm_passwd' => $passwd,
@@ -69,9 +69,9 @@ class aksesUserController extends Controller
 
 
     			for ($i=0; $i < count($hakAkses) ; $i++) {
-    				$ma_id=d_mem_access::max('ma_id')+1;
+    				// $ma_id=d_mem_access::max('ma_id')+1;
     				d_mem_access::create([
-    					   'ma_id' =>$ma_id,
+    					   // 'ma_id' =>$ma_id,
     					   'ma_mem' =>$m_id,
     					   'ma_access'=>$hakAkses[$i]->a_id,
     					   'ma_group' =>$hakAkses[$i]->g_id ,
@@ -87,9 +87,9 @@ class aksesUserController extends Controller
                 if($request->groupAkses==null){
                     $hakAkses=d_access::get();
 
-                    $ma_id=d_mem_access::max('ma_id')+1;
+                    // $ma_id=d_mem_access::max('ma_id')+1;
                     d_mem_access::create([
-                           'ma_id' =>$ma_id,
+                           // 'ma_id' =>$ma_id,
                            'ma_mem' =>$m_id,
                            'ma_access'=>$hakAkses[$i]->a_id,
                            'ma_group' =>0 ,
