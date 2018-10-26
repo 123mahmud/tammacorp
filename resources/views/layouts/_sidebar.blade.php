@@ -928,10 +928,6 @@
                                         Analisa Net Profit / OCF
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa Net Profit Terhadap OCF','ma_read'))
-                                        Analisa Net Profit Terhadap OCF
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
                                         Analisa OCF Terhadap Net Profit
                                     @endif
@@ -1006,14 +1002,14 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa Progress Terhadap Perencanaan">
+                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
                                                     class="submenu-title">Analisa PTP</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit Terhadap OCF">
+                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit / OCF">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
                                                     class="submenu-title">Analisa Net Profit / OCF</span><span
                                                     class="hidden">Keuangan</span></a>
@@ -1047,7 +1043,7 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa Common Size dan Index">
+                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa CSI">
                                         <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
                                                     class="submenu-title">Analisa CSI</span><span
                                                     class="hidden">Keuangan</span></a>
