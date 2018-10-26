@@ -91,8 +91,7 @@ class ManajemenHargaController extends Controller
     $data = m_price::select('*')
       ->join('m_item','i_id','=','m_pitem')
       ->where('m_pid',$id)
-      ->first();
-      dd($data);
+      ->first();  
     
     return view('penjualan.manajemenharga.modal-edit',compact('data'));
   }
