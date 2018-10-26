@@ -31,6 +31,8 @@
                         <th>Harga A</th>
                         <th>Harga B</th>
                         <th>Harga C</th>  
+                        <th>HPP</th> 
+                        <th>Barang Rusak</th> 
                       </tr>
                      </thead> 
                      <tbody>
@@ -49,6 +51,16 @@
                          <input class="form-control text-right price3"  id="m_psell3" name="m_psell3" placeholder="Rp. 0,00" onkeyup="rege(event,'price3');" onblur="setRupiah(event,'price3')" 
                           onclick="setAwal('event','price3')"
                           value="Rp. {{ number_format($data->m_psell3 ,2,',','.') }}">
+                        </td>
+                        <td>
+                         <input class="form-control text-right price4"  id="m_psell4" name="m_psell4" placeholder="Rp. 0,00" onkeyup="rege(event,'price4');" onblur="setRupiah(event,'price4')" 
+                          onclick="setAwal('event','price4')"
+                          value="Rp. {{ number_format($data->m_hpp ,2,',','.') }}">
+                        </td>
+                        <td>
+                         <input class="form-control text-right price5"  id="m_psell5" name="m_psell5" placeholder="Rp. 0,00" onkeyup="rege(event,'price5');" onblur="setRupiah(event,'price5')" 
+                          onclick="setAwal('event','price5')"
+                          value="Rp. {{ number_format($data->m_barang_rusak ,2,',','.') }}">
                         </td>
                       </tr>
                      </tbody>
