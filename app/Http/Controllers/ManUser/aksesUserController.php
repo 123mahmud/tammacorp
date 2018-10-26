@@ -50,12 +50,10 @@ class aksesUserController extends Controller
                 $m = substr($tgl1, -7,-5);
                 $d = substr($tgl1,0,2);
                  $tgll = $y.'-'.$m.'-'.$d;
-     			$m_id=(int)mMember::max('m_id')+1;
      			$passwd= sha1(md5('passwordAllah').$request->password);
                 // $passwd= md5($request->Password);
                 // dd($passwd);
      			mMember::create([
-     				'm_id'=>$m_id,
                     'm_pegawai_id' => $request->pp_jabatan,
      				'm_username' => $request->username,
      				'm_passwd' => $passwd,
