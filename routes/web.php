@@ -982,7 +982,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('transfer/data-transfer/hapus/{id}', 'transferItemController@HapusTransfer');
     Route::get('transfer/lihat-penerimaan/{id}', 'transferItemController@lihatPenerimaan');
     Route::get('transfer/lihat-transfer/{id}', 'transferItemController@lihatPenerimaanRc');
-    Route::get('transfer/penerimaan/simpa-penerimaan', 'transferItemController@simpaPenerimaan');
+    Route::post('transfer/penerimaan/simpa-penerimaan', 'transferItemController@simpaPenerimaan');
     Route::get('/transfer/penerimaan/table_transfer/{tgl1}/{tgl2}/{tampil}', 'transferItemController@dataTransfer');
     Route::get('transfer/penerimaan/terima_transfer/{tgl3}/{tgl4}/{tampil1}', 'transferItemController@dataPenerimaanTransfer');
     Route::get('transfer/data-transfer/{id}/edit', 'transferItemController@editTransfer');
@@ -994,7 +994,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/transfer/grosir/transfer-item', 'Penjualan\stockController@transferItemGrosir');
     Route::get('penjualan/POSgrosir/approve-transfer/simpan-approve', 'transferItemGrosirController@simpanApprove');
     Route::get('transfer/grosir/transfer_retail/{tgl3}/{tgl4}/{tampil1}', 'transferItemGrosirController@dataTransferGrosir');
-    Route::get('penjualan/transfer/grosir/simpan-transfer-grosir', 'transferItemGrosirController@simpanTransferGrosir');
+    Route::post('penjualan/transfer/grosir/simpan-transfer-grosir', 'transferItemGrosirController@simpanTransferGrosir');
     Route::get('penjualan/POSgrosir/edit-transfer-grosir/{id}/edit', 'transferItemGrosirController@EditTransferGrosir');
     Route::get('penjualan/POSgrosir/update-transfer-grosir/{id}', 'transferItemGrosirController@updateTransferGrosir');
     Route::get('penjualan/POSgrosir/hapus-transfer-grosir/hapus/{id}', 'transferItemGrosirController@HapusTransferGrosir');

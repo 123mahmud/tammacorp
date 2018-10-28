@@ -254,11 +254,9 @@ class transferItemGrosirController extends Controller
               ]);
             
         $sm_detailid = d_stock_mutation::select('sm_detailid')
-                ->where('sm_item',$request->tidt_item[$i])
-                ->where('sm_comp','1')
-                ->where('sm_position','5')
+                ->where('sm_stock',$stockGrosir->s_id)
                 ->max('sm_detailid')+1;
-
+        // dd($sm_detailid);
               d_stock_mutation::create([
                 'sm_stock' => $stockGrosir->s_id,
                 'sm_detailid' => $sm_detailid,
@@ -395,10 +393,10 @@ class transferItemGrosirController extends Controller
             
         $sm_detailid = d_stock_mutation::select('sm_detailid')
                 ->where('sm_item',$request->kode_item[$i])
-                ->where('sm_comp','1')
-                ->where('sm_position','5')
+                // ->where('sm_comp','1')
+                // ->where('sm_position','5')
                 ->max('sm_detailid')+1;
-
+        // dd($sm_detailid);
               d_stock_mutation::create([
                 'sm_stock' => $stockGrosir->s_id,
                 'sm_detailid' => $sm_detailid,
