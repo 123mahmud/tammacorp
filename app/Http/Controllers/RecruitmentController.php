@@ -629,6 +629,50 @@ class RecruitmentController extends Controller
         }
     }
 
+    public function skip_approval_2(Request $request)
+    {
+        DB::beginTransaction();
+        try
+        {
+            $tanggal = date("Y-m-d h:i:s");
+            $tgl = date("Y-m-d");
+            $id = DB::table('d_apply')->select('ap_id')->max('ap_id');
+            if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
+
+            //insert d_apply
+            DB::table('d_apply')
+                ->insert([
+                    'ap_id'=>$id,
+                    'ap_pid' => $request->id,
+                    'ap_stid'=> 4,
+                    'ap_stdt_id'=> 10,
+                    'ap_date'=> $tgl,
+                    'ap_created'=> $tanggal
+                ]);
+            //update d_pelamar
+            d_pelamar::where('p_id','=',$request->id)
+                ->update([
+                    'p_apply_status' => 4,
+                    'p_apply_statusdt' => 10,
+                    'p_updated'=> $tanggal
+                ]);
+
+            DB::commit();
+            return response()->json([
+              'status' => 'sukses',
+              'pesan' => 'Sukses Skip Approval'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
     public function approval_3(Request $request)
     {
         DB::beginTransaction();
@@ -704,6 +748,95 @@ class RecruitmentController extends Controller
             DB::commit();
             return response()->json([
               'status' => 'sukses',
+              'pesan' => 'Data Approval 3 Berhasil Disimpan'
+            ]);
+        }
+        catch (\Exception $e)
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
+    public function approval_3_skip(Request $request)
+    {
+        DB::beginTransaction();
+        try
+        {
+            if ($request->approval_3 != '10') {
+                $id = DB::table('d_apply')->select('ap_id')->max('ap_id');
+                if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
+
+                $tanggal = date("Y-m-d h:i:s");
+                $tgl = date("Y-m-d");
+
+                //get apply id
+                $data_apply = DB::table('d_apply')->select('ap_id')->where('ap_pid', $request->id)->where('ap_stid', $request->status)->where('ap_stdt_id', $request->statusdt)->first();
+
+                //update d_apply
+                DB::table('d_apply')->where('ap_id', '=', $data_apply->ap_id)
+                    ->update([
+                        'ap_stdt_id'=> $request->approval_3,
+                        'ap_updated'=> $tanggal
+                    ]);
+
+                //update d_pelamar
+                d_pelamar::where('p_id','=',$request->id)
+                    ->update([
+                        'p_apply_statusdt' => $request->approval_3,
+                        'p_updated'=> $tanggal
+                    ]);
+
+                if ($request->approval_3 == '9')
+                {
+                    $maxid = DB::Table('m_pegawai_man')->select('c_id_by_production')->where([
+                        ['c_divisi_id', $request->get('c_divisi_id')],
+                        ['c_jabatan_id', $request->get('c_jabatan_id')]
+                    ])->max('c_id_by_production');
+                    // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 ,
+                    if ($maxid <= 0 || $maxid <= '') { $maxid  = 1; } else { $maxid += 1; }
+
+                    $nik = date('y', strtotime($tanggal)).str_pad($request->h_divisi, 2, '0', STR_PAD_LEFT).str_pad($request->h_level, 2, '0', STR_PAD_LEFT).str_pad($maxid, 3, '0', STR_PAD_LEFT);
+
+                    //$input['c_hari_kerja'] = $request->get('c_hari_awal')." - ".$request->get('c_hari_akhir');
+                    $pelamar = d_pelamar::where('p_id', $request->id)->first();
+                    if ($pelamar->p_status == 'S') { $nikah = 'Belum Menikah'; } else { $nikah = 'Menikah'; }
+                    $ttl = $pelamar->p_birth_place.", ".$this->tgl_indo($pelamar->p_birthday);
+
+                    DB::table('m_pegawai_man')
+                        ->insert([
+                            // 'c_id'=>$maxid,
+                            'c_id_by_production' => $maxid,
+                            'c_code'=> $this->kodePegawai(),
+                            'c_nik'=> $nik,
+                            'c_nama'=> $request->nama,
+                            'c_ktp'=> 'KTP ('.$pelamar->p_nip.')',
+                            'c_ktp_alamat'=> $pelamar->p_address,
+                            'c_alamat'=> $pelamar->p_address_now,
+                            'c_lahir'=> $ttl,
+                            'c_pendidikan'=> $pelamar->p_education,
+                            'c_email'=> $pelamar->p_email,
+                            'c_hp'=> $pelamar->p_tlp,
+                            'c_agama'=> $pelamar->p_religion,
+                            'c_nikah'=> $nikah,
+                            'c_pasangan'=> $pelamar->p_wife_name,
+                            'c_anak'=> $pelamar->p_child,
+                            'c_divisi_id'=> $request->h_divisi,
+                            'c_jabatan_id'=> $request->h_posisi,
+                            'c_shift_id'=> 1,
+                            'created_at'=> $tanggal,
+                        ]);
+                }
+                $status = 'sukses';
+            }else{
+                $status = 'gagal';
+            }
+            DB::commit();
+            return response()->json([
+              'status' => $status,
               'pesan' => 'Data Approval 3 Berhasil Disimpan'
             ]);
         }
@@ -856,6 +989,7 @@ class RecruitmentController extends Controller
                     'pj_lokasi' => strtoupper($request->i_lokasi),
                     'pj_type' => 'I',
                     'pj_isactive' => 'Y',
+                    'pj_review_i' => trim($request->i_review1),
                     'pj_updated' => $tanggal
                 ]);
             }
@@ -873,6 +1007,7 @@ class RecruitmentController extends Controller
                 $pj->pj_lokasi = strtoupper($request->i_lokasi);
                 $pj->pj_type = 'I';
                 $pj->pj_isactive = 'Y';
+                $pj->pj_review_i = trim($request->i_review1);
                 $pj->pj_created = $tanggal;
                 $pj->save();
             }

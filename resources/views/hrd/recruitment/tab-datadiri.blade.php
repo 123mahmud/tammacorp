@@ -45,7 +45,7 @@
           <span style="color: red">*</span>
         </label>
         <div class="col-sm-10">
-          <input type="text" class="form-control {{ $errors->has('noktp') ? 'has-error' : '' }}" id="noktp" name="noktp" placeholder="Nomor Identitas KTP/SIM" value="{{ old('noktp')}}">
+          <input type="text" class="form-control {{ $errors->has('noktp') ? 'has-error' : '' }} numberinput" id="noktp" name="noktp" placeholder="Nomor Identitas KTP/SIM" value="{{ old('noktp')}}">
           @if ($errors->has('noktp'))
             <span style="color: red;" class="col-sm-12">{{$errors->first('noktp')}}</span>
           @endif
