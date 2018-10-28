@@ -28,14 +28,7 @@
           </strong>
         </button>
       </div>
-
-      <div class="col-md-3 col-sm-3 col-xs-12" align="right">
-        <select name="tampilData" id="tampil_data" class="form-control input-sm">
-          <option value="revisied" class="form-control">Tampilkan Data : Revisi</option>
-          <option value="received" class="form-control">Tampilkan Data : Diterima</option>
-        </select>
-      </div>
-
+      
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="table-responsive">
           <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tbl-history">

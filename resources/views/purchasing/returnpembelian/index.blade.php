@@ -136,10 +136,6 @@
       $('#button_save').attr('disabled', false);
     });
 
-    $('#tampil_data').change(function(event) {
-      lihatRevisiByTgl();
-    });
-
     //load fungsi
     lihatReturnByTanggal();
 
@@ -188,13 +184,12 @@
   {
     var tgl1 = $('#tanggal1').val();
     var tgl2 = $('#tanggal2').val();
-    var tampil = $('#tampil_data').val();
     $('#tbl-history').dataTable({
       "destroy": true,
       "processing" : true,
       "serverside" : true,
       "ajax" : {
-        url: baseUrl + "/purchasing/returnpembelian/get-list-revisi-bytgl/"+tgl1+"/"+tgl2+"/"+tampil,
+        url: baseUrl + "/purchasing/returnpembelian/get-list-revisi-bytgl/"+tgl1+"/"+tgl2,
         type: 'GET'
       },
       "columns" : [
@@ -589,7 +584,7 @@
                     message: response.pesan,
                     onClosing: function(instance, toast, closedBy){
                       $('#modal-detail-rev').modal('hide');
-                      $('#tabel-return').DataTable().ajax.reload();
+                      refreshTabelRevisi();
                     }
                   });
                 }
@@ -602,7 +597,7 @@
                     message: response.pesan,
                     onClosing: function(instance, toast, closedBy){
                       $('#modal-detail-rev').modal('hide');
-                      $('#tabel-return').DataTable().ajax.reload();
+                      refreshTabelRevisi();
                     }
                   }); 
                 }

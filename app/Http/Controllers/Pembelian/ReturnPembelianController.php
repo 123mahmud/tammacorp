@@ -60,7 +60,11 @@ class ReturnPembelianController extends Controller
       }
       elseif ($data->d_pcsr_status == "CF") 
       {
-        return '<span class="label label-info">Disetujui</span>';
+        if ($data->d_pcsr_method == 'PN') {
+          return '<span class="label label-success">Potong Nota</span>';
+        }else{
+          return '<span class="label label-info">Disetujui</span>';
+        }        
       }
       elseif ($data->d_pcsr_status == "DE") 
       {
@@ -230,7 +234,7 @@ class ReturnPembelianController extends Controller
     ]);
   }
 
-  public function getListRevisiByTgl($tgl1, $tgl2, $tampil)
+  public function getListRevisiByTgl($tgl1, $tgl2)
   {
       $y = substr($tgl1, -4);
       $m = substr($tgl1, -7,-5);
@@ -242,12 +246,23 @@ class ReturnPembelianController extends Controller
       $d2 = substr($tgl2,0,2);
       $tanggal2 = $y2.'-'.$m2.'-'.$d2;
 
-      if ($tampil == 'revisied') { $indexStatus = "RV"; } elseif ($tampil == 'received') { $indexStatus = "RC"; }
-
-      $data = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+      $data = d_purchasing::join('d_purchasingreturn','d_purchasing.d_pcs_id','=','d_purchasingreturn.d_pcsr_pcsid')
+            ->join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
             ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
-            ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
-            ->where('d_purchasing.d_pcs_status','=',$indexStatus)
+            ->select('d_pcs_date_created',
+                     'd_pcs_id', 'd_pcsp_id',
+                     'd_pcs_code','s_company',
+                     'd_pcs_method',
+                     'd_pcs_total_net',
+                     'd_pcs_date_received',
+                     'd_pcs_status',
+                     'd_pcsr_code',
+                     'd_pcsr_method',
+                     'd_mem.m_id',
+                     'd_mem.m_name'
+                    )
+            ->where('d_purchasing.d_pcs_status','=', 'RV')
+            ->where('d_purchasingreturn.d_pcsr_method','=', 'PN')
             ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
             ->orderBy('d_pcs_date_created', 'DESC')
             ->get();
@@ -736,10 +751,6 @@ class ReturnPembelianController extends Controller
         $hargaTotRetur += (int)$datareturdt[$i]->d_pcsrdt_qtyconfirm * $datareturdt[$i]->harganondiskon;
       }
 
-      // return response()->json([
-      //   'data' => $datareturdt,
-      // ]);
-
       $statusLabel = $dataHeader[0]->d_pcs_status;
       if ($statusLabel == "WT") 
       {
@@ -795,12 +806,6 @@ class ReturnPembelianController extends Controller
               ->where('d_purchasing_dt.d_pcs_id', '=', $id)
               ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
               ->get();
-
-      /*for ($i=0; $i <count($dataIsi); $i++) { 
-        if ($dataIsi[$i]->i_id == $data) {
-          # code...
-        }
-      }*/
 
       foreach ($dataIsi as $val) 
       {
