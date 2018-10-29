@@ -91,11 +91,6 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
-    //force integer input in textfield
-    $('input.numberinput').bind('keypress', function (e) {
-        return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
-    });
-
     $(document).on('click', '.btn_remove', function(){
       var button_id = $(this).attr('id');
       $('#row'+button_id+'').remove();
@@ -241,13 +236,13 @@
         //loop data
         Object.keys(data.data_isi).forEach(function(){
           $('#tabel-detail').append('<tr class="tbl_modal_detail_row" id="row'+i+'">'
-                          +'<td>'+key+'</td>'
+                          +'<td class="center">'+key+'</td>'
                           +'<td>'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_pcsrdt_qty+'</td>'
+                          +'<td class="right">'+formatAngka(data.data_isi[key-1].d_pcsrdt_qty)+'</td>'
                           +'<td>'+data.data_isi[key-1].m_sname+'</td>'
-                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
-                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
-                          +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
+                          +'<td class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
+                          +'<td class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
+                          +'<td class="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                           +'</tr>');
           key++;  
           i = randString(5);
@@ -301,15 +296,15 @@
                           +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_item+'" name="fieldIdItem[]" class="form-control" readonly/>'
                           +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdDt[]" class="form-control"/>'
                           +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_smdetail+'" name="fieldSmidDetail[]" class="form-control"/>'
-                          +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldQtyLalu[]" class="form-control"/></td>'
-                          +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control field_qty numberinput input-sm" id="'+i+'"/></td>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldQtyLalu[]" class="form-control right"/></td>'
+                          +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control field_qty numberinput input-sm right" id="'+i+'"/></td>'
                           +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
                           +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
-                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" class="form-control input-sm" id="cost_'+i+'" readonly/>'
+                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" class="form-control input-sm right" id="cost_'+i+'" readonly/>'
                           +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
-                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/>'
+                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem right" id="total_'+i+'" readonly/>'
                           +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm hargaTotalItemRaw numberinput" readonly/></td>'
-                          +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
+                          +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm right" readonly/>'
                           +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
                           +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm" disabled>X</button></td>'
                           +'</tr>');
@@ -318,6 +313,10 @@
         });
         totalNilaiReturn();
         totalNilaiReturnRaw();
+        //force integer input in textfield
+        $('input.numberinput').bind('keypress', function (e) {
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
+        });
         $('#modal-edit').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)

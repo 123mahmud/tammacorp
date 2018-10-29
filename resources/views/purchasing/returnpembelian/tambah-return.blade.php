@@ -193,7 +193,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalGross" readonly="" class="form-control input-sm" id="nilai_total_gross">'
+                                        +'<input type="text" name="nilaiTotalGross" readonly="" class="form-control input-sm right" id="nilai_total_gross">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -201,7 +201,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalDisc" readonly="" class="form-control input-sm" id="nilai_total_disc">'
+                                        +'<input type="text" name="nilaiTotalDisc" readonly="" class="form-control input-sm right" id="nilai_total_disc">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -209,7 +209,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalTax" readonly="" class="form-control input-sm" id="nilai_total_tax">'
+                                        +'<input type="text" name="nilaiTotalTax" readonly="" class="form-control input-sm right" id="nilai_total_tax">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -217,7 +217,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalNett" readonly="" class="form-control input-sm" id="nilai_total_nett">'
+                                        +'<input type="text" name="nilaiTotalNett" readonly="" class="form-control input-sm right" id="nilai_total_nett">'
                                          +'<input type="hidden" name="nilaiTotalReturnRaw" readonly="" class="form-control input-sm" id="nilai_total_return_raw">'
                                       +'</div>'
                                     +'</div>'
@@ -310,7 +310,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalGross" readonly="" class="form-control input-sm" id="nilai_total_gross">'
+                                        +'<input type="text" name="nilaiTotalGross" readonly="" class="form-control input-sm right" id="nilai_total_gross">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -318,7 +318,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalDisc" readonly="" class="form-control input-sm" id="nilai_total_disc">'
+                                        +'<input type="text" name="nilaiTotalDisc" readonly="" class="form-control input-sm right" id="nilai_total_disc">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -326,7 +326,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalTax" readonly="" class="form-control input-sm" id="nilai_total_tax">'
+                                        +'<input type="text" name="nilaiTotalTax" readonly="" class="form-control input-sm right" id="nilai_total_tax">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -334,7 +334,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalNett" readonly="" class="form-control input-sm" id="nilai_total_nett">'
+                                        +'<input type="text" name="nilaiTotalNett" readonly="" class="form-control input-sm right" id="nilai_total_nett">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -342,7 +342,7 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="nilaiTotalReturn" readonly="" class="form-control input-sm" id="nilai_total_return">'
+                                        +'<input type="text" name="nilaiTotalReturn" readonly="" class="form-control input-sm right" id="nilai_total_return">'
                                         +'<input type="hidden" name="nilaiTotalReturnRaw" readonly="" class="form-control input-sm" id="nilai_total_return_raw">'
                                       +'</div>'
                                     +'</div>'
@@ -450,14 +450,15 @@
                               +'<td><input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
                               +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
                               +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdPcsRtrDet[]" class="form-control input-sm"/></td>'
-                              +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm field_qty" id="'+i+'"/></td>'
+                              +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm field_qty right" id="'+i+'"/>'
+                              +'<input type="hidden" value="'+qtyCost+'" name="fieldQtyAnchor[]" class="form-control numberinput input-sm qty_anchor" id="qtyAnchor_'+i+'"/></td>'
                               +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
                               +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
-                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/>'
-                              +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
-                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/>'
+                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput right" readonly/>'
+                              +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput right" readonly/></td>'
+                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem right" id="total_'+i+'" readonly/>'
                               +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm hargaTotalItemRaw numberinput" readonly/></td>'
-                              +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
+                              +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm right" readonly/>'
                               +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
                               +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
                               +'</tr>');
@@ -467,6 +468,10 @@
             //set readonly to enabled
             totalNilaiReturn();
             totalNilaiReturnRaw();
+            //force integer input in textfield
+            $('input.numberinput').bind('keypress', function (e) {
+                return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
+            });
           },
           error: function (jqXHR, textStatus, errorThrown)
           {
@@ -505,9 +510,14 @@
       $('#button_save').attr('disabled', false);
     });
 
-    //force integer input in textfield
-    $('input.numberinput').bind('keypress', function (e) {
-        return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
+    $(document).on('keyup', '.field_qty', function(e) {
+      var val = parseInt($(this).val());
+      var getid = $(this).attr("id");
+      var anchor = $('#qtyAnchor_'+getid+'').val();
+      //console.log(anchor());
+      if (val > anchor || $(this).val() == "" || val == 0) {
+        $(this).val(anchor);
+      }
     });
 
     //validasi
@@ -692,6 +702,18 @@
         total = parseFloat(0).toFixed(2);
       }
     $('[name="nilaiTotalReturnRaw"]').val(total);
+  }
+
+  function formatAngka(decimal) 
+  {
+    var angka = parseInt(decimal);
+    var fAngka = '';        
+    var angkarev = angka.toString().split('').reverse().join('');
+    for(var i = 0; i < angkarev.length; i++){
+      if(i%3 == 0) fAngka += angkarev.substr(i,3)+'.';
+    } 
+    var hasil = fAngka.split('',fAngka.length-1).reverse().join('');
+    return hasil;
   }
 </script>
 @endsection                            
