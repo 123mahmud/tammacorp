@@ -107,7 +107,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="button" onclick="simpanApprove()">Simpan</button> 
+                    <button class="btn btn-primary simpanApprove" type="button" onclick="simpanApprove()">Simpan</button> 
                   </div>
                     
                   

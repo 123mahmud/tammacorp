@@ -172,28 +172,28 @@ class transferItemController extends Controller
           }                
       $idreq = 'REQ'  . $year . $month . $date . $idreq;
       //end no req
-    	$ti_id = d_transferItem::max('ti_id')+1;
-    	d_transferItem::create([
-    				'ti_id'			=>$ti_id,
+      $ti_id = d_transferItem::max('ti_id')+1;
+      d_transferItem::create([
+            'ti_id'     =>$ti_id,
             'ti_date'   =>Carbon::now(),
-    				'ti_time'		=>Carbon::now(), 
-    				'ti_code'		=>$idreq, 
-    				'ti_order'		=>'RT',
-    				'ti_note'		=>$request->ri_keterangan,
-    				
-    	]);
+            'ti_time'   =>Carbon::now(), 
+            'ti_code'   =>$idreq, 
+            'ti_order'    =>'RT',
+            'ti_note'   =>$request->ri_keterangan,
+            
+      ]);
     
-    	for ($i=0; $i <count($request->kode_item) ; $i++) { 
-    			$tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
-    			 d_transferItemDt::create([
-    				'tidt_id'			=>$ti_id,
-    				'tidt_detail'		=>$tidt_id, 
-    				'tidt_item'		=>$request->kode_item[$i], 
-    				'tidt_qty'		=>$request->sd_qty[$i]
-    			]);
-    	}
+      for ($i=0; $i <count($request->kode_item) ; $i++) { 
+          $tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
+           d_transferItemDt::create([
+            'tidt_id'     =>$ti_id,
+            'tidt_detail'   =>$tidt_id, 
+            'tidt_item'   =>$request->kode_item[$i], 
+            'tidt_qty'    =>$request->sd_qty[$i]
+          ]);
+      }
 
-    	DB::commit();
+      DB::commit();
       return response()->json([
           'status' => 'sukses',
           'nota' => $idreq
@@ -235,27 +235,27 @@ class transferItemController extends Controller
 
   public function updateTransfer(Request $request)
   {
-  	return DB::transaction(function () use ($request) {    		
-  	$ti_id=d_transferItem::max('ti_id')+1;
-  	d_transferItem::create([
-  				'ti_id'			=>$ti_id,
-  				'ti_time'		=>date('Y-m-d',strtotime($request->ri_tanggal)), 
-  				'ti_code'		=>$request->ri_nomor, 
-  				'ti_order'		=>'RT',
-  				//'ti_orderstaff'	=>,
-  				'ti_note'		=>$request->ri_keterangan,
-  				
-  	]);
+    return DB::transaction(function () use ($request) {       
+    $ti_id=d_transferItem::max('ti_id')+1;
+    d_transferItem::create([
+          'ti_id'     =>$ti_id,
+          'ti_time'   =>date('Y-m-d',strtotime($request->ri_tanggal)), 
+          'ti_code'   =>$request->ri_nomor, 
+          'ti_order'    =>'RT',
+          //'ti_orderstaff' =>,
+          'ti_note'   =>$request->ri_keterangan,
+          
+    ]);
   
-  	for ($i=0; $i <count($request->kode_item) ; $i++) { 
-  			$tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
-  			 d_transferItemDt::create([
-  				'tidt_id'			=>$ti_id,
-  				'tidt_detail'		=>$tidt_id, 
-  				'tidt_item'		=>$request->kode_item[$i], 
-  				'tidt_qty'		=>$request->sd_qty[$i]
-  			]);
-  	}
+    for ($i=0; $i <count($request->kode_item) ; $i++) { 
+        $tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
+         d_transferItemDt::create([
+          'tidt_id'     =>$ti_id,
+          'tidt_detail'   =>$tidt_id, 
+          'tidt_item'   =>$request->kode_item[$i], 
+          'tidt_qty'    =>$request->sd_qty[$i]
+        ]);
+    }
      
   });
 
@@ -415,7 +415,8 @@ public function simpaPenerimaan(Request $request){
         ]);
       $stock = d_stock::where('s_item',$tidt_item[$i])
              ->where('s_comp',DB::raw('1'))
-             ->where('s_position',DB::raw('1'));
+             ->where('s_position',DB::raw('1'))
+             ->first();
       
       if(mutasi::mutasiStok(  $request->tidt_item[$i],
                               $request->qtyRecieved[$i],
@@ -424,22 +425,24 @@ public function simpaPenerimaan(Request $request){
                               $flag=10,
                               $request->ri_nomor)){}
 
-      if($stock->first()){
+      if($stock != null){
         $stock->update([
-            's_qty'=>$stock->first()->s_qty+$request->qtyRecieved[$i]
+            's_qty'=>$stock->s_qty+$request->qtyRecieved[$i]
         ]);
 
         $getItem = d_stock::join('d_stock_mutation','sm_stock', '=', 's_id')
-            ->select( 's_id')
+            ->select('s_id')
             ->where('s_item',$tidt_item[$i])
+            ->where('s_comp','1')
+            ->where('s_position','1')
             ->get();
 
-        $sm_detailid = d_stock_mutation::select('sm_detailid')
-          ->where('sm_item',$request->tidt_item[$i])
+        $sm_detailid = d_stock_mutation::select('*')
+          ->where('sm_stock',$getItem[0]->s_id)
           ->max('sm_detailid')+1;
-
+ 
         d_stock_mutation::create([
-              'sm_stock' => $getItem[$i]->s_id,
+              'sm_stock' => $getItem[0]->s_id,
               'sm_detailid' =>$sm_detailid,
               'sm_date' => Carbon::now(),
               'sm_comp' => 1,

@@ -65,7 +65,7 @@
                                   <div class="col-md-3 col-sm-3 col-xs-12" align="right" style="margin-bottom: 15px;">
                                     <button data-toggle="modal" onclick="noNota()" aria-controls="list" role="tab" class="btn-primary btn-flat btn-sm">
                                     <i class="fa fa-plus" aria-hidden="true"></i> 
-                                      &nbsp; Transfer Item
+                                      &nbsp; Request Item
                                     </button>
 
                                     <div style="margin-bottom: 15px;"></div>
@@ -547,9 +547,15 @@
 tablePenerimaan=$('#detail-terima').DataTable();
 
     function simpaPenerimaan(){
+      $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+       $('.simpanPenerimaan').attr('disabled','disabled');
       $.ajax({
         url         : baseUrl+'/transfer/penerimaan/simpa-penerimaan',
-        type        : 'get',
+        type        : 'POST',
         timeout     : 10000,  
         data: item+'&'+tablePenerimaan.$('input').serialize(),
         dataType:'json',                                      
@@ -562,10 +568,12 @@ tablePenerimaan=$('#detail-terima').DataTable();
                         message: 'Data berhasil diterima.'});
               terimaTransfer.ajax.reload();
               $('#myTransferPenerimaan').modal('hide');
+          $('.simpanPenerimaan').removeAttr('disabled','disabled');
           }else{
             iziToast.error({position: "topRight",
                         title: '', 
                         message: 'Data gagal diterima.'});
+          $('.simpanPenerimaan').removeAttr('disabled','disabled');
           }
         }
     });

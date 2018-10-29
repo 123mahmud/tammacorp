@@ -255,6 +255,7 @@
 
 
   function simpanApprove(){
+    $('.simpanApprove').attr('disabled','disabled'); 
     $no_transfer = $('input[name="ri_nomor"]').val();
     $.ajax({
         url         : baseUrl+'/penjualan/POSgrosir/approve-transfer/simpan-approve',
@@ -272,10 +273,12 @@
             transfer.ajax.reload();
             window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+$no_transfer);
             $('#myTransfer').modal('hide');
+          $('.simpanApprove').removeAttr('disabled','disabled');
           }else{
             iziToast.error({position: "topRight",
                     title: '', 
                     message: 'Data gagal tersimpan.'});
+          $('.simpanApprove').removeAttr('disabled','disabled');
           }
         }
     });
@@ -399,12 +402,17 @@
         }
 
   function simpanTransfer() {
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     $('.simpan').attr('disabled','disabled');
     var item = $('#master_transfer :input').serialize();
     var data = tableReq.$('input').serialize();
     $.ajax({
     url : baseUrl + "/penjualan/transfer/grosir/simpan-transfer-grosir",
-    type: 'get',
+    type: 'POST',
     data: item+'&'+data,
     dataType:'json',
     success:function(response, nota){     
