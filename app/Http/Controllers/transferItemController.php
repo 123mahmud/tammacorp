@@ -427,7 +427,7 @@ public function simpaPenerimaan(Request $request){
 
       if($stock != null){
         $stock->update([
-            's_qty'=>$stock->first()->s_qty+$request->qtyRecieved[$i]
+            's_qty'=>$stock->s_qty+$request->qtyRecieved[$i]
         ]);
 
         $getItem = d_stock::join('d_stock_mutation','sm_stock', '=', 's_id')
