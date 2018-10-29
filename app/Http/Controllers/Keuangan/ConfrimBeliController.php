@@ -598,7 +598,7 @@ class ConfrimBeliController extends Controller
       $dataIsi = d_purchasingreturn_dt::join('m_item', 'd_purchasingreturn_dt.d_pcsrdt_item', '=', 'm_item.i_id')
                 ->join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
                 ->join('m_satuan', 'd_purchasingreturn_dt.d_pcsrdt_sat', '=', 'm_satuan.m_sid')
-                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'm_satuan.*')
+                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'd_purchasingreturn.d_pcsr_pcsid', 'm_satuan.*')
                 ->where('d_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', $id)
                 ->orderBy('d_purchasingreturn_dt.d_pcsrdt_created', 'DESC')
                 ->get();
@@ -608,7 +608,7 @@ class ConfrimBeliController extends Controller
       $dataIsi = d_purchasingreturn_dt::join('m_item', 'd_purchasingreturn_dt.d_pcsrdt_item', '=', 'm_item.i_id')
                 ->join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
                 ->join('m_satuan', 'd_purchasingreturn_dt.d_pcsrdt_sat', '=', 'm_satuan.m_sid')
-                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'm_satuan.*')
+                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'd_purchasingreturn.d_pcsr_pcsid', 'm_satuan.*')
                 ->where('d_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', $id)
                 ->where('d_purchasingreturn_dt.d_pcsrdt_isconfirm', '=', "TRUE")
                 ->orderBy('d_purchasingreturn_dt.d_pcsrdt_created', 'DESC')
@@ -617,6 +617,15 @@ class ConfrimBeliController extends Controller
 
     foreach ($dataIsi as $val) 
     {
+      //get PO qty
+      $pcs_id = $val->d_pcsr_pcsid;
+      $item_id = $val->d_pcsrdt_item;
+      $poQty[] = DB::table('d_purchasing_dt')
+                    ->select('d_pcsdt_qty')
+                    ->where(function ($query) use ($pcs_id , $item_id) {
+                      $query->where('d_pcs_id', '=', $pcs_id);
+                      $query->where('i_id', '=', $item_id);
+                    })->first();
       //cek item type
       $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
       //get satuan utama
@@ -636,7 +645,8 @@ class ConfrimBeliController extends Controller
         'data_stok' => $dataStok['val_stok'],
         'data_satuan' => $dataStok['txt_satuan'],
         'spanTxt' => $spanTxt,
-        'spanClass' => $spanClass
+        'spanClass' => $spanClass,
+        'poQty' => $poQty
     ]);
   }
 
