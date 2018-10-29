@@ -51,6 +51,15 @@
                   <input type="hidden" class="form-control input-sm" name="i_pic_id" id="i_pic_id">
                 </div>
               </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <label title="Review Interview.">Review Interview</label>
+              </div>
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="form-group">
+                  <textarea name="i_review1" id="i_review1" maxlength="300" cols="30" rows="4" class="form-control" placeholder="Review Interview Peserta (Maks : 300 Karakter)"></textarea>
+                </div>
+              </div>
             </div>
           </form>
         </div>

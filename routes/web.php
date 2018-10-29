@@ -436,7 +436,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/recruitment/update_approval_1', 'RecruitmentController@update_approval_1');
     Route::post('/hrd/recruitment/approval_2', 'RecruitmentController@approval_2');
     Route::post('/hrd/recruitment/update_approval_2', 'RecruitmentController@update_approval_2');
+    Route::post('/hrd/recruitment/skip_approval_2', 'RecruitmentController@skip_approval_2');
     Route::post('/hrd/recruitment/approval_3', 'RecruitmentController@approval_3');
+    Route::post('/hrd/recruitment/approval_3_skip', 'RecruitmentController@approval_3_skip');
     Route::get('/hrd/recruitment/autocomplete-pic', 'RecruitmentController@autocomplete');
     Route::get('/hrd/recruitment/get-jadwal-interview/{id}', 'RecruitmentController@getJadwalInterview');
     Route::post('/hrd/recruitment/proc-jadwal-interview', 'RecruitmentController@procJadwalInterview');

@@ -140,7 +140,7 @@
                         <label style="font-style: oblique; font-size: 16px;">( {{$data->p_stdt_name}} )</label>
                         <br>
                         @if ($data->p_apply_statusdt == 4)
-                          @if (count($jadwal_i) > 0)
+                          @if (!empty($jadwal_i))
                             <label style="font-style: oblique; font-size: 16px; font-weight: bold;">Jadwal Interview</label>
                             <br>
                             <label style="font-style: oblique; font-size: 14px;">Tanggal : {{ date('d-m-Y', strtotime( $jadwal_i->pj_date)) }}</label>
@@ -152,7 +152,7 @@
                             <label style="font-style: oblique; font-size: 14px;">PIC : {{ $jadwal_i->c_nik }} - {{ $jadwal_i->c_nama }}</label>
                           @endif
                         @elseif ($data->p_apply_statusdt == 7)
-                          @if (count($jadwal_p) > 0)
+                          @if (!empty($jadwal_p))
                             <label style="font-style: oblique; font-size: 16px; font-weight: bold;">Jadwal Presentasi</label>
                             <br>
                             <label style="font-style: oblique; font-size: 14px;">Tanggal : {{ date('d-m-Y', strtotime( $jadwal_p->pj_date)) }}</label>
@@ -168,6 +168,30 @@
                         
                       </div>                    
                     </div>
+
+                    @if ($data->p_apply_statusdt == 4 || $data->p_apply_statusdt == 10)
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <div class="form-group">
+                            <label class="bold s16">Review Interview Peserta</label>
+                              @if (!empty($jadwal_i))
+                                <p>{{ $jadwal_i->pj_review_i }}</p>
+                              @endif
+                          </div>
+                        </div>
+                      </div> 
+                    @elseif ($data->p_apply_statusdt == 7)
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <div class="form-group">
+                            <label class="bold s16">Review Presentasi Peserta</label>
+                            @if (!empty($jadwal_p))
+                              <p>{{ $jadwal_p->pj_review_p }}</p>
+                            @endif
+                          </div>
+                        </div>
+                      </div>
+                    @endif
                   </div>   
 
                   <div class="row">
@@ -232,13 +256,23 @@
                         @foreach ($approve3 as $val)
                           <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
-                              <label>
-                                <input type="radio" name="approval_3" id="{{'app_'.$val->p_stdt_id}}" class="approval_3" value="{{$val->p_stdt_id}}"
-                                @if ($val->p_stdt_id == $cek_app3)
-                                  checked
-                                @endif> 
-                                {{$val->p_stdt_name}}
-                              </label>
+                              @if ($val->p_stdt_id == 10)
+                                <label class="hidden">
+                                  <input type="radio" name="approval_3" id="{{'app_'.$val->p_stdt_id}}" class="approval_3" value="{{$val->p_stdt_id}}"
+                                  @if ($val->p_stdt_id == $cek_app3)
+                                    checked
+                                  @endif> 
+                                  {{$val->p_stdt_name}}
+                                </label>
+                              @else
+                                <label>
+                                  <input type="radio" name="approval_3" id="{{'app_'.$val->p_stdt_id}}" class="approval_3" value="{{$val->p_stdt_id}}"
+                                  @if ($val->p_stdt_id == $cek_app3)
+                                    checked
+                                  @endif> 
+                                  {{$val->p_stdt_name}}
+                                </label>
+                              @endif
                             </div>
                           </div>
                         @endforeach
@@ -373,9 +407,10 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').removeClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-success" onclick="jadwalInterview()">Set Jadwal</button>'
+          $('#appending').append('<button class="btn btn-warning pull-left" onclick="skipApproval2({{$data->p_id}})">Skip Approval 2</button>'
+                                +'<button class="btn btn-success pull-left" onclick="jadwalInterview()">Set Jadwal</button>'
                                 +'<button class="btn btn-primary" id="btn_app" onclick="approval2()">Process</button>'
-                                +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
+                                +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-danger">Back</a>');
         }
       }
       else if($('#ip_status').val() == '3')
@@ -410,7 +445,7 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').removeClass('abu-abu');
-          $('#appending').append('<button class="btn btn-success" onclick="jadwalPresentasi()">Set Jadwal</button>'
+          $('#appending').append('<button class="btn btn-success pull-left" onclick="jadwalPresentasi()">Set Jadwal</button>'
                                  +'<button class="btn btn-primary" id="btn_app" onclick="approval3()">Process</button>'
                                  +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
@@ -439,6 +474,19 @@
           /*$('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="final_approval()">Process</button>'
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');*/
           $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button>'
+                                +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
+        }
+        else if ($('#ip_statusdt').val() == '10') 
+        {
+          $('.approval_1').attr('disabled', true);
+          $('.approval_2').attr('disabled', true);
+          $('.approval_3').attr('disabled', false);
+          $('#fs_approve1').addClass('abu-abu');
+          $('#fs_approve2').addClass('abu-abu');
+          $('#fs_approve3').removeClass('abu-abu');
+          /*$('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="final_approval()">Process</button>'
+                                +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');*/
+          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="approval3_skip()">Process</button>'
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         } 
       }
@@ -782,6 +830,66 @@
       }
     }
 
+    function skipApproval2(idPelamar) {
+      iziToast.question({
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        //zindex: 999,
+        title: 'Skip Approval ke 2 (Khusus Lowongan Staff)',
+        message: 'Apakah anda yakin ?',
+        position: 'center',
+        buttons: [
+          ['<button><b>Ya</b></button>', function (instance, toast) {
+            $.ajax({
+              url : baseUrl + "/hrd/recruitment/skip_approval_2",
+              type: "POST",
+              dataType: "JSON",
+              data: {id:idPelamar, "_token": "{{ csrf_token() }}"},
+              success: function(response)
+              {
+                if(response.status == "sukses")
+                {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.success({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      window.location.href = baseUrl+"/hrd/recruitment/rekrut";
+                    }
+                  });
+                }
+                else
+                {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.error({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      window.location.href = baseUrl+"/hrd/recruitment/rekrut";
+                    }
+                  }); 
+                }
+              },
+              error: function(){
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.warning({
+                  icon: 'fa fa-times',
+                  message: 'Terjadi Kesalahan!'
+                });
+              },
+              async: false
+            }); 
+          }, true],
+          ['<button>Tidak</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          }],
+        ]
+      });
+    }
+
     function approval3() 
     {
       var IsValid = $("form[name='formApp']").valid();
@@ -789,6 +897,60 @@
         $.ajax({
           type: "POST",
           url : baseUrl + "/hrd/recruitment/approval_3",
+          data: $('#form-app').serialize(),
+          success: function(response)
+          {
+            if(response.status == "sukses")
+            {
+              iziToast.success({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: response.pesan,
+                onClosing: function(instance, toast, closedBy){
+                   window.location.href = baseUrl+"/hrd/recruitment/rekrut";
+                }
+              });
+            }
+            else
+            {
+              iziToast.error({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: "Data Gagal disimpan !",
+                onClosing: function(instance, toast, closedBy){
+                   window.location.href = baseUrl+"/hrd/recruitment/rekrut";
+                }
+              });
+            }              
+          },
+          error: function()
+          {
+            iziToast.error({
+              position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+              title: 'Pemberitahuan',
+              message: "Data gagal disimpan !"
+            });
+          },
+          async: false
+        });
+      }
+      else //else validation
+      {
+        iziToast.warning({
+          //icon: 'fa fa-microphone',
+          position: 'center',
+          message: "Mohon Lengkapi data form !"
+        });
+      }
+    }
+
+    function approval3_skip() 
+    {
+      var IsValid = $("form[name='formApp']").valid();
+      if(IsValid){
+        $.ajax({
+          type: "POST",
+          url : baseUrl + "/hrd/recruitment/approval_3_skip",
           data: $('#form-app').serialize(),
           success: function(response)
           {
@@ -855,6 +1017,7 @@
             $('#i_lokasi').val(response.data[0].pj_lokasi);
             $('#i_pic').val(response.data[0].c_nik+' '+response.data[0].c_nama);
             $('#i_pic_id').val(response.data[0].pj_pmid);
+            $('#i_review1').val(response.data[0].pj_review_i);
           }else{
             $('#i_pjadwal_id').val('');
             $('#i_pelamarid').val(id);
@@ -863,6 +1026,7 @@
             $('#i_lokasi').val('');
             $('#i_pic').val('');
             $('#i_pic_id').val('');
+            $('#i_review1').val('');
           }
           
           $('#test_interview').modal('show');

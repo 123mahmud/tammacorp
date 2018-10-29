@@ -19,6 +19,8 @@ class d_pelamar_jadwal extends Model
         'pj_time',
         'pj_lokasi',
         'pj_isactive',
+        'pj_review_i',
+        'pj_review_p',
         'pj_created',
         'pj_updated'
     ];
