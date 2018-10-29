@@ -372,7 +372,7 @@
         $('#fs_approve1').removeClass('abu-abu');
         $('#fs_approve2').addClass('abu-abu');
         $('#fs_approve3').addClass('abu-abu');
-        $('#appending').append('<button class="btn btn-primary" id="btn_app"onclick="approval1()">Process</button>'
+        $('#appending').append('<button class="btn btn-primary" id="btn_app"onclick="approval1()">Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
       }
       else if($('#ip_status').val() == '2')
@@ -385,7 +385,7 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button>'
+          $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
         else if($('#ip_statusdt').val() == '3')
@@ -396,7 +396,7 @@
           $('#fs_approve1').removeClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="update_aproval1()">Process</button>'
+          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="update_aproval1()">Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
         else if($('#ip_statusdt').val() == '4')
@@ -407,9 +407,9 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').removeClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-warning pull-left" onclick="skipApproval2({{$data->p_id}})">Skip Approval 2</button>'
-                                +'<button class="btn btn-success pull-left" onclick="jadwalInterview()">Set Jadwal</button>'
-                                +'<button class="btn btn-primary" id="btn_app" onclick="approval2()">Process</button>'
+          $('#appending').append('<button class="btn btn-warning pull-left" onclick="skipApproval2({{$data->p_id}})">Skip Approval 2</button> '
+                                +'<button class="btn btn-success" onclick="jadwalInterview()">Set Jadwal</button> '
+                                +'<button class="btn btn-primary" id="btn_app" onclick="approval2()">Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-danger">Back</a>');
         }
       }
@@ -423,7 +423,7 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button>'
+          $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
         else if($('#ip_statusdt').val() == '6')
@@ -434,7 +434,7 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').removeClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="update_aproval2()">Process</button>'
+          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="update_aproval2()">Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
         else if($('#ip_statusdt').val() == '7')
@@ -445,8 +445,8 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').removeClass('abu-abu');
-          $('#appending').append('<button class="btn btn-success pull-left" onclick="jadwalPresentasi()">Set Jadwal</button>'
-                                 +'<button class="btn btn-primary" id="btn_app" onclick="approval3()">Process</button>'
+          $('#appending').append('<button class="btn btn-success" onclick="jadwalPresentasi()">Set Jadwal</button> '
+                                 +'<button class="btn btn-primary" id="btn_app" onclick="approval3()">Process</button> '
                                  +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
       }
@@ -460,7 +460,7 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button>'
+          $('#appending').append('<button class="btn btn-primary" id="btn_app" disabled>Process</button> '
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
         else if ($('#ip_statusdt').val() == '9') 
@@ -1117,6 +1117,7 @@
             $('#p_lokasi').val(response.data[0].pj_lokasi);
             $('#p_pic').val(response.data[0].c_nik+' '+response.data[0].c_nama);
             $('#p_pic_id').val(response.data[0].pj_pmid);
+            $('#p_review1').val(response.data[0].pj_review_p);
           }else{
             $('#p_pjadwal_id').val('');
             $('#p_pelamarid').val(id);
@@ -1125,6 +1126,7 @@
             $('#p_lokasi').val('');
             $('#p_pic').val('');
             $('#p_pic_id').val('');
+            $('#p_review1').val('');
           }
           
           $('#test_presentasi').modal('show');

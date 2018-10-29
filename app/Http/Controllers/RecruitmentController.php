@@ -67,9 +67,6 @@ class RecruitmentController extends Controller
         $cek2 = DB::table('d_apply')->where('ap_pid', $id)->where('ap_stid', '3')->first();
         $cek3 = DB::table('d_apply')->where('ap_pid', $id)->where('ap_stid', '4')->first();
 
-        /*if (count($cek1) > 0 ) { $cek_app1 = $cek1->ap_stdt_id; } else { $cek_app1 = '1'; }
-        if (count($cek2) > 0 ) { $cek_app2 = $cek2->ap_stdt_id; } else { $cek_app2 = '1'; }
-        if (count($cek3) > 0 ) { $cek_app3 = $cek3->ap_stdt_id; } else { $cek_app3 = '1'; }*/
         if (!empty($cek1)) { $cek_app1 = $cek1->ap_stdt_id; } else { $cek_app1 = '1'; }
         if (!empty($cek2)) { $cek_app2 = $cek2->ap_stdt_id; } else { $cek_app2 = '1'; }
         if (!empty($cek3)) { $cek_app3 = $cek3->ap_stdt_id; } else { $cek_app3 = '1'; }
@@ -1069,6 +1066,7 @@ class RecruitmentController extends Controller
                     'pj_lokasi' => strtoupper($request->p_lokasi),
                     'pj_type' => 'P',
                     'pj_isactive' => 'Y',
+                    'pj_review_p' => trim($request->p_review1),
                     'pj_updated' => $tanggal
                 ]);
             }
@@ -1086,6 +1084,7 @@ class RecruitmentController extends Controller
                 $pj->pj_lokasi = strtoupper($request->p_lokasi);
                 $pj->pj_type = 'P';
                 $pj->pj_isactive = 'Y';
+                $pj->pj_review_p = trim($request->p_review1);
                 $pj->pj_created = $tanggal;
                 $pj->save();
             }
@@ -1093,7 +1092,7 @@ class RecruitmentController extends Controller
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Jadwal berhasil di simpan'
+              'pesan' => 'Jadwal Presentasi berhasil di simpan'
             ]);
         }
         catch (\Exception $e)

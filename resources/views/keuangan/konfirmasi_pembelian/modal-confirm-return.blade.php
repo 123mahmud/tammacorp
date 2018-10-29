@@ -87,7 +87,8 @@
               <thead>
                 <tr>
                   <th style="text-align: center;" width="5%;">No</th>
-                  <th width="30%;">Kode | Barang</th>
+                  <th width="25%;">Kode | Barang</th>
+                  <th width="5%;">Qty PO</th>
                   <th width="5%;">Qty</th>
                   <th width="5%;">Qty Confirm</th>
                   <th width="5%;">Satuan</th>

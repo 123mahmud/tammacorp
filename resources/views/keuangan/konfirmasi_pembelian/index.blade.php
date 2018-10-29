@@ -596,16 +596,17 @@
           //loop data
           Object.keys(data.data_isi).forEach(function(){
             $('#tabel-return-confirm').append('<tr class="tbl_modal_detail_row" id="row'+i+'">'
-                            +'<td>'+key+'</td>'
+                            +'<td class="center">'+key+'</td>'
                             +'<td>'+data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name+'</td>'
-                            +'<td>'+data.data_isi[key-1].d_pcsrdt_qty+'</td>'
-                            +'<td>'+data.data_isi[key-1].d_pcsrdt_qty
+                            +'<td class="right">'+formatAngka(data.poQty[key-1].d_pcsdt_qty)+'</td>'
+                            +'<td class="right">'+formatAngka(data.data_isi[key-1].d_pcsrdt_qty)+'</td>'
+                            +'<td class="right">'+formatAngka(data.data_isi[key-1].d_pcsrdt_qty)
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldConfirmReturn[]" id="'+i+'" class="form-control input-sm field_qty_confirm currency">'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdDtReturn[]" class="form-control input-sm"/></td>'
                             +'<td>'+data.data_isi[key-1].m_sname+'</td>'
-                            +'<td id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
-                            +'<td id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
-                            +'<td align="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
+                            +'<td id="price_'+i+'" class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
+                            +'<td id="total_'+i+'" class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
+                            +'<td class="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm" disabled>X</button></td>'
                             +'</tr>');
             i = randString(5);
@@ -618,16 +619,17 @@
           //loop data
           Object.keys(data.data_isi).forEach(function(){
             $('#tabel-return-confirm').append('<tr class="tbl_modal_detail_row" id="row'+i+'">'
-                            +'<td>'+key+'</td>'
+                            +'<td class="center">'+key+'</td>'
                             +'<td>'+data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name+'</td>'
-                            +'<td>'+data.data_isi[key-1].d_pcsrdt_qty+'</td>'
-                            +'<td>'+data.data_isi[key-1].d_pcsrdt_qty
+                            +'<td class="right">'+formatAngka(data.poQty[key-1].d_pcsdt_qty)+'</td>'
+                            +'<td class="right">'+formatAngka(data.data_isi[key-1].d_pcsrdt_qty)+'</td>'
+                            +'<td class="right">'+formatAngka(data.data_isi[key-1].d_pcsrdt_qty)
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldConfirmReturn[]" id="'+i+'" class="form-control input-sm field_qty_confirm currency">'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdDtReturn[]" class="form-control input-sm"/></td>'
                             +'<td>'+data.data_isi[key-1].m_sname+'</td>'
-                            +'<td id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
-                            +'<td id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
-                            +'<td align="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
+                            +'<td id="price_'+i+'" class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
+                            +'<td id="total_'+i+'" class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
+                            +'<td class="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm">X</button></td>'
                             +'</tr>');
             i = randString(5);

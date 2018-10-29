@@ -51,6 +51,16 @@
                   <input type="hidden" class="form-control input-sm" name="p_pic_id" id="p_pic_id">
                 </div>
               </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <label title="Review Presentasi.">Review Presentasi</label>
+              </div>
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="form-group">
+                  <textarea name="p_review1" id="p_review1" maxlength="300" cols="30" rows="4" class="form-control" placeholder="Review Presentasi Peserta (Maks : 300 Karakter)"></textarea>
+                </div>
+              </div>
+
             </div>
           </form>
         </div>
