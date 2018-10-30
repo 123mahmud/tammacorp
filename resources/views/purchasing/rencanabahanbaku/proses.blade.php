@@ -52,13 +52,16 @@
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                      <div class="form-group">
-                        <select class="form-control input-sm" name="supplier" id="index_sup">
+                      <div class="form-group" id="divSelectSupplier">
+                        {{-- <select class="form-control input-sm" name="supplier" id="index_sup">
                           @foreach($d_sup as $val)
                             <option value="{{$val['sup_id']}}">{{$val['sup_txt']}}</option>
                           @endforeach
+                        </select> --}}
+                        <select class="form-control input-sm select2" id="index_sup" name="index_sup" style="width: 100% !important;">
+                          <option value="">Pilih Supplier</option>
                         </select>
-                        <input type="hidden" class="form-control input-sm" name="i_sup" id="i_sup" value="{{$val['sup_id']}}">
+                        <input type="hidden" class="form-control input-sm" name="i_sup" id="i_sup">
                       </div>
                     </div>
 
@@ -189,7 +192,26 @@
       var button_id = $(this).attr('id');
       $('#row'+button_id+'').remove();
     });
-    
+
+    $( "#index_sup" ).select2({
+      ajax: {
+        url: baseUrl + '/purchasing/rencanabahanbaku/lookup-data-supplier',
+        dataType: 'json',
+        data: function (params) {
+          return {
+              q : $.trim(params.term),
+              itemid : $('#i_itemid').val()
+          };
+        },
+        processResults: function (data) {
+            return {
+                results: data
+            };
+        },
+        cache: true
+      }, 
+    });
+
     $('#index_sup').change(function(event) {
       $('#i_sup').val($(this).val());
       $('.tbl_form_row').remove();
@@ -208,7 +230,7 @@
   }
 
   function prosesSupplier() {
-    var idsup = $('#index_sup').val();
+    var idsup = $('#i_sup').val();
     var item = $('#i_itemid').val();
     var tgl1 = $('#tgl_1').val();
     var tgl2 = $('#tgl_2').val();

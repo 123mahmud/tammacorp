@@ -262,7 +262,8 @@ class RencanaBahanController extends Controller
         for ($i=0; $i <count($list_item); $i++) 
         { 
           $aa = DB::table('m_item')->select('i_id','i_name','i_code')->where('i_id', $list_item[$i]->d_sb_itemid)->first();
-          $bb = DB::table('spk_formula')->select('fr_formula')->where('fr_spk', $request->idspk)->where('fr_formula', $list_item[$i]->d_sb_itemid)->first();
+          //$bb = DB::table('spk_formula')->select('fr_formula')->where('fr_spk', $request->idspk)->where('fr_formula', $list_item[$i]->d_sb_itemid)->first();
+          $bb = DB::table('spk_formula')->select('fr_formula')->where('fr_formula', $list_item[$i]->d_sb_itemid)->first();
           if ($request->item != $aa->i_id) {
             if (!empty($bb->fr_formula)) {
               $d_item[] = array('item_id' => $aa->i_id, 'item_txt'=> $aa->i_name, 'item_code'=> $aa->i_code);
@@ -366,6 +367,35 @@ class RencanaBahanController extends Controller
             'status' => 'gagal'
         ]);
       }
+    }
+
+    public function lookupSupplier(Request $request)
+    {
+        $formatted_tags = array();
+        $term = trim($request->q);
+        if (empty($term)) 
+        {
+          $list_sup = DB::table('d_barang_sup')->select('d_bs_supid')->where('d_bs_itemid', $request->itemid)->get();
+          foreach ($list_sup as $val) 
+          {
+            $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_id', $val->d_bs_supid)->first();
+            $formatted_tags[] = ['id' => $sup->s_id, 'text' => $sup->s_company];
+          }
+          return Response::json($formatted_tags);
+        }
+        else
+        {
+          $list_sup = DB::table('d_barang_sup')
+          ->join('d_supplier', 'd_barang_sup.d_bs_supid','=','d_supplier.s_id')
+          ->select('d_bs_supid')->where('s_company', 'LIKE', '%'.$term.'%')->where('d_bs_itemid', $request->itemid)->get();
+          foreach ($list_sup as $val) 
+          {
+            $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_id', $val->d_bs_supid)->first();
+            $formatted_tags[] = ['id' => $sup->s_id, 'text' => $sup->s_company];
+          }
+
+          return Response::json($formatted_tags);  
+        }
     }
 
     public function submitData(Request $request)

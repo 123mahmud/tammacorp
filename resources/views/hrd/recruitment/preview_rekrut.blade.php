@@ -461,15 +461,16 @@
                               @endif
                             </div>
                           </div>
+                        </div>
                       </div>
 
-                        <div class="row">
-                          <div class="col-md-12 col-sm-12 col-xs-12" align="right" style="margin-top: 15px;">
-                            <a href="{{route('rekrut')}}" class="btn btn-default">Back</a>
-                          </div>
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12" align="right" style="margin-top: 15px;">
+                          <a href="{{route('rekrut')}}" class="btn btn-default">Kembali</a>
                         </div>
-
+                      </div>
                     </div><!-- /div alert-tab -->
+
 
                     <!-- div note-tab -->
                     <div id="note-tab" class="tab-pane fade">

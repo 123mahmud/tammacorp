@@ -498,7 +498,11 @@ class ConfrimBeliController extends Controller
     })
     ->editColumn('hargaTotal', function ($data) 
     {
-      return 'Rp. '.number_format($data->d_pcsr_pricetotal,2,",",".");
+      return '<div>Rp.
+                <span class="pull-right">
+                  '.number_format($data->d_pcsr_pricetotal,2,",",".").'
+                </span>
+              </div>';
     })
     ->editColumn('status', function ($data)
     {
@@ -549,7 +553,7 @@ class ConfrimBeliController extends Controller
               </div>'; 
       }
     })
-    ->rawColumns(['status', 'action'])
+    ->rawColumns(['status', 'action', 'hargaTotal'])
     ->make(true);
   }
 

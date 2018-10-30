@@ -3,11 +3,11 @@
 <head>
   <title>FORM PERMINTAAN HARIAN</title>
   <style type="text/css">
-      *{
+      *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(small):not(label){
         font-size: 12px;
       }
       .s16{
-        font-size: 14px !important;
+        font-size: 16px !important;
       }
       .div-width{
         margin: 10px;
@@ -137,87 +137,85 @@
       <table width="100%" cellpadding="3px" class="tabel" border="1px" style="margin-right: 20px;">
         <tr class="text-left">
           <td style="width: 20%;"><strong>Nama Lengkap</strong></td>
-          <td style="width: 50%;">{{$pelamar->p_name}}</td>
-          <td rowspan="17">
-            <div style="width: 200px; height: 200px; background-color: blue;">
-              <img src="{{ public_path('assets/berkas/foto-pelamar/'.$foto->bks_name)}}" alt="Foto" class="img-foto">
-            </div>
+          <td style="width: auto;">{{$pelamar->p_name}}</td>
+          <td rowspan="8" style="text-align: center;width: 1%">
+              <img src="{{ public_path('assets/berkas/foto-pelamar/'.$foto->bks_name)}}" alt="Foto" class="img-foto" width="200px" height="200px">
           </td>
         </tr>
         <tr class="text-left">
-          <td style="width: 20%;"></strong>No. KTP</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_nip}}</td>
+          <td style="width: 20%;"><strong>No. KTP</strong></td>
+          <td style="width: auto;">{{$pelamar->p_nip}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Tempat/Tgl Lahir</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_birth_place.' / '.date('d-m-Y', strtotime($pelamar->p_birthday))}}</td>
+          <td style="width: auto;">{{$pelamar->p_birth_place.' / '.date('d-m-Y', strtotime($pelamar->p_birthday))}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Alamat</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_address}}</td>
+          <td style="width: auto;">{{$pelamar->p_address}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Alamat Saat Ini</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_address_now}}</td>
+          <td style="width: auto;">{{$pelamar->p_address_now}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Telp/Wa</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_tlp}}</td>
+          <td style="width: auto;">{{$pelamar->p_tlp}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Email</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_email}}</td>
+          <td style="width: auto;">{{$pelamar->p_email}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Agama</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_religion}}</td>
+          <td style="width: auto;">{{$pelamar->p_religion}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Pendidikan Terakhir</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_education}}</td>
+          <td style="width: auto;" colspan="2">{{$pelamar->p_education}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Nama Sekolah</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_schoolname}}</td>
+          <td style="width: auto;" colspan="2">{{$pelamar->p_schoolname}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Tahun Masuk</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_yearin}}</td>
+          <td style="width: auto;" colspan="2">{{$pelamar->p_yearin}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Tahun Lulus</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_yearout}}</td>
+          <td style="width: auto;" colspan="2">{{$pelamar->p_yearout}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Jurusan</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_jurusan}}</td>
+          <td style="width: auto;" colspan="2">{{$pelamar->p_jurusan}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Nilai</strong></td>
-          <td style="width: 60%;">{{$pelamar->p_nilai}}</td>
+          <td style="width: auto;" colspan="2">{{$pelamar->p_nilai}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Status</strong></td>
           @if ($pelamar->p_status == 'M')
-            <td style="width: 60%;">Menikah</td>
+            <td style="width: auto;" colspan="2">Menikah</td>
           @else
-            <td style="width: 60%;">Belum Menikah</td>
+            <td style="width: auto;" colspan="2">Belum Menikah</td>
           @endif
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Nama Pasangan</strong></td>
           @if ($pelamar->p_wife_name == '' || $pelamar->p_wife_name == null)
-            <td style="width: 60%;"> - </td>
+            <td style="width: auto;" colspan="2"> - </td>
           @else
-            <td style="width: 60%;">{{$pelamar->p_wife_name}}</td>
+            <td style="width: auto;" colspan="2">{{$pelamar->p_wife_name}}</td>
           @endif
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Jumlah Anak</strong></td>
           @if ($pelamar->p_child == '' || $pelamar->p_child == null)
-            <td style="width: 60%;"> - </td>
+            <td style="width: auto;" colspan="2"> - </td>
           @else
-            <td style="width: 60%;">{{$pelamar->p_child}}</td>
+            <td style="width: auto;" colspan="2">{{$pelamar->p_child}}</td>
           @endif
         </tr>
       </table>
