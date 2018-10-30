@@ -782,9 +782,9 @@ class ReturnPembelianController extends Controller
       {
         $data = array(
             'hargaBruto' => number_format($val->d_pcs_total_gross - $hargaTotRetur,2,",","."),
-            'nilaiDiskon' => number_format(($val->d_pcs_total_gross - $hargaTotRetur) * $val->d_pcs_disc_percent / 100 ,2,",","."),
+            'nilaiDiskon' => number_format((($val->d_pcs_total_gross - $hargaTotRetur) * $val->d_pcs_disc_percent / 100) + $val->d_pcs_discount ,2,",","."),
             'nilaiPajak' => number_format($val->d_pcs_tax_value,2,",","."),
-            'hargaNet' => number_format(($val->d_pcs_total_gross - $hargaTotRetur) - (($val->d_pcs_total_gross - $hargaTotRetur) * $val->d_pcs_disc_percent / 100) + $val->d_pcs_tax_value,2,",","."),
+            'hargaNet' => number_format(($val->d_pcs_total_gross - $hargaTotRetur) - ((($val->d_pcs_total_gross - $hargaTotRetur) * $val->d_pcs_disc_percent / 100) + $val->d_pcs_discount) + $val->d_pcs_tax_value,2,",","."),
         );
       }
 
