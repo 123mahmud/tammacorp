@@ -1062,4 +1062,124 @@ class ReturnPembelianController extends Controller
     return $data;
   }
 
+  public function printRevisiPo($id)
+  {
+    $dataHeader = d_purchasing::join('d_purchasingreturn','d_purchasing.d_pcs_id','=','d_purchasingreturn.d_pcsr_pcsid')
+              ->join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_purchasing.*',
+                       'd_purchasingreturn.d_pcsr_id',
+                       'd_purchasingreturn.d_pcsr_code',
+                       'd_purchasingreturn.d_pcsr_pricetotal',
+                       'd_purchasingreturn.d_pcsr_priceresult',
+                       'd_supplier.s_company',
+                       'd_supplier.s_name',
+                       'd_mem.m_id',
+                       'd_mem.m_name'
+                     )
+              ->where('d_pcs_id', '=', $id)
+              ->orderBy('d_pcs_date_created', 'DESC')
+              ->get()->toArray();
+  
+    $datareturdt = DB::table('d_purchasingreturn_dt')
+                    ->join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
+                    ->select('d_purchasingreturn_dt.*',
+                             'd_purchasingreturn.*',
+                             'd_purchasingreturn_dt.d_pcsrdt_item as item',
+                             DB::raw('(SELECT d_pcsdt_price FROM d_purchasing_dt WHERE d_pcs_id = "'.$id.'" AND i_id = item) as harganondiskon'))
+                    ->where('d_pcsrdt_idpcsr', $dataHeader[0]['d_pcsr_id'])->get()->toArray();
+
+    $hargaTotRetur = 0;
+    for ($i=0; $i <count($datareturdt); $i++) 
+    { 
+      $hargaTotRetur += (int)$datareturdt[$i]->d_pcsrdt_qtyconfirm * $datareturdt[$i]->harganondiskon;
+    }
+
+    for ($i=0; $i <count($dataHeader); $i++) { 
+      $data = array(
+          'hargaBruto' => 'Rp. '.number_format($dataHeader[$i]['d_pcs_total_gross'] - $hargaTotRetur,2,",","."),
+          'nilaiDiskon' => 'Rp. '.number_format((($dataHeader[$i]['d_pcs_total_gross'] - $hargaTotRetur) * $dataHeader[$i]['d_pcs_disc_percent'] / 100) + $dataHeader[$i]['d_pcs_discount'] ,2,",","."),
+          'nilaiPajak' => 'Rp. '.number_format($dataHeader[$i]['d_pcs_tax_value'],2,",","."),
+          'hargaNet' => 'Rp. '.number_format(($dataHeader[$i]['d_pcs_total_gross'] - $hargaTotRetur) - ((($dataHeader[$i]['d_pcs_total_gross'] - $hargaTotRetur) * $dataHeader[$i]['d_pcs_disc_percent'] / 100) + $dataHeader[$i]['d_pcs_discount']) + $dataHeader[$i]['d_pcs_tax_value'],2,",","."),
+      );
+    }
+
+    $dataIsi = d_purchasing_dt::join('m_item', 'd_purchasing_dt.i_id', '=', 'm_item.i_id')
+              ->join('m_satuan', 'd_purchasing_dt.d_pcsdt_sat', '=', 'm_satuan.m_sid')
+              ->select('d_purchasing_dt.d_pcsdt_id',
+                       'd_purchasing_dt.d_pcs_id',
+                       'd_purchasing_dt.i_id',
+                       'm_item.i_name',
+                       'm_item.i_code',
+                       'm_item.i_sat1',
+                       'm_satuan.m_sname',
+                       'm_satuan.m_sid',
+                       'd_purchasing_dt.d_pcsdt_prevcost',
+                       'd_purchasing_dt.d_pcsdt_qty',
+                       'd_purchasing_dt.d_pcsdt_price',
+                       'd_purchasing_dt.d_pcsdt_total'
+              )
+              ->where('d_purchasing_dt.d_pcs_id', '=', $id)
+              ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
+              ->get()->toArray();
+    
+    for ($i=0; $i < count($dataIsi); $i++) { 
+      //cek item type
+      $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $dataIsi[$i]['i_id'])->first();
+      //get satuan utama
+      $sat1[] = $dataIsi[$i]['i_sat1'];
+      //compare dengan data returdt, jika sama replace qty
+      for ($j=0; $j <count($datareturdt); $j++) { 
+        if ($dataIsi[$i]['i_id'] == $datareturdt[$j]->d_pcsrdt_item) {
+          $dataIsi[$j]['d_pcsdt_qty'] = $dataIsi[$i]['d_pcsdt_qty'] - $datareturdt[$j]->d_pcsrdt_qtyconfirm;
+        }
+      }
+    }
+
+    //variabel untuk count array
+    $counter = 0;
+    //ambil value stok by item type
+    $dataStok = $this->getStokByType($itemType, $sat1, $counter);
+    $dataStokQty = array_chunk($dataStok['val_stok'], 10);
+    $dataStokTxt = array_chunk($dataStok['txt_satuan'], 10);
+    $dataIsi = array_chunk($dataIsi, 10);
+
+    //dd($dataHeader, $dataIsi, $dataStokQty, $dataStokTxt, $data);
+
+    return view('purchasing/returnpembelian/print-revisi-po', compact('dataHeader', 'dataIsi', 'dataStokQty', 'dataStokTxt', 'data'));
+  }
+
+  public function printSuratJalan($id)
+  {
+    $dataHeader = d_purchasingreturn::join('d_purchasing','d_purchasingreturn.d_pcsr_pcsid','=','d_purchasing.d_pcs_id')
+          ->join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
+          ->join('d_mem', 'd_purchasingreturn.d_pcs_staff', '=', 'd_mem.m_id')
+          ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_total_net', 'd_purchasing.d_pcs_code', 'd_mem.m_name', 'd_mem.m_id')
+          ->where('d_purchasingreturn.d_pcsr_id', '=', $id)
+          ->orderBy('d_pcsr_created', 'DESC')
+          ->get()->toArray();
+  
+    foreach ($dataHeader as $val) 
+    {
+      $data = array(
+        'hargaTotalReturn' => 'Rp. '.number_format($val['d_pcsr_pricetotal'],2,",","."),
+        'hargaTotalResult' => 'Rp. '.number_format($val['d_pcsr_priceresult'],2,",","."),
+        'tanggalReturn' => date('d-m-Y',strtotime($val['d_pcsr_datecreated']))
+      );
+    }
+    
+    $dataIsi = d_purchasingreturn_dt::join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
+            ->join('m_item', 'd_purchasingreturn_dt.d_pcsrdt_item', '=', 'm_item.i_id')
+            ->join('m_satuan', 'd_purchasingreturn_dt.d_pcsrdt_sat', '=', 'm_satuan.m_sid')
+            ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'm_satuan.m_sid', 'm_satuan.m_sname')
+            ->where('d_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', $id)
+            ->orderBy('d_purchasingreturn_dt.d_pcsrdt_created', 'DESC')
+            ->get()->toArray();
+    $dataIsi = array_chunk($dataIsi, 10);
+
+    //dd($dataHeader, $dataIsi, $data);
+
+    return view('purchasing/returnpembelian/print-sj-retur', compact('dataHeader', 'dataIsi', 'data'));
+  }
+
 }

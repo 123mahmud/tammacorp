@@ -104,6 +104,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/returnpembelian/get-return-by-tgl/{tgl1}/{tgl2}', 'Pembelian\ReturnPembelianController@getReturnByTgl');
     Route::get('/purchasing/returnpembelian/get-detail-revisi/{id}','Pembelian\ReturnPembelianController@getDetailRevisi');
     Route::post('/purchasing/returnpembelian/ubah-status-po/{id}','Pembelian\ReturnPembelianController@ubahStatusPo');
+    Route::get('/purchasing/returnpembelian/print-sj-retur/{id}', 'Pembelian\ReturnPembelianController@printSuratJalan');
+    Route::get('/purchasing/returnpembelian/print-revisi-po/{id}', 'Pembelian\ReturnPembelianController@printRevisiPo');
 //rizky
     Route::get('/purchasing/belanjasuplier/suplier', 'Pembelian\PurchasingController@suplier');
     Route::get('/purchasing/belanjalangsung/langsung', 'Pembelian\PurchasingController@langsung');

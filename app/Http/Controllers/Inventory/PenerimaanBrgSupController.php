@@ -798,7 +798,6 @@ class PenerimaanBrgSupController extends Controller
 
     public function print($id)
     {
-
         $dataHeader = d_terima_pembelian::join('d_purchasing','d_terima_pembelian.d_tb_pid','=','d_purchasing.d_pcs_id')
             ->join('d_supplier','d_terima_pembelian.d_tb_sup','=','d_supplier.s_id')
             ->join('d_mem','d_terima_pembelian.d_tb_staff','=','d_mem.m_id')

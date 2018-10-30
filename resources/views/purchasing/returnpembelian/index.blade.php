@@ -240,13 +240,16 @@
                           +'<td>'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'</td>'
                           +'<td class="right">'+formatAngka(data.data_isi[key-1].d_pcsrdt_qty)+'</td>'
                           +'<td>'+data.data_isi[key-1].m_sname+'</td>'
-                          +'<td class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
-                          +'<td class="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
+                          +'<td class="right">'+separatorRibuanRp(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
+                          +'<td class="right">'+separatorRibuanRp(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
                           +'<td class="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                           +'</tr>');
           key++;  
           i = randString(5);
         });
+        $('#divBtnModalDetail').html(
+          '<a href="'+ baseUrl +'/purchasing/returnpembelian/print-sj-retur/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal-detail').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -544,7 +547,7 @@
         });
         $('#divBtnModal').html(
           '<button type="button" class="btn btn-success" onclick="ubahStatusToReceived('+data.header[0].d_pcs_id+')">Ubah Status</button>'+
-          '<a href="'+ baseUrl +'/inventory/p_suplier/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+          '<a href="'+ baseUrl +'/purchasing/returnpembelian/print-revisi-po/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
           '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal-detail-rev').modal('show');
       },
@@ -636,6 +639,20 @@
     for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
     var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
     return hasil+',00';
+  }
+
+  function separatorRibuan(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
+  }
+
+  function separatorRibuanRp(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return 'Rp. '+num_parts.join(",");
   }
 
   function formatAngka(decimal) 
