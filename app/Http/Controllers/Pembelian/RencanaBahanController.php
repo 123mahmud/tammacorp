@@ -379,7 +379,7 @@ class RencanaBahanController extends Controller
           foreach ($list_sup as $val) 
           {
             $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_id', $val->d_bs_supid)->first();
-            $formatted_tags[] = ['id' => $sup->s_id, 'text' => $sup->s_company];
+            $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
           }
           return Response::json($formatted_tags);
         }
@@ -389,7 +389,7 @@ class RencanaBahanController extends Controller
           foreach ($sup as $val) 
           {
             $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_company', 'LIKE', '%'.$term.'%')->where('s_id', $val->d_bs_supid)->first();
-            $formatted_tags[] = ['id' => $sup->s_id, 'text' => $sup->s_company];
+            $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
           }
 
           return Response::json($formatted_tags);  

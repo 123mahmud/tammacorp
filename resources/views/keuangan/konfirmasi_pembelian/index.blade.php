@@ -858,44 +858,6 @@
     });
   }
 
-  function submitReturnConfirm(id)
-  {
-    if(confirm('Anda yakin konfirmasi return pembelian ?'))
-    {
-      $('#button_confirm_return').text('Proses...'); //change button text
-      $('#button_confirm_return').attr('disabled',true); //set button disable 
-      $.ajax({
-          url : baseUrl + "/keuangan/konfirmasipembelian/confirm-return-submit",
-          type: "post",
-          dataType: "JSON",
-          data: $('#form-confirm-return').serialize(),
-          success: function(response)
-          {
-            if(response.status == "sukses")
-            {
-                alert(response.pesan);
-                $('#modal-confirm-return').modal('hide');
-                $('#button_confirm_return').text('Konfirmasi'); //change button text
-                $('#button_confirm_return').attr('disabled',false); //set button enable 
-                $('#tbl-return').DataTable().ajax.reload();
-            }
-            else
-            {
-                alert(response.pesan);
-                $('#modal-confirm-return').modal('hide');
-                $('#button_confirm_return').text('Konfirmasi'); //change button text
-                $('#button_confirm_return').attr('disabled',false); //set button enable 
-                $('#tbl-return').DataTable().ajax.reload();
-            }
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-            alert('Error updating data');
-          }
-      });
-    }
-  }
-
   function submitReturnConfirm(id) {
     iziToast.question({
       close: false,
