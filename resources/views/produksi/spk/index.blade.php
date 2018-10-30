@@ -192,6 +192,8 @@
                                 success: function (response) {
                                     if (response.status == "sukses") {
                                         refreshTabel();
+                                    }else if(response.status == 'gagal'){
+                                        alert(response.pesan);
                                     }
                                 },
                                 error: function (jqXHR, textStatus, errorThrown) {

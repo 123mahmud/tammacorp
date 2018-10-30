@@ -235,6 +235,9 @@ class spkProductionController extends Controller
         $spkDt = spk_formula::where('fr_spk', $spk->spk_id)
             ->get();
 
+
+        // return json_encode($spkDt);
+
         // cek jurnal
 
         if(jurnal_setting()->allow_jurnal_to_execute){
@@ -264,6 +267,15 @@ class spkProductionController extends Controller
                     // foreach ($prevCost as $value) {
                     if (empty($prevCost->sm_hpp)) 
                       {
+                        $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $spkDt[$i]->fr_formula)->first();
+
+                        if(!$default_cost){
+                            return response()->json([
+                                        'status' => 'gagal',
+                                        'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Salah Satu Dari Item Tidak Memiliki Harga.'
+                                    ]);
+                        }
+
                         if(array_key_exists($item->m_akun_persediaan, $acc_temp)){
                             $acc_temp[$item->m_akun_persediaan] = [
                                 'td_acc'      => $item->m_akun_persediaan,
