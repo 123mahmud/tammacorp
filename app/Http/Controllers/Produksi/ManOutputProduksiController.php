@@ -15,6 +15,7 @@ use App\d_send_productdt;
 use App\d_productplan;
 use App\d_spk;
 use App\m_produksi;
+use App\m_item;
 use Response;
 use DataTables;
 use App\Http\Requests;
@@ -162,9 +163,52 @@ class ManOutputProduksiController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try {
+
+            $acc_temp = []; $tot = 0; $err = true; $ref = '';
+
+            if(jurnal_setting()->allow_jurnal_to_execute){
+                $item = m_item::where('i_id', $request->spk_item)
+                                ->join('m_group', 'm_item.i_code_group', '=', 'm_group.m_gcode')
+                                ->join('m_price', 'm_price.m_pitem', '=', 'i_id')
+                                ->select('i_code_group', 'm_akun_persediaan', 'm_akun_beban', 'm_hpp')
+                                ->first();
+
+                $cek2 = DB::table('d_akun')->where('id_akun', $item->m_akun_persediaan)->first();
+
+                // return json_encode($cek2);
+
+                if(!$item || !$item->m_akun_persediaan  || !$cek2){
+                    $err = false;
+                }else{
+                    $acc_temp[count($acc_temp)] = [
+                        'td_acc'      => $item->m_akun_persediaan,
+                        'td_posisi'   => "D",
+                        'value'       => $item->m_hpp * $request->spk_qty
+                    ];
+
+                    $tot += $item->m_hpp * $request->spk_qty;
+                }
+
+                if(!$err){
+                    return response()->json([
+                        'status' => 'gagal',
+                        'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan Atau Akun Beban.'
+                    ]);
+                }
+
+                $acc_temp[count($acc_temp)] = [
+                    'td_acc'      => '551.13',
+                    'td_posisi'   => "K",
+                    'value'       => $tot
+                ];
+
+                // return json_encode($acc_temp);
+            }
+
+
             $cek = DB::table('d_productresult')
                 ->where('pr_spk', $request->spk_id)
                 ->get();
@@ -212,6 +256,8 @@ class ManOutputProduksiController extends Controller
 
                 ]);
 
+                $ref = $maxid;
+
             } else {
 
                 $pr = d_productresult::where('pr_spk', $request->spk_id)
@@ -221,6 +267,9 @@ class ManOutputProduksiController extends Controller
                     ->where('prdt_status', 'RD')
                     ->first();
                 // dd($prdt);
+
+                $ref = $pr[0]->pr_id;
+
                 if ($prdt != null) {
 
                     $hasil = $prdt->prdt_qty + $request->spk_qty;
@@ -351,9 +400,6 @@ class ManOutputProduksiController extends Controller
 
 
             DB::commit();
-            return response()->json([
-                'status' => 'sukses'
-            ]);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -361,6 +407,25 @@ class ManOutputProduksiController extends Controller
                 'data' => $e
             ]);
         }
+
+        if(jurnal_setting()->allow_jurnal_to_execute){
+            $item_spk = m_item::where('i_id', $request->spk_item)->first();
+            $spk = d_spk::where('spk_id', $request->spk_id)->first();
+
+            if($item_spk && $spk){
+                // return $spk;
+                $state_jurnal = _initiateJournal_self_detail($spk->spk_code, 'MM', date('Y-m-d'), 'Hasil Produksi Dari '.$spk->spk_code.' - '.date('Y/m/d', strtotime($spk->spk_date)), array_merge($acc_temp));
+            }else{
+                return response()->json([
+                    'status' => 'gagal',
+                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Barang Yang Akan Diproduksi Tidak Bisa Ditemukan....'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => 'sukses'
+        ]);
     }
 
 }

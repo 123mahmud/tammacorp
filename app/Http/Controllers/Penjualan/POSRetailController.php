@@ -289,35 +289,81 @@ class POSRetailController extends Controller
       $date = carbon::now()->format('d');
       $fatkur = 'XX'  . $year . $month . $date . $s_id;
       $err = true;
+      $akun_beban = []; $akun_persediaan = [];
 
       if(jurnal_setting()->allow_jurnal_to_execute){
-        $akun = [
-          [
+        $akun[$request->sp_method[0]] = [
             'td_acc'    => $request->sp_method[0],
             'td_posisi' => 'D',
             'value'     => $this->konvertRp($request->s_net)
-          ],
         ];
+
+        if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
+          $akun['501.01'] = [
+              'td_acc'    => '501.01',
+              'td_posisi' => 'D',
+              'value'     => $this->konvertRp($request->totalDiscount),
+          ];
+        }
 
       // start jurnal
 
         foreach($request->kode_item as $acc_key => $data){
             $cek = DB::table('m_item')
                 ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->join('m_price', 'm_price.m_pitem', '=', 'm_item.i_id')
                 ->where('i_id', $data)
-                ->select('m_group.m_akun_penjualan', 'm_group.m_gid')
+                ->select('m_group.m_akun_penjualan', 'm_group.m_akun_persediaan', 'm_group.m_akun_beban', 'm_group.m_gid', 'm_price.m_hpp')
                 ->first();
 
             $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_penjualan)->first();
 
-            if(!$cek || !$cek2){
+            // return json_encode($cek);
+
+            if(!$cek || !$cek->m_akun_penjualan || !$cek->m_akun_persediaan || !$cek->m_akun_beban || !$cek2){
                 $err = false;
             }else{
-                $akun[count($akun)] = [
-                    'td_acc'    => $cek->m_akun_penjualan,
-                    'td_posisi' => 'K',
-                    'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key]),
-                ];
+                if(array_key_exists($cek->m_akun_penjualan, $akun)){
+                    $akun[$cek->m_akun_penjualan] = [
+                        'td_acc'    => $cek->m_akun_penjualan,
+                        'td_posisi' => 'K',
+                        'value'     => $akun[$cek->m_akun_penjualan]['value'] + ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key])
+                    ];
+                }else{
+                    $akun[$cek->m_akun_penjualan] = [
+                        'td_acc'    => $cek->m_akun_penjualan,
+                        'td_posisi' => 'K',
+                        'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key])
+                    ];
+                }
+
+                if(array_key_exists($cek->m_akun_beban, $akun_beban)){
+                    $akun_beban[$cek->m_akun_beban] = [
+                        'td_acc'    => $cek->m_akun_beban,
+                        'td_posisi' => 'D',
+                        'value'     => $akun_beban[$cek->m_akun_beban]['value'] + ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }else{
+                    $akun_beban[$cek->m_akun_beban] = [
+                        'td_acc'    => $cek->m_akun_beban,
+                        'td_posisi' => 'D',
+                        'value'     => ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }
+
+                if(array_key_exists($cek->m_akun_persediaan, $akun_persediaan)){
+                    $akun_persediaan[$cek->m_akun_persediaan] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'K',
+                        'value'     => $akun_persediaan[$cek->m_akun_persediaan]['value'] + ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }else{
+                    $akun_persediaan[$cek->m_akun_persediaan] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'K',
+                        'value'     => ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }
             }
         }
 
@@ -327,144 +373,136 @@ class POSRetailController extends Controller
                 'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
             ]);
         }
-
-        if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
-          $akun[count($akun)] = [
-              'td_acc'    => '501.01',
-              'td_posisi' => 'D',
-              'value'     => $this->konvertRp($request->totalDiscount),
-          ];
-        }
       }
 
-      // return json_encode(substr($request->sp_method[0], 0, 3));
+      // return json_encode(array_merge($akun_beban, $akun_persediaan, $akun));
 
     // jurnal end
 
     //end Nota
-    d_sales::insert([
-        's_id' => $s_id,
-        's_channel' => 'RT',
-        's_date' => date('Y-m-d',strtotime($request->s_date)),
-        's_note' => $fatkur,
-        's_staff' => $request->s_staff,
-        's_customer' => $request->id_cus,
-        's_disc_percent' => $request->s_disc_percent,
-        's_disc_value' => ($this->konvertRp($request->totalDiscount)),
-        's_gross' => ($this->konvertRp($request->s_gross)),
-        's_tax' => $request->s_pajak,
-        's_net' => ($this->konvertRp($request->s_net)),
-        's_status' => 'FN',
-        's_insert' => Carbon::now()
-      ]);
+    // d_sales::insert([
+    //     's_id' => $s_id,
+    //     's_channel' => 'RT',
+    //     's_date' => date('Y-m-d',strtotime($request->s_date)),
+    //     's_note' => $fatkur,
+    //     's_staff' => $request->s_staff,
+    //     's_customer' => $request->id_cus,
+    //     's_disc_percent' => $request->s_disc_percent,
+    //     's_disc_value' => ($this->konvertRp($request->totalDiscount)),
+    //     's_gross' => ($this->konvertRp($request->s_gross)),
+    //     's_tax' => $request->s_pajak,
+    //     's_net' => ($this->konvertRp($request->s_net)),
+    //     's_status' => 'FN',
+    //     's_insert' => Carbon::now()
+    //   ]);
 
-    $kodeItem = $request->kode_item;
-    $qtyItem = $request->sd_qty;
-    for ($i=0; $i < count($kodeItem); $i++) {
+    // $kodeItem = $request->kode_item;
+    // $qtyItem = $request->sd_qty;
+    // for ($i=0; $i < count($kodeItem); $i++) {
 
-        $d_sales_dt = d_sales_dt::insert([
-              'sd_sales' => $s_id,
-              'sd_detailid' => $i + 1,
-              'sd_item' => $kodeItem[$i],
-              'sd_qty' => $qtyItem[$i],
-              'sd_price' => ($this->konvertRp($request->harga_item[$i])),
-              'sd_disc_percent' => $request->sd_disc_percent[$i],
-              'sd_disc_vpercent' => $request->totalValuePercent[$i],
-              'sd_disc_value' => ($this->konvertRp($request->sd_disc_value[$i])),
-              'sd_total' => ($this->konvertRp($request->hasil[$i]))
-            ]);
+    //     $d_sales_dt = d_sales_dt::insert([
+    //           'sd_sales' => $s_id,
+    //           'sd_detailid' => $i + 1,
+    //           'sd_item' => $kodeItem[$i],
+    //           'sd_qty' => $qtyItem[$i],
+    //           'sd_price' => ($this->konvertRp($request->harga_item[$i])),
+    //           'sd_disc_percent' => $request->sd_disc_percent[$i],
+    //           'sd_disc_vpercent' => $request->totalValuePercent[$i],
+    //           'sd_disc_value' => ($this->konvertRp($request->sd_disc_value[$i])),
+    //           'sd_total' => ($this->konvertRp($request->hasil[$i]))
+    //         ]);
 
 
-        if(mutasi::mutasiStok(  $kodeItem[$i],
-                                $qtyItem[$i],
-                                $comp=1,
-                                $position=1,
-                                $flag=1,
-                                $fatkur)){}
+    //     if(mutasi::mutasiStok(  $kodeItem[$i],
+    //                             $qtyItem[$i],
+    //                             $comp=1,
+    //                             $position=1,
+    //                             $flag=1,
+    //                             $fatkur)){}
 
-        $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
+    //     $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
 
-        $cek = d_stock::select('s_id','s_qty')
-              ->where('s_item',$kodeItem[$i])
-              ->where('s_comp','4')
-              ->where('s_position','4')
-              ->first();
+    //     $cek = d_stock::select('s_id','s_qty')
+    //           ->where('s_item',$kodeItem[$i])
+    //           ->where('s_comp','4')
+    //           ->where('s_position','4')
+    //           ->first();
 
-        if ($cek == null) {
-              d_stock::insert([
-                's_id'      => $maxid,
-                's_comp'    => 4,
-                's_position'=> 4,
-                's_item'    => $kodeItem[$i],
-                's_qty'     => $qtyItem[$i],
-                's_insert'  => Carbon::now(),
-                's_update'  => Carbon::now()
-              ]);
+    //     if ($cek == null) {
+    //           d_stock::insert([
+    //             's_id'      => $maxid,
+    //             's_comp'    => 4,
+    //             's_position'=> 4,
+    //             's_item'    => $kodeItem[$i],
+    //             's_qty'     => $qtyItem[$i],
+    //             's_insert'  => Carbon::now(),
+    //             's_update'  => Carbon::now()
+    //           ]);
 
-              d_stock_mutation::create([
-                'sm_stock' => $maxid,
-                'sm_detailid' =>1,
-                'sm_date' => Carbon::now(),
-                'sm_comp' => 4,
-                'sm_position' => 4,
-                'sm_mutcat' => 1,
-                'sm_item' => $kodeItem[$i],
-                'sm_qty' => $qtyItem[$i],
-                'sm_qty_used' => 0,
-                'sm_qty_sisa' => $qtyItem[$i],
-                'sm_qty_expired' => 0,
-                'sm_detail' => 'PENGURANGAN',
-                'sm_reff' => $fatkur,
-                'sm_insert' => Carbon::now()
-              ]);
+    //           d_stock_mutation::create([
+    //             'sm_stock' => $maxid,
+    //             'sm_detailid' =>1,
+    //             'sm_date' => Carbon::now(),
+    //             'sm_comp' => 4,
+    //             'sm_position' => 4,
+    //             'sm_mutcat' => 1,
+    //             'sm_item' => $kodeItem[$i],
+    //             'sm_qty' => $qtyItem[$i],
+    //             'sm_qty_used' => 0,
+    //             'sm_qty_sisa' => $qtyItem[$i],
+    //             'sm_qty_expired' => 0,
+    //             'sm_detail' => 'PENGURANGAN',
+    //             'sm_reff' => $fatkur,
+    //             'sm_insert' => Carbon::now()
+    //           ]);
 
-            }else{
+    //         }else{
 
-              $hasil = $cek->s_qty + $qtyItem[$i];
-              $cek->update([
-                's_qty'     => $hasil
-              ]);
+    //           $hasil = $cek->s_qty + $qtyItem[$i];
+    //           $cek->update([
+    //             's_qty'     => $hasil
+    //           ]);
 
-              $sm_detailid = d_stock_mutation::select('sm_detailid')
-                ->where('sm_item',$kodeItem[$i])
-                ->where('sm_comp','4')
-                ->where('sm_position','4')
-                ->max('sm_detailid')+1;
+    //           $sm_detailid = d_stock_mutation::select('sm_detailid')
+    //             ->where('sm_item',$kodeItem[$i])
+    //             ->where('sm_comp','4')
+    //             ->where('sm_position','4')
+    //             ->max('sm_detailid')+1;
 
-              d_stock_mutation::create([
-                'sm_stock' => $cek->s_id,
-                'sm_detailid' => $sm_detailid,
-                'sm_date' => Carbon::now(),
-                'sm_comp' => 4,
-                'sm_position' => 4,
-                'sm_mutcat' => 1,
-                'sm_item' => $kodeItem[$i],
-                'sm_qty' => $qtyItem[$i],
-                'sm_qty_used' => 0,
-                'sm_qty_sisa' => $qtyItem[$i],
-                'sm_qty_expired' => 0,
-                'sm_detail' => 'PENGURANGAN',
-                'sm_reff' => $fatkur,
-                'sm_insert' => Carbon::now()
-              ]);
+    //           d_stock_mutation::create([
+    //             'sm_stock' => $cek->s_id,
+    //             'sm_detailid' => $sm_detailid,
+    //             'sm_date' => Carbon::now(),
+    //             'sm_comp' => 4,
+    //             'sm_position' => 4,
+    //             'sm_mutcat' => 1,
+    //             'sm_item' => $kodeItem[$i],
+    //             'sm_qty' => $qtyItem[$i],
+    //             'sm_qty_used' => 0,
+    //             'sm_qty_sisa' => $qtyItem[$i],
+    //             'sm_qty_expired' => 0,
+    //             'sm_detail' => 'PENGURANGAN',
+    //             'sm_reff' => $fatkur,
+    //             'sm_insert' => Carbon::now()
+    //           ]);
 
-            }
+    //         }
 
-      }
+    //   }
 
-      $sp_method = $request->sp_method;
-      for ($i=0; $i < count($sp_method); $i++) {
+    //   $sp_method = $request->sp_method;
+    //   for ($i=0; $i < count($sp_method); $i++) {
 
-        $d_sales_payment = d_sales_payment::insert([
-                'sp_sales' => $s_id,
-                'sp_paymentid' => $i+1,
-                'sp_method' => $sp_method[$i],
-                'sp_nominal' => ($this->konvertRp($request->sp_nominal[$i]))
-            ]);
-        }
+    //     $d_sales_payment = d_sales_payment::insert([
+    //             'sp_sales' => $s_id,
+    //             'sp_paymentid' => $i+1,
+    //             'sp_method' => $sp_method[$i],
+    //             'sp_nominal' => ($this->konvertRp($request->sp_nominal[$i]))
+    //         ]);
+    //     }
 
-    $nota = d_sales::where('s_id',$s_id)
-        ->first();
+    // $nota = d_sales::where('s_id',$s_id)
+    //     ->first();
     DB::commit();
     } catch (\Exception $e) {
     DB::rollback();
@@ -491,7 +529,7 @@ class POSRetailController extends Controller
     }
 
     if(jurnal_setting()->allow_jurnal_to_execute){
-      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, $akun);
+      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun_beban, $akun_persediaan, $akun));
     }
 
     return response()->json([

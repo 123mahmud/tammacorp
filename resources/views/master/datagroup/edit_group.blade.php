@@ -78,9 +78,9 @@
                                           <option value="">-- Pilih Akun Persediaan</option>
                                         @foreach ($item as $akun)
                                           @if ($akun->id_akun == $data->persediaan)
-                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->nama_akun }}</option>
+                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                                           @else
-                                            <option value="{{ $akun->id_akun }}" >{{ $akun->nama_akun }}</option>
+                                            <option value="{{ $akun->id_akun }}" >{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                                           @endif
                                         @endforeach
                                       </select>
@@ -99,9 +99,9 @@
                                           <option value="">-- Pilih Akun Beban</option>
                                         @foreach ($beban as $akun)
                                           @if ($akun->id_akun == $data->beban)
-                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->nama_akun }}</option>
+                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                                           @else
-                                            <option value="{{ $akun->id_akun }}" >{{ $akun->nama_akun }}</option>
+                                            <option value="{{ $akun->id_akun }}" >{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                                           @endif
                                         @endforeach
                                       </select>
@@ -120,9 +120,9 @@
                                           <option value="">-- Pilih Akun Penjualan</option>
                                         @foreach ($penjualan as $akun)
                                           @if ($akun->id_akun == $data->penjualan)
-                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->nama_akun }}</option>
+                                            <option value="{{ $akun->id_akun }}" selected>{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                                           @else
-                                            <option value="{{ $akun->id_akun }}" >{{ $akun->nama_akun }}</option>
+                                            <option value="{{ $akun->id_akun }}" >{{ $akun->id_akun }} - {{ $akun->nama_akun }}</option>
                                           @endif
                                         @endforeach
                                       </select>
