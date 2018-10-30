@@ -323,7 +323,7 @@ class PenerimaanBrgSupController extends Controller
                     ]);
                 }
 
-                $acc[count('301.01')] = [
+                $acc['301.01'] = [
                     'td_acc'    => '301.01',
                     'td_posisi' => 'K',
                     'value'     => $total
