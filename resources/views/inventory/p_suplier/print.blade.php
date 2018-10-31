@@ -140,12 +140,12 @@
 
 						@for($j=0;$j<count($dataIsi[$i]);$j++)
 							<tr>
-								<td width="1%" class="text-center">{{$j+1}}</td>
+								<td width="5%" class="text-center">{{$j+1}}</td>
 								<td>{{$dataIsi[$i][$j]['i_code']}} {{$dataIsi[$i][$j]['i_name']}}</td>
-								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsdt_qtyconfirm']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['d_tbdt_qty']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['m_sname']}}</td>
-								<td width="10%">{{ $val_stock[$i][$j]->qtyStok }} {{ $txt_satuan[$i][$j] }}</td>
+								<td width="10%" class="text-center">{{$dataIsi[$i][$j]['d_pcsdt_qtyconfirm']}}</td>
+								<td width="10%">{{$dataIsi[$i][$j]['d_tbdt_qty']}}</td>
+								<td width="10%">{{$dataIsi[$i][$j]['m_sname']}}</td>
+								<td width="15%">{{ $val_stock[$i][$j]->qtyStok }} {{ $txt_satuan[$i][$j] }}</td>
 								
 							</tr>
 						@endfor

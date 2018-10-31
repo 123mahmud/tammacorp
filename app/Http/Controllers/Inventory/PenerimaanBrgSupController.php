@@ -833,12 +833,6 @@ class PenerimaanBrgSupController extends Controller
         $val_stock = array_chunk($dataStok['val_stok'], 14);
         $txt_satuan = array_chunk($dataStok['txt_satuan'], 14);
 
-        // return $val_stock;
-        // return $txt_satuan;
-
-        
-
-
         $dataIsi = array_chunk($dataIsi, 14);
            
         return view('inventory.p_suplier.print', compact('dataHeader', 'dataIsi', 'val_stock', 'txt_satuan'));
