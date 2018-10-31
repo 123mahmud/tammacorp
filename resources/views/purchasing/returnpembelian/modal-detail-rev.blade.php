@@ -131,7 +131,7 @@
                   <th width="15%">Total</th>
                 </tr>
               </thead>
-              <tbody id="div_item">
+              <tbody>
               </tbody>
             </table>
           </div>

@@ -2,7 +2,14 @@
 @section('content')
 <style type="text/css">
   .ui-autocomplete { z-index:2147483647; }
-  .select2-container { margin: 0; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
@@ -42,18 +49,18 @@
             <!-- div revisi-tab -->
             @include('purchasing.returnpembelian.tab-revisi')
           </div>
-          <!-- modal -->
-          <!--modal edit-->
-          @include('purchasing.returnpembelian.modal-edit')
-          <!--modal detail-->
-          @include('purchasing.returnpembelian.modal-detail')
-          <!--modal detail-rev-->
-          @include('purchasing.returnpembelian.modal-detail-rev')
-          <!-- /modal -->
         </div>
       </div>
     </div>
   </div>
+  <!-- modal -->
+  <!--modal detail-rev-->
+  @include('purchasing.returnpembelian.modal-detail-rev')
+  <!--modal detail-->
+  @include('purchasing.returnpembelian.modal-detail')
+  <!--modal edit-->
+  @include('purchasing.returnpembelian.modal-edit')
+  <!-- /modal -->
 </div>
 <!--END PAGE WRAPPER-->
 @endsection
@@ -104,7 +111,8 @@
       $('tr').remove('.tbl_modal_edit_row');
       $('tr').remove('.tbl_modal_row');
       //remove span class in modal detail
-      $("#txt_span_status").removeClass();
+      $("#txt_span_status_detail_rev").removeClass();
+      $('#txt_span_status_detail').removeClass();
       $('#txt_span_status_edit').removeClass();
     });
 
@@ -133,7 +141,6 @@
 
     //load fungsi
     lihatReturnByTanggal();
-
   //end jquery
   });
 
