@@ -57,10 +57,14 @@
                         <li><a style="font-weight: bold;" href="#">5 Tugas Baru</a></li>
                     </ul>
                 </li>
-                <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle"><img
-                                src="{{ asset('assets/images/avatar/48.jpg')}}" alt=""
-                                class="img-responsive img-circle">&nbsp;<span
-                                class="hidden-xs">{{ Auth::user()->m_name }}</span>&nbsp;<span class="caret"></span></a>
+                <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
+                        @if(Auth::user()->m_id == 8)
+                            <img src="{{ asset('assets/images/avatar/49.jpg')}}" alt="" class="img-responsive img-circle">
+                        @else
+                            <img src="{{ asset('assets/images/avatar/48.jpg')}}" alt="" class="img-responsive img-circle">
+                        @endif
+                            &nbsp;<span
+                                class="hidden-xs">{{ Auth::user()->m_id }}</span>&nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu dropdown-user pull-right">
                         <li><a href="#"><i class="fa fa-user"></i>My Profile</a></li>
                         <li><a href="#"><i class="fa fa-calendar"></i>My Calendar</a></li>
