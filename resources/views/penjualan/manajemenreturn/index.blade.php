@@ -42,13 +42,10 @@
                               <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tabel-sales-return">
                                 <thead>
                                   <tr>
-                                    <th class="wd-5p">No.</th>
                                     <th class="wd-10p">Tgl Return</th>
-                                    <th class="wd-15p">ID Return</th>
-                                    <th class="wd-10p">Staff</th>
+                                    <th class="wd-15p">Nota</th>
                                     <th class="wd-10p">Metode</th>
-                                    <th class="wd-15p">Supplier</th>
-                                    <th class="wd-15p">Total Retur</th>
+                                    <th class="wd-15p">Type Sales</th>
                                     <th class="wd-15p">Status</th>
                                     <th class="wd-15p">Aksi</th>
                                   </tr>
@@ -98,14 +95,12 @@
         url : baseUrl + "/penjualan/returnpenjualan/tabel",
     },
     columns: [
-      {data: 'DT_Row_Index', name: 'DT_Row_Index'},
-      {data: 'i_code', name: 'i_code'},
-      {data: 'i_type', name: 'i_type'},
-      {data: 'm_gname', name: 'm_gname'},
-      {data: 'i_name', name: 'i_name'},
-      {data: 'm_psell1', name: 'm_psell1'},
-      {data: 'm_psell2', name: 'm_psell2'},
-      {data: 'm_psell3', name: 'm_psell3'},
+      //{data: 'DT_Row_Index', name: 'DT_Row_Index'},
+      {data: 'dsr_date', name: 'dsr_date'},
+      {data: 'dsr_code', name: 'dsr_code'},
+      {data: 'dsr_method', name: 'dsr_method'},
+      {data: 'dsr_type_sales', name: 'dsr_type_sales'},
+      {data: 'dsr_status', name: 'dsr_status'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
     language: {
