@@ -412,6 +412,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/carinota', 'Penjualan\ManajemenReturnPenjualanController@cariNotaSales');
     Route::get('/penjualan/returnpenjualan/get-data/{id}', 'Penjualan\ManajemenReturnPenjualanController@getNota');
     Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenReturnPenjualanController@tabelPotNota');
+    Route::get('/penjualan/returnpenjualan/store/{metode}', 'Penjualan\ManajemenReturnPenjualanController@store');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
