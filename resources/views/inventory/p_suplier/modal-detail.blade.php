@@ -67,10 +67,10 @@
             <thead>
               <tr>
                 <th style="text-align: center;" width="5%;">No</th>
-                <th width="55%;">Kode | Barang</th>
-                <th width="10%">Qty</th>
-                <th width="10%">Qty Terima</th>
-                <th width="10%">Satuan</th>
+                <th width="55%" class="text-center">Kode | Barang</th>
+                <th width="10%" class="text-center">Qty</th>
+                <th width="10%" class="text-center">Qty Terima</th>
+                <th width="10%" class="text-center">Satuan</th>
                 <!-- <th width="15%">Harga</th>
                 <th width="15%">Total</th> -->
                 <th width="10%">Stok</th>

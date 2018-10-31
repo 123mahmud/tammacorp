@@ -400,12 +400,12 @@
           $('#tabel-detail').append('<tr class="tbl_modal_detail_row">'
                           +'<td>'+key+'</td>'
                           +'<td>'+data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_pcsdt_qtyconfirm+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_tbdt_qty+'</td>'
+                          +'<td class="text-center">'+separatorRibuan(data.data_isi[key-1].d_pcsdt_qtyconfirm)+'</td>'
+                          +'<td class="text-center">'+separatorRibuan(data.data_isi[key-1].d_tbdt_qty)+'</td>'
                           +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                           // +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_tbdt_price)+'</td>'
                           // +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_tbdt_pricetotal)+'</td>'
-                          +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
+                          +'<td class="text-right">'+separatorRibuan(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                           +'</tr>');
           key++;
         });
@@ -713,6 +713,20 @@
     for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
     var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
     return hasil+',00';
+  }
+
+  function separatorRibuan(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
+  }
+
+  function separatorRibuanRp(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return 'Rp. '+num_parts.join(",");
   }
 
   function refreshTabelIndex()

@@ -313,7 +313,10 @@ class barangController extends Controller
 
     public function cari_group_barang(Request $request)
     {
-      $data = DB::table('m_group')->where('m_gtype','=',$request->id)->get();
+      $item = DB::table('m_item')->select('i_code_group')->where('i_type', $request->id)->groupBy('i_code_group')->get();
+      foreach ($item as $val) {
+        $data[] = DB::table('m_group')->where('m_gcode','=',$val->i_code_group)->first();   
+      }
     
       return response()->json($data);
     }

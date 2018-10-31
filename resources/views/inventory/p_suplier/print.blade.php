@@ -119,7 +119,7 @@
 							<td width="80%">
 								Nota Return Pembelian : <label class="bold">{{$dataHeader[0]['d_tb_noreff']}}</label><br>
 								Tanggal Penerimaan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_tb_date']))}}</label><br>
-								Suplier : <label class="bold">{{$dataHeader[0]['s_name']}}</label>
+								Suplier : <label class="bold">{{$dataHeader[0]['s_company']}}</label>
 							</td>
 							<td>
 								Kode Penerimaan : <label class="bold">{{$dataHeader[0]['d_tb_code']}}</label><br>
@@ -140,12 +140,12 @@
 
 						@for($j=0;$j<count($dataIsi[$i]);$j++)
 							<tr>
-								<td width="1%" class="text-center">{{$j+1}}</td>
+								<td width="5%" class="text-center">{{$j+1}}</td>
 								<td>{{$dataIsi[$i][$j]['i_code']}} {{$dataIsi[$i][$j]['i_name']}}</td>
-								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsdt_qtyconfirm']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['d_tbdt_qty']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['m_sname']}}</td>
-								<td width="10%">{{ $val_stock[$i][$j]->qtyStok }} {{ $txt_satuan[$i][$j] }}</td>
+								<td width="10%" class="text-center">{{number_format($dataIsi[$i][$j]['d_pcsdt_qtyconfirm'],0,',','.')}}</td>
+								<td width="10%" class="text-center">{{number_format($dataIsi[$i][$j]['d_tbdt_qty'],0,',','.')}}</td>
+								<td width="10%">{{$dataIsi[$i][$j]['m_sname']}}</td>
+								<td width="15%" class="text-right">{{ number_format($val_stock[$i][$j]->qtyStok,0,',','.') }} {{ $txt_satuan[$i][$j] }}</td>
 								
 							</tr>
 						@endfor
@@ -231,7 +231,7 @@
 							<td width="80%">
 								Nota Return Pembelian : <label class="bold">{{$dataHeader[0]['d_tb_noreff']}}</label><br>
 								Tanggal Penerimaan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_tb_date']))}}</label><br>
-								Suplier : <label class="bold">{{$dataHeader[0]['s_name']}}</label>
+								Suplier : <label class="bold">{{$dataHeader[0]['s_company']}}</label>
 							</td>
 							<td>
 								Kode Penerimaan : <label class="bold">{{$dataHeader[0]['d_tb_code']}}</label><br>
@@ -252,12 +252,12 @@
 
 						@for($j=0;$j<count($dataIsi[$i]);$j++)
 							<tr>
-								<td width="1%" class="text-center">{{$j+1}}</td>
+								<td width="5%" class="text-center">{{$j+1}}</td>
 								<td>{{$dataIsi[$i][$j]['i_code']}} {{$dataIsi[$i][$j]['i_name']}}</td>
-								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsdt_qtyconfirm']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['d_tbdt_qty']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['m_sname']}}</td>
-								<td width="10%">{{ $val_stock[$i][$j]->qtyStok }} {{ $txt_satuan[$i][$j] }}</td>
+								<td width="10%" class="text-center">{{number_format($dataIsi[$i][$j]['d_pcsdt_qtyconfirm'],0,',','.')}}</td>
+								<td width="10%" class="text-center">{{number_format($dataIsi[$i][$j]['d_tbdt_qty'],0,',','.')}}</td>
+								<td width="10%">{{$dataIsi[$i][$j]['m_sname']}}</td>
+								<td width="15%" class="text-right">{{ number_format($val_stock[$i][$j]->qtyStok,0,',','.') }} {{ $txt_satuan[$i][$j] }}</td>
 								
 							</tr>
 						@endfor
@@ -324,5 +324,7 @@
 			
 		@endfor
 	</div>
+
+	
 </body>
 </html>
