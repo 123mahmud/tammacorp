@@ -26,6 +26,7 @@ class mMember extends Model implements AuthenticatableContract, CanResetPassword
                             'm_birth_tgl',
                             'm_addr',
                             'm_reff',
+                            'm_isadmin',
                             'm_lastlogin',
                             'm_lastlogout'];
 
