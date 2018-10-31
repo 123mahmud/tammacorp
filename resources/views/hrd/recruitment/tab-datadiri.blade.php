@@ -195,7 +195,9 @@
       </div>
 
       <div class="form-group row">
-        <label for="promo" class="col-sm-2 col-form-label font-weight-bold">Deskripsikan diri anda</label>
+        <label for="promo" class="col-sm-2 col-form-label font-weight-bold">Deskripsikan diri anda
+          <span style="color: red">*</span>
+        </label>
           <div class="col-sm-10">
             <textarea name="promo" id="promo" maxlength="300" cols="30" rows="4" class="form-control" placeholder="Promosikan diri anda, Kenapa kami harus memilih anda (Maks : 300 Karakter)" readonly>{{ old('promo')}}</textarea>
           </div>
