@@ -720,7 +720,6 @@
       }
     });
   }
-
  
   function submitConfirm(id) {
     iziToast.question({

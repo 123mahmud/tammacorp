@@ -105,13 +105,14 @@
 	<div class="btn-print">
 		<button onclick="javascript:window.print();">Print</button>
 	</div>
+
 	<div class="div-width">
 		@for($i=0;$i<count($dataIsi);$i++)
 			<div class="div-page-break">
 				<h1 class="s16">TAMMA ROBAH INDONESIA</h1>
 				<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 					<tr>
-						<td class="s16 underline bold text-center" colspan="3">FORM PURCHASE ORDER</td>
+						<td class="s16 underline bold text-center" colspan="3">FORM PURCHASE ORDER (REVISI)</td>
 					</tr>
 					<tr>
 						<td width="80%">
@@ -160,7 +161,7 @@
 									Rp.
 								</div>
 								<div class="float-right">
-									{{ number_format($dataIsi[$i][$j]['d_pcsdt_total'],2,',','.')}}
+									{{ number_format($dataIsi[$i][$j]['d_pcsdt_qty'] * $dataIsi[$i][$j]['d_pcsdt_price'],2,',','.')}}
 								</div>
 							</td>
 						</tr>
@@ -187,17 +188,17 @@
 						<td colspan="6" class="border-none-bottom border-none-right border-none-left empty"></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Gross : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_gross'],2,',','.')}}</label></td>
+						<td colspan="2">Gross : <label class="bold">{{$data['hargaBruto']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Disc Total : <label class="bold">Rp. {{number_format($dataHeader[0]['disc_total'],2,',','.')}}</label></td>
+						<td colspan="2">Disc Total : <label class="bold">{{$data['nilaiDiskon']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Tax : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_tax_value'],2,',','.')}}</label></td>
+						<td colspan="2">Tax : <label class="bold">{{$data['nilaiPajak']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Nett : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
-						<td colspan="4">Total : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
+						<td colspan="2">Nett : <label class="bold">{{$data['hargaNet']}}</label></td>
+						<td colspan="4">Total : <label class="bold">{{$data['hargaNet']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
 						<td class="empty"></td>
@@ -249,7 +250,7 @@
 				<h1 class="s16">TAMMA ROBAH INDONESIA</h1>
 				<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 					<tr>
-						<td class="s16 underline bold text-center" colspan="3">FORM PURCHASE ORDER</td>
+						<td class="s16 underline bold text-center" colspan="3">FORM PURCHASE ORDER (REVISI)</td>
 					</tr>
 					<tr>
 						<td width="80%">
@@ -298,7 +299,7 @@
 									Rp.
 								</div>
 								<div class="float-right">
-									{{ number_format($dataIsi[$i][$j]['d_pcsdt_total'],2,',','.')}}
+									{{ number_format($dataIsi[$i][$j]['d_pcsdt_qty'] * $dataIsi[$i][$j]['d_pcsdt_price'],2,',','.')}}
 								</div>
 							</td>
 						</tr>
@@ -325,17 +326,17 @@
 						<td colspan="6" class="border-none-bottom border-none-right border-none-left empty"></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Gross : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_gross'],2,',','.')}}</label></td>
+						<td colspan="2">Gross : <label class="bold">{{$data['hargaBruto']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Disc Total : <label class="bold">Rp. {{number_format($dataHeader[0]['disc_total'],2,',','.')}}</label></td>
+						<td colspan="2">Disc Total : <label class="bold">{{$data['nilaiDiskon']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Tax : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_tax_value'],2,',','.')}}</label></td>
+						<td colspan="2">Tax : <label class="bold">{{$data['nilaiPajak']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Nett : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
-						<td colspan="4">Total : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
+						<td colspan="2">Nett : <label class="bold">{{$data['hargaNet']}}</label></td>
+						<td colspan="4">Total : <label class="bold">{{$data['hargaNet']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
 						<td class="empty"></td>

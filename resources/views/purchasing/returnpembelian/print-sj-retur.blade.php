@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FORM ORDER PEMBELIAN</title>
+	<title>SURAT JALAN RETURN PEMBELIAN</title>
 	<style type="text/css">
 		*{
 			font-size: 12px;
@@ -105,27 +105,28 @@
 	<div class="btn-print">
 		<button onclick="javascript:window.print();">Print</button>
 	</div>
+
 	<div class="div-width">
 		@for($i=0;$i<count($dataIsi);$i++)
 			<div class="div-page-break">
 				<h1 class="s16">TAMMA ROBAH INDONESIA</h1>
 				<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 					<tr>
-						<td class="s16 underline bold text-center" colspan="3">FORM PURCHASE ORDER</td>
+						<td class="s16 underline bold text-center" colspan="3">SURAT JALAN RETUR PEMBELIAN</td>
 					</tr>
 					<tr>
 						<td width="80%">
-							No Order Pembelian : <label class="bold">{{$dataHeader[0]['d_pcs_code']}}</label><br>
-							Tanggal Order Pembelian : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcs_date_created']))}}</label><br>
+							No Surat Jalan : <label class="bold">{{$dataHeader[0]['d_pcsr_code']}}</label><br>
+							Tanggal Surat Jalan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcsr_datecreated']))}}</label><br>
 							Nama Staff : <label class="bold">{{$dataHeader[0]['m_name']}}</label><br>
 						</td>
 						<td>
 							Suplier : <label class="bold">{{$dataHeader[0]['s_company']}}</label><br>
-							Cara Pembayaran : <label class="bold">{{$dataHeader[0]['d_pcs_method']}}</label><br>
-							@if ($dataHeader[0]['d_pcs_method'] == "DEPOSIT")
-								Batas Akhir Kirim : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcs_duedate']))}}</label><br>
-							@elseif ($dataHeader[0]['d_pcs_method'] == "TEMPO")
-								Termin Of Payment : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcs_duedate']))}}</label><br>
+							No PO : <label class="bold">{{$dataHeader[0]['d_pcs_code']}}</label><br>
+							@if ($dataHeader[0]['d_pcsr_method'] == "PN")
+								Metode Retur : <label class="bold"> Potong Nota </label><br>
+							@elseif ($dataHeader[0]['d_pcsr_method'] == "TK")
+								Metode Retur : <label class="bold"> Tukar Barang </label><br>
 							@endif
 						</td>
 					</tr>
@@ -146,13 +147,13 @@
 							<td class="text-center">{{$j+1}}</td>
 							<td colspan="3">{{$dataIsi[$i][$j]['i_name']}}</td>
 							<td class="text-center">{{$dataIsi[$i][$j]['m_sname']}}</td>
-							<td style="text-align: center;">{{number_format($dataIsi[$i][$j]['d_pcsdt_qty'],0,',','.')}}</td>
+							<td style="text-align: center;">{{number_format($dataIsi[$i][$j]['d_pcsrdt_qty'],0,',','.')}}</td>
 							<td>
 								<div class="float-left">
 									Rp.
 								</div>
 								<div class="float-right">
-									{{ number_format($dataIsi[$i][$j]['d_pcsdt_price'],2,',','.')}}
+									{{ number_format($dataIsi[$i][$j]['d_pcsrdt_price'],2,',','.')}}
 								</div>
 							</td>
 							<td>
@@ -160,7 +161,7 @@
 									Rp.
 								</div>
 								<div class="float-right">
-									{{ number_format($dataIsi[$i][$j]['d_pcsdt_total'],2,',','.')}}
+									{{ number_format($dataIsi[$i][$j]['d_pcsrdt_pricetotal'],2,',','.')}}
 								</div>
 							</td>
 						</tr>
@@ -187,17 +188,8 @@
 						<td colspan="6" class="border-none-bottom border-none-right border-none-left empty"></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Gross : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_gross'],2,',','.')}}</label></td>
-					</tr>
-					<tr class="border-hidden">
-						<td colspan="2">Disc Total : <label class="bold">Rp. {{number_format($dataHeader[0]['disc_total'],2,',','.')}}</label></td>
-					</tr>
-					<tr class="border-hidden">
-						<td colspan="2">Tax : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_tax_value'],2,',','.')}}</label></td>
-					</tr>
-					<tr class="border-hidden">
-						<td colspan="2">Nett : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
-						<td colspan="4">Total : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
+						<td colspan="2">Nett : <label class="bold">{{$data['hargaTotalReturn']}}</label></td>
+						<td colspan="4">Total : <label class="bold">{{$data['hargaTotalReturn']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
 						<td class="empty"></td>
@@ -249,21 +241,21 @@
 				<h1 class="s16">TAMMA ROBAH INDONESIA</h1>
 				<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 					<tr>
-						<td class="s16 underline bold text-center" colspan="3">FORM PURCHASE ORDER</td>
+						<td class="s16 underline bold text-center" colspan="3">SURAT JALAN RETUR PEMBELIAN</td>
 					</tr>
 					<tr>
 						<td width="80%">
-							No Order Pembelian : <label class="bold">{{$dataHeader[0]['d_pcs_code']}}</label><br>
-							Tanggal Order Pembelian : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcs_date_created']))}}</label><br>
+							No Surat Jalan : <label class="bold">{{$dataHeader[0]['d_pcsr_code']}}</label><br>
+							Tanggal Surat Jalan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcsr_datecreated']))}}</label><br>
 							Nama Staff : <label class="bold">{{$dataHeader[0]['m_name']}}</label><br>
 						</td>
 						<td>
 							Suplier : <label class="bold">{{$dataHeader[0]['s_company']}}</label><br>
-							Cara Pembayaran : <label class="bold">{{$dataHeader[0]['d_pcs_method']}}</label><br>
-							@if ($dataHeader[0]['d_pcs_method'] == "DEPOSIT")
-								Batas Akhir Kirim : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcs_duedate']))}}</label><br>
-							@elseif ($dataHeader[0]['d_pcs_method'] == "TEMPO")
-								Termin Of Payment : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_pcs_duedate']))}}</label><br>
+							No PO : <label class="bold">{{$dataHeader[0]['d_pcs_code']}}</label><br>
+							@if ($dataHeader[0]['d_pcsr_method'] == "PN")
+								Metode Retur : <label class="bold"> Potong Nota </label><br>
+							@elseif ($dataHeader[0]['d_pcsr_method'] == "TK")
+								Metode Retur : <label class="bold"> Tukar Barang </label><br>
 							@endif
 						</td>
 					</tr>
@@ -284,13 +276,13 @@
 							<td class="text-center">{{$j+1}}</td>
 							<td colspan="3">{{$dataIsi[$i][$j]['i_name']}}</td>
 							<td class="text-center">{{$dataIsi[$i][$j]['m_sname']}}</td>
-							<td style="text-align: center;">{{number_format($dataIsi[$i][$j]['d_pcsdt_qty'],0,',','.')}}</td>
+							<td style="text-align: center;">{{number_format($dataIsi[$i][$j]['d_pcsrdt_qty'],0,',','.')}}</td>
 							<td>
 								<div class="float-left">
 									Rp.
 								</div>
 								<div class="float-right">
-									{{ number_format($dataIsi[$i][$j]['d_pcsdt_price'],2,',','.')}}
+									{{ number_format($dataIsi[$i][$j]['d_pcsrdt_price'],2,',','.')}}
 								</div>
 							</td>
 							<td>
@@ -298,7 +290,7 @@
 									Rp.
 								</div>
 								<div class="float-right">
-									{{ number_format($dataIsi[$i][$j]['d_pcsdt_total'],2,',','.')}}
+									{{ number_format($dataIsi[$i][$j]['d_pcsrdt_pricetotal'],2,',','.')}}
 								</div>
 							</td>
 						</tr>
@@ -325,17 +317,8 @@
 						<td colspan="6" class="border-none-bottom border-none-right border-none-left empty"></td>
 					</tr>
 					<tr class="border-hidden">
-						<td colspan="2">Gross : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_gross'],2,',','.')}}</label></td>
-					</tr>
-					<tr class="border-hidden">
-						<td colspan="2">Disc Total : <label class="bold">Rp. {{number_format($dataHeader[0]['disc_total'],2,',','.')}}</label></td>
-					</tr>
-					<tr class="border-hidden">
-						<td colspan="2">Tax : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_tax_value'],2,',','.')}}</label></td>
-					</tr>
-					<tr class="border-hidden">
-						<td colspan="2">Nett : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
-						<td colspan="4">Total : <label class="bold">Rp. {{number_format($dataHeader[0]['d_pcs_total_net'],2,',','.')}}</label></td>
+						<td colspan="2">Nett : <label class="bold">{{$data['hargaTotalReturn']}}</label></td>
+						<td colspan="4">Total : <label class="bold">{{$data['hargaTotalReturn']}}</label></td>
 					</tr>
 					<tr class="border-hidden">
 						<td class="empty"></td>
