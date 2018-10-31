@@ -720,6 +720,20 @@
     return parseInt(disc.replace('%', ''), 10);
   }
 
+  function separatorRibuan(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num_parts.join(".");
+  }
+
+  function separatorRibuanRp(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return 'Rp. '+num_parts.join(",");
+  }
+
   function refreshTabelIndex() 
   {
     $('#tbl-index').DataTable().ajax.reload();
