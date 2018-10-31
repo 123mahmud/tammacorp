@@ -68,13 +68,13 @@ Vue.component('data-list',{
       <div class="row" style="background: none; margin-bottom: 20px;">
 
         <div class="col-md-3" style="background:none; padding:0px 5px 5px 10px;">
-          <select v-model="search_context" class="form-control" style="height:5px; font-size:8pt; border: 0px; border-bottom: 1px solid #FF8800; cursor: pointer" id="column_index" title="Pencarian Berdasarkan">
+          <select v-model="search_context" class="form-control" style="height:5px; font-size:8pt; border: 0px; border-bottom: 1px solid #ccc; cursor: pointer" id="column_index" title="Pencarian Berdasarkan">
               <option :value="column.context" v-for="column in columns">{{ column.name }}</option>
           </select>
         </div>
 
         <div class="col-md-3" style="padding:0px 10px 5px 0px;">
-          <input type="text" class="form-control" v-model="search" style="background:white;" placeholder="Kata Kunci ...." style="height: 0.9em; font-size: 8pt;  border: 0px; border-bottom: 1px solid #FF8800;">
+          <input type="text" class="form-control" v-model="search" style="background:white;" placeholder="Kata Kunci ...." style="height: 0.9em; font-size: 8pt;  border: 0px; border-bottom: 1px solid #ccc;">
         </div>
 
         <div class="col-md-4 col-md-offset-2 text-right" style="padding:0px 10px; background: none;">
