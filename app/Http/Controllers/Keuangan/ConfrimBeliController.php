@@ -16,6 +16,7 @@ use App\d_purchasingreturn;
 use App\d_purchasingreturn_dt;
 use App\d_purchasingharian;
 use App\d_purchasingharian_dt;
+use App\d_sales_return;
 
 class ConfrimBeliController extends Controller
 {
@@ -962,5 +963,135 @@ class ConfrimBeliController extends Controller
     $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
     return $data;
   }
+
+  //mahmud
+  public function tableReturnPenjualan(){
+  $return = d_sales_return::all();
+
+    return DataTables::of($return)
+
+    ->editColumn('dsr_date', function ($data) {
+       return date('d M Y', strtotime($data->dsr_date));
+    })
+
+    ->editColumn('dsr_type_sales', function ($data)  {
+            if ($data->dsr_type_sales == "RT")
+            {
+                return 'Retail';
+            }
+            elseif ($data->dsr_type_sales == "GR")
+            {
+                return 'Grosir';
+            }
+        })
+
+    ->editColumn('dsr_status', function ($data)  {
+            if ($data->dsr_status == "WT")
+            {
+                return '<div class="text-center">
+                          <span class="label label-yellow">Waiting</span>
+                        </div>';
+            }
+            elseif ($data->dsr_status == "TL")
+            {
+                return '<div class="text-center">
+                            <span class="label label-red">Di Tolak</span>
+                        </div>';
+            } elseif ($data->dsr_status == "TR")
+            {
+                return '<div class="text-center">
+                            <span class="label label-blue">Di Terima</span>
+                        </div>';
+            }
+        })
+
+    ->editColumn('dsr_method', function ($data)  {
+            if ($data->dsr_method == "TK")
+            {
+                return 'Tukar Barang';
+            }
+            elseif ($data->dsr_method == "PN")
+            {
+                return 'Pemotongan Nota';
+            }
+        })
+
+    ->editColumn('dsr_jenis_return', function ($data)  {
+            if ($data->dsr_jenis_return == "BR")
+            {
+                return 'Barang Rusak';
+            }
+            elseif ($data->dsr_jenis_return == "KB")
+            {
+                return 'Kelebihan Barang';
+            }
+        })
+
+    ->addColumn('action', function($data){
+        return  '<div class="text-center">
+                    <button type="button"
+                        class="btn btn-primary fa fa-check btn-sm"
+                        title="detail"
+                        data-toggle="modal"
+                        onclick="lihatDetail('.$data->dsr_id.')"
+                        data-target="#myItem">
+                    </button>';
+         
+          })
+    ->rawColumns(['dsr_date','dsr_status','dsr_method','dsr_jenis_return','action'])
+    ->make(true);
+  }
+
+  public function detail(Request $request){
+    $data = d_sales_return::select('dsr_id',
+                                  'c_name',
+                                  's_note',
+                                  'dsr_price_return',
+                                  'dsr_sgross',
+                                  'dsr_disc_value',
+                                  'dsr_net',
+                                  'dsr_status',
+                                  'i_name',
+                                  'dsrdt_qty',
+                                  'dsrdt_qty_confirm',
+                                  'm_sname',
+                                  'dsrdt_price',
+                                  'dsrdt_disc_percent',
+                                  'dsrdt_disc_value',
+                                  'dsrdt_return_price',
+                                  'dsrdt_hasil')
+      ->join('m_customer','m_customer.c_id','=','dsr_cus')
+      ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
+      ->join('m_item','m_item.i_id','=','dsrdt_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('dsr_id',$request->x)
+      ->get(); 
+      // dd($data);
+
+    return view('keuangan.konfirmasi_pembelian.detail-itempenjualan',compact('data'));
+  }
+
+  public function updateReturnPenjualan($status, $id){
+    DB::beginTransaction();
+    try {
+    d_sales_return::where('dsr_id',$id)
+      ->update([
+        'dsr_status' => $status
+        ]);
+    DB::commit();
+    return response()->json([
+          'status' => 'sukses'
+      ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+      ]);
+    }
+
+  }
+  //end mahmud
 
 }

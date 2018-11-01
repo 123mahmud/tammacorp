@@ -61,7 +61,7 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <select name="statusReturnConfirm" id="status_return_confirm" class="form-control input-sm">
+                <select name="statusReturnConfirm" id="status_return_penjualan" class="form-control input-sm">
                   <option value="WT">Waiting</option>
                   <option value="DE">Dapat diedit</option>
                   <option value="CF">Dikonfirmasi</option>
@@ -107,7 +107,7 @@
         </div>
     
         <div class="modal-footer" style="border-top: none;">
-          <button type="button" class="btn btn-info" onclick="submitReturnConfirm()" id="button_confirm_return">Konfirmasi</button>
+          <button type="button" class="btn btn-info" onclick="submitReturnConfirm()" id="submitReturnConfirm">Konfirmasi</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
         </div>
 
