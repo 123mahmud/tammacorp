@@ -95,6 +95,9 @@
       .div-page-break{
         page-break-after: always;
       }
+      .div-page-break:last-child{
+        page-break-after: auto;
+      }
       .border-hidden tr, .border-hidden td{
         border: hidden;
       }
