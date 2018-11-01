@@ -74,7 +74,7 @@
                                name="sd_disc_percent[]"
                                @if($x->sd_disc_percent == '0') readonly="true" @else @endif
                                class="form-control discpercent hasildiscpercent discpercent-{{ $x->i_id }}"
-                               value="@if($x->sd_disc_percent == '0')@else{{ $x->sd_disc_percent }} @endif">
+                               value="@if($x->sd_disc_percent == '0')@else{{ $x->sd_disc_percent }} 0 @endif">
                         <span class="input-group-addon">%</span>
                     </div>
                     <input name="totalValuePercent[]" type="text" value="0" style="display:none"
