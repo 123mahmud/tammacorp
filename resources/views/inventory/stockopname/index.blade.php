@@ -251,6 +251,7 @@
             data: a + '&' + b,
             success: function (response, nota) {
               if (response.status == 'sukses') {
+                window.open = baseUrl + '/inventory/stockopname/print_stockopname';
                 tableOpname.row().clear().draw(false);
                 var inputs = document.getElementsByClassName('i_id'),
                     names = [].map.call(inputs, function (input) {
@@ -319,6 +320,12 @@
               data: {x: id},
               success: function (response) {
                   $('#view-formula').html(response);
+                  $('#btn-modal').html(
+                    '<a class="btn btn-primary" target="_blank" href="'+ baseUrl +'/inventory/stockopname/print_stockopname">'+
+                      '<i class="fa fa-print"></i> Print'+
+                    '</a>'+
+                    '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>'
+                    );
               }
           })
 
