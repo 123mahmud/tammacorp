@@ -484,14 +484,68 @@ class ManajemenReturnPenjualanController extends Controller
                     'sm_reff' => $data->dsr_code,
                     'sm_insert' => Carbon::now()
                 ]);
-              }
-           } 
+              }else{
+            $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
+            // dd($cek[$i]->dsrdt_qty_confirm);
+            $stockRusak->update([
+              's_qty' => $tambahStock,
+            ]);
+            $sm_detailid = d_stock_mutation::select('sm_detailid')
+              ->where('sm_stock',$stockRusak->s_id)
+              ->max('sm_detailid')+1;
+            // dd($sm_detailid);
+            d_stock_mutation::create([
+                    'sm_stock' =>  $stockRusak->s_id,
+                    'sm_detailid' => $sm_detailid,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 8,
+                    'sm_position' => 8,
+                    'sm_mutcat' => 4,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+           }
+         }
         }
         
-
       }else{
-
-        return 'b';
+        dd($requests->all());
+        for ($i=0; $i <count($cek) ; $i++) {
+          if ($cek[$i]->dsrdt_qty_confirm != 0) {
+            $stockGrosir = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',2)
+                ->where('s_position',2)
+                ->first();
+            $tambahStock = (int)$stockGrosir->s_qty + $cek[$i]->dsrdt_qty_confirm;
+            // dd($cek[$i]->dsrdt_qty_confirm);
+            $stockGrosir->update([
+              's_qty' => $tambahStock,
+            ]);
+            $sm_detailid = d_stock_mutation::select('sm_detailid')
+              ->where('sm_stock',$stockGrosir->s_id)
+              ->max('sm_detailid')+1;
+            // dd($sm_detailid);
+            d_stock_mutation::create([
+                    'sm_stock' =>  $stockGrosir->s_id,
+                    'sm_detailid' => $sm_detailid,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 2,
+                    'sm_position' => 2,
+                    'sm_mutcat' => 4,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+          }
+        }
+        
       }
     }else{
       return 'b';
