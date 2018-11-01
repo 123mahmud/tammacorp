@@ -164,6 +164,7 @@ class ManOutputProduksiController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        // return json_encode($)
         DB::beginTransaction();
         try {
 
@@ -183,13 +184,34 @@ class ManOutputProduksiController extends Controller
                 if(!$item || !$item->m_akun_persediaan  || !$cek2){
                     $err = false;
                 }else{
-                    $acc_temp[count($acc_temp)] = [
-                        'td_acc'      => $item->m_akun_persediaan,
-                        'td_posisi'   => "D",
-                        'value'       => $item->m_hpp * $request->spk_qty
-                    ];
+                    if(array_key_exists($item->m_akun_persediaan, $acc_temp)){
+                        $acc_temp[$item->m_akun_persediaan] = [
+                            'td_acc'    => $item->m_akun_persediaan,
+                            'td_posisi' => 'D',
+                            'value'     => $acc_temp[$item->m_akun_persediaan]['value'] + $item->m_hpp * $request->spk_qty
+                        ];
+                    }else{
+                        $acc_temp[$item->m_akun_persediaan] = [
+                            'td_acc'    => $item->m_akun_persediaan,
+                            'td_posisi' => 'D',
+                            'value'     => $item->m_hpp * $request->spk_qty
+                        ];
+                    }
+
+                    // $acc_temp[count($acc_temp)] = [
+                    //     'td_acc'      => $item->m_akun_persediaan,
+                    //     'td_posisi'   => "D",
+                    //     'value'       => $item->m_hpp * $request->spk_qty
+                    // ];
 
                     $tot += $item->m_hpp * $request->spk_qty;
+                }
+
+                if(!DB::table('d_akun')->where('id_akun', '551.13')->first()){
+                    return response()->json([
+                        'status' => 'gagal',
+                        'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Akun Hasil Produksi Belum Ada.'
+                    ]);
                 }
 
                 if(!$err){
@@ -199,7 +221,7 @@ class ManOutputProduksiController extends Controller
                     ]);
                 }
 
-                $acc_temp[count($acc_temp)] = [
+                $acc_temp['551.13'] = [
                     'td_acc'      => '551.13',
                     'td_posisi'   => "K",
                     'value'       => $tot
@@ -400,11 +422,11 @@ class ManOutputProduksiController extends Controller
 
 
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => 'gagal',
-                'data' => $e
+                'pesan' => $e
             ]);
         }
 

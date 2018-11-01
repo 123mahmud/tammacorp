@@ -58,7 +58,7 @@
                     </ul>
                 </li>
                 <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
-                        @if(Auth::user()->m_id == 8)
+                        @if(Auth::user()->m_username == 'Toni' && is_null(Auth::user()->m_pegawai_id))
                             <img src="{{ asset('assets/images/avatar/49.jpg')}}" alt="" class="img-responsive img-circle">
                         @else
                             <img src="{{ asset('assets/images/avatar/48.jpg')}}" alt="" class="img-responsive img-circle">
@@ -280,13 +280,13 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
                                     <li class="{{ Request::is('master/keuangan/master_transaksi') ? 'active' : '' || Request::is('master/keuangan/master_transaksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/keuangan/master_transaksi') }}"><span
                                                     class="submenu-title">Data Transaksi Keuangan</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
 
                                 @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
                                     <li class="{{ Request::is('master/databarang/barang') ? 'active' : '' || Request::is('master/databarang/*') ? 'active' : '' }}">
