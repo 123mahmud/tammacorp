@@ -220,4 +220,7 @@ class stockOpnameController extends Controller
       return view('inventory.stockopname.detail-opname',compact('data'));
 
     }
+    public function print_stockopname(){
+      return view('inventory.stockopname.print_stockopname');
+    }
 }
