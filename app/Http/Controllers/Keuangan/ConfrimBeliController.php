@@ -1000,7 +1000,7 @@ class ConfrimBeliController extends Controller
             } elseif ($data->dsr_status == "TR")
             {
                 return '<div class="text-center">
-                            <span class="label label-blue">Di Terima</span>
+                            <span class="label label-blue">Di Setujui</span>
                         </div>';
             }
         })

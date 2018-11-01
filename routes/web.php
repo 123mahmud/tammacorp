@@ -416,6 +416,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenReturnPenjualanController@tabelPotNota');
     Route::get('/penjualan/returnpenjualan/store/{metode}', 'Penjualan\ManajemenReturnPenjualanController@store');
     Route::get('/penjualan/returnpenjualan/getdata', 'Penjualan\ManajemenReturnPenjualanController@detail');
+    Route::get('/penjualan/returnpenjualan/return/{id}', 'Penjualan\ManajemenReturnPenjualanController@storeReturn');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');

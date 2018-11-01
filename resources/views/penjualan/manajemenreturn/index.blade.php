@@ -148,14 +148,24 @@
 
   function lihatDetail(id){
      $.ajax({
-                url: baseUrl + "/penjualan/returnpenjualan/getdata",
-                type: 'get',
-                data: {x: id},
-                success: function (response) {
-                  $('#xx').html(response);
-                }
-            });
+          url: baseUrl + "/penjualan/returnpenjualan/getdata",
+          type: 'get',
+          data: {x: id},
+          success: function (response) {
+            $('#xx').html(response);
+          }
+      });
   }
-    
+
+  function simpanReturn(id){
+      $.ajax({
+          url: baseUrl + "/penjualan/returnpenjualan/return/"+ id,
+          type: 'GET',
+          success: function (response) {
+
+          }
+      });
+    }
   </script>
+  
 @endsection()
