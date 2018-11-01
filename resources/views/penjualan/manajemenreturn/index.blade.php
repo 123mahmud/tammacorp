@@ -45,6 +45,7 @@
                                     <th class="wd-10p">Tgl Return</th>
                                     <th class="wd-15p">Nota</th>
                                     <th class="wd-10p">Metode</th>
+                                    <th class="wd-10p">Jenis Return</th>
                                     <th class="wd-15p">Type Sales</th>
                                     <th class="wd-15p">Status</th>
                                     <th class="wd-15p">Aksi</th>
@@ -59,6 +60,33 @@
                         </div>    
                       </div>
                     <!-- /div alert-tab -->
+                    <!-- End DIv note-tab -->
+
+                            <div class="modal fade" id="myItem" role="dialog">
+                                <div class="modal-dialog modal-lg"
+                                     style="width: 90%;margin-left: auto;margin-top: 30px;">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: #e77c38;">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title" style="color: white;">Nama Item</h4>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="xx">
+
+                                            </div>
+                                        </div>
+                                        <div id="buttonDetail" class="modal-footer">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- div label-badge-tab -->
 
                   </div>
                 </div>
@@ -99,6 +127,7 @@
       {data: 'dsr_date', name: 'dsr_date'},
       {data: 'dsr_code', name: 'dsr_code'},
       {data: 'dsr_method', name: 'dsr_method'},
+      {data: 'dsr_jenis_return', name: 'dsr_jenis_return'},
       {data: 'dsr_type_sales', name: 'dsr_type_sales'},
       {data: 'dsr_status', name: 'dsr_status'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -116,6 +145,17 @@
          }
     }
   });
+
+  function lihatDetail(id){
+     $.ajax({
+                url: baseUrl + "/penjualan/returnpenjualan/getdata",
+                type: 'get',
+                data: {x: id},
+                success: function (response) {
+                  $('#xx').html(response);
+                }
+            });
+  }
     
   </script>
 @endsection()

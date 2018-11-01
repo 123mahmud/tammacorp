@@ -49,13 +49,18 @@ class ManajemenReturnPenjualanController extends Controller
             if ($data->dsr_status == "WT")
             {
                 return '<div class="text-center">
-                          <span class="label label-red">Waiting</span>
+                          <span class="label label-yellow">Waiting</span>
                         </div>';
             }
-            elseif ($data->dsr_status == "CF")
+            elseif ($data->dsr_status == "TL")
             {
                 return '<div class="text-center">
-                            <span class="label label-yellow">Approved</span>
+                            <span class="label label-red">Di Tolak</span>
+                        </div>';
+            } elseif ($data->dsr_status == "TR")
+            {
+                return '<div class="text-center">
+                            <span class="label label-blue">Di Terima</span>
                         </div>';
             }
         })
@@ -71,28 +76,65 @@ class ManajemenReturnPenjualanController extends Controller
             }
         })
 
+    ->editColumn('dsr_jenis_return', function ($data)  {
+            if ($data->dsr_jenis_return == "BR")
+            {
+                return 'Barang Rusak';
+            }
+            elseif ($data->dsr_jenis_return == "KB")
+            {
+                return 'Kelebihan Barang';
+            }
+        })
+
     ->addColumn('action', function($data){
-        return  '<div class="text-center">
-                    <button type="button"
-                        class="btn btn-success fa fa-eye btn-sm"
-                        title="detail"
-                        data-toggle="modal"
-                        onclick="lihatDetail()"
-                        data-target="#myItem">
-                    </button>
-                    <a href=""
-                        class="btn btn-warning btn-sm"
-                        title="Edit">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                    <a  onclick="distroyNota()"
-                        class="btn btn-danger btn-sm"
-                        title="Hapus">
-                        <i class="fa fa-trash-o"></i></a>
-                  </div>';
+        if ($data->dsr_status == "WT"){
+          return  '<div class="text-center">
+                      <button type="button"
+                          class="btn btn-success fa fa-eye btn-sm"
+                          title="detail"
+                          data-toggle="modal"
+                          onclick="lihatDetail('.$data->dsr_id.')"
+                          data-target="#myItem">
+                      </button>
+                      <a href=""
+                          class="btn btn-warning btn-sm"
+                          title="Edit">
+                          <i class="fa fa-pencil"></i>
+                      </a>
+                      <a  onclick="distroyNota()"
+                          class="btn btn-danger btn-sm"
+                          title="Hapus">
+                          <i class="fa fa-trash-o"></i></a>
+                    </div>';
+          }elseif ($data->dsr_status == "TL") {
+            return  '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetail('.$data->dsr_id.')"
+                            data-target="#myItem">
+                        </button>
+                        <a  onclick="distroyNota()"
+                            class="btn btn-danger btn-sm"
+                            title="Hapus">
+                            <i class="fa fa-trash-o"></i></a>
+                      </div>';
+          }else{
+            return '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetail('.$data->dsr_id.')"
+                            data-target="#myItem">
+                        </button>
+                      </div>';
+          }
          
           })
-    ->rawColumns(['dsr_date','dsr_status','dsr_method','action'])
+    ->rawColumns(['dsr_date','dsr_status','dsr_method','dsr_jenis_return','action'])
     ->make(true);
   }
 
@@ -333,17 +375,21 @@ class ManajemenReturnPenjualanController extends Controller
         'dsr_created' => Carbon::now()
       ]);
 
-    // for ($i=0; $i < $request->i_id ; $i++) { 
-    //   'dsrdt_idsr' => $dsr_id,
-    //   'dsrdt_smdt' => $i + 1,
-    //   'dsrdt_item' => $i_id[$i],
-    //   'dsrdt_qty' => $sd_qty[$i],
-    //   'dsrdt_qty_confirm' => $sd_qty_return[$i],
-    //   'dsrdt_price' =>  $sd_price[$i],
-    //   'dsrdt_disc_percent' =>
-    //   'dsrdt_disc_vpercent' =>
-    //   'dsrdt_disc_value' => 
-    // }
+    for ($i=0; $i < count($request->i_id); $i++) { 
+        d_sales_returndt::create([
+          'dsrdt_idsr' => $dsr_id,
+          'dsrdt_smdt' => $i + 1,
+          'dsrdt_item' => $request->i_id[$i],
+          'dsrdt_qty' => $request->sd_qty[$i],
+          'dsrdt_qty_confirm' => $request->sd_qty_return[$i],
+          'dsrdt_price' => ($this->konvertRp($request->sd_price[$i])),
+          'dsrdt_disc_percent' => $request->sd_disc_percent[$i],
+          'dsrdt_disc_vpercent' => $request->value_disc_percent[$i],
+          'dsrdt_disc_value' => ($this->konvertRp($request->sd_disc[$i])),
+          'dsrdt_return_price' => ($this->konvertRp($request->sd_return[$i])),
+          'dsrdt_hasil' => ($this->konvertRp($request->sd_total[$i]))
+        ]);
+    }
 
 
   DB::commit();
@@ -357,6 +403,34 @@ class ManajemenReturnPenjualanController extends Controller
         'data' => $e
       ]);
     }
+  }
+
+  public function detail(Request $request){
+    $data = d_sales_return::select('c_name',
+                                  's_note',
+                                  'dsr_price_return',
+                                  'dsr_sgross',
+                                  'dsr_disc_value',
+                                  'dsr_net',
+                                  'i_name',
+                                  'dsrdt_qty',
+                                  'dsrdt_qty_confirm',
+                                  'm_sname',
+                                  'dsrdt_price',
+                                  'dsrdt_disc_percent',
+                                  'dsrdt_disc_value',
+                                  'dsrdt_return_price',
+                                  'dsrdt_hasil')
+      ->join('m_customer','m_customer.c_id','=','dsr_cus')
+      ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
+      ->join('m_item','m_item.i_id','=','dsrdt_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('dsr_id',$request->x)
+      ->get();
+      // dd($data);
+
+    return view('penjualan.manajemenreturn.detail-item',compact('data'));
   }
 
   public function konvertRp($value){
