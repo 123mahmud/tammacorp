@@ -308,7 +308,7 @@ class ManajemenReturnPenjualanController extends Controller
   }
 
   public function store($metode, Request $request){
-  // dd($request->all());
+  dd($request->all());
   DB::beginTransaction();
     try {
       //nota
@@ -344,17 +344,21 @@ class ManajemenReturnPenjualanController extends Controller
         'dsr_created' => Carbon::now()
       ]);
 
-    // for ($i=0; $i < $request->i_id ; $i++) { 
-    //   'dsrdt_idsr' => $dsr_id,
-    //   'dsrdt_smdt' => $i + 1,
-    //   'dsrdt_item' => $i_id[$i],
-    //   'dsrdt_qty' => $sd_qty[$i],
-    //   'dsrdt_qty_confirm' => $sd_qty_return[$i],
-    //   'dsrdt_price' =>  $sd_price[$i],
-    //   'dsrdt_disc_percent' =>
-    //   'dsrdt_disc_vpercent' =>
-    //   'dsrdt_disc_value' => 
-    // }
+    for ($i=0; $i < count($request->i_id); $i++) { 
+        d_sales_returndt::create([
+          'dsrdt_idsr' => $dsr_id,
+          'dsrdt_smdt' => $i + 1,
+          'dsrdt_item' => $request->i_id[$i],
+          'dsrdt_qty' => $request->sd_qty[$i],
+          'dsrdt_qty_confirm' => $request->sd_qty_return[$i],
+          'dsrdt_price' => $this->konvertRp($request->sd_price[$i]),
+          'dsrdt_disc_percent' => $request->sd_disc_percent[$i],
+          'dsrdt_disc_vpercent' => $request->value_disc_percent[$i],
+          'dsrdt_disc_value' => $this->konvertRp($request->sd_disc[$i]),
+          'dsrdt_return_price' => $this->konvertRp($request->sd_return[$i]),
+          'dsrdt_hasil' => $this->konvertRp($request->sd_total[$i])
+        ]);
+    }
 
 
   DB::commit();
@@ -376,11 +380,20 @@ class ManajemenReturnPenjualanController extends Controller
                                   'dsr_price_return',
                                   'dsr_sgross',
                                   'dsr_disc_value',
-                                  'dsr_net')
+                                  'dsr_net',
+                                  'i_name',
+                                  'dsrdt_qty',
+                                  'dsrdt_qty_confirm',
+                                  'dsrdt_price',
+                                  'dsrdt_disc_percent',
+                                  'dsrdt_disc_value')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
+      ->join('m_item','m_item.i_id','=','dsrdt_item')
+      ->where('dsr_id',$request->x)
       ->get();
-      // dd($data);
+      dd($data);
 
     return view('penjualan.manajemenreturn.detail-item',compact('data'));
   }
