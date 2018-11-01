@@ -1009,10 +1009,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/konfirmasipembelian/get-data-tabel-return', 'Keuangan\ConfrimBeliController@getDataReturnPembelian');
     Route::get('/keuangan/konfirmasipembelian/confirm-return/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmReturnPembelian');
     Route::post('/keuangan/konfirmasipembelian/confirm-return-submit', 'Keuangan\ConfrimBeliController@submitReturnPembelian');
+    //mahmud
+    Route::get('/keuangan/tabel/returnpenjualan', 'Keuangan\ConfrimBeliController@tableReturnPenjualan');
+    Route::get('/keuangan/returnpenjualan/getdata', 'Keuangan\ConfrimBeliController@detail');
+    Route::get('/keuangan/returnpenjualan/update/{status}/{id}', 'Keuangan\ConfrimBeliController@updateReturnPenjualan');
+    
+    //end mahmud
 //10-07-18
     Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
     Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
-    Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
+    Route::post('/keuangan/konfirmasiConfrimBeliControllerpembelian/confirm-belanjaharian-submit', 'Keuangan\@submitBelanjaHarian');
 //hutang piutang
     Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\HutangController@hutang');
     Route::get('/keuangan/l_hutangpiutang/get_hutang_by_tgl/{tgl1}/{tgl2}', 'Keuangan\HutangController@getHutangByTgl');
