@@ -58,7 +58,7 @@
                     </ul>
                 </li>
                 <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
-                        @if(Auth::user()->m_id == 8)
+                        @if(Auth::user()->m_username == 'Toni' && is_null(Auth::user()->m_pegawai_id))
                             <img src="{{ asset('assets/images/avatar/49.jpg')}}" alt="" class="img-responsive img-circle">
                         @else
                             <img src="{{ asset('assets/images/avatar/48.jpg')}}" alt="" class="img-responsive img-circle">
