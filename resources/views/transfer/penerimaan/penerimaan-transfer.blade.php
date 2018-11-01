@@ -102,9 +102,9 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                  @if(Auth::user()->punyaAkses('Ritail Transfer','ma_insert'))
+                {{--   @if(Auth::user()->punyaAkses('Ritail Transfer','ma_insert')) --}}
                     <button class="btn btn-primary simpanPenerimaan" type="button" onclick="simpaPenerimaan()">Simpan</button> 
-                  @endif
+               {{--    @endif --}}
                   </div>
                     
                   
