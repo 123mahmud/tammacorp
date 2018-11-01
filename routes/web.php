@@ -846,6 +846,61 @@ Route::group(['middleware' => 'auth'], function () {
         // End Master Transaksi
 
 
+        // Kelompok Aktiva
+
+            Route::get('/aktiva/kelompok_aktiva', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@index',
+                'as'    => 'kelompok_aktiva.index'
+            ]);
+
+            Route::get('/aktiva/kelompok_aktiva/add', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@add',
+                'as'    => 'kelompok_aktiva.add'
+            ]);
+
+            Route::get('/aktiva/kelompok_aktiva/form-resource', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@form_resource',
+                'as'    => 'kelompok_aktiva.form_resource'
+            ]);
+
+            Route::post('/aktiva/kelompok_aktiva/store', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@store',
+                'as'    => 'kelompok_aktiva.store'
+            ]);
+
+            Route::get('/aktiva/kelompok_aktiva/list-kelompok', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list',
+                'as'    => 'kelompok_aktiva.list'
+            ]);
+
+            // Route::get('/purchasing/pembayaran_hutang/get-po', [
+            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@get_po',
+            //     'as'    => 'pembayaran_hutang.get_po'
+            // ]);
+
+            // Route::get('/purchasing/pembayaran_hutang/get-transaksi', [
+            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@get_transaksi',
+            //     'as'    => 'pembayaran_hutang.get_transaksi'
+            // ]);
+
+            // Route::post('/purchasing/pembayaran_hutang/save', [
+            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@save',
+            //     'as'    => 'pembayaran_hutang.save'
+            // ]);
+
+            // Route::post('/purchasing/pembayaran_hutang/update', [
+            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@update',
+            //     'as'    => 'pembayaran_hutang.update'
+            // ]);
+
+            // Route::post('/purchasing/pembayaran_hutang/delete', [
+            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@delete',
+            //     'as'    => 'pembayaran_hutang.delete'
+            // ]);
+
+        // End Kelompok AKtiva
+
+
         //Laporan Keuangan
             Route::get('keuangan/laporan_keuangan', function(){
                 $data = DB::table('d_akun')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->orderBy('id_akun', 'asc')->get();
