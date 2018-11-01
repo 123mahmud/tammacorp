@@ -71,13 +71,24 @@ class ManajemenReturnPenjualanController extends Controller
             }
         })
 
+    ->editColumn('dsr_jenis_return', function ($data)  {
+            if ($data->dsr_jenis_return == "BR")
+            {
+                return 'Barang Rusak';
+            }
+            elseif ($data->dsr_jenis_return == "KB")
+            {
+                return 'Kelebihan Barang';
+            }
+        })
+
     ->addColumn('action', function($data){
         return  '<div class="text-center">
                     <button type="button"
                         class="btn btn-success fa fa-eye btn-sm"
                         title="detail"
                         data-toggle="modal"
-                        onclick="lihatDetail()"
+                        onclick="lihatDetail('.$data->dsr_id.')"
                         data-target="#myItem">
                     </button>
                     <a href=""
@@ -92,7 +103,7 @@ class ManajemenReturnPenjualanController extends Controller
                   </div>';
          
           })
-    ->rawColumns(['dsr_date','dsr_status','dsr_method','action'])
+    ->rawColumns(['dsr_date','dsr_status','dsr_method','dsr_jenis_return','action'])
     ->make(true);
   }
 
@@ -357,6 +368,21 @@ class ManajemenReturnPenjualanController extends Controller
         'data' => $e
       ]);
     }
+  }
+
+  public function detail(Request $request){
+    $data = d_sales_return::select('c_name',
+                                  's_note',
+                                  'dsr_price_return',
+                                  'dsr_sgross',
+                                  'dsr_disc_value',
+                                  'dsr_net')
+      ->join('m_customer','m_customer.c_id','=','dsr_cus')
+      ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      ->get();
+      // dd($data);
+
+    return view('penjualan.manajemenreturn.detail-item',compact('data'));
   }
 
   public function konvertRp($value){
