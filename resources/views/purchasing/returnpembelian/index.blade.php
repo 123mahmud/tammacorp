@@ -2,7 +2,14 @@
 @section('content')
 <style type="text/css">
   .ui-autocomplete { z-index:2147483647; }
-  .select2-container { margin: 0; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
@@ -42,18 +49,19 @@
             <!-- div revisi-tab -->
             @include('purchasing.returnpembelian.tab-revisi')
           </div>
-          <!-- modal -->
-          <!--modal edit-->
-          @include('purchasing.returnpembelian.modal-edit')
-          <!--modal detail-->
-          @include('purchasing.returnpembelian.modal-detail')
-          <!--modal detail-rev-->
-          @include('purchasing.returnpembelian.modal-detail-rev')
-          <!-- /modal -->
+
         </div>
       </div>
     </div>
   </div>
+  <!-- modal -->
+  <!-- modal detail -->
+  @include('purchasing.returnpembelian.modal-detail')
+  <!-- modal edit -->
+  @include('purchasing.returnpembelian.modal-edit')
+  <!-- modal detail rev -->
+  @include('purchasing.returnpembelian.modal-detail-rev')
+  <!-- /modal -->
 </div>
 <!--END PAGE WRAPPER-->
 @endsection
@@ -102,10 +110,11 @@
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_detail_row');
       $('tr').remove('.tbl_modal_edit_row');
-      $('tr').remove('.tbl_modal_row');
+       $('tr').remove('.tbl_modal_row');
       //remove span class in modal detail
-      $("#txt_span_status").removeClass();
+      $('#txt_span_status_detail').removeClass();
       $('#txt_span_status_edit').removeClass();
+      $("#txt_span_status_detail_rev").removeClass();
     });
 
     //event focus on input qty
@@ -133,7 +142,6 @@
 
     //load fungsi
     lihatReturnByTanggal();
-
   //end jquery
   });
 
@@ -259,7 +267,7 @@
     });
   }
 
-  function editReturPembelian(id) 
+  /*function editReturPembelian(id) 
   {
     $.ajax({
       url : baseUrl + "/purchasing/returnpembelian/get-data-detail/"+id+"/all",
@@ -321,6 +329,177 @@
             return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
         });
         $('#modal-edit').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
+    });
+  }*/
+
+  function editReturPembelian(id) 
+  {
+    $.ajax({
+      url : baseUrl + "/purchasing/returnpembelian/get-data-detail/"+id+"/all",
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var i = randString(5);
+        var key = 1;
+        $('#txt_span_status_edit').text(data.spanTxt);
+        $("#txt_span_status_edit").addClass('label'+' '+data.spanClass);
+        $('#lblCodeReturnEdit').text(data.header[0].d_pcsr_code);
+        $('#lblNotaPembelianEdit').text(data.header[0].d_pcs_code);
+        $('#lblTglReturnEdit').text(data.header2.tanggalReturn);
+        $('#lblStaffEdit').text(data.staff['nama']);
+        $('#id_staff_edit').val(data.staff['id']);
+        $('#lblSupplierEdit').text(data.header[0].s_company);
+        $('#lblMetodeEdit').text(data.lblMethod);
+        $('#lblTotalReturnEdit').text(data.header2.hargaTotalReturn);
+        $('#id_return').val(data.header[0].d_pcsr_id);
+        $('#id_sup').val(data.header[0].d_pcsr_supid);
+        $('#code_return').val(data.header[0].d_pcsr_code);
+        $('#method_return').val(data.header[0].d_pcsr_method);
+        $('#price_total').val(data.header[0].d_pcsr_pricetotal);
+        $('#price_total_nett').val(data.header[0].d_pcs_total_net);
+        $('#price_result').val(data.header[0].d_pcsr_priceresult);
+        //loop data
+        Object.keys(data.data_isi).forEach(function(){
+          var qtyCost = data.data_isi[key-1].d_pcsrdt_qty;
+          var hargaSatuanItemNet = data.data_isi[key-1].d_pcsrdt_price
+          var hargaTotalItemNet = Math.round(parseFloat(qtyCost * hargaSatuanItemNet).toFixed(2));
+          var hargaTotalPerRow = hargaSatuanItemNet * qtyCost;
+          //console.log(hargaSatuanItemNet);
+          $('#tabel-edit').append('<tr class="tbl_modal_edit_row" id="row'+i+'">'
+                          +'<td style="text-align:center">'+key+'</td>'
+                          +'<td><input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control" readonly/>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_item+'" name="fieldIdItem[]" class="form-control" readonly/>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdDt[]" class="form-control"/>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_smdetail+'" name="fieldSmidDetail[]" class="form-control"/>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldQtyLalu[]" class="form-control right"/></td>'
+                          +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control field_qty numberinput input-sm right" id="'+i+'"/></td>'
+                          +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
+                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" class="form-control input-sm right" id="cost_'+i+'" readonly/>'
+                          +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
+                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem right" id="total_'+i+'" readonly/>'
+                          +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm hargaTotalItemRaw numberinput" readonly/></td>'
+                          +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm right" readonly/>'
+                          +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
+                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm" disabled>X</button></td>'
+                          +'</tr>');
+          i = randString(5);
+          key++;
+        });
+        totalNilaiReturn();
+        totalNilaiReturnRaw();
+        //force integer input in textfield
+        $('input.numberinput').bind('keypress', function (e) {
+            return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
+        });
+        //$('#modal-edit').modal('show');
+        $('#modal-edit').appendTo("body").modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
+    });
+  }
+
+  function detailPoRev(id) 
+  {
+    $.ajax({
+      url : baseUrl + "/purchasing/returnpembelian/get-detail-revisi/" + id,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var i = randString(5);
+        var key = 1;
+        $('#txt_span_status_detail_rev').text(data.spanTxt);
+        $("#txt_span_status_detail_rev").addClass('label'+' '+data.spanClass);
+        $('#lblNoOrder').text(data.header[0].d_pcs_code);
+        $('#lblCaraBayar').text(data.header[0].d_pcs_method);
+        $('#lblTglOrder').text(formatTanggal(data.header[0].d_pcs_date_created));
+        $('#lblTglKirim').text(formatTanggal(data.header[0].d_pcs_date_received));
+        $('#lblStaffRev').text(data.header[0].m_name);
+        $('#lblSupplierRev').text(data.header[0].s_company);
+        $('[name="totalHarga"]').val(data.header2.hargaBruto);
+        $('[name="diskonHarga"]').val(data.header2.nilaiDiskon);
+        $('[name="ppnHarga"]').val(data.header2.nilaiPajak);
+        $('[name="totalHargaFinal"]').val(data.header2.hargaNet);
+        if (data.header[0].d_pcs_method != "CASH") 
+        {
+          $('#append-modal-detail div').remove();
+          var metode = data.header[0].d_pcs_method;
+          if (metode == "DEPOSIT") 
+          {
+            $('#append-modal-detail div').remove();
+            $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
+                                      +'<label class="tebal">Batas Terakhir Pengiriman</label>'
+                                  +'</div>'
+                                  +'<div class="col-md-9 col-sm-12 col-xs-12">'
+                                    +'<div class="form-group">'
+                                      +'<label id="dueDate">'+formatTanggal(data.header[0].d_pcs_duedate)+'</label>'
+                                    +'</div>'
+                                  +'</div>');
+          }
+          else if(metode == "CREDIT")
+          {
+            $('#append-modal-detail div').remove();
+            $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
+                                      +'<label class="tebal">TOP (Termin Of Payment)</label>'
+                                  +'</div>'
+                                  +'<div class="col-md-9 col-sm-12 col-xs-12">'
+                                    +'<div class="form-group">'
+                                      +'<label id="dueDate">'+data.header[0].d_pcs_duedate+'</label>'
+                                    +'</div>'
+                                  +'</div>');
+          }
+        }
+        //loop data
+        Object.keys(data.data_isi).forEach(function(){
+          $('#tabel-order').append('<tr class="tbl_modal_row" id="row'+i+'">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'
+                            +data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name
+                            +'<input type="hidden" class="input-sm form-control" name="ip_item[]" value="'+data.data_isi[key-1].i_id+'">'
+                          +'</td>'
+                          +'<td>'
+                            +data.data_isi[key-1].m_sname
+                            +'<input type="hidden" class="input-sm form-control" name="ip_sid[]" value="'+data.data_isi[key-1].m_sid+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_qty)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_qty[]" value="'+data.data_isi[key-1].d_pcsdt_qty+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_prevcost)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_prevcost[]" value="'+data.data_isi[key-1].d_pcsdt_prevcost+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_price)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_price[]" value="'+data.data_isi[key-1].d_pcsdt_price+'">'
+                          +'</td>'
+                          +'<td align="right">'
+                            +formatAngka(data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty)
+                            +'<input type="hidden" class="input-sm form-control" name="ip_total[]" value="'+data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty+'">'
+                          +'</td>'
+                        +'</tr>');
+          key++;  
+          i = randString(5);
+        });
+        $('#divBtnModal').html(
+          '<button type="button" class="btn btn-success" onclick="ubahStatusToReceived('+data.header[0].d_pcs_id+')">Ubah Status</button>'+
+          '<a href="'+ baseUrl +'/purchasing/returnpembelian/print-revisi-po/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+        //$('#modal-detail-rev').modal('show');
+        $('#modal-detail-rev').appendTo("body").modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
       {
@@ -456,105 +635,6 @@
           instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
         }],
       ]
-    });
-  }
-
-  function detailPoRev(id) 
-  {
-    $.ajax({
-      url : baseUrl + "/purchasing/returnpembelian/get-detail-revisi/" + id,
-      type: "GET",
-      dataType: "JSON",
-      success: function(data)
-      {
-        var i = randString(5);
-        var key = 1;
-        $('#txt_span_status_detail_rev').text(data.spanTxt);
-        $("#txt_span_status_detail_rev").addClass('label'+' '+data.spanClass);
-        $('#lblNoOrder').text(data.header[0].d_pcs_code);
-        $('#lblCaraBayar').text(data.header[0].d_pcs_method);
-        $('#lblTglOrder').text(formatTanggal(data.header[0].d_pcs_date_created));
-        $('#lblTglKirim').text(formatTanggal(data.header[0].d_pcs_date_received));
-        $('#lblStaffRev').text(data.header[0].m_name);
-        $('#lblSupplierRev').text(data.header[0].s_company);
-        $('[name="totalHarga"]').val(data.header2.hargaBruto);
-        $('[name="diskonHarga"]').val(data.header2.nilaiDiskon);
-        $('[name="ppnHarga"]').val(data.header2.nilaiPajak);
-        $('[name="totalHargaFinal"]').val(data.header2.hargaNet);
-        if (data.header[0].d_pcs_method != "CASH") 
-        {
-          $('#append-modal-detail div').remove();
-          var metode = data.header[0].d_pcs_method;
-          if (metode == "DEPOSIT") 
-          {
-            $('#append-modal-detail div').remove();
-            $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
-                                      +'<label class="tebal">Batas Terakhir Pengiriman</label>'
-                                  +'</div>'
-                                  +'<div class="col-md-9 col-sm-12 col-xs-12">'
-                                    +'<div class="form-group">'
-                                      +'<label id="dueDate">'+formatTanggal(data.header[0].d_pcs_duedate)+'</label>'
-                                    +'</div>'
-                                  +'</div>');
-          }
-          else if(metode == "CREDIT")
-          {
-            $('#append-modal-detail div').remove();
-            $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
-                                      +'<label class="tebal">TOP (Termin Of Payment)</label>'
-                                  +'</div>'
-                                  +'<div class="col-md-9 col-sm-12 col-xs-12">'
-                                    +'<div class="form-group">'
-                                      +'<label id="dueDate">'+data.header[0].d_pcs_duedate+'</label>'
-                                    +'</div>'
-                                  +'</div>');
-          }
-        }
-        //loop data
-        Object.keys(data.data_isi).forEach(function(){
-          $('#tabel-order').append('<tr class="tbl_modal_row" id="row'+i+'">'
-                          +'<td>'+key+'</td>'
-                          +'<td>'
-                            +data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name
-                            +'<input type="hidden" class="input-sm form-control" name="ip_item[]" value="'+data.data_isi[key-1].i_id+'">'
-                          +'</td>'
-                          +'<td>'
-                            +data.data_isi[key-1].m_sname
-                            +'<input type="hidden" class="input-sm form-control" name="ip_sid[]" value="'+data.data_isi[key-1].m_sid+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_qty)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_qty[]" value="'+data.data_isi[key-1].d_pcsdt_qty+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_prevcost)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_prevcost[]" value="'+data.data_isi[key-1].d_pcsdt_prevcost+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_price)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_price[]" value="'+data.data_isi[key-1].d_pcsdt_price+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_total[]" value="'+data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty+'">'
-                          +'</td>'
-                        +'</tr>');
-          key++;  
-          i = randString(5);
-        });
-        $('#divBtnModal').html(
-          '<button type="button" class="btn btn-success" onclick="ubahStatusToReceived('+data.header[0].d_pcs_id+')">Ubah Status</button>'+
-          '<a href="'+ baseUrl +'/purchasing/returnpembelian/print-revisi-po/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
-          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
-        $('#modal-detail-rev').modal('show');
-      },
-      error: function (jqXHR, textStatus, errorThrown)
-      {
-          alert('Error get data from ajax');
-      }
     });
   }
 
@@ -739,7 +819,7 @@
   function formatTanggal(dateString)
   {
     var p = dateString.split(/\D/g)
-    return [p[2],p[1],p[0] ].join("-")
+    return [p[2],p[1],p[0] ].join("-");
   }
 </script>
 @endsection

@@ -251,6 +251,7 @@
     {{-- Wizard --}}
     <section class="content-section bg-light" >
       <div class="container text-center">
+        <img src="{{url('/public/assets/gif/Loading_icon.gif')}}" id="gif" style="display: block; margin: 0 auto; width: 100px; visibility: hidden;">
         <form class="form cf" action="{{ url('recruitment/save') }}" method="post" enctype="multipart/form-data">
           {{ csrf_field() }}
           <div class="wizard">
@@ -303,7 +304,7 @@
                 <h1 class="text-md-center">Complete</h1>
                 <div class="row"></div>
                 <ul class="list-inline text-md-center">
-                    <li><button type="submit" class="btn btn-lg btn-primary next-button">Finish</button></li>
+                    <li><button type="submit" class="btn btn-lg btn-primary next-button" id="btn_apply_finish">Finish</button></li>
                     <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Back</a></li>
                 </ul>
               </div>
@@ -557,6 +558,11 @@
           $('#partner_name').attr('readonly', true);
           $('#anak').attr('readonly', true);
         });
+
+        /*$('#btn_apply_finish').submit(function() {
+            $('#gif').show(); 
+            return true;
+        });*/
 
       });//end jquery
     </script>

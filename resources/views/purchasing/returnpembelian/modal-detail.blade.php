@@ -98,7 +98,7 @@
                   <th width="10%">Stok</th>
                 </tr>
               </thead>
-              <tbody id="div_item">
+              <tbody>
 
               </tbody>
             </table>
