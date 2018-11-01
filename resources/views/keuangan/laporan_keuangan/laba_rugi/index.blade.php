@@ -279,7 +279,7 @@
         					<?php $total_parrent = 0 ?>
 
         					@foreach($data as $key => $data_neraca)
-        						@if($data_neraca->id_group >= 28 && $data_neraca->id_group <= 37)
+        						@if($data_neraca->id_group >= 27 && $data_neraca->id_group <= 37)
 		        					<tr>
 		        						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="60%">
 		        							{{ $data_neraca->nama_group }}

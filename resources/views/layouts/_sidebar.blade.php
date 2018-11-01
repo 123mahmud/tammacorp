@@ -1043,13 +1043,13 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaocf/analisa2b') ? 'active' : '' || Request::is('keuangan/analisaocf/analisa2b/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2b') }}"><span
                                                     class="submenu-title">Analisa OCF Terhadap Net Profit</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaaset/analisa3a') }}"><span

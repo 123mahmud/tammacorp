@@ -512,6 +512,7 @@
 
         simpan_data: function(evt){
           evt.preventDefault();
+          evt.stopImmediatePropagation();
           this.btn_save_disabled = true;
 
           // console.log($('#data-form').serialize());
