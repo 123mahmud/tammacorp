@@ -14,6 +14,8 @@ use App\d_sales_return;
 use App\d_sales_returndt;
 use App\d_sales_dt;
 use App\d_sales;
+use App\d_stock;
+use App\d_stock_mutation;
 
 
 class ManajemenReturnPenjualanController extends Controller
@@ -60,7 +62,7 @@ class ManajemenReturnPenjualanController extends Controller
             } elseif ($data->dsr_status == "TR")
             {
                 return '<div class="text-center">
-                            <span class="label label-blue">Di Terima</span>
+                            <span class="label label-blue">Di Setujui</span>
                         </div>';
             }
         })
@@ -420,7 +422,9 @@ class ManajemenReturnPenjualanController extends Controller
                                   'dsrdt_disc_percent',
                                   'dsrdt_disc_value',
                                   'dsrdt_return_price',
-                                  'dsrdt_hasil')
+                                  'dsrdt_hasil',
+                                  'dsr_status',
+                                  'dsr_id')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
       ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
@@ -439,4 +443,58 @@ class ManajemenReturnPenjualanController extends Controller
     return str_replace(',', '.', $value);
 
     }
+
+  public function storeReturn($id){
+    $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return')
+      ->where('dsr_id',$id)
+      ->first();
+    if ($data->dsr_method == 'PN') {
+      if ($data->dsr_jenis_return == 'BR') {
+        $cek = d_sales_returndt::select('dsrdt_item',
+                                        'dsrdt_qty_confirm')
+          ->where('dsrdt_idsr',$data->dsr_id)->get();
+       
+        for ($i=0; $i <count($cek) ; $i++) {
+          if ($cek[$i]->dsrdt_qty_confirm != 0) {
+             $coba[] = $cek[$i];
+             $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',8)
+                ->where('s_position',8)
+                ->first();
+              if ($stockRusak == null) {
+                $s_id = d_stock::select('s_id')->max('s_id')+1;
+                d_stock::create([
+                    's_id' => $s_id,
+                    's_comp' => 8,
+                    's_position' => 8,
+                    's_item' => $cek[$i]->dsrdt_item,
+                    's_qty' => $cek[$i]->dsrdt_qty_confirm
+                  ]);
+                d_stock_mutation::create([
+                    'sm_stock' =>  $s_id,
+                    'sm_detailid' => 1,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 8,
+                    'sm_position' => 8,
+                    'sm_mutcat' => 4,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+              }
+           } 
+        }
+        
+
+      }else{
+
+        return 'b';
+      }
+    }else{
+      return 'b';
+    }
+  }
 }
