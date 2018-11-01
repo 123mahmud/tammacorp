@@ -5,22 +5,81 @@ namespace App\Http\Controllers\keuangan\Kelompok_aktiva;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use DataTables;
 use DB;
+use Session;
 
 class kelompok_aktiva_controller extends Controller
 {
     public function index(){
-    	return "index belum siap";
+    	return view('keuangan.kelompok_aktiva.index');
+    }
+
+    public function list_table(Request $request)
+    {   
+        $list = DB::table("d_golongan_aktiva")->select("*")->orderBy("created_at", "desc")->get();
+
+        // return $list;
+        $data = collect($list);
+        
+        return Datatables::of($data)
+                    ->editColumn('ga_golongan', function($data) {
+                          $alpha = "";
+
+                          switch ($data->ga_golongan) {
+                              case '1':
+                                  $alpha = 'Non Bangunan - Kelompok 1';
+                                  break;
+
+                              case '2':
+                                  $alpha = 'Non Bangunan - Kelompok 2';
+                                  break;
+
+                              case '3':
+                                  $alpha = 'Non Bangunan - Kelompok 3';
+                                  break;
+
+                              case '4':
+                                  $alpha = 'Non Bangunan - Kelompok 4';
+                                  break;
+
+                              case '5':
+                                  $alpha = 'Bangunan - Permanen';
+                                  break;
+
+                              case '5':
+                                  $alpha = 'Bangunan - Non Permanen';
+                                  break;
+                              
+                              default:
+                                  $alpha = "Tidak Diketahui";
+                                  break;
+                          }
+
+                          return $alpha;
+                    })
+                    ->addColumn('action', function ($data) {
+
+                             return  '<button id="edit" onclick="edit(this)" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>';
+                    })
+                    ->rawColumns(['action','confirmed'])
+                    ->make(true);
     }
 
     public function list(){
-    	$data = DB::table('d_golongan_aktiva')->select('*')->get();
+    	$data = DB::table('d_golongan_aktiva as a')
+                    ->join('d_akun as b', 'b.id_akun', '=', 'a.ga_akun_harta')
+                    ->join('d_akun as c', 'c.id_akun', '=', 'a.ga_akun_penyusutan')
+                    ->join('d_akun as d', 'd.id_akun', '=', 'a.ga_akun_akumulasi')
+                    ->select('a.*', 'b.nama_akun as akun_harta', 'c.nama_akun as akun_penyusutan', 'd.nama_akun as akun_akumulasi')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
     	return json_encode($data);
     }
 
     public function add(){
-    	return view('keuangan.kelompok_aktiva.index');
+    	return view('keuangan.kelompok_aktiva.add');
     }
 
     public function form_resource(){
@@ -62,5 +121,68 @@ class kelompok_aktiva_controller extends Controller
     		'status'	=> 'berhasil',
     		'content'	=> null
     	]);
+    }
+
+    public function update(Request $request){
+        // return json_encode($request->all());
+        $kelompok = DB::table('d_golongan_aktiva')->where('ga_nomor', $request->nomor_kelompok);
+
+        if(!$kelompok->first()){
+            return response()->json([
+                'status'    => 'gagal',
+                'flag'      => 'error',
+                'content'   => 'Data Kelompok Yang Ingin Dirubah Tidak Bisa Ditemukan. Cobalah Untuk Memuat Ulang Halaman.'
+            ]);
+        }
+        
+        $aktiva = false;
+
+        if($aktiva){
+            return response()->json([
+                'status'    => 'berhasil',
+                'flag'      => 'warning',
+                'content'   => 'Perubahan Berhasil, Namun Hanya Pada Nama dan Keterangan Kelompok Saja.'
+            ]);
+        }else{
+
+            $kelompok->update([
+                'ga_nama'               => $request->nama_kelompok,
+                'ga_keterangan'         => $request->keterangan_kelompok,
+                'ga_golongan'           => $request->golongan_kelompok,
+                'ga_masa_manfaat'       => $request->masa_manfaat,
+                'ga_garis_lurus'        => $request->persentase_gl,
+                'ga_saldo_menurun'      => $request->persentase_sm,
+                'ga_akun_harta'         => $request->akun_harta,
+                'ga_akun_penyusutan'    => $request->akun_penyusutan,
+                'ga_akun_akumulasi'     => $request->akun_akumulasi
+            ]);
+
+            return response()->json([
+                'status'    => 'berhasil',
+                'flag'      => 'success',
+                'content'   => 'Kelompok Aktiva Berhasil Diubah.'
+            ]);
+        }
+    }
+
+    public function delete(Request $request){
+        $kelompok = DB::table('d_golongan_aktiva')->where('ga_nomor', $request->id);
+
+        if(!$kelompok->first()){
+            return response()->json([
+                'status'    => 'gagal',
+                'flag'      => 'error',
+                'content'   => 'Data Kelompok Yang Ingin Dirubah Tidak Bisa Ditemukan. Cobalah Untuk Memuat Ulang Halaman.'
+            ]);
+        }
+
+        $kelompok->delete();
+
+        return response()->json([
+            'status'    => 'berhasil',
+            'flag'      => 'success',
+            'content'   => 'Kelompok Aktiva Berhasil Dihapus.'
+        ]);
+
     }
 }

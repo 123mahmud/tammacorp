@@ -855,6 +855,11 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'kelompok_aktiva.index'
             ]);
 
+            Route::get('/aktiva/kelompok_aktiva/list-table', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list_table',
+                'as'    => 'kelompok_aktiva.list_table'
+            ]);
+
             Route::get('/aktiva/kelompok_aktiva/add', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@add',
                 'as'    => 'kelompok_aktiva.add'
@@ -873,6 +878,16 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/aktiva/kelompok_aktiva/list-kelompok', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list',
                 'as'    => 'kelompok_aktiva.list'
+            ]);
+
+            Route::post('/aktiva/kelompok_aktiva/update', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@update',
+                'as'    => 'kelompok_aktiva.update'
+            ]);
+
+            Route::post('/aktiva/kelompok_aktiva/delete', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@delete',
+                'as'    => 'kelompok_aktiva.delete'
             ]);
 
             // Route::get('/purchasing/pembayaran_hutang/get-po', [

@@ -332,7 +332,7 @@ class PenerimaanBrgSupController extends Controller
 
             
 
-            // return json_encode($state_jurnal);
+            // return json_encode($acs);
             // cek jurnal end
 
             //code penerimaan

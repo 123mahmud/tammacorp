@@ -280,13 +280,13 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
                                     <li class="{{ Request::is('master/keuangan/master_transaksi') ? 'active' : '' || Request::is('master/keuangan/master_transaksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/keuangan/master_transaksi') }}"><span
                                                     class="submenu-title">Data Transaksi Keuangan</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
 
                                 @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
                                     <li class="{{ Request::is('master/databarang/barang') ? 'active' : '' || Request::is('master/databarang/*') ? 'active' : '' }}">

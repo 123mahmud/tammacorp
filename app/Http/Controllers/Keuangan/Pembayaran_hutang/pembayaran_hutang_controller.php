@@ -37,6 +37,9 @@ class pembayaran_hutang_controller extends Controller
                     ->orWhere('d_pcs_status', 'RC')
                     ->where('d_pcs_sisapayment', '!=', '0')
                     ->where('s_id', $request->supplier)
+                    ->orWhere('d_pcs_status', 'RV')
+                    ->where('d_pcs_sisapayment', '!=', '0')
+                    ->where('s_id', $request->supplier)
     				->get();
 
     	return json_encode($data);
