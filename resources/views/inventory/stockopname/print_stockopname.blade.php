@@ -233,7 +233,13 @@
 					<td>
 						OD1810231
 					</td>
-					<td colspan="3"></td>
+					<td>
+						<label class="bold">Staff</label>
+					</td>
+					<td width="1%">:</td>
+					<td>
+						Masok Toni
+					</td>
 				</tr>
 				<tr>
 					<td>
