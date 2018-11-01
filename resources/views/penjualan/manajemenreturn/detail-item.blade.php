@@ -67,12 +67,12 @@
         <tr>
             <th>Nama</th>
             <th width="5%">Jumlah</th>
-            <th width="5%">Tukar</th>
+            <th width="5%">return</th>
             <th>Satuan</th>
             <th>Harga</th>
             <th width="10%">Disc Percent</th>
             <th>Disc Value</th>
-            <th>Jumlah Tukar</th>
+            <th>Jumlah return</th>
             <th width="20%">Total</th>
         </tr>
     </thead>
