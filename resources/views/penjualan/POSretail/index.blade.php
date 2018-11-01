@@ -783,7 +783,7 @@
 
                     '<div class="input-group"><input type="text" size="11"  style="text-align:right" name="sd_disc_percent[]" class="form-control discpercent discpercent-' + kode + '" placeholder="0" onkeyup="discpercent(this, event);autoJumValPercent()"><span class="input-group-addon">%</span></div> <input name="totalValuePercent[]" type="text" value="0" style="display:none" class="form-control totalValuePercent jumTotValuePercent totalValuePercent-' + kode + '">',
 
-                    '<input type="text" size="10"  style="text-align:right" name="sd_disc_value[]" class="form-control discvalue hasildiscvalue pricevalue-' + kode + '" placeholder="0" onkeyup="discvalue(this, event);autoJumValValue();rege(event,\'' + pricevalue + '\')"  onblur="setRupiah(event,\'' + pricevalue + '\')" onclick="setAwal(\'' + event + '\',\'' + pricevalue + '\')">',
+                    '<input type="text" size="10"  style="text-align:right" name="sd_disc_value[]" class="form-control discvalue hasildiscvalue pricevalue-' + kode + '" placeholder="0" onkeyup="discvalue(this, event);autoJumValValue();rege(event,\'' + pricevalue + '\')"  onblur="setRupiah(event,\'' + pricevalue + '\')" onclick="setAwal(\'' + event + '\',\'' + pricevalue + '\')"><input type="text" size="200" readonly name="totaldiscvalue[]" id="totaldiscvalue" style="display:none" class="form-control totaldiscvalue totaldiscvalue-' + kode + '" value="">',
 
                     '<input type="text" size="200" readonly style="text-align:right" name="hasil[]" id="hasil" class="form-control hasil hasil-' + kode + '" value="' + x + '">',
                     Hapus
@@ -885,7 +885,7 @@
 
                     '<div class="input-group"><input type="text" size="11"  style="text-align:right" name="sd_disc_percent[]" class="form-control discpercent discpercent-' + kode + '" placeholder="0" onkeyup="discpercent(this, event);autoJumValPercent()"><span class="input-group-addon">%</span></div> <input name="totalValuePercent[]" type="text" value="0" style="display:none" class="form-control totalValuePercent jumTotValuePercent totalValuePercent-' + kode + '">',
 
-                    '<input type="text" size="10"  style="text-align:right" name="sd_disc_value[]" class="form-control discvalue hasildiscvalue pricevalue-' + kode + '" placeholder="0" onkeyup="discvalue(this, event);autoJumValValue();rege(event,\'' + pricevalue + '\')"  onblur="setRupiah(event,\'' + pricevalue + '\')" onclick="setAwal(\'' + event + '\',\'' + pricevalue + '\')">',
+                    '<input type="text" size="10"  style="text-align:right" name="sd_disc_value[]" class="form-control discvalue hasildiscvalue pricevalue-' + kode + '" placeholder="0" onkeyup="discvalue(this, event);autoJumValValue();rege(event,\'' + pricevalue + '\')"  onblur="setRupiah(event,\'' + pricevalue + '\')" onclick="setAwal(\'' + event + '\',\'' + pricevalue + '\')"><input type="text" size="200" readonly name="totaldiscvalue[]" id="totaldiscvalue" style="display:none" class="form-control totaldiscvalue totaldiscvalue-' + kode + '" value="">',
 
                     '<input type="text" size="200" readonly style="text-align:right" name="hasil[]" id="hasil" class="form-control hasil hasil-' + kode + '" value="' + x + '">',
 
@@ -953,7 +953,7 @@
             var dataInput = $('input.discpercent:text:eq(' + getIndex + ')').val();
             if (dataInput == '' || dataInput == '0') {
                 $('input.discvalue:text:eq(' + getIndex + ')').attr("readonly", false);
-                $('input.discpercent:text:eq(' + getIndex + ')').val(0);
+                // $('input.discpercent:text:eq(' + getIndex + ')').val(0);
             } else {
                 $('input.discvalue:text:eq(' + getIndex + ')').attr("readonly", true);
             }
@@ -993,6 +993,7 @@
             var diskon = $('input.discvalue:text:eq(' + getIndex + ')').val();
             var harga = $('input.harga_item:text:eq(' + getIndex + ')').val();
             var qty = $('input.sd_qty:eq(' + getIndex + ')').val();
+            var harga = $('input.harga_item:text:eq(' + getIndex + ')').val();
             harga = convertToAngka(harga);
             harga = parseInt(harga);
             diskon = parseInt(diskon);
@@ -1005,7 +1006,10 @@
                 diskon = 0;
                 $('input.discvalue:text:eq(' + getIndex + ')').val(0);
             }
+            console.log(diskon * qty);
+            $('input.totaldiscvalue:text:eq(' + getIndex + ')').val(diskon * qty);
             hasil = hasil - diskon * qty;
+
             hasil = convertToRupiah(hasil);
             $('input.hasil:text:eq(' + getIndex + ')').val(hasil);
             UpdateTotal();
@@ -1028,11 +1032,13 @@
         }
 
         function autoJumValValue() {
-            var inputs = document.getElementsByClassName('hasildiscvalue'),
+            var inputs = document.getElementsByClassName('totaldiscvalue'),
                 hasil = [].map.call(inputs, function (input) {
                     if (input.value == '') input.value = 0;
                     return input.value;
                 });
+
+
             var total = 0;
             for (var i = hasil.length - 1; i >= 0; i--) {
 
@@ -1043,6 +1049,7 @@
             if (isNaN(total)) {
                 total = 0;
             }
+            // alert(total);
             $('.TotDisValue').val(total);
             totalPercentValue();
         }
@@ -1139,6 +1146,7 @@
             $('.pricevalue-' + kode).val('0');
             $('.discpercent-' + kode).val('0');
             $('.totalValuePercent-' + kode).val('0');
+            $('.totaldiscvalue-' + kode).val('0');
             autoJumValPercent();
             UpdateTotal();
             autoJumValValue();
