@@ -621,6 +621,8 @@ class OrderPembelianController extends Controller
         //insert data isi
         for ($i=0; $i < $hitung_field; $i++) 
         {
+          $old_str = [".", ","];
+          $new_str = ["", "."];
           $dataIsi = new d_purchasing_dt;
           $dataIsi->d_pcs_id = $lastId;
           $dataIsi->i_id = $request->fieldItemId[$i];
@@ -628,9 +630,9 @@ class OrderPembelianController extends Controller
           $dataIsi->d_pcsdt_sat = $request->fieldIdSatuan[$i];
           $dataIsi->d_pcsdt_idpdt = $request->fieldidPlanDt[$i];
           $dataIsi->d_pcsdt_qty = $request->fieldQty[$i];
-          $dataIsi->d_pcsdt_price = str_replace('.', '', $request->fieldHarga[$i]);
-          $dataIsi->d_pcsdt_prevcost = str_replace('.', '', $request->fieldHargaPrev[$i]);
-          $dataIsi->d_pcsdt_total = str_replace('.', '', $request->fieldHargaTotal[$i]);
+          $dataIsi->d_pcsdt_price = str_replace($old_str, $new_str, $request->fieldHarga[$i]);
+          $dataIsi->d_pcsdt_prevcost = str_replace($old_str, $new_str, $request->fieldHargaPrev[$i]);
+          $dataIsi->d_pcsdt_total = str_replace($old_str, $new_str, $request->fieldHargaTotal[$i]);
           $dataIsi->d_pcsdt_created = Carbon::now();
           $dataIsi->save();
         } 
@@ -678,11 +680,13 @@ class OrderPembelianController extends Controller
         
         //update to table d_purchasing_dt
         $hitung_field_edit = count($request->fieldIdPurchaseDt);
+        $old_str = [".", ","];
+        $new_str = ["", "."];
         for ($i=0; $i < $hitung_field_edit; $i++) 
         {
           $purchasingdt = d_purchasing_dt::find($request->fieldIdPurchaseDt[$i]);
-          $purchasingdt->d_pcsdt_price = $this->konvertRp($request->fieldHarga[$i]);
-          $purchasingdt->d_pcsdt_total = $this->konvertRp($request->fieldHargaTotal[$i]);
+          $purchasingdt->d_pcsdt_price = str_replace($old_str, $new_str, $request->fieldHarga[$i]);
+          $purchasingdt->d_pcsdt_total = str_replace($old_str, $new_str, $request->fieldHargaTotal[$i]);
           $purchasingdt->d_pcsdt_updated = Carbon::now('Asia/Jakarta');
           $purchasingdt->save();
         } 
