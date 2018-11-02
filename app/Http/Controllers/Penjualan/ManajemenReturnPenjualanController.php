@@ -14,6 +14,8 @@ use App\d_sales_return;
 use App\d_sales_returndt;
 use App\d_sales_dt;
 use App\d_sales;
+use App\d_stock;
+use App\d_stock_mutation;
 
 
 class ManajemenReturnPenjualanController extends Controller
@@ -49,13 +51,18 @@ class ManajemenReturnPenjualanController extends Controller
             if ($data->dsr_status == "WT")
             {
                 return '<div class="text-center">
-                          <span class="label label-red">Waiting</span>
+                          <span class="label label-yellow">Waiting</span>
                         </div>';
             }
-            elseif ($data->dsr_status == "CF")
+            elseif ($data->dsr_status == "TL")
             {
                 return '<div class="text-center">
-                            <span class="label label-yellow">Approved</span>
+                            <span class="label label-red">Di Tolak</span>
+                        </div>';
+            } elseif ($data->dsr_status == "TR")
+            {
+                return '<div class="text-center">
+                            <span class="label label-blue">Di Setujui</span>
                         </div>';
             }
         })
@@ -83,24 +90,50 @@ class ManajemenReturnPenjualanController extends Controller
         })
 
     ->addColumn('action', function($data){
-        return  '<div class="text-center">
-                    <button type="button"
-                        class="btn btn-success fa fa-eye btn-sm"
-                        title="detail"
-                        data-toggle="modal"
-                        onclick="lihatDetail('.$data->dsr_id.')"
-                        data-target="#myItem">
-                    </button>
-                    <a href=""
-                        class="btn btn-warning btn-sm"
-                        title="Edit">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-                    <a  onclick="distroyNota()"
-                        class="btn btn-danger btn-sm"
-                        title="Hapus">
-                        <i class="fa fa-trash-o"></i></a>
-                  </div>';
+        if ($data->dsr_status == "WT"){
+          return  '<div class="text-center">
+                      <button type="button"
+                          class="btn btn-success fa fa-eye btn-sm"
+                          title="detail"
+                          data-toggle="modal"
+                          onclick="lihatDetail('.$data->dsr_id.')"
+                          data-target="#myItem">
+                      </button>
+                      <a href=""
+                          class="btn btn-warning btn-sm"
+                          title="Edit">
+                          <i class="fa fa-pencil"></i>
+                      </a>
+                      <a  onclick="distroyNota()"
+                          class="btn btn-danger btn-sm"
+                          title="Hapus">
+                          <i class="fa fa-trash-o"></i></a>
+                    </div>';
+          }elseif ($data->dsr_status == "TL") {
+            return  '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetail('.$data->dsr_id.')"
+                            data-target="#myItem">
+                        </button>
+                        <a  onclick="distroyNota()"
+                            class="btn btn-danger btn-sm"
+                            title="Hapus">
+                            <i class="fa fa-trash-o"></i></a>
+                      </div>';
+          }else{
+            return '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetail('.$data->dsr_id.')"
+                            data-target="#myItem">
+                        </button>
+                      </div>';
+          }
          
           })
     ->rawColumns(['dsr_date','dsr_status','dsr_method','dsr_jenis_return','action'])
@@ -344,17 +377,21 @@ class ManajemenReturnPenjualanController extends Controller
         'dsr_created' => Carbon::now()
       ]);
 
-    // for ($i=0; $i < $request->i_id ; $i++) { 
-    //   'dsrdt_idsr' => $dsr_id,
-    //   'dsrdt_smdt' => $i + 1,
-    //   'dsrdt_item' => $i_id[$i],
-    //   'dsrdt_qty' => $sd_qty[$i],
-    //   'dsrdt_qty_confirm' => $sd_qty_return[$i],
-    //   'dsrdt_price' =>  $sd_price[$i],
-    //   'dsrdt_disc_percent' =>
-    //   'dsrdt_disc_vpercent' =>
-    //   'dsrdt_disc_value' => 
-    // }
+    for ($i=0; $i < count($request->i_id); $i++) { 
+        d_sales_returndt::create([
+          'dsrdt_idsr' => $dsr_id,
+          'dsrdt_smdt' => $i + 1,
+          'dsrdt_item' => $request->i_id[$i],
+          'dsrdt_qty' => $request->sd_qty[$i],
+          'dsrdt_qty_confirm' => $request->sd_qty_return[$i],
+          'dsrdt_price' => ($this->konvertRp($request->sd_price[$i])),
+          'dsrdt_disc_percent' => $request->sd_disc_percent[$i],
+          'dsrdt_disc_vpercent' => $request->value_disc_percent[$i],
+          'dsrdt_disc_value' => ($this->konvertRp($request->sd_disc[$i])),
+          'dsrdt_return_price' => ($this->konvertRp($request->sd_return[$i])),
+          'dsrdt_hasil' => ($this->konvertRp($request->sd_total[$i]))
+        ]);
+    }
 
 
   DB::commit();
@@ -376,9 +413,24 @@ class ManajemenReturnPenjualanController extends Controller
                                   'dsr_price_return',
                                   'dsr_sgross',
                                   'dsr_disc_value',
-                                  'dsr_net')
+                                  'dsr_net',
+                                  'i_name',
+                                  'dsrdt_qty',
+                                  'dsrdt_qty_confirm',
+                                  'm_sname',
+                                  'dsrdt_price',
+                                  'dsrdt_disc_percent',
+                                  'dsrdt_disc_value',
+                                  'dsrdt_return_price',
+                                  'dsrdt_hasil',
+                                  'dsr_status',
+                                  'dsr_id')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
+      ->join('m_item','m_item.i_id','=','dsrdt_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('dsr_id',$request->x)
       ->get();
       // dd($data);
 
@@ -391,4 +443,112 @@ class ManajemenReturnPenjualanController extends Controller
     return str_replace(',', '.', $value);
 
     }
+
+  public function storeReturn($id){
+    $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return')
+      ->where('dsr_id',$id)
+      ->first();
+    if ($data->dsr_method == 'PN') {
+      if ($data->dsr_jenis_return == 'BR') {
+        $cek = d_sales_returndt::select('dsrdt_item',
+                                        'dsrdt_qty_confirm')
+          ->where('dsrdt_idsr',$data->dsr_id)->get();
+       
+        for ($i=0; $i <count($cek) ; $i++) {
+          if ($cek[$i]->dsrdt_qty_confirm != 0) {
+             $coba[] = $cek[$i];
+             $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',8)
+                ->where('s_position',8)
+                ->first();
+              if ($stockRusak == null) {
+                $s_id = d_stock::select('s_id')->max('s_id')+1;
+                d_stock::create([
+                    's_id' => $s_id,
+                    's_comp' => 8,
+                    's_position' => 8,
+                    's_item' => $cek[$i]->dsrdt_item,
+                    's_qty' => $cek[$i]->dsrdt_qty_confirm
+                  ]);
+                d_stock_mutation::create([
+                    'sm_stock' =>  $s_id,
+                    'sm_detailid' => 1,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 8,
+                    'sm_position' => 8,
+                    'sm_mutcat' => 4,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+              }else{
+            $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
+            // dd($cek[$i]->dsrdt_qty_confirm);
+            $stockRusak->update([
+              's_qty' => $tambahStock,
+            ]);
+            $sm_detailid = d_stock_mutation::select('sm_detailid')
+              ->where('sm_stock',$stockRusak->s_id)
+              ->max('sm_detailid')+1;
+            // dd($sm_detailid);
+            d_stock_mutation::create([
+                    'sm_stock' =>  $stockRusak->s_id,
+                    'sm_detailid' => $sm_detailid,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 8,
+                    'sm_position' => 8,
+                    'sm_mutcat' => 4,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+           }
+         }
+        }
+        
+      }else{
+        dd($requests->all());
+        for ($i=0; $i <count($cek) ; $i++) {
+          if ($cek[$i]->dsrdt_qty_confirm != 0) {
+            $stockGrosir = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',2)
+                ->where('s_position',2)
+                ->first();
+            $tambahStock = (int)$stockGrosir->s_qty + $cek[$i]->dsrdt_qty_confirm;
+            // dd($cek[$i]->dsrdt_qty_confirm);
+            $stockGrosir->update([
+              's_qty' => $tambahStock,
+            ]);
+            $sm_detailid = d_stock_mutation::select('sm_detailid')
+              ->where('sm_stock',$stockGrosir->s_id)
+              ->max('sm_detailid')+1;
+            // dd($sm_detailid);
+            d_stock_mutation::create([
+                    'sm_stock' =>  $stockGrosir->s_id,
+                    'sm_detailid' => $sm_detailid,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 2,
+                    'sm_position' => 2,
+                    'sm_mutcat' => 4,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+          }
+        }
+        
+      }
+    }else{
+      return 'b';
+    }
+  }
 }

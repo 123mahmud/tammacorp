@@ -416,6 +416,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenReturnPenjualanController@tabelPotNota');
     Route::get('/penjualan/returnpenjualan/store/{metode}', 'Penjualan\ManajemenReturnPenjualanController@store');
     Route::get('/penjualan/returnpenjualan/getdata', 'Penjualan\ManajemenReturnPenjualanController@detail');
+    Route::get('/penjualan/returnpenjualan/return/{id}', 'Penjualan\ManajemenReturnPenjualanController@storeReturn');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
@@ -856,6 +857,11 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'kelompok_aktiva.index'
             ]);
 
+            Route::get('/aktiva/kelompok_aktiva/list-table', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list_table',
+                'as'    => 'kelompok_aktiva.list_table'
+            ]);
+
             Route::get('/aktiva/kelompok_aktiva/add', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@add',
                 'as'    => 'kelompok_aktiva.add'
@@ -874,6 +880,16 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/aktiva/kelompok_aktiva/list-kelompok', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list',
                 'as'    => 'kelompok_aktiva.list'
+            ]);
+
+            Route::post('/aktiva/kelompok_aktiva/update', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@update',
+                'as'    => 'kelompok_aktiva.update'
+            ]);
+
+            Route::post('/aktiva/kelompok_aktiva/delete', [
+                'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@delete',
+                'as'    => 'kelompok_aktiva.delete'
             ]);
 
             // Route::get('/purchasing/pembayaran_hutang/get-po', [
@@ -1009,10 +1025,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/konfirmasipembelian/get-data-tabel-return', 'Keuangan\ConfrimBeliController@getDataReturnPembelian');
     Route::get('/keuangan/konfirmasipembelian/confirm-return/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmReturnPembelian');
     Route::post('/keuangan/konfirmasipembelian/confirm-return-submit', 'Keuangan\ConfrimBeliController@submitReturnPembelian');
+    //mahmud
+    Route::get('/keuangan/tabel/returnpenjualan', 'Keuangan\ConfrimBeliController@tableReturnPenjualan');
+    Route::get('/keuangan/returnpenjualan/getdata', 'Keuangan\ConfrimBeliController@detail');
+    Route::get('/keuangan/returnpenjualan/update/{status}/{id}', 'Keuangan\ConfrimBeliController@updateReturnPenjualan');
+    
+    //end mahmud
 //10-07-18
     Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
     Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
-    Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
+    Route::post('/keuangan/konfirmasiConfrimBeliControllerpembelian/confirm-belanjaharian-submit', 'Keuangan\@submitBelanjaHarian');
 //hutang piutang
     Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\HutangController@hutang');
     Route::get('/keuangan/l_hutangpiutang/get_hutang_by_tgl/{tgl1}/{tgl2}', 'Keuangan\HutangController@getHutangByTgl');

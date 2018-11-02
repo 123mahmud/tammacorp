@@ -37,7 +37,7 @@ class stockGrosirController extends Controller
           if ($data->s_qty == null) {
               return '0';
           }else{
-              return $data->s_qty;
+              return ''.number_format( $data->s_qty ,0,',','.').'';
           }
       })
     ->addIndexColumn()

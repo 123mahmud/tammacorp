@@ -74,7 +74,7 @@
                                name="sd_disc_percent[]"
                                @if($x->sd_disc_percent == '0') readonly="true" @else @endif
                                class="form-control discpercent hasildiscpercent discpercent-{{ $x->i_id }}"
-                               value="@if($x->sd_disc_percent == '0')@else{{ $x->sd_disc_percent }} 0 @endif">
+                               value="@if($x->sd_disc_percent == '0')@else{{ $x->sd_disc_percent }} @endif">
                         <span class="input-group-addon">%</span>
                     </div>
                     <input name="totalValuePercent[]" type="text" value="0" style="display:none"
@@ -88,7 +88,8 @@
                            onblur="setRupiah(event,'discvalue-{{ $x->i_id }}')"
                            onclick="setAwal('event','discvalue-{{ $x->i_id }}')"
                            @if($x->sd_disc_value == '0')  readonly="true" @else @endif
-                           value="Rp.@if($x->sd_disc_value == null) @else {{ number_format($x->sd_disc_value,2,',','.')}}  @endif">
+                           value="Rp.@if($x->sd_disc_value == null) @else {{ number_format($x->sd_disc_value / $x->sd_qty,2,',','.')}}  @endif">
+                    <input type="text" size="200" readonly name="totaldiscvalue[]" id="totaldiscvalue" style="display:none" class="form-control totaldiscvalue totaldiscvalue-{{ $x->i_id }}" value="{{ (int)$x->sd_disc_value }}">
                 </td>
                 <td>
                     <input type="text" size="200" readonly style="text-align:right" name="hasil[]" id="hasil"

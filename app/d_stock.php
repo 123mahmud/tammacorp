@@ -12,9 +12,9 @@ class d_stock extends Model
     const UPDATED_AT = 's_update';
     
       protected $fillable = [	's_id',
-      							's_comp',
-      							's_position', 
-      							's_item', 
-      							's_qty',
-      							's_qty_min'];
+                							's_comp',
+                							's_position', 
+                							's_item', 
+                							's_qty',
+                							's_qty_min'];
 }

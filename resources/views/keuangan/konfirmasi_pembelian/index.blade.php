@@ -32,6 +32,7 @@
             <li><a href="#order-tab" data-toggle="tab" onclick="daftarTabelOrder()">Daftar Order Pembelian</a></li>
             <li><a href="#return-tab" data-toggle="tab" onclick="daftarTabelReturn()">Daftar Return Pembelian</a></li>
             <li><a href="#belanjaharian-tab" data-toggle="tab" onclick="daftarTabelBelanja()">Daftar Belanja Harian</a></li>
+            <li><a href="#returnPenjualan-tab" data-toggle="tab" onclick="daftarReturnPenjualan()">Daftar Return Penjualan</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive">
@@ -43,6 +44,8 @@
             @include('keuangan.konfirmasi_pembelian.tab-return')
             <!-- tab daftar belanja harian -->
             @include('keuangan.konfirmasi_pembelian.tab-belanjaharian')
+            <!-- tab daftar return penjualan -->
+            @include('keuangan.konfirmasi_pembelian.tab-returnpenjualan')
           </div>
         </div>
       </div>
@@ -59,6 +62,33 @@
     <!--modal confirm belanja harian-->
     @include('keuangan.konfirmasi_pembelian.modal-confirm-belanjaharian')
   <!-- /modal -->
+  <!-- End DIv note-tab -->
+<!-- div label-badge-tab -->
+ {{--  mahmud --}}
+  <div class="modal fade" id="myItem" role="dialog">
+    <div class="modal-dialog modal-lg"
+         style="width: 90%;margin-left: auto;margin-top: 30px;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #e77c38;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color: white;">Nama Item</h4>
+
+            </div>
+            <div class="modal-body">
+                <div id="xx">
+
+                </div>
+            </div>
+            <div id="buttonDetail" class="modal-footer">
+
+            </div>
+        </div>
+
+    </div>
+  </div>
+  {{-- end mahmud --}}
 </div>
 @endsection
 @section("extra_scripts")
@@ -1048,6 +1078,84 @@
   {
     $('#tbl-return').DataTable().ajax.reload();
   } 
+
+  //mahmud
+  function daftarReturnPenjualan(){
+    var tablePenjualan = $('#tbl-returnpenjualan').DataTable({
+    destroy: true,
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url : baseUrl + "/keuangan/tabel/returnpenjualan",
+    },
+    columns: [
+      //{data: 'DT_Row_Index', name: 'DT_Row_Index'},
+      {data: 'dsr_date', name: 'dsr_date'},
+      {data: 'dsr_code', name: 'dsr_code'},
+      {data: 'dsr_method', name: 'dsr_method'},
+      {data: 'dsr_jenis_return', name: 'dsr_jenis_return'},
+      {data: 'dsr_type_sales', name: 'dsr_type_sales'},
+      {data: 'dsr_status', name: 'dsr_status'},
+      {data: 'action', name: 'action', orderable: false, searchable: false},
+    ],
+    language: {
+      searchPlaceholder: "Cari Data",
+      emptyTable: "Tidak ada data",
+      sInfo: "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+      sSearch: '<i class="fa fa-search"></i>',
+      sLengthMenu: "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+      infoEmpty: "",
+      paginate: {
+            previous: "Sebelumnya",
+            next: "Selanjutnya",
+         }
+    }
+  });  
+  }
+
+  function refreshReturnPenjualan(){
+    daftarReturnPenjualan();
+  }
+
+  function lihatDetail(id){
+     $.ajax({
+        url: baseUrl + "/keuangan/returnpenjualan/getdata",
+        type: 'get',
+        data: {x: id},
+        success: function (response) {
+          $('#xx').html(response);
+        }
+    });
+  }
+
+  function submitReturnPenjualan(id){
+    var status = $('#status_return_confirm').val();
+    $.ajax({
+        url: baseUrl + "/keuangan/returnpenjualan/update/" + status + '/' + id,
+        type: 'get',
+        success: function (response) {
+          if (response.status == 'sukses') {
+                    daftarReturnPenjualan();
+                    $('#myItem').modal('hide');
+                    iziToast.success({
+                        timeout: 5000,
+                        position: "topRight",
+                        icon: 'fa fa-chrome',
+                        title: '',
+                        message: 'Berhasil Merubah Status.'
+                    });
+          }else{
+                    iziToast.error({
+                        position: "topRight",
+                        title: '',
+                        message: 'Gagal Merubah Status.'
+                    });
+          }
+        }
+    });
+
+  }
+  //end mahmud
 
 </script>
 @endsection()

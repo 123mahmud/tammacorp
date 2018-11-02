@@ -572,7 +572,7 @@ class ReturnPembelianController extends Controller
       ]);
     }
 
-    if(jurnal_setting()->allow_jurnal_to_execute){
+    if(jurnal_setting()->allow_jurnal_to_execute && $request->metodeReturn == 'PN'){
       $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Potong Nota Dari '.$request->namaSup.' Atas '.$pcs->d_pcs_code, $acc);
     }
 
