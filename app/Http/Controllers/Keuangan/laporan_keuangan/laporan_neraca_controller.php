@@ -75,6 +75,8 @@ class laporan_neraca_controller extends Controller
     			->orderBy('id_group', 'asc')
     			->get();
 
+          return 
+
           $saldo_laba = $pendapatan->pendapatan - $beban->beban;
     	}
 

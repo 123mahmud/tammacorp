@@ -315,7 +315,7 @@
                       <h4 class="modal-title" id="myModalLabel">Setting Neraca Saldo</h4>
                     </div>
 
-                    <form id="form-jurnal" method="get" action="{{ route('laporan_neraca_saldo.index') }}" target="_blank">
+                    <form id="form-jurnal" method="get" action="{{ route('laporan_neraca_saldo.index') }}" target="_self">
                     <div class="modal-body">
                       <div class="row" style="margin-bottom: 15px;">
                         <div class="col-md-3">

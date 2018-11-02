@@ -63,7 +63,13 @@
 		    #table-data td{
 		    	border-right: 1px solid #555;
 		    	padding: 5px;
+          border: 1px solid #efefef;
 		    }
+
+        #table-data tfoot td{
+          padding: 5px;
+          border: 1px solid #aaa;
+        }
 
 		    #table-data td.currency{
 		    	text-align: right;
@@ -193,21 +199,15 @@
            <tr>
               <th rowspan="2" width="6%">Kode Akun</th>
               <th rowspan="2" width="12%">Nama Akun</th>
-              <th colspan="2" width="10%">Saldo Awal</th>
+              <th rowspan="2" width="7%">Saldo Awal</th>
               <th colspan="2" width="10%">Mutasi Bank</th>
               <th colspan="2" width="10%">Mutasi Kas</th>
               <th colspan="2" width="10%">Mutasi Memorial</th>
               <th colspan="2" width="10%">Total Mutasi</th>
-              <th colspan="2" width="10%">Saldo Akhir</th>
+              <th rowspan="2" width="7%">Saldo Akhir</th>
             </tr>
 
             <tr>
-              <th width="6%">Debet</th>
-              <th width="6%">Kredit</th>
-
-              <th width="6%">Debet</th>
-              <th width="6%">Kredit</th>
-
               <th width="6%">Debet</th>
               <th width="6%">Kredit</th>
 
@@ -225,208 +225,123 @@
           </thead>
 
           <tbody>
-            <?php $tot_saldo_d = $tot_saldo_k = $tot_mb_d = $tot_mb_k = $tot_mk_d = $tot_mk_k = $tot_mm_d = $tot_mm_k = $tot_mutasi_d = $tot_mutasi_k = $tot_saldo_akhir_debet = $tot_saldo_akhir_kredit = 0 ?>
-            @foreach($data as $key => $okee)
-                <tr>
-                  <td style="padding: 5px; vertical-align: top;">{{ $okee->id_akun }}</td>
-                  <td style="padding: 5px;font-weight: normal;">{{ $okee->nama_akun }}</td>
 
-                  <?php 
-                    $deb = $kre = $tot_deb = $tot_kred = $saldo_akhir_debet = $saldo_akhir_kredit = 0;
+            <?php 
+              $tot_saldo = $tot_bd = $tot_bk = $tot_kd = $tot_kk = $tot_md = $tot_mk = $tot_mut_d = $tot_mut_k = $tot_saldo_a = 0;
+            ?>
 
-                    $debet = (count($data_saldo[$key]->mutasi_bank_debet) > 0) ? $data_saldo[$key]->mutasi_bank_debet->first()->total : 0;
-                    $kredit = (count($data_saldo[$key]->mutasi_bank_kredit) > 0) ? $data_saldo[$key]->mutasi_bank_kredit->first()->total : 0;
+            @foreach($data as $key => $akun)
 
-                    $total = $data_saldo[$key]->total + ($debet + $kredit);
+              <?php 
 
-                    if($data_saldo[$key]->posisi_akun == 'D')
-                      if($total > 0 )
-                        $deb = str_replace('-', '', $total);
-                      else
-                        $kre = str_replace('-', '', $total);
-                    else
-                      if($total > 0 )
-                        $kre = str_replace('-', '', $total);
-                      else
-                        $deb = str_replace('-', '', $total);
+                $tot_saldo += $akun->saldo_awal;
 
-                    if(strtotime($data_date) < strtotime($data_saldo[$key]->opening_date)){
-                      $kre = 0; $deb = 0;
-                    }
-                  ?>
+                $tot_bd += $akun->mutasi_bank_debet;
+                $tot_bk += $akun->mutasi_bank_kredit;
+                $tot_kd += $akun->mutasi_kas_debet;
+                $tot_kk += $akun->mutasi_kas_kredit;
+                $tot_md += $akun->mutasi_memorial_debet;
+                $tot_mk += $akun->mutasi_memorial_kredit;
 
+                $tot_mut_d += ($akun->mutasi_bank_debet + $akun->mutasi_bank_debet + $akun->mutasi_memorial_debet);
+                $tot_mut_k += ($akun->mutasi_bank_kredit + $akun->mutasi_bank_kredit + $akun->mutasi_memorial_kredit);
+                $tot_saldo_a += $akun->saldo_akhir;
 
-                  {{-- saldo awal --}}
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($deb,2) }}</td>
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">{{ number_format($kre,2) }}</td>
-
-                  <?php 
-                    $saldo_akhir_debet += str_replace('-', '', $deb);
-                    $saldo_akhir_kredit += str_replace('-', '', $kre);
-
-                    $tot_saldo_d += $deb;
-                    $tot_saldo_k += $kre;
-                  ?>
-
-                  {{-- Mutasi bank --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      ($okee->mutasi_bank_debet->count() != 0) ? number_format(str_replace('-', '', $okee->mutasi_bank_debet->first()->total),2) : number_format(0,2)
-                    }}
-                  </td>
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      ($okee->mutasi_bank_kredit->count() != 0) ? number_format(str_replace('-', '', $okee->mutasi_bank_kredit->first()->total),2) : number_format(0,2)
-                    }}
-                  </td>
-
-                  <?php
-                    $tot_mb_d += ($okee->mutasi_bank_debet->count() != 0) ? str_replace('-', '', $okee->mutasi_bank_debet->first()->total) : 0;
-                    $tot_mb_k += ($okee->mutasi_bank_kredit->count() != 0) ? str_replace('-', '', $okee->mutasi_bank_kredit->first()->total) : 0;
-
-                    $tot_deb += ($okee->mutasi_bank_debet->count() != 0) ? str_replace('-', '', $okee->mutasi_bank_debet->first()->total) : 0;
-                    $tot_kred += ($okee->mutasi_bank_kredit->count() != 0) ? str_replace('-', '', $okee->mutasi_bank_kredit->first()->total) : 0;
-                  ?>
-
-
-                  {{-- Mutasi kas --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      ($okee->mutasi_kas_debet->count() != 0) ? number_format(str_replace('-', '', $okee->mutasi_kas_debet->first()->total),2) : number_format(0,2)
-                    }}
-                  </td>
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      ($okee->mutasi_kas_kredit->count() != 0) ? number_format(str_replace('-', '', $okee->mutasi_kas_kredit->first()->total),2) : number_format(0,2)
-                    }}
-                  </td>
-
-                  <?php
-                    $tot_mk_d += ($okee->mutasi_kas_debet->count() != 0) ? str_replace('-', '', $okee->mutasi_kas_debet->first()->total) : 0;
-                    $tot_mk_k += ($okee->mutasi_kas_kredit->count() != 0) ? str_replace('-', '', $okee->mutasi_kas_kredit->first()->total) : 0;
-
-                    $tot_deb += ($okee->mutasi_kas_debet->count() != 0) ? str_replace('-', '', $okee->mutasi_kas_debet->first()->total) : 0;
-                    $tot_kred += ($okee->mutasi_kas_kredit->count() != 0) ? str_replace('-', '', $okee->mutasi_kas_kredit->first()->total) : 0;
-                  ?>
-
-
-                  {{-- Mutasi Memorial --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      ($okee->mutasi_memorial_debet->count() != 0) ? number_format(str_replace('-', '', $okee->mutasi_memorial_debet->first()->total),2) : number_format(0,2)
-                    }}
-                  </td>
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      ($okee->mutasi_memorial_kredit->count() != 0) ? number_format(str_replace('-', '', $okee->mutasi_memorial_kredit->first()->total),2) : number_format(0,2)
-                    }}
-                  </td>
-
-                  <?php
-                    $tot_mm_d += ($okee->mutasi_memorial_debet->count() != 0) ? str_replace('-', '', $okee->mutasi_memorial_debet->first()->total) : 0;
-                    $tot_mm_k += ($okee->mutasi_memorial_kredit->count() != 0) ? str_replace('-', '', $okee->mutasi_memorial_kredit->first()->total) : 0;
-
-                    $tot_deb += ($okee->mutasi_memorial_debet->count() != 0) ? str_replace('-', '', $okee->mutasi_memorial_debet->first()->total) : 0;
-                    $tot_kred += ($okee->mutasi_memorial_kredit->count() != 0) ? str_replace('-', '', $okee->mutasi_memorial_kredit->first()->total) : 0;
-                  ?>
-
-
-                  {{-- Total Mutasi --}}
-                  <td class="text-right" style="padding: 5px;font-weight: 600; background: #f1f1f1;">
-                    {{ 
-                      number_format($tot_deb, 2)
-                    }}
-                  </td>
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600; background: #f1f1f1;">
-                    {{ 
-                       number_format($tot_kred, 2)
-                    }}
-                  </td>
-
-                  <?php
-                    $tot_mutasi_d += str_replace('-', '', $tot_deb);
-                    $tot_mutasi_k += str_replace('-', '', $tot_kred);
-
-                    $saldo_akhir_debet += str_replace('-', '', $tot_deb);
-                    $saldo_akhir_kredit += str_replace('-', '', $tot_kred);
-                  ?>
-
-
-                  {{-- Saldo Akhir --}}
-
-                  <?php 
-                    $sdo = $saldo_akhir_debet - $saldo_akhir_kredit;
-                    $d = $k = 0;
-
-                    if($sdo < 0)
-                      $k = str_replace('-', '', $sdo);
-                    else
-                      $d = str_replace('-', '', $sdo)
-                  ?>
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                      number_format($d, 2)
-                    }}
-                  </td>
-
-                  <td class="text-right" style="padding: 5px;font-weight: 600;">
-                    {{ 
-                       number_format($k, 2)
-                    }}
-                  </td>
-
-                  <?php
-                    $tot_saldo_akhir_debet += str_replace('-', '', $d);
-                    $tot_saldo_akhir_kredit += str_replace('-', '', $k);
-                  ?>
-
-                </tr>
-              @endforeach
+              ?>
 
               <tr>
-                
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-center" colspan="2">Grand Total</td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format(str_replace('-', '', $tot_saldo_d), 2) }}</td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">{{ number_format(str_replace('-', '', $tot_saldo_k), 2) }}</td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mb_d), 2) }}
+                <td class="text-center">{{ $akun->id_akun }}</td>
+                <td>{{ $akun->nama_akun }}</td>
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->saldo_awal) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mb_k), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_bank_debet) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mk_d), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_bank_kredit) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mk_k), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_kas_debet) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mm_d), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_kas_kredit) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mm_k), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_memorial_debet) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold; background: #f1f1f1;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mutasi_d), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_memorial_kredit) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold; background: #f1f1f1;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_mutasi_k), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_bank_debet + $akun->mutasi_kas_debet + $akun->mutasi_memorial_debet) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_saldo_akhir_debet), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->mutasi_bank_kredit + $akun->mutasi_kas_kredit + $akun->mutasi_memorial_kredit) }}
                 </td>
-                <td style="background: #eee; border: 1px solid #777; font-weight: bold;" class="text-right">
-                  {{ number_format(str_replace('-', '', $tot_saldo_akhir_kredit), 2) }}
+
+                <td class="text-right">
+                  {{ formatAccounting($akun->saldo_akhir) }}
                 </td>
               </tr>
+
+            @endforeach
             
           </tbody>
+
+          <tfoot>
+            <tr>
+              <td colspan="2" class="text-center" style="font-weight: bold; background: #eee;">Total</td>
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_saldo) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_bd) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_bk) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_kd) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_kk) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_md) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_mk) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_mut_d) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_mut_k) }}
+              </td>
+
+              <td class="text-right" style="font-weight: bold; background: #eee;">
+                {{ formatAccounting($tot_saldo_a) }}
+              </td>
+            </tr>
+          </tfoot>
         </table>
 
         <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
