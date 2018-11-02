@@ -550,7 +550,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
     Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
     Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
-    Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
+    Route::get('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
     Route::get('/hrd/payroll/datatable-gaji-pro', 'Hrd\GajiController@gajiProData');
     Route::get('/hrd/payroll/tambah-gaji-pro', 'Hrd\GajiController@tambahGajiPro');
     Route::post('/hrd/payroll/simpan-gaji-pro', 'Hrd\GajiController@simpanGajiPro');

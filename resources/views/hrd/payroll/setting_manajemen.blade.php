@@ -224,7 +224,7 @@
         $.extend($.fn.dataTableExt.oStdClasses, extensions);
         // Used when bJQueryUI is true
         $.extend($.fn.dataTableExt.oJUIClasses, extensions)
-        $('#tbl_man').DataTable({
+        var tblMan = $('#tbl_man').DataTable({
           processing: true,
           // responsive:true, 
           serverSide: true,
@@ -232,10 +232,10 @@
             url: '{{ url("hrd/payroll/datatable-gaji-man") }}',
           },
           columnDefs: [
-            {
-              targets: 0,
-              className: 'center d_id'
-            },
+            // {
+            //   targets: 0,
+            //   className: 'center d_id'
+            // },
           ],
           "columns": [
             { "data": "nm_gaji" },
@@ -262,7 +262,7 @@
             }
           }
         });
-        $('#tbl_tunjangan').DataTable({
+        var tblTun = $('#tbl_tunjangan').DataTable({
           processing: true,
           // responsive:true, 
           serverSide: true,
@@ -270,10 +270,10 @@
             url: '{{ url("hrd/payroll/datatable-tunjangan-man") }}',
           },
           columnDefs: [
-            {
-              targets: 0,
-              className: 'center d_id'
-            },
+            // {
+            //   targets: 0,
+            //   className: 'center d_id'
+            // },
           ],
           "columns": [
             { "data": "tman_nama" },
@@ -298,7 +298,7 @@
             }
           }
         });
-        $('#tbl_pro').DataTable({
+        var tblPro = $('#tbl_pro').DataTable({
           processing: true,
           // responsive:true, 
           serverSide: true,
@@ -306,10 +306,10 @@
             url: '{{ url("hrd/payroll/datatable-gaji-pro") }}',
           },
           columnDefs: [
-            {
-              targets: 0,
-              className: 'center d_id'
-            },
+            // {
+            //   targets: 0,
+            //   className: 'center d_id'
+            // },
           ],
           "columns": [
             { "data": "nm_gaji" },
@@ -405,22 +405,26 @@
                 $.ajax({
                   url: '{{ url("hrd/payroll/delete-gaji-man") }}' + '/' + id,
                   async: false,
-                  type: "DELETE",
+                  type: "GET",
                   data: {
                     "id": id,
-                    "_method": 'DELETE',
+                    "_method": 'GET',
                     "_token": '{{ csrf_token() }}',
                   },
                   dataType: "json",
                   success: function (data) { }
                 });
-                window.location.reload();
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+                tblMan.ajax.reload();
+                instance.hide({
+                    transitionOut: 'fadeOutUp'
+                }, toast);
 
               }, true],
               ['<button>TIDAK</button>', function (instance, toast) {
 
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+                instance.hide({
+                    transitionOut: 'fadeOutUp'
+                }, toast);
 
               }]
             ],
@@ -476,13 +480,19 @@
                   dataType: "json",
                   success: function (data) { }
                 });
-                window.location.reload();
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+                tblTun.ajax.reload();
+                
+                instance.hide({
+                    transitionOut: 'fadeOutUp'
+                }, toast);
 
               }, true],
               ['<button>TIDAK</button>', function (instance, toast) {
 
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+                
+                instance.hide({
+                    transitionOut: 'fadeOutUp'
+                }, toast);
 
               }]
             ],
@@ -538,13 +548,18 @@
                   dataType: "json",
                   success: function (data) { }
                 });
-                window.location.reload();
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+                tblPro.ajax.reload();
+                instance.hide({
+                    transitionOut: 'fadeOutUp'
+                }, toast);
+
 
               }, true],
               ['<button>TIDAK</button>', function (instance, toast) {
 
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+                instance.hide({
+                    transitionOut: 'fadeOutUp'
+                }, toast);
 
               }]
             ],

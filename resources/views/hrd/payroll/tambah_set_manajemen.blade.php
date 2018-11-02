@@ -139,8 +139,8 @@
                           <input type="number" id="s1" name="c_s1" class="form-control input-sm">
                         </div>
                       </div>
-                      <div class="col-md-6 col-sm-12 col-xs-12">
-                        <input type="button" value="Batal" class="btn btn-danger btn-block">
+                      <div class="col-md-6 col-sm-12 col-xs-12 col-offset-md-6">
+                        <a type="button" class="btn btn-danger btn-block" href="{{ url('hrd/payroll/setting-gaji') }}">Batal</a>
                       </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">
                         <input type="submit" value="Simpan" class="btn btn-primary btn-block">

@@ -82,7 +82,6 @@
                             <option value="JM">Jam</option>
                             <option value="HR">Hari</option>
                             <option value="MG">Minggu</option>
-                            <option value="BL">Bulan</option>
                             <option value="TH">Tahun</option>
                           </select>
                         </div>
@@ -98,7 +97,7 @@
                       </div>
                       
                       <div class="col-md-6 col-sm-12 col-xs-12">
-                        <input type="button" value="Batal" class="btn btn-danger btn-block" onclick="batal()">
+                        <a type="button" class="btn btn-danger btn-block" href="{{ url('hrd/payroll/setting-gaji') }}">Batal</a>
                       </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">
                         <input type="submit" value="Simpan" class="btn btn-primary btn-block">
