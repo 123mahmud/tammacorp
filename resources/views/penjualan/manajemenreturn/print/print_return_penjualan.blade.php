@@ -131,9 +131,9 @@
 					<td>
 						<fieldset>
 							Kepada Yth		:<br>
-							Vladimir Putin<br>
-							JL. OURLAND<br>
-							Moskow
+							{{ $dataCus->c_name }}<br>
+							{{ $dataCus->c_address }}<br>
+							{{ $dataCus->c_region }}
 						</fieldset>
 					</td>
 					<td class="s16 position-top" width="40%">
@@ -141,12 +141,12 @@
 							<tr>
 								<td class="s16">No. Bukti</td>
 								<td class="s16">:</td>
-								<td class="s16">FPG-006/AP/0111</td>
+								<td class="s16">{{ $dataCus->dsr_code }}</td>
 							</tr>
 							<tr>
 								<td class="s16">Tanggal</td>
 								<td class="s16">:</td>
-								<td class="s16">10-01-2011</td>
+								<td class="s16">{{ $dataCus->dsr_date }}</td>
 							</tr>
 						</table>
 					</td>
@@ -160,171 +160,76 @@
 					<td>Nama Barang</td>
 					<td colspan="2">Unit</td>
 					<td width="10%">Harga</td>
-					<td width="10%">Unit Disc</td>
 					<td width="10%">Total</td>
 				</tr>
+				{{-- {{ dd($retur) }} --}}
+				@for($i=0; $i<count($retur); $i++)
 				<tr class="border-none-bottom">
-					<td class="text-center">1</td>
-					<td>6969696969</td>
-					<td>cyka-blyat-122</td>
-					<td class="text-right" width="5%">15</td>
-					<td class="text-right border-none-left" width="1%">PAK</td>
-					<td class="text-right">999.999.999,00</td>
-					<td class="text-right">999.999.999,00</td>
-					<td class="text-right">999.999.999,00</td>
+					<td class="text-center">{{ $i + 1 }}</td>
+					<td>{{ $retur[$i]['i_code'] }}</td>
+					<td>{{ $retur[$i]['i_name'] }}</td>
+					<td class="text-right" width="5%">{{ $retur[$i]['dsrdt_qty_confirm'] }}</td>
+					<td class="text-right border-none-left" width="1%">{{ $retur[$i]['m_sname'] }}</td>
+					<td class="text-right">{{number_format($retur[$i]['dsrdt_price'],0,',','.')}}</td>
+					<td class="text-right">{{number_format($retur[$i]['dsrdt_hasil'],0,',','.')}}</td>
 				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="border-none-bottom">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="">
-					<td class="text-center empty"></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="border-none-left"></td>
-					<td class="text-right"></td>
-					<td></td>
-					<td></td>
-				</tr>
+				@endfor
+				<?php
+						$kosong = [];
+						$hitung = 10 - count($retur);
+
+						for ($a=0; $a < $hitung; $a++) { 
+							array_push($kosong, 'a');
+						}
+					?>
+				@foreach($kosong as $index => $we)
+						<tr>
+							<td class="text-center empty"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td class="text-right border-none-left" width="1%"></td>
+							<td></td>
+							<td></td>
+						</tr>
+					@endforeach
+				
 				<tr class="border-none">
-					<td colspan="3" class="top">Terbilang : Seribu Rupiah</td>
-					<td class="text-right top">15</td>
+					<td colspan="3" class="top"></td>
+					<td class="text-right top"></td>
 					<td colspan="4">
 						<table class="border-none float-right" width="90%">
 							<tr>
-								<td>Jumlah</td>
-								<td>999.999.999,00</td>
+								<td></td>
+								<td></td>
 							</tr>
 							<tr>
+								<td>Total Retur</td>
+								<td>{{number_format($result,0,',','.')}}</td>
+							</tr>
+						{{-- 	<tr>
 								<td>Total Diskon</td>
 								<td>0,00</td>
-							</tr>
-							<tr>
+							</tr> --}}
+						{{-- 	<tr>
 								<td>SubTotal</td>
 								<td>999.999.999,00</td>
-							</tr>
-							<tr>
+							</tr> --}}
+						{{-- 	<tr>
 								<td>PPn</td>
 								<td>0,00</td>
 							</tr>
 							<tr>
 								<td>Total</td>
 								<td>999.999.999,00</td>
-							</tr>
+							</tr> --}}
 						</table>
 					</td>
 				</tr>
 				<tr class="border-none-bottom">
 					<td colspan="8">
 						<label class="bold">Catatan :</label><br>
-						<small>Vladimir Putin</small>
+						<small></small>
 					</td>
 				</tr>
 				<tr>
