@@ -445,6 +445,8 @@ class ManajemenReturnPenjualanController extends Controller
     }
 
   public function storeReturn($id){
+    DB::beginTransaction();
+    try {
     $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return')
       ->where('dsr_id',$id)
       ->first();
@@ -508,7 +510,10 @@ class ManajemenReturnPenjualanController extends Controller
                     'sm_reff' => $data->dsr_code,
                     'sm_insert' => Carbon::now()
                 ]);
+
            }
+
+           // d_sales::where
          }
         }
         
@@ -550,5 +555,26 @@ class ManajemenReturnPenjualanController extends Controller
     }else{
       return 'b';
     }
+    DB::commit();
+    return response()->json([
+          'status' => 'sukses'
+      ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+      ]);
+    }
+  }
+
+  public function printreturn($id){
+    $data = d_sales_return::where('dsr_id',$id)
+      ->join('d_sales_returdt','d_sales_returdt.dsrdt_idsr','=','dsr_id')
+      ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      
+      ->get();
+    dd($data);
+    return view('penjualan.manajemenreturn.print.print_return_penjualan');
   }
 }
