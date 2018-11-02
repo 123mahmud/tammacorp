@@ -252,7 +252,7 @@
       $('.currency').inputmask("currency", {
         radixPoint: ",",
         groupSeparator: ".",
-        digits: 0,
+        digits: 2,
         autoGroup: true,
         prefix: '', //Space after $, this will not truncate the first character.
         rightAlign: false,
@@ -389,22 +389,37 @@
           //loop data
           Object.keys(data.data_isi).forEach(function(){
             var qtyCost = data.data_isi[key-1].d_pcspdt_qtyconfirm;
-            $('#tabel-form-po').append('<tr class="tbl_form_row" id="row'+i+'">'
-                            +'<td style="text-align:center">'+key+'</td>'
-                            +'<td><input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].d_pcspdt_id+'" name="fieldidPlanDt[]" class="form-control input-sm"/></td>'
-                            +'<td>'
-                            +'<input type="text" value="'+qtyCost+'" name="fieldQtyTxt[]" class="form-control currency input-sm" id="qtytxt_'+i+'" readonly style="text-align:right;"/>'
-                            +'<input type="hidden" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm" id="qty_'+i+'"/></td>'
-                            +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuan[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldIdSatuan[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost)+'" name="fieldHargaPrev[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost)+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga numberinput" style="text-align:right;"/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcspdt_prevcost * qtyCost)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly style="text-align:right;"/></td>'
-                            +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
-                            +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
-                            +'</tr>');
+            $('#tabel-form-po').append(
+              '<tr class="tbl_form_row" id="row'+i+'">'
+                +'<td style="text-align:center">'+key+'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
+                  +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
+                  +'<input type="hidden" value="'+data.data_isi[key-1].d_pcspdt_id+'" name="fieldidPlanDt[]" class="form-control input-sm"/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+separatorRibuan(qtyCost)+'" name="fieldQtyTxt[]" class="form-control input-sm" id="qtytxt_'+i+'" readonly style="text-align:right;"/>'
+                  +'<input type="hidden" value="'+qtyCost+'" name="fieldQty[]" class="form-control input-sm" id="qty_'+i+'"/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuan[]" class="form-control input-sm" readonly/>'
+                  +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldIdSatuan[]" class="form-control input-sm" readonly/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].d_pcspdt_prevcost+'" name="fieldHargaPrev[]" class="form-control input-sm currency" readonly style="text-align:right;"/></td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].d_pcspdt_prevcost+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga currency" style="text-align:right;"/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].d_pcspdt_prevcost * qtyCost+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem currency" id="total_'+i+'" readonly style="text-align:right;"/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly style="text-align:right;"/>'
+                +'</td>'
+                +'<td>'
+                  +'<button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button>'
+                +'</td>'
+              +'</tr>');
             i = randString(5);
             key++;
           });
@@ -432,8 +447,7 @@
 
     //event focus on input harga
     $(document).on('focus', '.field_harga',  function(e){
-        $(this).val("");
-        $('#button_save').attr('disabled', true);
+      $('#button_save').attr('disabled', true);
     });
 
     $(document).on('focus', '#potongan_harga',  function(e){
@@ -454,15 +468,16 @@
     //event onblur input harga
     $(document).on('blur', '.field_harga',  function(e){
       if ($(this).val() == "") { $(this).val(0) };
+      //get data
       var getid = $(this).attr("id");
       var harga = $(this).val();
       var qtyOrder = $('#qty_'+getid+'').val();
       //hitung nilai harga total
-      var valueHargaTotal = convertToRupiah(qtyOrder * harga);
-      //ubah format ke rupiah
-      var hargaRp = convertToRupiah($(this).val());
-      $(this).val(hargaRp);
+      harga = harga.replace('.','');
+      var valueHargaTotal = parseInt(qtyOrder) * parseFloat(harga.replace(',','.'));
       $('#total_'+getid+'').val(valueHargaTotal);
+      //console.log(valueHargaTotal);
+      // panggl fungsi
       totalPembelianGross();
       totalPembelianNett();
       $('#button_save').attr('disabled', false);
@@ -594,7 +609,7 @@
         if(input.value == '') input.value = 0;
         return input.value;
     });
-    console.log(hasil);
+    //console.log(hasil);
     var total = 0;
     for (var i = hasil.length - 1; i >= 0; i--){
 
@@ -701,6 +716,20 @@
         }
       });
     }
+  }
+
+  function separatorRibuan(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return num_parts.join(",");
+  }
+
+  function separatorRibuanRp(num)
+  {
+    var num_parts = num.toString().split(".");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return 'Rp. '+num_parts.join(",");
   }
 
 </script>

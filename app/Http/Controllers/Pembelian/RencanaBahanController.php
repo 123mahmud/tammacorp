@@ -470,7 +470,6 @@ class RencanaBahanController extends Controller
       }
     }
 
-
     public function getStokByType($arrItemType, $arrSatuan, $counter)
     { 
       foreach ($arrItemType as $val)
