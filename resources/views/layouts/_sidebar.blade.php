@@ -332,7 +332,7 @@
                                 <span class="hidden">
 
                                 @if(Auth::user()->punyaAkses('Rencana Bahan Baku Produksi','ma_read'))
-                                        Rencana Bahan Baku Produksi
+                                        Rencana Bahan Produksi
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Rencana Pembelian','ma_read'))
@@ -362,7 +362,7 @@
                                 @if(Auth::user()->punyaAkses('Rencana Bahan Baku Produksi','ma_read'))
                                     <li class="{{ Request::is('purchasing/rencanabahanbaku/bahan') ? 'active' : '' || Request::is('purchasing/rencanabahanbaku/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/rencanabahanbaku/bahan') }}"><span
-                                                    class="submenu-title">Rencana Bahan Baku Produksi</span><span
+                                                    class="submenu-title">Rencana Bahan Produksi</span><span
                                                     class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif
@@ -1019,13 +1019,13 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaocf/analisa2b') ? 'active' : '' || Request::is('keuangan/analisaocf/analisa2b/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2b') }}"><span
                                                     class="submenu-title">Analisa OCF Terhadap Net Profit</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaaset/analisa3a') }}"><span
