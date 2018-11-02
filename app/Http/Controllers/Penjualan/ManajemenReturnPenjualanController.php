@@ -445,7 +445,9 @@ class ManajemenReturnPenjualanController extends Controller
     }
 
   public function storeReturn($id){
-    $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return')
+    DB::beginTransaction();
+    try {
+    $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return','dsr_sid')
       ->where('dsr_id',$id)
       ->first();
     if ($data->dsr_method == 'PN') {
@@ -508,7 +510,13 @@ class ManajemenReturnPenjualanController extends Controller
                     'sm_reff' => $data->dsr_code,
                     'sm_insert' => Carbon::now()
                 ]);
+
            }
+
+           // d_sales::where('s_id',$data->dsr_sid)
+           //  ->update([
+              
+           //  ])
          }
         }
         
@@ -550,5 +558,59 @@ class ManajemenReturnPenjualanController extends Controller
     }else{
       return 'b';
     }
+    DB::commit();
+    return response()->json([
+          'status' => 'sukses'
+      ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+      ]);
+    }
+  }
+
+  public function printreturn($id){
+    $dataCus = d_sales_return::select( 'c_name',
+                              'c_address',
+                              'c_region',
+                              'dsr_date',
+                              'dsr_code')
+        ->where('dsr_id',$id)
+        ->join('d_sales','d_sales.s_id','=','dsr_sid')
+        ->join('m_customer','c_id','=','s_customer')
+        ->first();
+    
+    $dataItem = d_sales_return::select(
+                                  'dsr_price_return',
+                                  'dsr_sgross',
+                                  'dsr_disc_value',
+                                  'dsr_net',
+                                  'i_code',
+                                  'i_name',
+                                  'dsrdt_qty',
+                                  'dsrdt_qty_confirm',
+                                  'm_sname',
+                                  'dsrdt_price',
+                                  'dsrdt_disc_percent',
+                                  'dsrdt_disc_value',
+                                  'dsrdt_return_price',
+                                  'dsrdt_hasil'
+                                  )
+      ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
+      ->join('m_item','m_item.i_id','=','dsrdt_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('dsr_id',$id)
+      ->get();
+    $result = 0;
+    foreach ($dataItem as $item) {
+      if ($item->dsrdt_qty_confirm != 0) {
+        $retur[] = $item;
+        $result += $item->dsrdt_hasil;
+      }
+    }
+
+    return view('penjualan.manajemenreturn.print.print_return_penjualan',compact('dataCus','retur','result'));
   }
 }

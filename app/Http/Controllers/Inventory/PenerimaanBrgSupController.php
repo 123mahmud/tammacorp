@@ -33,20 +33,34 @@ class PenerimaanBrgSupController extends Controller
     }
 
     public function getDataForm($id)
-    { 
+    {
+        $id_peg = Auth::user()->m_pegawai_id;
+        $div_peg = DB::table('m_pegawai_man')->select('c_divisi_id')->where('c_id', $id_peg)->first();
         $dataHeader = DB::table('d_purchasing')
                     ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name', 'd_supplier.s_id')
                     ->join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
                     ->where('d_pcs_id', '=', $id)
                     ->get();
-
-        $dataIsi = DB::table('d_purchasing_dt')
+        
+        if ($div_peg->c_divisi_id == '5') {
+            $dataIsi = DB::table('d_purchasing_dt')
+                  ->select('d_purchasing_dt.*', 'm_item.i_name', 'm_item.i_code', 'm_item.i_type', 'm_item.i_sat1', 'm_item.i_id', 'm_satuan.m_sname', 'm_satuan.m_sid')
+                  ->leftJoin('m_item','d_purchasing_dt.i_id','=','m_item.i_id')
+                  ->leftJoin('m_satuan','d_purchasing_dt.d_pcsdt_sat','=','m_satuan.m_sid')
+                  ->where(function ($query) use ($id) {
+                          $query->where('d_purchasing_dt.d_pcs_id', '=', $id);
+                          $query->where('m_item.i_type', '=', 'BJ');
+                          $query->where('d_purchasing_dt.d_pcsdt_isreceived', '=', 'FALSE');
+                    })->get();
+        }else{
+            $dataIsi = DB::table('d_purchasing_dt')
                   ->select('d_purchasing_dt.*', 'm_item.i_name', 'm_item.i_code', 'm_item.i_sat1', 'm_item.i_id', 'm_satuan.m_sname', 'm_satuan.m_sid')
                   ->leftJoin('m_item','d_purchasing_dt.i_id','=','m_item.i_id')
                   ->leftJoin('m_satuan','d_purchasing_dt.d_pcsdt_sat','=','m_satuan.m_sid')
                   ->where('d_purchasing_dt.d_pcs_id', '=', $id)
                   ->where('d_purchasing_dt.d_pcsdt_isreceived', '=', "FALSE")
                   ->get();
+        }
 
         foreach ($dataIsi as $val) 
         {
