@@ -40,17 +40,19 @@ class PemakaianBrgGdgController extends Controller
             $d_peg = DB::table('m_pegawai_man')
                 ->rightJoin('d_mem', 'm_pegawai_man.c_id', '=', 'd_mem.m_pegawai_id')
                 ->select('c_divisi_id', 'c_jabatan_id', 'm_isadmin')
-                ->where('m_id', $id_peg)->first();
+                ->where('c_id', $id_peg)->first();
         }else{
             $d_peg = DB::table('m_pegawai_man')
                 ->rightJoin('d_mem', 'm_pegawai_man.c_id', '=', 'd_mem.m_pegawai_id')
                 ->select('c_divisi_id', 'c_jabatan_id', 'm_isadmin')
                 ->where('m_isadmin', 'Y')->first();
         }
-        
+    
         if ($d_peg->m_isadmin == 'Y') {
             $param = [1,2,3,4,5,6,7,8];
-        }elseif ($d_peg->c_divisi_id == '5') {
+        }
+
+        if ($d_peg->c_divisi_id == '5') {
             $param = [1,2,7,8];
         }elseif($d_peg->c_divisi_id == '4'){
             $param = [3,6];

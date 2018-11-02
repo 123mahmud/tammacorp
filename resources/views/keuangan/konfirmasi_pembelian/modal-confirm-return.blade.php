@@ -107,7 +107,7 @@
         </div>
     
         <div class="modal-footer" style="border-top: none;">
-          <button type="button" class="btn btn-info" onclick="submitReturnConfirm()" id="submitReturnConfirm">Konfirmasi</button>
+          <button type="button" class="btn btn-info" onclick="submitReturnConfirm()" id="submit_return_confirm">Konfirmasi</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
         </div>
 
