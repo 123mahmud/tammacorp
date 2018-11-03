@@ -243,8 +243,8 @@
                 $tot_md += $akun->mutasi_memorial_debet;
                 $tot_mk += $akun->mutasi_memorial_kredit;
 
-                $tot_mut_d += ($akun->mutasi_bank_debet + $akun->mutasi_bank_debet + $akun->mutasi_memorial_debet);
-                $tot_mut_k += ($akun->mutasi_bank_kredit + $akun->mutasi_bank_kredit + $akun->mutasi_memorial_kredit);
+                $tot_mut_d += ($akun->mutasi_bank_debet + $akun->mutasi_kas_debet + $akun->mutasi_memorial_debet);
+                $tot_mut_k += ($akun->mutasi_bank_kredit + $akun->mutasi_kas_kredit + $akun->mutasi_memorial_kredit);
                 $tot_saldo_a += $akun->saldo_akhir;
 
               ?>
@@ -302,7 +302,7 @@
             <tr>
               <td colspan="2" class="text-center" style="font-weight: bold; background: #eee;">Total</td>
               <td class="text-right" style="font-weight: bold; background: #eee;">
-                {{ formatAccounting($tot_saldo) }}
+                -
               </td>
 
               <td class="text-right" style="font-weight: bold; background: #eee;">
@@ -338,7 +338,7 @@
               </td>
 
               <td class="text-right" style="font-weight: bold; background: #eee;">
-                {{ formatAccounting($tot_saldo_a) }}
+                -
               </td>
             </tr>
           </tfoot>

@@ -31,7 +31,8 @@ class PengambilanItemController extends Controller
             'd_productresult_dt.prdt_qty',
             'd_productresult_dt.prdt_productresult',
             'd_productresult_dt.prdt_detail',
-            'd_productresult_dt.prdt_item')
+            'd_productresult_dt.prdt_item',
+            'd_spk.spk_hpp')
             ->join('d_productresult', 'd_productresult_dt.prdt_productresult', '=', 'd_productresult.pr_id')
             ->join('d_spk', 'd_productresult.pr_spk', '=', 'd_spk.spk_id')
             ->join('m_item', 'd_productresult.pr_item', '=', 'm_item.i_id')
@@ -76,7 +77,13 @@ class PengambilanItemController extends Controller
                       type="text" 
                       name="prdt_item[]" 
                       readonly
-                      value="' . $data->prdt_item . '">';
+                      value="' . $data->prdt_item . '">
+                <input  id="spk_hpp" 
+                      class="form-control hidden" 
+                      type="text" 
+                      name="spk_hpp[]" 
+                      readonly
+                      value="' . $data->spk_hpp . '">';
 
             })
             ->addIndexColumn()
@@ -171,6 +178,7 @@ class PengambilanItemController extends Controller
                         'sm_qty_sisa' => $request->prdt_qty[$i],
                         'sm_qty_expired' => 0,
                         'sm_detail' => 'PENAMBAHAN',
+                        'sm_hpp'   => $request->spk_hpp[$i],
                         'sm_reff' => $nota_do,
                         'sm_insert' => Carbon::now()
                     ]);
@@ -202,6 +210,7 @@ class PengambilanItemController extends Controller
                         'sm_qty_sisa' => $request->prdt_qty[$i],
                         'sm_qty_expired' => 0,
                         'sm_detail' => 'PENAMBAHAN',
+                        'sm_hpp'   => $request->spk_hpp[$i],
                         'sm_reff' => $nota_do,
                         'sm_insert' => Carbon::now()
                     ]);

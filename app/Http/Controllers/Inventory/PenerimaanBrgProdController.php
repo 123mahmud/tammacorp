@@ -414,9 +414,9 @@ class PenerimaanBrgProdController extends Controller
     }
 
     public function simpan_update_data(Request $request){
-      // dd($request->all());
       DB::beginTransaction();
       try {
+
         //ubah status
           $recentStatusDo = DB::table('d_delivery_orderdt')
                               ->where('dod_do',$request->doId)
@@ -442,7 +442,13 @@ class PenerimaanBrgProdController extends Controller
                                   ->where('prdt_productresult',$recentStatusDo->dod_prdt_productresult)
                                   ->where('prdt_detail',$recentStatusDo->dod_prdt_detail)
                                   ->first();
-          // dd($recentStatusPrdt);
+
+          $hpp = DB::table('d_productresult')
+                    ->join('d_spk', 'd_spk.spk_id', '=', 'd_productresult.pr_spk')
+                    ->where('pr_id', $recentStatusPrdt->prdt_productresult)
+                    ->select(DB::raw('coalesce(spk_hpp, 0) as spk_hpp'))
+                    ->first();
+
           if ($recentStatusPrdt->prdt_status != "RC") {
               //update status to RC
               DB::table('d_productresult_dt')
@@ -471,7 +477,7 @@ class PenerimaanBrgProdController extends Controller
               ->where('s_item',$request->idItemMasuk)
               ->first();
 
-          if(mutasi::mutasiStok(  $request->idItemMasuk,
+          if(mutasi::mutasiStok($request->idItemMasuk,
                                   $request->qtyDiterima,
                                   $comp=2,
                                   $position=5,
@@ -520,6 +526,7 @@ class PenerimaanBrgProdController extends Controller
                     'sm_qty_sisa' => $request->qtyDiterima,
                     'sm_qty_expired' => 0,
                     'sm_detail' => 'PENAMBAHAN',
+                    'sm_hpp'    => $hpp->spk_hpp,
                     'sm_reff' => $request->noNotaMasuk,
                     'sm_insert' => Carbon::now()
                 ]);
@@ -549,6 +556,7 @@ class PenerimaanBrgProdController extends Controller
                   'sm_qty_sisa' => $request->qtyDiterima,
                   'sm_qty_expired' => 0,
                   'sm_detail' => 'PENAMBAHAN',
+                  'sm_hpp'  => $hpp->spk_hpp,
                   'sm_reff' => $request->noNotaMasuk,
                   'sm_insert' => Carbon::now()
               ]);
