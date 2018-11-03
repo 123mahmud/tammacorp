@@ -252,8 +252,7 @@
 		foreach ($array as $key => $data) {
 			if($data->id_group == $id_group){
 				foreach ($data->akun_neraca as $key => $detail) {
-					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
-					$saldo = $detail->opening_balance;
+					$mutasi = $detail->saldo;
 
 					if($status == 'aktiva' && $detail->posisi_akun == 'K'){
 						$mutasi = $mutasi * -1;
@@ -261,7 +260,7 @@
 						$mutasi = $mutasi * -1;
 					}
 
-					$total += ($saldo + $mutasi);
+					$total +=  $mutasi;
 				}
 			}
 		}
@@ -275,16 +274,15 @@
 		foreach ($array as $key => $data) {
 			if($data->id_group == $id_group){
 				foreach ($data->akun_laba_rugi as $key => $detail) {
-					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
-					$saldo = $detail->opening_balance;
+					$mutasi = $detail->saldo;
 
-					if($status == 'aktiva' && $detail->posisi_akun == 'K'){
-						$mutasi = $mutasi * -1;
+					if($status == 'pasiva' && $detail->posisi_akun == 'K'){
+						$mutasi = $mutasi;
 					}elseif($status == 'pasiva' && $detail->posisi_akun == 'D'){
 						$mutasi = $mutasi * -1;
 					}
 
-					$total += ($saldo + $mutasi);
+					$total += $mutasi;
 				}
 			}
 		}

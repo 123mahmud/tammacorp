@@ -496,7 +496,7 @@ public function simpaPenerimaan(Request $request){
     return response()->json([
         'status' => 'sukses'
       ]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
     DB::rollback();
     return response()->json([
       'status' => 'gagal',

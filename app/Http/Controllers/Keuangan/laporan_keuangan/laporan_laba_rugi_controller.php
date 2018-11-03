@@ -24,18 +24,18 @@ class laporan_laba_rugi_controller extends Controller
     			->where('type_group', 'laba/rugi')
     			->with(['akun_laba_rugi' => function($query) use ($data_date, $data_real){
     				$query->where('type_akun', 'DETAIL')
-    						->select('id_akun', 'group_laba_rugi', 'nama_akun', 'opening_date', 'opening_balance', 'posisi_akun')->with([
-                                      'mutasi_bank_debet' => function($query) use ($data_date, $data_real){
-                                            $query->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'jrdt_jurnal')
-                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
-                                                  ->where('tanggal_jurnal', '<', $data_date)
-                                                  ->where('tanggal_jurnal', '>=', $data_real)
-                                                  ->where('tanggal_jurnal', '>', DB::raw("opening_date"))
-                                                  ->groupBy('jrdt_acc', 'opening_date')
-                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
-                                      }
-                                ])
-    						->get();
+    						->select(
+                            'd_akun.id_akun',
+                            'd_akun.group_laba_rugi',
+                            'd_akun.nama_akun',
+                            'd_akun.opening_date',
+                            'd_akun.opening_balance',
+                            'd_akun.posisi_akun',
+                            DB::raw('coalesce(d_akun_saldo.saldo_akhir) as saldo')
+                        )
+                ->leftJoin('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
+                ->where('d_akun_saldo.periode', $data_real)
+                ->get();
     			}])
     			->select('id_group', 'nama_group', 'no_group')
     			->orderBy('id_group', 'asc')

@@ -221,7 +221,7 @@ class stockOpnameController extends Controller
                     ->where('keterangan', 'like', 'Stok Opname%')->first();
 
       if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
-        $state_jurnal = _initiateJournal_self_detail($o_id, 'MM', date('Y-m-d'), 'Stok Opname Tanggal '.date('d/m/Y'), array_merge($akun));
+        $state_jurnal = _initiateJournal_self_detail("opname-".$o_id, 'MM', date('Y-m-d'), 'Stok Opname Tanggal '.date('d/m/Y'), array_merge($akun));
       }
 
       return response()->json([

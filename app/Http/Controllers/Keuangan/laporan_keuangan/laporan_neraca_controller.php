@@ -14,70 +14,64 @@ class laporan_neraca_controller extends Controller
 
     	if($request->jenis == "bulan"){
     		$data_date = explode('-', $request->durasi_1_neraca_bulan)[0].'-'.(explode('-', $request->durasi_1_neraca_bulan)[1] + 1).'-01';
-    		$data_before = date('Y-m-d', strtotime('-1 months', strtotime($data_date)));
-        $data_real = $request->durasi_bulan_1.'-01';
 
-        $pendapatan = DB::table('d_jurnal_dt')
-                            ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                            ->where('d_jurnal.tanggal_jurnal', '>=', $data_before)
-                            ->where('d_jurnal.tanggal_jurnal', '<', $data_date)
-                            ->whereIn('jrdt_acc', function($query){
-                                $query->select('id_akun')
-                                            ->from('d_akun')
-                                            ->where('kelompok_akun', 'PENDAPATAN')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere('kelompok_akun', 'PENDAPATAN LAIN LAIN')
-                                            ->where('type_akun', 'DETAIL')->get();
-                            })->select(DB::raw('coalesce(sum(jrdt_value), 0) as pendapatan'))->first();
+        	$data_before = date('Y-m-d', strtotime('-1 months', strtotime($data_date)));
+            $data_real = $request->durasi_1_neraca_bulan.'-01';
 
-        $beban = DB::table('d_jurnal_dt')
-                            ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                            ->where('d_jurnal.tanggal_jurnal', '>=', $data_before)
-                            ->where('d_jurnal.tanggal_jurnal', '<', $data_date)
-                            ->whereIn('jrdt_acc', function($query){
-                                $query->select('id_akun')
-                                            ->from('d_akun')
-                                            ->where('kelompok_akun', 'POTONGAN PENJUALAN')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere('kelompok_akun', 'BEBAN POKOK PENJUALAN')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere('kelompok_akun', 'BEBAN PRODUKSI')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere('kelompok_akun', 'BEBAN PERALATAN PRODUKSI')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere('kelompok_akun', 'BEBAN POKOK LAIN LAIN')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere('kelompok_akun', 'SELISIH SALDO PERSEDIAAN BARANG')
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere(DB::raw('substring(id_akun, 1, 1)'), "6")
-                                            ->where('type_akun', 'DETAIL')
-                                            ->orWhere(DB::raw('substring(id_akun, 1, 3)'), "800")
-                                            ->where('type_akun', 'DETAIL')->get();
-                            })->select(DB::raw('coalesce(sum(jrdt_value), 0) as beban'))->first();
+        // return $data_real;
+
+        $pendapatanAkm = 0;
+
+        $pendapatan = group_akun::select('*')
+                            ->where('type_group', 'laba/rugi')
+                            ->with(['akun_laba_rugi' => function($query) use ($data_date, $data_real){
+                                $query->where('type_akun', 'DETAIL')
+                                        ->select(
+                                        'd_akun.id_akun',
+                                        'd_akun.group_laba_rugi',
+                                        'd_akun.nama_akun',
+                                        'd_akun.opening_date',
+                                        'd_akun.opening_balance',
+                                        'd_akun.posisi_akun',
+                                        DB::raw('coalesce(d_akun_saldo.saldo_akhir) as saldo')
+                                    )
+                            ->leftJoin('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
+                            ->where('d_akun_saldo.periode', $data_real)
+                            ->get();
+                            }])
+                            ->select('id_group', 'nama_group', 'no_group')
+                            ->orderBy('id_group', 'asc')
+                            ->get();
+
+            foreach ($pendapatan as $key => $value) {
+                $nilai = count_laba_rugi($pendapatan, $value->id_group, 'pasiva', $data_real);
+                $pendapatanAkm += $nilai;
+            }
 
     		$data = group_akun::select('*')
     			->where('type_group', 'neraca')
-    			->with(['akun_neraca' => function($query) use ($data_date){
+    			->with(['akun_neraca' => function($query) use ($data_real){
     				$query->where('type_akun', 'DETAIL')
-    						->select('id_akun', 'group_neraca', 'nama_akun', 'opening_date', 'opening_balance', 'posisi_akun')->with([
-                                      'mutasi_bank_debet' => function($query) use ($data_date){
-                                            $query->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'jrdt_jurnal')
-                                                  ->join('d_akun', 'id_akun', '=', 'jrdt_acc')
-                                                  ->where('tanggal_jurnal', '<', $data_date)
-                                                  ->where('tanggal_jurnal', '>', DB::raw("opening_date"))
-                                                  ->groupBy('jrdt_acc', 'opening_date')
-                                                  ->select('jrdt_acc', DB::raw('sum(jrdt_value) as total'));
-                                      }
-                                ])
+    						->select(
+                                        'd_akun.id_akun',
+                                        'd_akun.group_neraca',
+                                        'd_akun.nama_akun',
+                                        'd_akun.opening_date',
+                                        'd_akun.opening_balance',
+                                        'd_akun.posisi_akun',
+                                        DB::raw('coalesce(d_akun_saldo.saldo_akhir) as saldo')
+                                    )
+                            ->leftJoin('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
+                            ->where('d_akun_saldo.periode', $data_real)
     						->get();
     			}])
     			->select('id_group', 'nama_group', 'no_group')
     			->orderBy('id_group', 'asc')
     			->get();
 
-          return 
+          // return json_encode($beban); 
 
-          $saldo_laba = $pendapatan->pendapatan - $beban->beban;
+          $saldo_laba = $pendapatanAkm;
     	}
 
     	// return json_encode($data);
