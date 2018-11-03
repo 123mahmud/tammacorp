@@ -44,4 +44,49 @@ class aktiva_controller extends Controller
     		"kelompok_aktiva" => $data,
     	]);
     }
+
+    public function store(Request $request){
+    	// return json_encode($request->all());
+
+    	return response()->json([
+            'status'    => 'berhasil',
+            'flag'      => 'success',
+            'content'   => 'Data Aktiva Berhasil Disimpan.'
+        ]);
+    	
+    	$kelompok = DB::table('d_golongan_aktiva')->where('ga_nomor', $request->kelompok_aktiva)->first();
+    	$tanggal_beli = explode('-', $request->tanggal_beli)[1].'-'.explode('-', $request->tanggal_beli)[0].'-01';
+    	$tanggal_berakhir = date('Y-m-d', strtotime('+'.(($request->masa_manfaat * 12) - 1).' months', strtotime($tanggal_beli)));
+    	$cek = DB::table('d_aktiva')->max('a_id');
+    	$id = ($cek) ? ($cek + 1) : '1';
+    	$nomor = 'ACT-'.str_pad($id, 3, '0', STR_PAD_LEFT);
+
+    	DB::table('d_aktiva')->insert([
+    		'a_id'					=> $id,
+    		'a_nomor'				=> $nomor,
+    		'a_name'				=> $request->nama_aset,
+    		'a_kelompok'			=> $request->kelompok_aktiva,
+    		'a_tanggal_beli' 		=> $tanggal_beli,
+    		'a_harga_beli'			=> str_replace(',', '', $request->harga_beli),
+    		'a_metode_penyusutan'	=> $request->metode_penyusutan,
+    		'a_nilai_sisa'			=> str_replace(',', '', $request->harga_beli),
+    		'a_tanggal_habis'		=> $tanggal_berakhir,
+    		'a_status'				=> 'active'
+    	]);
+
+    	if(!$kelompok){
+    		return response()->json([
+	            'status'    => 'gagal',
+	            'flag'      => 'error',
+	            'content'   => 'Data Kelompok Aktiva Yang Dipilih Tidak Ada. Cobalah Untuk Memuat Ulang Halaman.'
+	        ]);
+    	}
+
+    	return response()->json([
+            'status'    => 'berhasil',
+            'flag'      => 'success',
+            'content'   => 'Data Aktiva Berhasil Disimpan.'
+        ]);
+    	
+    }
 }

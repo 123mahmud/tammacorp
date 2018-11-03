@@ -913,6 +913,11 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'aktiva.form_resource'
             ]);
 
+            Route::post('/aktiva/aset/store', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@store',
+                'as'    => 'aktiva.store'
+            ]);
+
         // End Aktiva
 
 

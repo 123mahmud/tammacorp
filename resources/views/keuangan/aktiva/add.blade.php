@@ -92,10 +92,10 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Tanggal Beli Aset</label>
+                                              <label class="tebal">Bulan Beli Aset</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <datepicker :placeholder="'Plih Tanggal Beli'" :name="'tanggal_beli'" :id="'tanggal_beli'" :disabled="state == 'update'" :required="true" @input="dateChange"></datepicker>
+                                                <datepicker :placeholder="'Plih Bulan Beli'" :name="'tanggal_beli'" :id="'tanggal_beli'" :disabled="state == 'update'" :required="true" @input="dateChange"></datepicker>
                                             </div>
                                           </div>
 
@@ -189,7 +189,15 @@
 
                                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:10px;">
 
-                                        <table class="table table-bordered" style="background: white;">
+                                        <div v-if="simulasi_view == 'standby'" class="col-md-12 text-muted" style="text-align: center; margin: 0 auto;">
+                                          Simulasi Penyusutan Akan Menampilkan Perkiraan Penyusutan Sesuai Dengan Data Yang Anda Masukkan. Perhitungan Tidak Akan Disimpan Sampai Anda Menekan Tombol Simpan.
+                                        </div>
+
+                                        <div v-if="simulasi_view == 'calculating'" class="col-md-12 text-muted" style="text-align: center; margin: 0 auto;">
+                                          Sedang Melakukan Simulasi Penyusutan... Harap Tunggu!
+                                        </div>
+
+                                        <table class="table table-bordered" style="background: white;" v-show="simulasi_view == 'complete'">
                                           <thead>
                                             <tr>
                                               <td width="10%" class="text-center" style="background: #0099CC; color: white;">Tahun</td>
@@ -203,10 +211,21 @@
 
                                           <tbody>
                                             <tr v-for="data in simulasi_hitung">
-                                              <td class="text-center">@{{ data.tahun }}</td>
-                                              <td class="text-center">@{{ data.jumlah_bulan }}</td>
-                                              <td class="text-center">@{{ data.harga_perolehan }}</td>
-                                              <td class="text-center">@{{ data.nilai_penyusutan }}</td>
+                                              <td class="text-center">
+                                                <input type="hidden" name="tahun[]" :value="data.tahun" readonly>
+                                                @{{ data.tahun }}
+                                              </td>
+                                              <td class="text-center">
+                                                <input type="hidden" name="jml_bulan[]" :value="data.jumlah_bulan" readonly>
+                                                @{{ data.jumlah_bulan }}
+                                              </td>
+                                              <td class="text-center">
+                                                @{{ data.harga_perolehan }}
+                                              </td>
+                                              <td class="text-center">
+                                                <input type="hidden" name="penyusutan[]" :value="data.nilai_penyusutan" readonly>
+                                                @{{ data.nilai_penyusutan }}
+                                              </td>
                                               <td class="text-center">@{{ data.nilai_akumulasi }}</td>
                                               <td class="text-center">@{{ data.nilai_sisa }}</td>
                                             </tr>
@@ -219,7 +238,7 @@
                                         <div class="form-group">
                                           <button type="button" name="hitung" class="btn btn-success" id="hitung" @click="hitung" :disabled='btn_save_disabled'>Hitung Simulasi Penyusutan</button>
 
-                                          <button type="button" name="tambah_data" class="btn btn-primary" id="simpan" @click="simpan_data" :disabled='btn_save_disabled' v-if="state == 'simpan'">Simpan Data</button>
+                                          <button type="button" name="tambah_data" class="btn btn-primary" id="simpan" @click="simpan_data" :disabled="btn_save_disabled || simulasi_view != 'complete'" v-if="state == 'simpan'">Simpan Data</button>
 
                                           <button type="button" name="tambah_data" class="btn btn-primary" id="update" @click="update" :disabled='btn_save_disabled' v-if="state == 'update'">Update</button>
 
@@ -291,10 +310,26 @@
             validating : 'glyphicon glyphicon-refresh'
           },
           fields : {
-            nama_kelompok : {
+            nama_aset : {
               validators : {
                 notEmpty : {
-                  message : 'Nama Kelompok Tidak Boleh Kosong',
+                  message : 'Nama Aset Tidak Boleh Kosong',
+                }
+              }
+            },
+
+            tanggal_beli : {
+              validators : {
+                notEmpty : {
+                  message : 'Tanggal Beli Aset Tidak Boleh Kosong',
+                }
+              }
+            },
+
+            harga_beli : {
+              validators : {
+                notEmpty : {
+                  message : 'Harga Beli Aset Tidak Boleh Kosong',
                 }
               }
             },
@@ -308,7 +343,9 @@
       mounted: function () {
         var vm = this
         $(this.$el).datepicker({
-          format: 'dd-mm-yyyy'
+          format: "mm-yyyy",
+          viewMode: "months", 
+          minViewMode: "months"
         }).on('changeDate', function(){
           vm.$emit('input', $(this).val());
         });
@@ -384,6 +421,7 @@
         edit : '{{ (isset($_GET['edit'])) ? $_GET['edit'] : 'null' }}',
         data_table_resource: [],
         data_table_columns: [],
+        simulasi_view : 'standby',
 
         metode_penyusutan: [
           {
@@ -469,20 +507,28 @@
           // console.log($('#data-form').serialize());
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/store', 
+            axios.post(this.baseUrl+'/aktiva/aset/store', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
               if(response.data.status == 'berhasil'){
-                $.toast({
-                    text: 'Data Kelompok Aktiva Baru Berhasil Disimpan.',
-                    showHideTransition: 'slide',
-                    position: 'top-right',
-                    icon: 'success'
-                })
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag
+                  })
 
-                this.form_reset();
-              }
+                  this.form_reset();
+                }else if(response.data.status == 'gagal'){
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag,
+                      hideAfter: false
+                  })
+                }
             }).catch((err) => {
               alert(err);
               this.btn_save_disabled = false;
@@ -513,7 +559,7 @@
                       icon: response.data.flag
                   })
 
-                  // this.form_reset();
+                  this.form_reset();
                 }else if(response.data.status == 'gagal'){
                   $.toast({
                       text: response.data.content,
@@ -680,10 +726,13 @@
 
         dateChange: function(e){
           this.single_data.tanggal_beli = e;
+          $('#data-form').data('bootstrapValidator').resetForm();
+          this.calculated();
         },
 
         priceChange: function(e){
           this.single_data.harga_beli = e;
+          this.calculated();
         },
 
         generateInfo: function(){
@@ -694,13 +743,29 @@
               this.single_data.persentase = this.kelompok_aktiva[idx].ga_garis_lurus
           else
             this.single_data.persentase = this.kelompok_aktiva[idx].ga_saldo_menurun;
+          this.calculated();
         },
 
         hitung: function(){
 
+          if($('#data-form').data('bootstrapValidator').validate().isValid()){
+              var that = this;
+              this.simulasi_view = 'calculating';
+              this.calculated();
+              setTimeout(function(){
+                that.simulasi_view = 'complete';
+              }, ((that.single_data.masa_manfaat * 1000) / 4));
+          }else{
+            alert('Harap Lengkapi Data Form Terlebih Dahulu');
+          }
+
+          // console.log(this.simulasi_hitung);
+        },
+
+        calculated: function(){
           var np = parseFloat(this.single_data.harga_beli.replace(/\,/g, ''));
-          var tahun = parseInt(this.single_data.tanggal_beli.split('-')[2]);
-          var bulan = parseInt(this.single_data.tanggal_beli.split('-')[1]);
+          var tahun = parseInt(this.single_data.tanggal_beli.split('-')[1]);
+          var bulan = parseInt(this.single_data.tanggal_beli.split('-')[0]);
           var loop = (bulan > 1) ? this.single_data.masa_manfaat + 1 : this.single_data.masa_manfaat;
           var nilai_penyusutan = nilai_akumulasi = 0 ;
           var nilai_sisa = np;
@@ -717,7 +782,6 @@
               bulan_jalan = (bulan - 1);
             }
 
-            // if(bulan_jalan != "00"){
               if(this.single_data.metode_penyusutan == "Garis Lurus"){
                 nilai_penyusutan = ((np * persentase) / 12) * bulan_jalan;
               }else{
@@ -737,14 +801,10 @@
                 'nilai_penyusutan' : this.humanizePrice(Number(nilai_penyusutan.toFixed(2))),
                 'nilai_akumulasi' : this.humanizePrice(Number(nilai_akumulasi.toFixed(2))), 
                 'nilai_sisa' : this.humanizePrice(Number(nilai_sisa.toFixed(2))),
-              }
-            // }
-            
+              }            
           }
 
           this.simulasi_hitung = data;
-
-          // console.log(this.simulasi_hitung);
         },
 
         humanizePrice: function(alpha){
@@ -757,8 +817,8 @@
             ribuan  = number_string.substr(sisa).match(/\d{3}/g);
               
           if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
+            separator = sisa ? ',' : '';
+            rupiah += separator + ribuan.join(',');
           }
 
           // Cetak hasil
@@ -766,18 +826,27 @@
         },
 
         form_reset: function(){
-           this.state = 'simpan';
-           $('#golongan_kelompok').val(this.golongan_aset[0].value).trigger('change.select2');
-           $('#akun_harta').val(this.akun_harta[0].value).trigger('change.select2');
-           $('#akun_penyusutan').val(this.akun_penyusutan[0].value).trigger('change.select2').trigger('change.select2');
-           $('#akun_akumulasi').val(this.akun_akumulasi[0].value).trigger('change.select2');
 
-          this.single_data.nomor_kelompok = '';
-          this.single_data.nama_kelompok = '';
-          this.single_data.keterangan_kelompok = '';
-          this.single_data.masa_manfaat  = '4';
-          this.single_data.persentase_gl  = '25';
-          this.single_data.persentase_sm  = '50';
+            this.simulasi_hitung = [];
+            this.simulasi_view = 'standby;'
+            this.state = 'simpan';
+            this.single_data.nomor_aset = '';
+            this.single_data.nama_aset = '';
+            this.single_data.masa_manfaat  = '';
+            this.single_data.persentase  = '';
+            this.single_data.tanggal_beli  = '';
+            this.single_data.harga_beli  = '';
+            this.single_data.kelompok_aktiva  = '';
+            this.single_data.metode_penyusutan  = 'Garis Lurus',
+            this.single_data.akun_harta = '';
+            this.single_data.akun_penyusutan = '';
+            this.single_data.akun_akumulasi = '';
+
+            $('#kelompok_aktiva').val(this.kelompok_aktiva[0].value);
+            $('#metode_penyusutan').val('GL');
+            $('#harga_beli').val(0);
+            $('#tanggal_beli').val('');
+            this.golonganChange(this.kelompok_aktiva[0].value);
         }
       }
 
