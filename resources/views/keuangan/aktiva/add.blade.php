@@ -19,12 +19,12 @@
                 <!--BEGIN TITLE & BREADCRUMB PAGE-->
                 <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
                     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-                        <div class="page-title">Form Input Kelompok Aktiva</div>
+                        <div class="page-title">Form Input Aktiva</div>
                     </div>
                     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
                         <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
                         <li> &nbsp;Keuangan&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-                        <li class="active">Input Kelompok Aktiva</li>
+                        <li class="active">Input Aktiva</li>
                     </ol>
                     <div class="clearfix"></div>
                 </div>
@@ -49,7 +49,7 @@
                               <div class="row">
                                 <div class="col-md-12" style="margin-top: -10px;margin-bottom: 20px;">
                                    <div class="col-md-5 col-sm-6 col-xs-8">
-                                     <h4>Data Kelompok Aktiva</h4>
+                                     <h4>Data Aktiva</h4>
                                    </div>
                                    <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
                                      <a href="{{ url('/aktiva/kelompok_aktiva') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
@@ -61,18 +61,18 @@
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <form id="data-form">
                                       <input type="hidden" value="{{csrf_token()}}" name="_token" readonly>
-                                      <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
+                                      <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 10px; padding-bottom:5px;padding-top:20px;background: ">
 
                                         <div class="col-md-6" style="padding: 0px;">
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Nomor kelompok Aktiva</label>
+                                              <label class="tebal">Nomor Aset</label>
                                             </div>
                                             <div class="col-md-5 col-sm-8 col-xs-11 mb-3">
-                                              <input type="text" name="nomor_kelompok" class="form-control" readonly style="cursor: pointer;" placeholder="Di Isi Oleh Sistem" v-model="single_data.nomor_kelompok">
+                                              <input type="text" name="nomor_aset" class="form-control" readonly style="cursor: pointer;" placeholder="Di Isi Oleh Sistem" v-model="single_data.nomor_aset">
                                             </div>
 
-                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Lakukan Pencarian Data Kelompok Aktiva"> 
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Lakukan Pencarian Data Aset"> 
                                               <i class="fa fa-search" @click="open_list"></i>
                                             </div>
 
@@ -83,58 +83,48 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Nama Kelompok Aktiva</label>
+                                              <label class="tebal">Nama Aset</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <input type="text" name="nama_kelompok" class="form-control" placeholder="Masukkan Nama Kelompok AKtiva" id="nama_kelompok" v-model="single_data.nama_kelompok" required>
+                                                <input type="text" name="nama_aset" class="form-control" placeholder="Masukkan Nama Kelompok Aset" id="nama_aset" v-model="single_data.nama_aset" required>
                                             </div>
                                           </div>
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Keterangan Kelompok Aktiva</label>
+                                              <label class="tebal">Bulan Beli Aset</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <input type="text" name="keterangan_kelompok" class="form-control" placeholder="Masukkan Keterangan" id="keterangan_kelompok" v-model="single_data.keterangan_kelompok">
+                                                <datepicker :placeholder="'Plih Bulan Beli'" :name="'tanggal_beli'" :id="'tanggal_beli'" :disabled="state == 'update'" :required="true" @input="dateChange"></datepicker>
                                             </div>
                                           </div>
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Golongan Aset</label>
+                                              <label class="tebal">Harga Beli Aset</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <select2 :option="golongan_aset" :name="'golongan_kelompok'" :id="'golongan_kelompok'" @input="golonganChange"></select2>
-                                            </div>
-                                          </div>
-
-                                          <div class="row" style="border-top: 3px solid white; padding-top: 20px;">
-                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Pilih Akun Harta</label>
-                                            </div>
-                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <select2 :option="akun_harta" :name="'akun_harta'" :id="'akun_harta'"></select2>
+                                                <inputmask :name="'harga_beli'" :id="'harga_beli'" :required="true" :readonly="false" @input="priceChange"></inputmask>
                                             </div>
                                           </div>
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Pilih Akun Akm. Penyusutan</label>
+                                              <label class="tebal">Kelompok Aset</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                 <select2 :option="akun_akumulasi" :name="'akun_akumulasi'" :id="'akun_akumulasi'"></select2>
+                                                <select2 :option="kelompok_aktiva" :name="'kelompok_aktiva'" :id="'kelompok_aktiva'" @input="golonganChange"></select2>
                                             </div>
                                           </div>
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Pilih Akun Beban Penyusutan</label>
+                                              <label class="tebal">Pilih Metode Penyusutan</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                 <select2 :option="akun_penyusutan" :name="'akun_penyusutan'" :id="'akun_penyusutan'"></select2>
+                                                <select2 :option="metode_penyusutan" :name="'metode_penyusutan'" :id="'metode_penyusutan'" @input="metodeChange"></select2>
                                             </div>
-                                          </div>
-                                          
+                                          </div>                                                                                    
                                         </div>
 
                                         <div class="col-md-5 col-md-offset-1" style="background: none; padding: 0px;">
@@ -150,48 +140,105 @@
 
                                               <tbody>
                                                 <tr>
-                                                  <td class="text-center"><i>Garis Lurus</i></td>
                                                   <td class="text-center">
-                                                    <input type="hidden" readonly name="masa_manfaat" v-model='single_data.masa_manfaat'>
-                                                    <b v-html="single_data.masa_manfaat"></b> Tahun
+                                                    <i>@{{ single_data.metode_penyusutan }}</i>
                                                   </td>
-                                                  <td class="text-center">
-                                                    <input type="hidden" readonly name="persentase_gl" v-model='single_data.persentase_gl'>
-                                                    <b v-html="single_data.persentase_gl"></b> %
-                                                  </td>
-                                                </tr>
 
-                                                <tr>
-                                                  <td class="text-center"><i>Saldo Menurun</i></td>
                                                   <td class="text-center">
                                                     <input type="hidden" readonly name="masa_manfaat" v-model='single_data.masa_manfaat'>
                                                     <b v-html="single_data.masa_manfaat"></b> Tahun
                                                   </td>
                                                   <td class="text-center">
-                                                    <input type="hidden" readonly name="persentase_sm" v-model='single_data.persentase_sm'>
-                                                    <b v-html="single_data.persentase_sm"></b> %
+                                                    <input type="hidden" readonly name="persentase_gl" v-model='single_data.persentase'>
+                                                    <b v-html="single_data.persentase"></b> %
                                                   </td>
                                                 </tr>
                                               </tbody>
                                             </table>
                                           </div>
 
-                                          <div class="row" style="padding: 0px 10px 0px 5px; margin-top: 30px;" v-if="state == 'update'">
-                                            <table border="0" style="font-size: 9pt; color: #aaa;">
-                                              <tr>
-                                                <td style="vertical-align: top;"><b>NB:</b></td>
-                                                <td style="padding-left: 5px">
-                                                  Apabila Terdapat Aktiva Yang Sudah Disusutkan dan Menggunakan Kelompok Ini. Maka Perubahan Hanya Akan Mempengaruhi Nama dan Keterangan Kelompok Saja.
-                                                </td>
-                                              </tr>
-                                            </table>
+                                          <div class="row" style="margin-top: 35px;">
+                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3" style="padding: 0px 5px;"> 
+                                              <label class="tebal">Akun Harta</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:; padding-right: 25px;">
+                                                <input type="text" name="akun_harta" class="form-control" readonly style="cursor: pointer;" placeholder="Sesuai Kelompok Aset" v-model="single_data.akun_harta">
+                                            </div>
                                           </div>
+
+                                          <div class="row">
+                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3" style="padding: 0px 5px;"> 
+                                              <label class="tebal">Akun Akm. Penyusutan</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:; padding-right: 25px;">
+                                                 <input type="text" name="akun_akumulasi" class="form-control" readonly style="cursor: pointer;" placeholder="Sesuai Kelompok Aset" v-model="single_data.akun_akumulasi">
+                                            </div>
+                                          </div>
+
+                                          <div class="row">
+                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3" style="padding: 0px 5px;"> 
+                                              <label class="tebal">Akun Beban</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:; padding-right: 25px;">
+                                                 <input type="text" name="akun_penyusutan" class="form-control" readonly style="cursor: pointer;" placeholder="Sesuai Kelompok Aset" v-model="single_data.akun_penyusutan">
+                                            </div>
+                                          </div>
+
                                         </div>
+                                      </div>
+
+                                      <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:10px;">
+
+                                        <div v-if="simulasi_view == 'standby'" class="col-md-12 text-muted" style="text-align: center; margin: 0 auto;">
+                                          Simulasi Penyusutan Akan Menampilkan Perkiraan Penyusutan Sesuai Dengan Data Yang Anda Masukkan. Perhitungan Tidak Akan Disimpan Sampai Anda Menekan Tombol Simpan.
+                                        </div>
+
+                                        <div v-if="simulasi_view == 'calculating'" class="col-md-12 text-muted" style="text-align: center; margin: 0 auto;">
+                                          Sedang Melakukan Simulasi Penyusutan... Harap Tunggu!
+                                        </div>
+
+                                        <table class="table table-bordered" style="background: white;" v-show="simulasi_view == 'complete'">
+                                          <thead>
+                                            <tr>
+                                              <td width="10%" class="text-center" style="background: #0099CC; color: white;">Tahun</td>
+                                              <td width="15%" class="text-center" style="background: #0099CC; color: white;">Jumlah Bulan</td>
+                                              <td width="15%" class="text-center" style="background: #0099CC; color: white;">Harga Perolehan</td>
+                                              <td width="20%" class="text-center" style="background: #0099CC; color: white;">Biaya Penyusutan</td>
+                                              <td width="22%" class="text-center" style="background: #0099CC; color: white;">Akumulasi Penyusutan</td>
+                                              <td width="18%" class="text-center" style="background: #0099CC; color: white;">Nilai Sisa Buku (Residu)</td>
+                                            </tr>
+                                          </thead>
+
+                                          <tbody>
+                                            <tr v-for="data in simulasi_hitung">
+                                              <td class="text-center">
+                                                <input type="hidden" name="tahun[]" :value="data.tahun" readonly>
+                                                @{{ data.tahun }}
+                                              </td>
+                                              <td class="text-center">
+                                                <input type="hidden" name="jml_bulan[]" :value="data.jumlah_bulan" readonly>
+                                                @{{ data.jumlah_bulan }}
+                                              </td>
+                                              <td class="text-center">
+                                                @{{ data.harga_perolehan }}
+                                              </td>
+                                              <td class="text-center">
+                                                <input type="hidden" name="penyusutan[]" :value="data.nilai_penyusutan" readonly>
+                                                @{{ data.nilai_penyusutan }}
+                                              </td>
+                                              <td class="text-center">@{{ data.nilai_akumulasi }}</td>
+                                              <td class="text-center">@{{ data.nilai_sisa }}</td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+
                                       </div>
 
                                       <div align="right">
                                         <div class="form-group">
-                                          <button type="button" name="tambah_data" class="btn btn-primary" id="simpan" @click="simpan_data" :disabled='btn_save_disabled' v-if="state == 'simpan'">Simpan Data</button>
+                                          <button type="button" name="hitung" class="btn btn-success" id="hitung" @click="hitung" :disabled='btn_save_disabled'>Hitung Simulasi Penyusutan</button>
+
+                                          <button type="button" name="tambah_data" class="btn btn-primary" id="simpan" @click="simpan_data" :disabled="btn_save_disabled || simulasi_view != 'complete'" v-if="state == 'simpan'">Simpan Data</button>
 
                                           <button type="button" name="tambah_data" class="btn btn-primary" id="update" @click="update" :disabled='btn_save_disabled' v-if="state == 'update'">Update</button>
 
@@ -263,10 +310,26 @@
             validating : 'glyphicon glyphicon-refresh'
           },
           fields : {
-            nama_kelompok : {
+            nama_aset : {
               validators : {
                 notEmpty : {
-                  message : 'Nama Kelompok Tidak Boleh Kosong',
+                  message : 'Nama Aset Tidak Boleh Kosong',
+                }
+              }
+            },
+
+            tanggal_beli : {
+              validators : {
+                notEmpty : {
+                  message : 'Tanggal Beli Aset Tidak Boleh Kosong',
+                }
+              }
+            },
+
+            harga_beli : {
+              validators : {
+                notEmpty : {
+                  message : 'Harga Beli Aset Tidak Boleh Kosong',
                 }
               }
             },
@@ -280,7 +343,11 @@
       mounted: function () {
         var vm = this
         $(this.$el).datepicker({
-          format: 'dd-mm-yyyy'
+          format: "mm-yyyy",
+          viewMode: "months", 
+          minViewMode: "months"
+        }).on('changeDate', function(){
+          vm.$emit('input', $(this).val());
         });
       },
       watch: {
@@ -299,14 +366,16 @@
       mounted: function () {
         var vm = this
         $(this.$el).inputmask("currency", {
-            radixPoint: ",",
-            groupSeparator: ".",
+            radixPoint: ".",
+            groupSeparator: ",",
             digits: 2,
             allowMinus: false,
             autoGroup: true,
             prefix: '', //Space after $, this will not truncate the first character.
             rightAlign: false,
             oncleared: function () {  }
+        }).on('change', function(){
+          vm.$emit('input', $(this).val());
         });
       },
       watch: {
@@ -352,64 +421,33 @@
         edit : '{{ (isset($_GET['edit'])) ? $_GET['edit'] : 'null' }}',
         data_table_resource: [],
         data_table_columns: [],
+        simulasi_view : 'standby',
 
-        golongan_aset : [
+        metode_penyusutan: [
           {
-            nama            : "Non Bangunan - Kelompok 1",
-            masa_manfaat    : 4,
-            garis_lurus     : 25,
-            saldo_menurun   : 50,
-            value           : '1'
+              value   : 'GL',
+              nama    : 'Metode Garis Lurus'
           },
+
           {
-            nama            : "Non Bangunan - Kelompok 2",
-            masa_manfaat    : 8,
-            garis_lurus     : 12.50,
-            saldo_menurun   : 25,
-            value           : '2'
+              value   : 'SM',
+              nama    : "Metode Saldo Menurun"
           },
-          {
-            nama            : "Non Bangunan - Kelompok 3",
-            masa_manfaat    : 16,
-            garis_lurus     : 6.25,
-            saldo_menurun   : 12.5,
-            value           : '3'
-          },
-          {
-            nama            : "Non Bangunan - Kelompok 4",
-            masa_manfaat    : 20,
-            garis_lurus     : 5,
-            saldo_menurun   : 10,
-            value           : '4'
-          },
-          {
-            nama            : "Bangunan - Permanen",
-            masa_manfaat    : 20,
-            garis_lurus     : 5,
-            saldo_menurun   : 0,
-            value           : '5'
-          },
-          {
-            nama            : "Bangunan - Non Permanen",
-            masa_manfaat    : 10,
-            garis_lurus     : 10,
-            saldo_menurun   : 0,
-            value           : '6'
-          }
         ],
 
-        akun_harta: [],
-        akun_penyusutan: [],
-        akun_akumulasi: [],
-        golongan_kelompok: '4',
+        kelompok_aktiva : [],
+
+        simulasi_hitung: [],
 
         single_data: {
-            nomor_kelompok: '',
-            nama_kelompok: '',
-            keterangan_kelompok: '',
-            masa_manfaat : '4',
-            persentase_gl : '25',
-            persentase_sm : '50',
+            nomor_aset: '',
+            nama_aset: '',
+            masa_manfaat : '',
+            persentase : '',
+            tanggal_beli : '',
+            harga_beli : '',
+            kelompok_aktiva : '',
+            metode_penyusutan : 'Garis Lurus',
             akun_harta: '',
             akun_penyusutan: '',
             akun_akumulasi: '',
@@ -425,44 +463,33 @@
       },
 
       created: function(){
-        if(this.edit != 'null'){
-          axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
-                    .then((response) => {
-                      // console.log(response.data);
-                      this.data_table_resource = response.data;
-                    }).then((a) => {
-                      this.get_kelompok(this.edit);
-                    }).catch((err) => {
-                      alert(err);
-                    });
-        }
+        // if(this.edit != 'null'){
+        //   axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
+        //             .then((response) => {
+        //               // console.log(response.data);
+        //               this.data_table_resource = response.data;
+        //             }).then((a) => {
+        //               this.get_kelompok(this.edit);
+        //             }).catch((err) => {
+        //               alert(err);
+        //             });
+        // }
 
-        axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/form-resource')
+        axios.get(this.baseUrl+'/aktiva/aset/form-resource')
               .then((response) => {
                 console.log(response.data);
 
-                // alert(this.edit);
-
-                if(response.data.akun_harta.length > 0){
-                  this.akun_harta = response.data.akun_harta;
-                  // this.single_data.akun_harta = response.data.akun_harta[0].id_akun;
-                }
-
-                if(response.data.akun_beban.length > 0){
-                  this.akun_penyusutan = response.data.akun_beban;
-                  // this.single_data.akun_penyusutan = response.data.akun_beban[0].id_akun;
-                }
-
-                if(response.data.akun_penyusutan.length > 0){
-                  this.akun_akumulasi = response.data.akun_penyusutan;
-                  // this.single_data.akun_akumulasi = response.data.akun_penyusutan[0].id_akun;
+                if(response.data.kelompok_aktiva.length > 0){
+                  this.kelompok_aktiva = response.data.kelompok_aktiva;
                 }
 
                 $('.overlay.main').fadeOut(200);
-
               }).catch(err => {
                  $('#load-status-text').text('Sistem Bermasalah. Cobalah Memuat Ulang Halaman');
               }).then(() => {
+                if(this.kelompok_aktiva.length > 0)
+                  this.golonganChange(this.kelompok_aktiva[0].value);
+                
                 $('#overlay-transaksi').fadeIn(200);
               })
       },
@@ -480,20 +507,28 @@
           // console.log($('#data-form').serialize());
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/store', 
+            axios.post(this.baseUrl+'/aktiva/aset/store', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
               if(response.data.status == 'berhasil'){
-                $.toast({
-                    text: 'Data Kelompok Aktiva Baru Berhasil Disimpan.',
-                    showHideTransition: 'slide',
-                    position: 'top-right',
-                    icon: 'success'
-                })
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag
+                  })
 
-                this.form_reset();
-              }
+                  this.form_reset();
+                }else if(response.data.status == 'gagal'){
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag,
+                      hideAfter: false
+                  })
+                }
             }).catch((err) => {
               alert(err);
               this.btn_save_disabled = false;
@@ -524,7 +559,7 @@
                       icon: response.data.flag
                   })
 
-                  // this.form_reset();
+                  this.form_reset();
                 }else if(response.data.status == 'gagal'){
                   $.toast({
                       text: response.data.content,
@@ -664,15 +699,117 @@
         },
 
         golonganChange: function(e){
-          var idx = this.golongan_aset.findIndex(a => a.value === e);
-          // alert(idx);
-          this.single_data.masa_manfaat = this.golongan_aset[idx].masa_manfaat;
-          this.single_data.persentase_gl = this.golongan_aset[idx].garis_lurus;
-          this.single_data.persentase_sm = this.golongan_aset[idx].saldo_menurun;
+
+          var idx = this.kelompok_aktiva.findIndex(a => a.value === e);
+          
+          if(idx >= 0){
+            this.single_data.kelompok_aktiva = e;
+            this.single_data.akun_harta = this.kelompok_aktiva[idx].ga_akun_harta+' - '+this.kelompok_aktiva[idx].akun_harta;
+            this.single_data.akun_penyusutan = this.kelompok_aktiva[idx].ga_akun_penyusutan+' - '+this.kelompok_aktiva[idx].akun_penyusutan;
+            this.single_data.akun_akumulasi = this.kelompok_aktiva[idx].ga_akun_akumulasi+' - '+this.kelompok_aktiva[idx].akun_akumulasi;
+            this .single_data.masa_manfaat = this.kelompok_aktiva[idx].ga_masa_manfaat;
+
+            this.generateInfo();
+          }else{
+            alert('Kelompok Aktiva Tidak Diketahui');
+          }
+        },
+
+        metodeChange: function(e){
+          if(e == 'SM')
+            this.single_data.metode_penyusutan = 'Saldo Menurun';
+          else
+            this.single_data.metode_penyusutan = 'Garis Lurus';
+
+          this.generateInfo();
+        },
+
+        dateChange: function(e){
+          this.single_data.tanggal_beli = e;
+          $('#data-form').data('bootstrapValidator').resetForm();
+          this.calculated();
+        },
+
+        priceChange: function(e){
+          this.single_data.harga_beli = e;
+          this.calculated();
+        },
+
+        generateInfo: function(){
+          // alert(this.single_data.metode_penyusutan);
+          var idx = this.kelompok_aktiva.findIndex(a => a.value === this.single_data.kelompok_aktiva);
+
+          if(this.single_data.metode_penyusutan == "Garis Lurus")
+              this.single_data.persentase = this.kelompok_aktiva[idx].ga_garis_lurus
+          else
+            this.single_data.persentase = this.kelompok_aktiva[idx].ga_saldo_menurun;
+          this.calculated();
+        },
+
+        hitung: function(){
+
+          if($('#data-form').data('bootstrapValidator').validate().isValid()){
+              var that = this;
+              this.simulasi_view = 'calculating';
+              this.calculated();
+              setTimeout(function(){
+                that.simulasi_view = 'complete';
+              }, ((that.single_data.masa_manfaat * 1000) / 4));
+          }else{
+            alert('Harap Lengkapi Data Form Terlebih Dahulu');
+          }
+
+          // console.log(this.simulasi_hitung);
+        },
+
+        calculated: function(){
+          var np = parseFloat(this.single_data.harga_beli.replace(/\,/g, ''));
+          var tahun = parseInt(this.single_data.tanggal_beli.split('-')[1]);
+          var bulan = parseInt(this.single_data.tanggal_beli.split('-')[0]);
+          var loop = (bulan > 1) ? this.single_data.masa_manfaat + 1 : this.single_data.masa_manfaat;
+          var nilai_penyusutan = nilai_akumulasi = 0 ;
+          var nilai_sisa = np;
+          var data = []; 
+          var persentase = this.single_data.persentase/100;
+
+          for(var i = 0; i < loop; i++){
+            
+            var bulan_jalan = 12;
+
+            if((tahun+i) == tahun){
+              bulan_jalan = 12 - (bulan-1);
+            }else if((tahun+i) == (tahun+this.single_data.masa_manfaat)){
+              bulan_jalan = (bulan - 1);
+            }
+
+              if(this.single_data.metode_penyusutan == "Garis Lurus"){
+                nilai_penyusutan = ((np * persentase) / 12) * bulan_jalan;
+              }else{
+                if(i != (loop-1))
+                  nilai_penyusutan = (((np - nilai_akumulasi) * persentase) / 12) * bulan_jalan;
+                else
+                  nilai_penyusutan = nilai_sisa;
+              }
+
+              nilai_akumulasi += nilai_penyusutan;
+              nilai_sisa -= nilai_penyusutan;
+
+              data[i] = {
+                'tahun' : (tahun+i),
+                'jumlah_bulan' : bulan_jalan,
+                'harga_perolehan' : this.humanizePrice(np),
+                'nilai_penyusutan' : this.humanizePrice(Number(nilai_penyusutan.toFixed(2))),
+                'nilai_akumulasi' : this.humanizePrice(Number(nilai_akumulasi.toFixed(2))), 
+                'nilai_sisa' : this.humanizePrice(Number(nilai_sisa.toFixed(2))),
+              }            
+          }
+
+          this.simulasi_hitung = data;
         },
 
         humanizePrice: function(alpha){
-          var bilangan = alpha;
+          var bilangan = alpha.toString();
+          var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
   
           var number_string = bilangan.toString(),
             sisa  = number_string.length % 3,
@@ -680,27 +817,36 @@
             ribuan  = number_string.substr(sisa).match(/\d{3}/g);
               
           if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
+            separator = sisa ? ',' : '';
+            rupiah += separator + ribuan.join(',');
           }
 
           // Cetak hasil
-          return rupiah; // Hasil: 23.456.789
+          return rupiah+'.'+commas; // Hasil: 23.456.789
         },
 
         form_reset: function(){
-           this.state = 'simpan';
-           $('#golongan_kelompok').val(this.golongan_aset[0].value).trigger('change.select2');
-           $('#akun_harta').val(this.akun_harta[0].value).trigger('change.select2');
-           $('#akun_penyusutan').val(this.akun_penyusutan[0].value).trigger('change.select2').trigger('change.select2');
-           $('#akun_akumulasi').val(this.akun_akumulasi[0].value).trigger('change.select2');
 
-          this.single_data.nomor_kelompok = '';
-          this.single_data.nama_kelompok = '';
-          this.single_data.keterangan_kelompok = '';
-          this.single_data.masa_manfaat  = '4';
-          this.single_data.persentase_gl  = '25';
-          this.single_data.persentase_sm  = '50';
+            this.simulasi_hitung = [];
+            this.simulasi_view = 'standby;'
+            this.state = 'simpan';
+            this.single_data.nomor_aset = '';
+            this.single_data.nama_aset = '';
+            this.single_data.masa_manfaat  = '';
+            this.single_data.persentase  = '';
+            this.single_data.tanggal_beli  = '';
+            this.single_data.harga_beli  = '';
+            this.single_data.kelompok_aktiva  = '';
+            this.single_data.metode_penyusutan  = 'Garis Lurus',
+            this.single_data.akun_harta = '';
+            this.single_data.akun_penyusutan = '';
+            this.single_data.akun_akumulasi = '';
+
+            $('#kelompok_aktiva').val(this.kelompok_aktiva[0].value);
+            $('#metode_penyusutan').val('GL');
+            $('#harga_beli').val(0);
+            $('#tanggal_beli').val('');
+            this.golonganChange(this.kelompok_aktiva[0].value);
         }
       }
 
