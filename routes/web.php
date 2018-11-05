@@ -1088,9 +1088,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('coba', 'transferItemController@data');
 //transfer selesai
 // Create spk Production
-    Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
     Route::get('/produksi/spk/tabelspk', 'Produksi\spkProductionController@tabelSpk');
-    Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
     Route::get('/produksi/spk/create-id/{x}', 'Produksi\spkProductionController@spkCreateId');
     Route::get('/produksi/spk/data-produc-plan', 'Produksi\spkProductionController@productplan');
     Route::get('/produksi/spk/cari-data-plan', 'Produksi\spkProductionController@cariDataSpk');
