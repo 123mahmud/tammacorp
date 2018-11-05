@@ -68,13 +68,25 @@ class ManajemenReturnPenjualanController extends Controller
         })
 
     ->editColumn('dsr_method', function ($data)  {
-            if ($data->dsr_method == "TK")
+            if ($data->dsr_method == "TB")
             {
                 return 'Tukar Barang';
             }
             elseif ($data->dsr_method == "PN")
             {
                 return 'Pemotongan Nota';
+            }
+             elseif ($data->dsr_method == "SB")
+            {
+                return 'Salah Barang';
+            }
+             elseif ($data->dsr_method == "SA")
+            {
+                return 'Salah Alamat';
+            }
+             elseif ($data->dsr_method == "KB")
+            {
+                return 'Kelebihan Barang';
             }
         })
 
