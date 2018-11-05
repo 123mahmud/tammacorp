@@ -24,7 +24,7 @@
                         <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
                             <label class="control-label tebal" for="no_faktur">Jatuh Tempo</label>
                             <div class="input-group input-group-sm" style="width: 100%;">
-                                <input type="text" id="no_faktur" name="s_nota" class="form-control datepicker3"
+                                <input type="text" id="no_faktur" name="s_jatuh_tempo" class="form-control datepicker4"
                                        autocomplete="off" value="">
                             </div>
                         </div>
@@ -154,12 +154,16 @@
                                             <td>
                                                 <select name="sp_method[]" class="form-control">
                                                     @foreach ($dataPayment as $data)
-                                                        <option value="{{ $data->pm_id }}">{{ $data->pm_name }}</option>
+                                                        @if ($edit[0]->sp_method == $data->pm_id)
+                                                            <option value="{{ $data->pm_id }}" selected>{{ $data->pm_name }}</option>
+                                                        @else
+                                                            <option value="{{ $data->pm_id }}">{{ $data->pm_name }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td>
-                                                <input type="text" name="sp_nominal[]" id="bayar" value=""
+                                                <input type="text" name="sp_nominal[]" id="bayar" value="{{ substr($edit[0]->sp_nominal,0,-3)}}" readonly
                                                        class="i_price form-control total bandingPayment totPayment"
                                                        placeholder="Rp. 0,00" autocomplete="off"
                                                        style="text-align: right;"
@@ -189,7 +193,7 @@
                                         <tr>
                                             <td>Kembalian</td>
                                             <td>
-                                                <input type="text" name="s_kembalian" value="0" id="kembalian"
+                                                <input type="text" name="s_kembalianF" value="0" id="kembalian"
                                                        readonly="true" class="form-control kemblaian"
                                                        style="text-align: right;">
                                             </td>

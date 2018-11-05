@@ -51,7 +51,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('.simpanFinal').attr('disabled', 'disabled');
+        // $('.simpanFinal').attr('disabled', 'disabled');
         var bb = $('#save_sform :input').serialize();
         var cc = $('#save_item :input').serialize();
         var data = tableDetail.$('input').serialize();
@@ -129,7 +129,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('.simpanProgres').attr('disabled', 'disabled');
+        // $('.simpanProgres').attr('disabled', 'disabled');
         var bb = $('#save_sform :input').serialize();
         var cc = $('#save_item :input').serialize();
         var data = tableDetail.$('input').serialize();
@@ -257,7 +257,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('.simpanFinal').attr('disabled', 'disabled');
+        // $('.simpanFinal').attr('disabled', 'disabled');
         var bb = $('#save_sform :input').serialize();
         var cc = $('#save_item :input').serialize();
         var data = tableDetail.$('input').serialize();
