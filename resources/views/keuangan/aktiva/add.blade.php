@@ -210,7 +210,7 @@
                                           </thead>
 
                                           <tbody>
-                                            <tr v-for="data in simulasi_hitung">
+                                            <tr v-for="data in simulasi_hitung" :style="(data.year_now) ? 'background: #eee;' : ''">
                                               <td class="text-center">
                                                 <input type="hidden" name="tahun[]" :value="data.tahun" readonly>
                                                 @{{ data.tahun }}
@@ -775,6 +775,7 @@
           for(var i = 0; i < loop; i++){
             
             var bulan_jalan = 12;
+            var year_now = ((tahun + i) == '{{ date('Y') }}');
 
             if((tahun+i) == tahun){
               bulan_jalan = 12 - (bulan-1);
@@ -801,10 +802,13 @@
                 'nilai_penyusutan' : this.humanizePrice(Number(nilai_penyusutan.toFixed(2))),
                 'nilai_akumulasi' : this.humanizePrice(Number(nilai_akumulasi.toFixed(2))), 
                 'nilai_sisa' : this.humanizePrice(Number(nilai_sisa.toFixed(2))),
+                'year_now'   : year_now,
               }            
           }
 
           this.simulasi_hitung = data;
+
+          console.log(data);
         },
 
         humanizePrice: function(alpha){
@@ -847,6 +851,7 @@
             $('#harga_beli').val(0);
             $('#tanggal_beli').val('');
             this.golonganChange(this.kelompok_aktiva[0].value);
+            $('#data-form').data('bootstrapValidator').resetForm();
         }
       }
 
