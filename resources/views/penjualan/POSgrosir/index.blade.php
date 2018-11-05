@@ -1584,16 +1584,14 @@
         function saveStatus() {
             $('.status').attr('disabled', 'disabled');
             var id = $('#idSales').val();
-            console.log(id);
             var status = $('#setStatus').val();
-            console.log(status);
             var oldStatus = $('#oldStatus').val();
-            console.log(oldStatus);
+            var a = $('#resi').val();
             $.ajax({
                 url: baseUrl + '/pembayaran/POSgrosir/changestatus',
                 type: 'get',
                 timeout: 10000,
-                data: {id: id, status: status, oldStatus: oldStatus},
+                data: {id: id, status: status, oldStatus: oldStatus, resi : a},
                 success: function (response) {
                     if (response.status == 'sukses') {
                         cariTanggal();
@@ -1688,9 +1686,10 @@
                     // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
                     {"data": "sDate", "width": "5%"},
                     {"data": "s_note", "width": "15%"},
-                    {"data": "c_name", "width": "20%"},
+                    {"data": "c_name", "width": "15%"},
                     {"data": "sGross", "width": "10%"},
                     {"data": "status", "width": "5%"},
+                    {"data": "s_resi", "width": "5%"},
                     {"data": "action", orderable: false, searchable: false, "width": "10%"},
                     {"data": "action2", orderable: false, searchable: false, "width": "10%"},
                 ],

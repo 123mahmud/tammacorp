@@ -24,6 +24,7 @@ class d_sales extends Model
 							's_jatuh_tempo',
 							's_net',
 							's_sisa',
-							's_status'];
+							's_status',
+							's_resi'];
 		public $timestamps = false;
 }

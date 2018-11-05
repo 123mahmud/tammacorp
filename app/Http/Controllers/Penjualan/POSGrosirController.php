@@ -945,25 +945,22 @@ class POSGrosirController extends Controller
     if($request->status == 'SN'){
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
-                    <select id="setStatus" style="width: 75%; " class="pull-right">
+                    <select id="setStatus" style="width: 100%; " class="pull-right">
                            <option value="RC">Received</option>
                     </select>';
     }elseif($request->status == 'PC'){
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
-
-                      <div class="text-center">
-                        <input type="text" name="pm_name" class="form-control input-sm" id="pm_name">
-                      </div>
                       
-                    <select id="setStatus" style="width: 75%; " class="pull-right">
+                    <select id="setStatus" style="width: 100%;  class="pull-right">
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
-                    </select>';
+                    </select>
+                    <input type="text" name="resi" placeholder="Masukan Nomor Resi" style="width: 100%;" class="form-control input-sm" id="resi">';
     }else{
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
-                    <select id="setStatus" style="width: 75%; " class="pull-right">
+                    <select id="setStatus" style="width: 100%; " class="pull-right">
                            <option value="PC">Packing</option>
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
@@ -980,6 +977,7 @@ class POSGrosirController extends Controller
         ->where('s_id',$request->id)
         ->update([
           's_status' => $request->status,
+          's_resi' => $request->resi
         ]);
 
       $nota = d_sales::select('s_note')
