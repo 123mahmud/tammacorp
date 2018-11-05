@@ -62,7 +62,7 @@
                         <tr>
                             <td>Kembalian</td>
                             <td>
-                                <input type="text" name="s_kembalian" value="0" id="kembalian" readonly="true"
+                                <input type="text" name="s_kembalianF" value="0" id="kembalian" readonly="true"
                                        class="form-control kemblaian" style="text-align: right;">
                             </td>
                         </tr>

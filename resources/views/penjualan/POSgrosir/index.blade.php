@@ -90,7 +90,7 @@
                                                                 <i class="glyphicon glyphicon-calendar"></i>
                                                                 <input maxlength="10" type="text" id="tgl_lahir"
                                                                        name="tgl_lahir"
-                                                                       class="form-control input-sm datepicker2"
+                                                                       class="form-control input-sm datepicker3"
                                                                        value="">
                                                             </div>
                                                         </div>
@@ -269,9 +269,8 @@
                                                         <label class="control-label tebal" for="no_faktur">Jatuh
                                                             Tempo</label>
                                                         <div class="input-group input-group-sm" style="width: 100%;">
-                                                            <input type="text" id="no_faktur" name="s_nota"
-                                                                   class="form-control datepicker3" autocomplete="off"
-                                                                   value="">
+                                                            <input type="text" id="no_faktur" name="s_jatuh_tempo"
+                                                                   class="form-control datepicker4" autocomplete="off">
                                                         </div>
                                                     </div>
                                                 </form>
@@ -531,6 +530,14 @@
                 format: "dd-mm-yyyy",
                 endDate: 'today'
             });//.datepicker("setDate", "0");
+            var newdate7 = new Date(date);
+            newdate7.setDate(newdate7.getDate() + 7);
+            var nd7 = new Date(newdate7);
+            $('.datepicker4').datepicker({
+                autoclose: true,
+                format: "dd-mm-yyyy",
+                // endDate: 'today'
+            }).datepicker("setDate", nd7);
 
             $("#nama-customer").autocomplete({
                 source: baseUrl + '/penjualan/POSretail/retail/autocomplete',
@@ -1249,7 +1256,7 @@
 
         //total kembalian final
         var hasil = 0;
-        $('.simpanFinal').attr('disabled', 'disabled');
+        // $('.simpanFinal').attr('disabled', 'disabled');
 
         function updateKembalian() {
             var inputs = document.getElementsByClassName('totPayment'),
@@ -1278,10 +1285,10 @@
 
             if (hasil < 0) {
                 $('#kembalian').css('background-color', 'red');
-                $('.simpanFinal').attr('disabled', 'disabled');
+                // $('.simpanFinal').attr('disabled', 'disabled');
             } else {
                 $('#kembalian').css('background-color', 'yellow');
-                $('.simpanFinal').removeAttr('disabled', 'disabled');
+                // $('.simpanFinal').removeAttr('disabled', 'disabled');
             }
         }
 

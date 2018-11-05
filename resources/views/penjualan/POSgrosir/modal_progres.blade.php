@@ -56,7 +56,7 @@
                         <tr>
                             <td>Kembalian</td>
                             <td>
-                                <input type="text" name="s_kembalian" value="0" id="kembalianDP" readonly="true"
+                                <input type="text" name="s_kembalianP" value="0" id="kembalianDP" readonly="true"
                                        class="form-control kemblaian" style="text-align: right;">
                             </td>
                         </tr>
@@ -67,7 +67,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                <button class="btn btn-primary simpanFinal" type="button" onclick="sal_save_onProgres()">Proses</button>
+                <button class="btn btn-primary simpanProgres" type="button" onclick="sal_save_onProgres()">Proses</button>
             </div>
         </div>
     </div>
