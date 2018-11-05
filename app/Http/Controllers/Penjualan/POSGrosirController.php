@@ -951,6 +951,11 @@ class POSGrosirController extends Controller
     }elseif($request->status == 'PC'){
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
+
+                      <div class="text-center">
+                        <input type="text" name="pm_name" class="form-control input-sm" id="pm_name">
+                      </div>
+                      
                     <select id="setStatus" style="width: 75%; " class="pull-right">
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
