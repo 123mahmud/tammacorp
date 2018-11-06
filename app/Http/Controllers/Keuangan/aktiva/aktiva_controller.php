@@ -12,11 +12,69 @@ use Session;
 class aktiva_controller extends Controller
 {
     public function index(){
-    	return "index belum siap";
+    	return view('keuangan.aktiva.master_aktiva.index');
+    }
+
+    public function list_table(Request $request)
+    {   
+        $list = DB::table("d_aktiva as a")
+        				->join('d_golongan_aktiva as b', 'a.a_kelompok', '=', 'b.ga_nomor')
+        				->select("a.*", "b.ga_nama", "b.ga_masa_manfaat")
+        				->where('a_status', 'active')
+        				->orderBy("created_at", "desc")->get();
+
+        // return $list;
+        $data = collect($list);
+        
+        return Datatables::of($data)
+        			->editColumn('a_metode_penyusutan', function($data) {
+                          $alpha = "";
+
+                          switch ($data->a_metode_penyusutan) {
+                              case 'SM':
+                                  $alpha = 'Saldo Menurun';
+                                  break;
+
+                              case 'GL':
+                                  $alpha = 'Garis Lurus';
+                                  break;
+                              
+                              default:
+                                  $alpha = "Tidak Diketahui";
+                                  break;
+                          }
+
+                          return $alpha;
+                    })
+                    ->editColumn('ga_masa_manfaat', function($data) {
+                          return $data->ga_masa_manfaat.' Tahun';
+                    })
+                    ->editColumn('a_harga_beli', function($data) {
+                          return number_format($data->a_harga_beli, 2);
+                    })
+                    ->editColumn('a_nilai_sisa', function($data) {
+                          return number_format($data->a_nilai_sisa, 2);
+                    })
+                    ->addColumn('action', function ($data) {
+
+                             return  '<button id="edit" onclick="edit(this)" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>';
+                    })
+                    ->rawColumns(['action','confirmed'])
+                    ->make(true);
+    }
+
+    public function list(){
+    	$data = DB::table('d_aktiva as a')
+    				->join('d_golongan_aktiva as b', 'a.a_kelompok', '=', 'b.ga_nomor')
+                    ->select('a.*', 'b.ga_nama', 'b.ga_masa_manfaat', 'b.ga_garis_lurus', 'b.ga_saldo_menurun')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+    	return json_encode($data);
     }
 
     public function add(){
-    	return view('keuangan.aktiva.add');
+    	return view('keuangan.aktiva.master_aktiva.add');
     }
 
     public function form_resource(){
@@ -65,6 +123,8 @@ class aktiva_controller extends Controller
     	$nomor = 'ACT-'.str_pad($id, 3, '0', STR_PAD_LEFT);
 		$query = 'insert into d_jurnal (no_jurnal, ) values ';
 
+		$nilai_sisa = str_replace(',', '', $request->harga_beli);
+
 		if(jurnal_setting()->allow_jurnal_to_execute){
 			$tanggal_awal = $tanggal_beli;
 			$penyusutan = 0;
@@ -112,8 +172,9 @@ class aktiva_controller extends Controller
 
 	            // return 'Penyusutan Aset '.$request->nama_aset.' Periode Bulan '.date('m/Y', strtotime($tanggal_awal));
 
-	            $state_jurnal = _initiateJournal_self_detail($nomor, 'MM', date('Y-m-d', strtotime($tanggal_awal)), 'Penyusutan Atas Aset '.$request->nama_aset.' Periode Bulan '.date('m/Y', strtotime($tanggal_awal)), $acc);
+	            $state_jurnal = _initiateJournal_self_detail($nomor, 'MM', date('Y-m-d', strtotime($tanggal_awal)), 'Penyusutan Atas Aset '.$request->nama_aset.' ('.$nomor.'),  Periode Bulan '.date('m/Y', strtotime($tanggal_awal)), $acc);
 
+	            $nilai_sisa -= $penyusutan;
 		        $tanggal_awal = date ("Y-m-d", strtotime("+1 month", strtotime($tanggal_awal)));
 			}
 	    }
@@ -128,7 +189,7 @@ class aktiva_controller extends Controller
     		'a_tanggal_beli' 		=> $tanggal_beli,
     		'a_harga_beli'			=> str_replace(',', '', $request->harga_beli),
     		'a_metode_penyusutan'	=> $request->metode_penyusutan,
-    		'a_nilai_sisa'			=> str_replace(',', '', $request->harga_beli),
+    		'a_nilai_sisa'			=> $nilai_sisa,
     		'a_tanggal_habis'		=> $tanggal_berakhir,
     		'a_status'				=> 'active'
     	]);
@@ -139,5 +200,73 @@ class aktiva_controller extends Controller
             'content'   => 'Data Aktiva Berhasil Disimpan.'
         ]);
     	
+    }
+
+    public function update(Request $request){
+    	// return json_encode($request->all());
+    	$aset = DB::table('d_aktiva')->where('a_nomor', $request->nomor_aset);
+
+        if(!$aset->first()){
+            return response()->json([
+                'status'    => 'gagal',
+                'flag'      => 'error',
+                'content'   => 'Data Aktiva Yang Ingin Dirubah Tidak Bisa Ditemukan. Cobalah Untuk Memuat Ulang Halaman.'
+            ]);
+        }
+
+        $cek = DB::table('d_jurnal')->where('jurnal_ref', $aset->first()->a_nomor)->first();
+
+        if($cek){
+
+        	$aset->update([
+                'a_name'               => $request->nama_aset,
+            ]);
+
+        	return response()->json([
+                'status'    => 'berhasil',
+                'flag'      => 'warning',
+                'content'   => 'Perubahan Berhasil, Namun Hanya Pada Nama dan Keterangan Aktiva Saja. Karena Aktiva Yang Dimaksud Sudah Dilakukan Penyusutan Sebelumnya.'
+            ]);
+        }
+
+        $aset->update([
+    		'a_name'				=> $request->nama_aset,
+    		'a_kelompok'			=> $request->kelompok_aktiva,
+    		'a_tanggal_beli' 		=> $tanggal_beli,
+    		'a_harga_beli'			=> str_replace(',', '', $request->harga_beli),
+    		'a_metode_penyusutan'	=> $request->metode_penyusutan,
+    		'a_nilai_sisa'			=> str_replace(',', '', $request->harga_beli),
+    		'a_tanggal_habis'		=> $tanggal_berakhir,
+    		'a_status'				=> 'active'
+    	]);
+
+        return response()->json([
+            'status'    => 'berhasil',
+            'flag'      => 'success',
+            'content'   => 'Aktiva Berhasil Diubah.'
+        ]);
+    }
+
+    public function delete(Request $request){
+    	// return json_encode($request->all());
+
+    	$aset = DB::table('d_aktiva')->where('a_nomor', $request->id);
+
+        if(!$aset->first()){
+            return response()->json([
+                'status'    => 'gagal',
+                'flag'      => 'error',
+                'content'   => 'Data Aktiva Yang Ingin Dirubah Tidak Bisa Ditemukan. Cobalah Untuk Memuat Ulang Halaman.'
+            ]);
+        }
+
+        DB::table('d_jurnal')->where('jurnal_ref', $request->id)->delete();
+        $aset->delete();
+
+        return response()->json([
+            'status'    => 'berhasil',
+            'flag'      => 'success',
+            'content'   => 'Aktiva Berhasil Dihapus.'
+        ]);
     }
 }

@@ -12,7 +12,7 @@ use Session;
 class kelompok_aktiva_controller extends Controller
 {
     public function index(){
-    	return view('keuangan.kelompok_aktiva.index');
+    	return view('keuangan.aktiva.kelompok_aktiva.index');
     }
 
     public function list_table(Request $request)
@@ -79,7 +79,7 @@ class kelompok_aktiva_controller extends Controller
     }
 
     public function add(){
-    	return view('keuangan.kelompok_aktiva.add');
+    	return view('keuangan.aktiva.kelompok_aktiva.add');
     }
 
     public function form_resource(){
@@ -135,9 +135,15 @@ class kelompok_aktiva_controller extends Controller
             ]);
         }
         
-        $aktiva = false;
+        $aktiva = DB::table('d_aktiva')->where('a_kelompok', $request->nomor_kelompok)->first();
 
         if($aktiva){
+
+            $kelompok->update([
+                'ga_nama'               => $request->nama_kelompok,
+                'ga_keterangan'         => $request->keterangan_kelompok
+            ]);
+
             return response()->json([
                 'status'    => 'berhasil',
                 'flag'      => 'warning',
@@ -167,12 +173,19 @@ class kelompok_aktiva_controller extends Controller
 
     public function delete(Request $request){
         $kelompok = DB::table('d_golongan_aktiva')->where('ga_nomor', $request->id);
+        $aktiva = DB::table('d_aktiva')->where('a_kelompok', $request->id)->first();
 
         if(!$kelompok->first()){
             return response()->json([
                 'status'    => 'gagal',
                 'flag'      => 'error',
-                'content'   => 'Data Kelompok Yang Ingin Dirubah Tidak Bisa Ditemukan. Cobalah Untuk Memuat Ulang Halaman.'
+                'content'   => 'Data Kelompok Yang Ingin Dihapus Tidak Bisa Ditemukan. Cobalah Untuk Memuat Ulang Halaman.'
+            ]);
+        }else if($aktiva){
+            return response()->json([
+                'status'    => 'gagal',
+                'flag'      => 'error',
+                'content'   => 'Data Kelompok Yang Ingin Dihapus Digunakan Oleh Aktiva. Tidak Bisa Dihapus..'
             ]);
         }
 
