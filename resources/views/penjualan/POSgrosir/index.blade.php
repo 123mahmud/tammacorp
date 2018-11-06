@@ -1647,9 +1647,10 @@
                     // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
                     {"data": "sDate", "width": "5%"},
                     {"data": "s_note", "width": "15%"},
-                    {"data": "c_name", "width": "20%"},
+                    {"data": "c_name", "width": "15%"},
                     {"data": "sGross", "width": "10%"},
                     {"data": "status", "width": "5%"},
+                    {"data": "s_resi", "width": "5%"},
                     {"data": "action", orderable: false, searchable: false, "width": "10%"},
                     {"data": "action2", orderable: false, searchable: false, "width": "10%"},
                 ],
