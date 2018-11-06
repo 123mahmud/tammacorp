@@ -61,8 +61,8 @@
                       <div class="form-group">
                         <select class="form-control input-sm" id="pilih_metode_return" name="pilihMetodeReturn" style="width: 100%;">
                           <option value=""> - Pilih Metode Return</option>
-                          <option value="TB"> Tukar Barang </option>
                           <option value="PN"> Potong Nota </option>
+                          <option value="TB"> Tukar Barang </option>
                           <option value="SB"> Salah Barang </option>
                           <option value="SA"> Salah Alamat </option>
                           <option value="KB"> Kurang Barang </option>
@@ -759,7 +759,7 @@
             $('#s_net').val(s_net);
             $('#pm_name').val(response[0].pm_name);
 
-            $('#tabel-return-sales').DataTable({
+            var tableReturn = $('#tabel-return-sales').DataTable({
               // processing: true,
               // serverSide: true,
               "scrollY": 500,
@@ -1077,12 +1077,14 @@ function autoTotalReturn(){
             data: a,
             success: function (response) {
                 if (response.status == 'sukses') {
+                    $('#form_return_pembelian')[0].reset();
+                    $('#tabel-return-sales').dataTable().fnClearTable();
                     iziToast.success({
                         timeout: 5000,
                         position: "topRight",
                         icon: 'fa fa-chrome',
                         title: '',
-                        message: 'Data customer tersimpan.'
+                        message: 'Data Return Tersimpan.'
                     });
                 } else {
                     iziToast.error({

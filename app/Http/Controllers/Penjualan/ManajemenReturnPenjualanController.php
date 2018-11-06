@@ -157,7 +157,15 @@ class ManajemenReturnPenjualanController extends Controller
   	$formatted_tags = array();
     $term = trim($request->q);
     if (empty($term)) {
-      $sup = d_sales::where('s_status','=','FN')
+      $sup = d_sales::
+        where(function ($query){
+          $query->where('s_channel', '=', 'RT')
+                ->where('s_status', '=', 'FN');
+        })
+        ->orWhere(function ($query){
+          $query->where('s_channel', '=', 'GR')
+                ->where('s_status', '=', 'RC');
+        })
         ->limit(50)
         ->get();
       foreach ($sup as $val) {
@@ -170,7 +178,15 @@ class ManajemenReturnPenjualanController extends Controller
     }
     else
     {
-      $sup = d_sales::where('s_status','=','FN')
+      $sup = d_sales::
+        where(function ($query){
+          $query->where('s_channel', '=', 'RT')
+                ->where('s_status', '=', 'FN');
+        })
+        ->orWhere(function ($query){
+          $query->where('s_channel', '=', 'GR')
+                ->where('s_status', '=', 'RC');
+        })
         ->where(function ($b) use ($term) {
                 $b->orWhere('s_note', 'LIKE', '%'.$term.'%')
                   ->orWhere('s_channel', 'LIKE', '%'.$term.'%')
@@ -383,7 +399,8 @@ class ManajemenReturnPenjualanController extends Controller
         'dsr_date' => $sales->s_date,
         'dsr_price_return' => $this->konvertRp($request->t_return),
         'dsr_sgross' => $this->konvertRp($request->s_gross),
-        'dsr_disc_value' => $this->konvertRp($request->total_diskon),
+        'dsr_disc_vpercent' => $this->konvertRp($request->total_percent),
+        'dsr_disc_value' => $this->konvertRp($request->total_value),
         'dsr_net' =>  $this->konvertRp($request->s_net),
         'dsr_status' => 'WT',
         'dsr_created' => Carbon::now()
@@ -459,7 +476,7 @@ class ManajemenReturnPenjualanController extends Controller
   public function storeReturn($id){
     DB::beginTransaction();
     try {
-    $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return','dsr_sid')
+    $data = d_sales_return::select('*')
       ->where('dsr_id',$id)
       ->first();
     if ($data->dsr_method == 'PN') {
@@ -498,37 +515,46 @@ class ManajemenReturnPenjualanController extends Controller
                     'sm_reff' => $data->dsr_code,
                     'sm_insert' => Carbon::now()
                 ]);
+
               }else{
-            $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
-            // dd($cek[$i]->dsrdt_qty_confirm);
-            $stockRusak->update([
-              's_qty' => $tambahStock,
-            ]);
-            $sm_detailid = d_stock_mutation::select('sm_detailid')
-              ->where('sm_stock',$stockRusak->s_id)
-              ->max('sm_detailid')+1;
-            // dd($sm_detailid);
-            d_stock_mutation::create([
-                    'sm_stock' =>  $stockRusak->s_id,
-                    'sm_detailid' => $sm_detailid,
-                    'sm_date' => Carbon::now(),
-                    'sm_comp' => 8,
-                    'sm_position' => 8,
-                    'sm_mutcat' => 4,
-                    'sm_item' => $cek[$i]->dsrdt_item,
-                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
-                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
-                    'sm_detail' => 'PENAMBAHAN',
-                    'sm_reff' => $data->dsr_code,
-                    'sm_insert' => Carbon::now()
+
+                $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
+                // dd($cek[$i]->dsrdt_qty_confirm);
+                $stockRusak->update([
+                  's_qty' => $tambahStock,
                 ]);
+                $sm_detailid = d_stock_mutation::select('sm_detailid')
+                  ->where('sm_stock',$stockRusak->s_id)
+                  ->max('sm_detailid')+1;
+                // dd($sm_detailid);
+                d_stock_mutation::create([
+                        'sm_stock' =>  $stockRusak->s_id,
+                        'sm_detailid' => $sm_detailid,
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => 8,
+                        'sm_position' => 8,
+                        'sm_mutcat' => 4,
+                        'sm_item' => $cek[$i]->dsrdt_item,
+                        'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_detail' => 'PENAMBAHAN',
+                        'sm_reff' => $data->dsr_code,
+                        'sm_insert' => Carbon::now()
+                    ]);
 
            }
-
-           // d_sales::where('s_id',$data->dsr_sid)
-           //  ->update([
-              
-           //  ])
+           dd($data);
+          // d_sales::where('s_id',$data->dsr_sid)
+          //   ->update([
+          //     's_gross' => $data->dsr_sgross,
+          //     's_disc_percent' =>
+          //     's_disc_value',
+          //     's_sisa',
+          //     's_status'
+          //     ]);
+          // $a = d_sales_dt::where('sd_sales',$data->dsr_sid)
+          //   ->get();
+          // dd($a);
          }
         }
         
@@ -567,6 +593,7 @@ class ManajemenReturnPenjualanController extends Controller
         }
         
       }
+
     }else{
       return 'b';
     }
@@ -581,6 +608,7 @@ class ManajemenReturnPenjualanController extends Controller
         'data' => $e
       ]);
     }
+
   }
 
   public function printreturn($id){
