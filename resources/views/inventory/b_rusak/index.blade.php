@@ -92,8 +92,8 @@
     $('.datepicker2').datepicker({
       autoclose: true,
       format:"dd-mm-yyyy",
-      endDate: 'today'
-    });//datepicker("setDate", "0");
+      // endDate: 'today'
+    }).datepicker("setDate", "0");
 
     //select2
     $( "#head_gudang" ).select2({
