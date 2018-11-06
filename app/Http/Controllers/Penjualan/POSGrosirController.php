@@ -947,7 +947,11 @@ class POSGrosirController extends Controller
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
                     <select id="setStatus" style="width: 100%; " class="pull-right">
                            <option value="RC">Received</option>
-                    </select>';
+                    </select>
+
+                    <div class="input-group">
+                      <input type="hidden" name="resi" placeholder="Masukan Nomor Resi" style="width: 100%;" class="form-control input-sm" id="resi" value="'.$sales->s_resi.'">
+                    </div>';
     }elseif($request->status == 'PC'){
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
@@ -968,11 +972,7 @@ class POSGrosirController extends Controller
                            <option value="PC">Packing</option>
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
-                    </select>
-                    <div class="input-group">
-                      <span class="input-group-addon">Resi</span>
-                      <input type="text" name="resi" placeholder="Masukan Nomor Resi" style="width: 100%;" class="form-control input-sm" id="resi">
-                    </div>';';
+                    </select>';
     }
     return $response;
   }
