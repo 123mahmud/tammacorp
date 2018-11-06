@@ -945,6 +945,25 @@ Route::group(['middleware' => 'auth'], function () {
         // End Aktiva
 
 
+        // Periode Keuangan
+
+            Route::get('system/periode_keuangan', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@index',
+                'as'    => 'periode.index'
+            ]);
+
+            Route::get('system/periode_keuangan/list-periode', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@list_periode',
+                'as'    => 'periode.list_periode'
+            ]);
+
+            Route::post('system/periode_keuangan/list-periode/store', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@store',
+                'as'    => 'periode.store'
+            ]);
+
+        // End Periode
+
         //Laporan Keuangan
             Route::get('keuangan/laporan_keuangan', function(){
                 $data = DB::table('d_akun')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->orderBy('id_akun', 'asc')->get();

@@ -40,6 +40,7 @@
 
 @section('content')
             <!--BEGIN PAGE WRAPPER-->
+            
             <div id="vue-element">
               <div id="page-wrapper">
                 <!--BEGIN TITLE & BREADCRUMB PAGE-->

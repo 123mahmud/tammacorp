@@ -1154,9 +1154,9 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Tahun Finansial','ma_read'))
-                                    <li class="{{ Request::is('system/thnfinansial/finansial') ? 'active' : '' || Request::is('system/thnfinansial/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/system/thnfinansial/finansial') }}"><span
-                                                    class="submenu-title">Tahun Finansial</span><span class="hidden">System</span></a>
+                                    <li class="{{ Request::is('system/periode_keuangan') ? 'active' : '' || Request::is('system/periode_keuangan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('system/periode_keuangan') }}"><span
+                                                    class="submenu-title">Bulan Finansial</span><span class="hidden">System</span></a>
                                     </li>
                                 @endif
 
