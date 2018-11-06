@@ -52,7 +52,7 @@
                                      <h4>Data Kelompok Aktiva</h4>
                                    </div>
                                    <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
-                                     <a href="{{ url('/aktiva/kelompok_aktiva') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
+                                     <a href="{{ url('master/aktiva/kelompok_aktiva') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                                    </div>
                                 </div>
 
@@ -426,7 +426,7 @@
 
       created: function(){
         if(this.edit != 'null'){
-          axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
+          axios.get(this.baseUrl+'/master/aktiva/kelompok_aktiva/list-kelompok')
                     .then((response) => {
                       // console.log(response.data);
                       this.data_table_resource = response.data;
@@ -437,7 +437,7 @@
                     });
         }
 
-        axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/form-resource')
+        axios.get(this.baseUrl+'/master/aktiva/kelompok_aktiva/form-resource')
               .then((response) => {
                 console.log(response.data);
 
@@ -480,7 +480,7 @@
           // console.log($('#data-form').serialize());
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/store', 
+            axios.post(this.baseUrl+'/master/aktiva/kelompok_aktiva/store', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
@@ -512,7 +512,7 @@
             // console.log($('#data-form').serialize());
 
             if($('#data-form').data('bootstrapValidator').validate().isValid()){
-              axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/update', 
+              axios.post(this.baseUrl+'/master/aktiva/kelompok_aktiva/update', 
                 $('#data-form').serialize()
               ).then((response) => {
                 console.log(response.data);
@@ -552,7 +552,7 @@
             if(this.single_data.nomor_kelompok != ''){
               this.btn_save_disabled = true;
 
-              axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/delete', 
+              axios.post(this.baseUrl+'/master/aktiva/kelompok_aktiva/delete', 
                 {id: this.single_data.nomor_kelompok}
               ).then((response) => {
                 console.log(response.data);
@@ -627,7 +627,7 @@
           this.on_ajax_loading = true;
           this.data_table_resource = [];
 
-          axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
+          axios.get(this.baseUrl+'/master/aktiva/kelompok_aktiva/list-kelompok')
                   .then((response) => {
                     console.log(response.data);
                     this.data_table_resource = response.data;

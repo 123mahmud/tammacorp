@@ -280,6 +280,13 @@
                                     </li>
                                 @endif
 
+                                @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
+                                    <li class="{{ Request::is('master/aktiva') ? 'active' : '' || Request::is('master/aktiva/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/aktiva') }}"><span
+                                                    class="submenu-title">Data Aktiva</span><span class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
                                 {{-- @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
                                     <li class="{{ Request::is('master/keuangan/master_transaksi') ? 'active' : '' || Request::is('master/keuangan/master_transaksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/keuangan/master_transaksi') }}"><span

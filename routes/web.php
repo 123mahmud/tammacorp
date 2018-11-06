@@ -850,45 +850,49 @@ Route::group(['middleware' => 'auth'], function () {
 
         // End Master Transaksi
 
+        //Aktiva index
+            Route::get('master/aktiva', function(){
+                return view('keuangan.aktiva.index');
+            });
 
         // Kelompok Aktiva
 
-            Route::get('/aktiva/kelompok_aktiva', [
+            Route::get('master/aktiva/kelompok_aktiva', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@index',
                 'as'    => 'kelompok_aktiva.index'
             ]);
 
-            Route::get('/aktiva/kelompok_aktiva/list-table', [
+            Route::get('master/aktiva/kelompok_aktiva/list-table', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list_table',
                 'as'    => 'kelompok_aktiva.list_table'
             ]);
 
-            Route::get('/aktiva/kelompok_aktiva/add', [
+            Route::get('master/aktiva/kelompok_aktiva/add', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@add',
                 'as'    => 'kelompok_aktiva.add'
             ]);
 
-            Route::get('/aktiva/kelompok_aktiva/form-resource', [
+            Route::get('master/aktiva/kelompok_aktiva/form-resource', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@form_resource',
                 'as'    => 'kelompok_aktiva.form_resource'
             ]);
 
-            Route::post('/aktiva/kelompok_aktiva/store', [
+            Route::post('master/aktiva/kelompok_aktiva/store', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@store',
                 'as'    => 'kelompok_aktiva.store'
             ]);
 
-            Route::get('/aktiva/kelompok_aktiva/list-kelompok', [
+            Route::get('master/aktiva/kelompok_aktiva/list-kelompok', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@list',
                 'as'    => 'kelompok_aktiva.list'
             ]);
 
-            Route::post('/aktiva/kelompok_aktiva/update', [
+            Route::post('master/aktiva/kelompok_aktiva/update', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@update',
                 'as'    => 'kelompok_aktiva.update'
             ]);
 
-            Route::post('/aktiva/kelompok_aktiva/delete', [
+            Route::post('master/aktiva/kelompok_aktiva/delete', [
                 'uses'  => 'Keuangan\Kelompok_aktiva\kelompok_aktiva_controller@delete',
                 'as'    => 'kelompok_aktiva.delete'
             ]);
@@ -898,24 +902,44 @@ Route::group(['middleware' => 'auth'], function () {
 
         // Aktiva
 
-            Route::get('/aktiva/aset', [
+            Route::get('master/aktiva/aset', [
                 'uses'  => 'Keuangan\aktiva\aktiva_controller@index',
                 'as'    => 'aktiva.index'
             ]);
 
-            Route::get('/aktiva/aset/add', [
+            Route::get('master/aktiva/aset/add', [
                 'uses'  => 'Keuangan\aktiva\aktiva_controller@add',
                 'as'    => 'aktiva.add'
             ]);
 
-            Route::get('/aktiva/aset/form-resource', [
+            Route::get('master/aktiva/aset/form-resource', [
                 'uses'  => 'Keuangan\aktiva\aktiva_controller@form_resource',
                 'as'    => 'aktiva.form_resource'
             ]);
 
-            Route::post('/aktiva/aset/store', [
+            Route::post('master/aktiva/aset/store', [
                 'uses'  => 'Keuangan\aktiva\aktiva_controller@store',
                 'as'    => 'aktiva.store'
+            ]);
+
+            Route::get('master/aktiva/aset/list-table', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@list_table',
+                'as'    => 'aktiva.list_table'
+            ]);
+
+            Route::get('master/aktiva/aset/list', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@list',
+                'as'    => 'aktiva.list'
+            ]);
+
+            Route::post('master/aktiva/aset/update', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@update',
+                'as'    => 'aktiva.update'
+            ]);
+
+            Route::post('master/aktiva/aset/delete', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@delete',
+                'as'    => 'aktiva.delete'
             ]);
 
         // End Aktiva

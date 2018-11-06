@@ -21,12 +21,12 @@ tr.details td.details-control {
     <!--BEGIN TITLE & BREADCRUMB PAGE-->
     <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
         <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-            <div class="page-title">Master Data Kelompok Aktiva</div>
+            <div class="page-title">Master Data Aktiva</div>
         </div>
         <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
             <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
             <li><i></i>&nbsp;Master&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-            <li class="active">Master Data kelompok Aktiva</li>
+            <li class="active">Master Data Aktiva</li>
         </ol>
         <div class="clearfix">
         </div>
@@ -43,7 +43,7 @@ tr.details td.details-control {
             </div>
                     
             <ul id="generalTab" class="nav nav-tabs">
-              <li class="active"><a href="#alert-tab" data-toggle="tab">Master Data Kelompok Aktiva</a></li>
+              <li class="active"><a href="#alert-tab" data-toggle="tab">Master Data Aktiva</a></li>
             </ul>
             
             <div id="generalTabContent" class="tab-content responsive">
@@ -51,7 +51,7 @@ tr.details td.details-control {
               <div id="alert-tab" class="tab-pane fade in active">
                 <div class="row" style="margin-top:-20px;">
                   <div align="right" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:10px;">
-                    <a href="{{ url('aktiva/kelompok_aktiva/add') }}">
+                    <a href="{{ url('master/aktiva/aset/add') }}">
                       <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                         <i class="fa fa-plus" aria-hidden="true">
                          &nbsp;
@@ -67,12 +67,13 @@ tr.details td.details-control {
                         <thead>
                           <tr>
                             {{-- <th class="sorting_disabled"></th> --}}
-                            <th class="wd-15p text-center">No.Kelompok</th>
+                            <th class="wd-15p text-center">No.Aktiva</th>
                             <th class="wd-15p text-center">Nama</th>
-                            <th class="wd-15p text-center">Golongan</th>
-                            <th class="wd-15p text-center">Acc Harta</th>
-                            <th class="wd-15p text-center">Acc Akumulasi</th>
-                            <th class="wd-15p text-center">Acc Penyusutan</th>
+                            <th class="wd-15p text-center">Kelompok</th>
+                            <th class="wd-15p text-center">Masa Manfaat</th>
+                            <th class="wd-15p text-center">Metode Penyusutan</th>
+                            <th class="wd-15p text-center">Harga Beli</th>
+                            <th class="wd-15p text-center">Nilai Sisa</th>
                             <th class="wd-15p text-center">Aksi</th>
                           </tr>
                         </thead>
@@ -116,19 +117,20 @@ tr.details td.details-control {
             // responsive:true,
             serverSide: true,
             ajax: {
-                url:'{{ route('kelompok_aktiva.list_table') }}',
+                url:'{{ route('aktiva.list_table') }}',
             },
              columnDefs: [
                   {"className": "center d_id", "targets": 0},
                   {"className": "center", "targets": "_all"}
                 ],
             "columns": [
-              { "data": "ga_nomor" },
+              { "data": "a_nomor" },
+              { "data": "a_name" },
               { "data": "ga_nama" },
-              { "data": "ga_golongan" },
-              { "data": "ga_akun_harta" },
-              { "data": "ga_akun_akumulasi" },
-              { "data": "ga_akun_penyusutan" },
+              { "data": "ga_masa_manfaat" },
+              { "data": "a_metode_penyusutan" },
+              { "data": "a_harga_beli" },
+              { "data": "a_nilai_sisa" },
               { "data": "action" },
             ],
             "responsive":true,
@@ -183,7 +185,7 @@ tr.details td.details-control {
       function edit(a) {
         var parent = $(a).parents('tr');
         var id = $(parent).find('.d_id').text();
-        var url = '{{ route('kelompok_aktiva.add') }}?edit='+id;
+        var url = '{{ route('aktiva.add') }}?edit='+id;
 
         window.location = url;
 
