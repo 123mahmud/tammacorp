@@ -52,7 +52,7 @@
                                      <h4>Data Aktiva</h4>
                                    </div>
                                    <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
-                                     <a href="{{ url('/aktiva/kelompok_aktiva') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
+                                     <a href="{{ url('master/aktiva/aset') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                                    </div>
                                 </div>
 
@@ -86,7 +86,7 @@
                                               <label class="tebal">Nama Aset</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <input type="text" name="nama_aset" class="form-control" placeholder="Masukkan Nama Kelompok Aset" id="nama_aset" v-model="single_data.nama_aset" required>
+                                                <input type="text" name="nama_aset" id="nama_aset" class="form-control" placeholder="Masukkan Nama Kelompok Aset" id="nama_aset" v-model="single_data.nama_aset" required>
                                             </div>
                                           </div>
 
@@ -197,7 +197,7 @@
                                           Sedang Melakukan Simulasi Penyusutan... Harap Tunggu!
                                         </div>
 
-                                        <table class="table table-bordered" style="background: white;" v-show="simulasi_view == 'complete'">
+                                        <table class="table table-bordered" style="background: white; margin-bottom: 5px;" v-show="simulasi_view == 'complete'">
                                           <thead>
                                             <tr>
                                               <td width="10%" class="text-center" style="background: #0099CC; color: white;">Tahun</td>
@@ -230,6 +230,16 @@
                                               <td class="text-center">@{{ data.nilai_sisa }}</td>
                                             </tr>
                                           </tbody>
+
+                                          <tfoot v-if="state == 'update'">
+                                            <tr>
+                                              <td colspan="6" class="text-center">
+                                                <small style="padding-left: 10px;">
+                                                  Perubahan Pada Aktiva Yang Sudah Dilakukan Penyusutan Hanya Akan Mempengaruhi Nama Aktiva.
+                                                </small>
+                                              </td>
+                                            </tr>
+                                          </tfoot>
                                         </table>
 
                                       </div>
@@ -267,7 +277,7 @@
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <data-list :data_resource="data_table_resource" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_kelompok" :index_column="'ga_nomor'"></data-list>
+                      <data-list :data_resource="data_table_resource" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_kelompok" :index_column="'a_nomor'"></data-list>
                     </div>
                   </div>
                 </div>
@@ -463,19 +473,19 @@
       },
 
       created: function(){
-        // if(this.edit != 'null'){
-        //   axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
-        //             .then((response) => {
-        //               // console.log(response.data);
-        //               this.data_table_resource = response.data;
-        //             }).then((a) => {
-        //               this.get_kelompok(this.edit);
-        //             }).catch((err) => {
-        //               alert(err);
-        //             });
-        // }
+        if(this.edit != 'null'){
+          axios.get(this.baseUrl+'/master/aktiva/aset/list')
+                    .then((response) => {
+                      // console.log(response.data);
+                      this.data_table_resource = response.data;
+                    }).then((a) => {
+                      this.get_kelompok(this.edit);
+                    }).catch((err) => {
+                      alert(err);
+                    });
+        }
 
-        axios.get(this.baseUrl+'/aktiva/aset/form-resource')
+        axios.get(this.baseUrl+'/master/aktiva/aset/form-resource')
               .then((response) => {
                 console.log(response.data);
 
@@ -489,7 +499,6 @@
               }).then(() => {
                 if(this.kelompok_aktiva.length > 0)
                   this.golonganChange(this.kelompok_aktiva[0].value);
-                
                 $('#overlay-transaksi').fadeIn(200);
               })
       },
@@ -507,7 +516,7 @@
           // console.log($('#data-form').serialize());
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/aktiva/aset/store', 
+            axios.post(this.baseUrl+'/master/aktiva/aset/store', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
@@ -547,7 +556,7 @@
             // console.log($('#data-form').serialize());
 
             if($('#data-form').data('bootstrapValidator').validate().isValid()){
-              axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/update', 
+              axios.post(this.baseUrl+'/master/aktiva/aset/update', 
                 $('#data-form').serialize()
               ).then((response) => {
                 console.log(response.data);
@@ -581,14 +590,14 @@
         },
 
         hapus: function(){
-          var cfrm = confirm('Apakah Anda Yakin ? ');
+          var cfrm = confirm('Apakah Anda Yakin, Semua Jurnal Yang Terkait Dengan Aktiva Ini Juga Akan Dihapus ? ');
 
           if(cfrm){
-            if(this.single_data.nomor_kelompok != ''){
+            if(this.single_data.nomor_aset != ''){
               this.btn_save_disabled = true;
 
-              axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/delete', 
-                {id: this.single_data.nomor_kelompok}
+              axios.post(this.baseUrl+'/master/aktiva/aset/delete', 
+                {id: this.single_data.nomor_aset}
               ).then((response) => {
                 console.log(response.data);
                 if(response.data.status == 'berhasil'){
@@ -628,41 +637,26 @@
 
         open_list: function(){
 
+          var that = this;
+
           this.data_table_columns = [
-            {name: 'No.Kelompok', context: 'ga_nomor', width: '15%', childStyle: 'text-align: center'},
-            {name: 'Nama Kelompok', context: 'ga_nama', width: '15%', childStyle: 'text-align: center'},
-            {name: 'Golongan Aset', context: 'ga_golongan', width: '20%', childStyle: 'text-align: center', override: function(e){
-              switch(e){
-                case 1 :
-                  return 'Non Bangunan - Kelompok 1';
-                  break;
-                case 2 :
-                  return 'Non Bangunan - Kelompok 2';
-                  break;
-                case 3 :
-                  return 'Non Bangunan - Kelompok 3';
-                  break;
-                case 4 :
-                  return 'Non Bangunan - Kelompok 4';
-                  break;
-                case 5 :
-                  return 'Bangunan - Permanen';
-                  break;
-                case 6 :
-                  return 'Bangunan - Non Permanen';
-                  break;
-              }
+            {name: 'No.Aktiva', context: 'a_nomor', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Nama Aktiva', context: 'a_name', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Kelompok Aset', context: 'ga_nama', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Masa Manfaat', context: 'ga_masa_manfaat', width: '15%', childStyle: 'text-align: center', override: function(a){
+              return a+' Tahun';
             }},
-            {name: 'Akun Harta', context: 'ga_akun_harta', width: '15%', childStyle: 'text-align: center'},
-            {name: 'Akun Akumulasi', context: 'ga_akun_akumulasi', width: '15%', childStyle: 'text-align: center'},
-            {name: 'Akun Penyusutan', context: 'ga_akun_penyusutan', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Tanggal Beli', context: 'a_tanggal_beli', width: '15%', childStyle: 'text-align: center'},
+            {name: 'Harga', context: 'a_harga_beli', width: '15%', childStyle: 'text-align: right', override: function(a){
+              return that.humanizePrice(a);
+            }},
           ];
 
           $('.overlay.transaksi_list').fadeIn(200);
           this.on_ajax_loading = true;
           this.data_table_resource = [];
 
-          axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
+          axios.get(this.baseUrl+'/master/aktiva/aset/list')
                   .then((response) => {
                     console.log(response.data);
                     this.data_table_resource = response.data;
@@ -674,25 +668,36 @@
 
         get_kelompok: function(e){
           console.log(this.data_table_resource);
-          var idx = this.data_table_resource.findIndex(a => a.ga_nomor === e);
+          var idx = this.data_table_resource.findIndex(a => a.a_nomor === e);
+
+          console.log(this.data_table_resource[idx]);
 
           if(idx >= 0){
-             $('#golongan_kelompok').val(this.data_table_resource[idx].ga_golongan).trigger('change.select2');
-             $('#akun_harta').val(this.data_table_resource[idx].ga_akun_harta).trigger('change.select2');
-             $('#akun_penyusutan').val(this.data_table_resource[idx].ga_akun_penyusutan).trigger('change.select2').trigger('change.select2');
-             $('#akun_akumulasi').val(this.data_table_resource[idx].ga_akun_akumulasi).trigger('change.select2');
+              var data = this.data_table_resource[idx];
 
-             var aset = this.golongan_aset.findIndex(b => b.value === this.data_table_resource[idx].ga_golongan.toString());
+              $('#harga_beli').val(data.a_harga_beli);
+              $('#kelompok_aktiva').val(data.a_kelompok).trigger('change.select2');
+              $('#metode_penyusutan').val(data.a_metode_penyusutan).trigger('change.select2');
+              $('#tanggal_beli').val(data.a_tanggal_beli.split('-')[1]+'-'+data.a_tanggal_beli.split('-')[0]);
+              $('#nama_aset').val(data.a_name);
 
-              this.single_data.nomor_kelompok = this.data_table_resource[idx].ga_nomor;
-              this.single_data.nama_kelompok = this.data_table_resource[idx].ga_nama;
-              this.single_data.keterangan_kelompok = this.data_table_resource[idx].ga_keterangan;
-              this.single_data.masa_manfaat = this.golongan_aset[aset].masa_manfaat;
-              this.single_data.persentase_gl = this.golongan_aset[aset].garis_lurus;
-              this.single_data.persentase_sm = this.golongan_aset[aset].saldo_menurun;
+              this.single_data.nomor_aset = data.a_nomor;
+              this.single_data.nama_aset = data.a_name;
+              this.single_data.masa_manfaat  = data.ga_masa_manfaat;
+              this.single_data.persentase  = (data.a_metode_penyusutan == 'SM') ? data.ga_saldo_menurun : data.ga_garis_lurus;
+              this.single_data.tanggal_beli  = data.a_tanggal_beli.split('-')[1]+'-'+data.a_tanggal_beli.split('-')[0];
+              this.single_data.harga_beli  = this.humanizePrice(data.a_harga_beli);
+              this.single_data.kelompok_aktiva  = data.a_kelompok;
+              this.single_data.metode_penyusutan  = (data.a_metode_penyusutan == 'SM') ? 'Saldo Menurun' : 'Garis Lurus';
 
               this.state = 'update';
+              $('#data-form').data('bootstrapValidator').resetForm();
+
+              this.metodeChange(data.a_metode_penyusutan);
+              this.hitung();
+
               $('.overlay.transaksi_list').fadeOut(200);
+
           }else{
             alert('Data Yang Dipilih Tidak Bisa Ditemukan');
           }
@@ -846,8 +851,8 @@
             this.single_data.akun_penyusutan = '';
             this.single_data.akun_akumulasi = '';
 
-            $('#kelompok_aktiva').val(this.kelompok_aktiva[0].value);
-            $('#metode_penyusutan').val('GL');
+            $('#kelompok_aktiva').val(this.kelompok_aktiva[0].value).trigger('change.select2');
+            $('#metode_penyusutan').val('GL').trigger('change.select2');
             $('#harga_beli').val(0);
             $('#tanggal_beli').val('');
             this.golonganChange(this.kelompok_aktiva[0].value);

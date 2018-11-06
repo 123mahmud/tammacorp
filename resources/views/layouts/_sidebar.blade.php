@@ -280,6 +280,13 @@
                                     </li>
                                 @endif
 
+                                @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
+                                    <li class="{{ Request::is('master/aktiva') ? 'active' : '' || Request::is('master/aktiva/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/aktiva') }}"><span
+                                                    class="submenu-title">Data Aktiva</span><span class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
                                 {{-- @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
                                     <li class="{{ Request::is('master/keuangan/master_transaksi') ? 'active' : '' || Request::is('master/keuangan/master_transaksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/keuangan/master_transaksi') }}"><span
@@ -1158,9 +1165,9 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Tahun Finansial','ma_read'))
-                                    <li class="{{ Request::is('system/thnfinansial/finansial') ? 'active' : '' || Request::is('system/thnfinansial/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/system/thnfinansial/finansial') }}"><span
-                                                    class="submenu-title">Tahun Finansial</span><span class="hidden">System</span></a>
+                                    <li class="{{ Request::is('system/periode_keuangan') ? 'active' : '' || Request::is('system/periode_keuangan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('system/periode_keuangan') }}"><span
+                                                    class="submenu-title">Bulan Finansial</span><span class="hidden">System</span></a>
                                     </li>
                                 @endif
 
