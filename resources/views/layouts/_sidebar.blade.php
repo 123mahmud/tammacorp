@@ -351,6 +351,10 @@
                                         Return Pembelian
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Laporan Pembelian','ma_read'))
+                                        Laporan Pembelian
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Pembayaran Hutang','ma_read'))
                                         Pelunasan Hutang
                                     @endif
@@ -392,6 +396,13 @@
                                     <li class="{{ Request::is('purchasing/returnpembelian/pembelian') ? 'active' : '' || Request::is('purchasing/returnpembelian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/returnpembelian/pembelian') }}"><span
                                                     class="submenu-title">Return Pembelian</span><span class="hidden">Purchasing</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Laporan Pembelian','ma_read'))
+                                    <li class="{{ Request::is('purchasing/lapbeli/index') ? 'active' : '' || Request::is('purchasing/lapbeli/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/purchasing/lapbeli/pembelian') }}"><span
+                                                    class="submenu-title">Laporan Pembelian</span><span class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif
 
