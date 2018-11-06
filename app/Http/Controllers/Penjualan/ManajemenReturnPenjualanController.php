@@ -399,8 +399,7 @@ class ManajemenReturnPenjualanController extends Controller
         'dsr_date' => $sales->s_date,
         'dsr_price_return' => $this->konvertRp($request->t_return),
         'dsr_sgross' => $this->konvertRp($request->s_gross),
-        'dsr_disc_vpercent' => $this->konvertRp($request->total_percent),
-        'dsr_disc_value' => $this->konvertRp($request->total_value),
+        'dsr_disc_value' => $this->konvertRp($request->total_diskon),
         'dsr_net' =>  $this->konvertRp($request->s_net),
         'dsr_status' => 'WT',
         'dsr_created' => Carbon::now()
@@ -476,7 +475,7 @@ class ManajemenReturnPenjualanController extends Controller
   public function storeReturn($id){
     DB::beginTransaction();
     try {
-    $data = d_sales_return::select('*')
+    $data = d_sales_return::select('dsr_code','dsr_id','dsr_method','dsr_jenis_return','dsr_sid')
       ->where('dsr_id',$id)
       ->first();
     if ($data->dsr_method == 'PN') {
@@ -543,18 +542,10 @@ class ManajemenReturnPenjualanController extends Controller
                     ]);
 
            }
-           dd($data);
-          // d_sales::where('s_id',$data->dsr_sid)
-          //   ->update([
-          //     's_gross' => $data->dsr_sgross,
-          //     's_disc_percent' =>
-          //     's_disc_value',
-          //     's_sisa',
-          //     's_status'
-          //     ]);
-          // $a = d_sales_dt::where('sd_sales',$data->dsr_sid)
-          //   ->get();
-          // dd($a);
+
+           $coba = d_sales::where('s_id',$data->dsr_sid)
+            ->get();
+            dd($coba);
          }
         }
         

@@ -201,8 +201,6 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="total_diskon" readonly="" class="form-control input-sm totalGross" id="total_diskon">'
-                                        +'<input type="hidden" name="total_value" readonly="" class="form-control input-sm total_value" id="total_value">'
-                                        +'<input type="hidden" name="total_percent" readonly="" class="form-control input-sm total_percent" id="total_percent">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -321,8 +319,6 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="total_diskon" readonly="" class="form-control input-sm totalGross" id="total_diskon">'
-                                        +'<input type="hidden" name="total_value" readonly="" class="form-control input-sm total_value" id="total_value">'
-                                        +'<input type="hidden" name="total_percent" readonly="" class="form-control input-sm total_percent" id="total_percent">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -437,8 +433,6 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="total_diskon" readonly="" class="form-control input-sm totalGross" id="total_diskon">'
-                                        +'<input type="hidden" name="total_value" readonly="" class="form-control input-sm total_value" id="total_value">'
-                                        +'<input type="hidden" name="total_percent" readonly="" class="form-control input-sm total_percent" id="total_percent">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -553,8 +547,6 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="total_diskon" readonly="" class="form-control input-sm totalGross" id="total_diskon">'
-                                        +'<input type="hidden" name="total_value" readonly="" class="form-control input-sm total_value" id="total_value">'
-                                        +'<input type="hidden" name="total_percent" readonly="" class="form-control input-sm total_percent" id="total_percent">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -671,8 +663,6 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="total_diskon" readonly="" class="form-control input-sm totalGross" id="total_diskon">'
-                                        +'<input type="hidden" name="total_value" readonly="" class="form-control input-sm total_value" id="total_value">'
-                                        +'<input type="hidden" name="total_percent" readonly="" class="form-control input-sm total_percent" id="total_percent">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -768,12 +758,6 @@
               s_net = convertToRupiah(s_net);
             $('#s_net').val(s_net);
             $('#pm_name').val(response[0].pm_name);
-              var s_disc_value = parseInt(response[0].s_disc_value);
-              s_disc_value = convertToRupiah(s_disc_value);
-            $('#total_value').val(s_disc_value);
-              var s_disc_percent = parseInt(response[0].s_disc_percent);
-              s_disc_percent = convertToRupiah(s_disc_percent);
-            $('#total_percent').val(s_disc_percent);
 
             var tableReturn = $('#tabel-return-sales').DataTable({
               // processing: true,
@@ -978,9 +962,7 @@
     }
     
     autoTotalReturn(); 
-    autoJumlahDiskon();  
-    autoJumPercent();
-    autoJumValue(); 
+    autoJumlahDiskon();   
   }
 
 function autoJumlahNet(){
@@ -1017,8 +999,6 @@ function autoJumlahDiskon(){
   $('#total_diskon').val(total);
   autoTotalGross();
   autoTotalReturn();
-  autoJumPercent();
-  autoJumValue();
   } 
 
 function autoTotalGross(){
@@ -1036,49 +1016,19 @@ function autoTotalGross(){
   $('#s_gross').val(total);
   } 
 
-  function autoTotalReturn(){
-    var inputs = document.getElementsByClassName( 'hasilReturn' ),
-    hasil  = [].map.call(inputs, function( input ) {
-        return input.value;
-    });
-    var total = 0;
-    for (var i = hasil.length - 1; i >= 0; i--) {
-      hasil[i] = convertToAngka(hasil[i]);
-      hasil[i] = parseInt(hasil[i]);
-      total = total + hasil[i];
-    }
-    total = convertToRupiah(total);
-    $('#t_return').val(total);
+function autoTotalReturn(){
+  var inputs = document.getElementsByClassName( 'hasilReturn' ),
+  hasil  = [].map.call(inputs, function( input ) {
+      return input.value;
+  });
+  var total = 0;
+  for (var i = hasil.length - 1; i >= 0; i--) {
+    hasil[i] = convertToAngka(hasil[i]);
+    hasil[i] = parseInt(hasil[i]);
+    total = total + hasil[i];
   }
-
-  function autoJumPercent(){
-    var inputs = document.getElementsByClassName( 'value-persen' ),
-    hasil  = [].map.call(inputs, function( input ) {
-        return input.value;
-    });
-    var total = 0;
-    for (var i = hasil.length - 1; i >= 0; i--) {
-      hasil[i] = convertToAngka(hasil[i]);
-      hasil[i] = parseInt(hasil[i]);
-      total = total + hasil[i];
-    }
-    total = convertToRupiah(total);
-    $('#total_percent').val(total);
-  }
-
-  function autoJumValue(){
-    var inputs = document.getElementsByClassName( 'sd_disc_value' ),
-    hasil  = [].map.call(inputs, function( input ) {
-        return input.value;
-    });
-    var total = 0;
-    for (var i = hasil.length - 1; i >= 0; i--) {
-      hasil[i] = convertToAngka(hasil[i]);
-      hasil[i] = parseInt(hasil[i]);
-      total = total + hasil[i];
-    }
-    total = convertToRupiah(total);
-    $('#total_value').val(total);
+  total = convertToRupiah(total);
+  $('#t_return').val(total);
   }
 
   function convertToRupiah(angka) {
