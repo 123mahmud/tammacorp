@@ -44,6 +44,7 @@ Vue.component('data-list',{
       // console.log(this.dataTab)
     },
     columns: function(){
+      // alert('okee');
       this.search_context = (this.columns.length > 0) ? this.columns[0].context : '';
       // console.log(this.search_context);
     },
