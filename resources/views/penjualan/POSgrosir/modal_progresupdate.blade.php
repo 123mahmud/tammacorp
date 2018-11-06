@@ -38,11 +38,12 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="sp_nominal[]" id="bayarDP" value="{{ substr($edit[0]->sp_nominal,0,-3)}}"
-                                       class="i_price-DP form-control totPaymentDP" autocomplete="off"
-                                       onkeyup="updateKembalianDP()" style="text-align: right;"
-                                       onkeyup="rege(event,'i_price-DP');" onblur="setRupiah(event,'i_price-DP')"
-                                       onclick="setAwal('event','i_price-DP')">
+                                <input type="text" name="sp_nominal[]" id="bayarDP" readonly 
+                                    value="{{ substr($edit[0]->sp_nominal,0,-3)}}"
+                                    class="i_price-DP form-control totPaymentDP" autocomplete="off"
+                                    onkeyup="updateKembalianDP()" style="text-align: right;"
+                                    onkeyup="rege(event,'i_price-DP');" onblur="setRupiah(event,'i_price-DP')"
+                                    onclick="setAwal('event','i_price-DP')">
                             </td>
 
                         </tr>
@@ -60,7 +61,7 @@
                         <tr>
                             <td>Kembalian</td>
                             <td>
-                                <input type="text" name="s_kembalian" value="0" id="kembalianDP" readonly="true"
+                                <input type="text" name="s_kembalianP" value="0" id="kembalianDP" readonly="true"
                                        class="form-control kemblaian" style="text-align: right;">
                             </td>
                         </tr>

@@ -893,32 +893,32 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'kelompok_aktiva.delete'
             ]);
 
-            // Route::get('/purchasing/pembayaran_hutang/get-po', [
-            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@get_po',
-            //     'as'    => 'pembayaran_hutang.get_po'
-            // ]);
+        // End Kelompok Aktiva
 
-            // Route::get('/purchasing/pembayaran_hutang/get-transaksi', [
-            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@get_transaksi',
-            //     'as'    => 'pembayaran_hutang.get_transaksi'
-            // ]);
 
-            // Route::post('/purchasing/pembayaran_hutang/save', [
-            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@save',
-            //     'as'    => 'pembayaran_hutang.save'
-            // ]);
+        // Aktiva
 
-            // Route::post('/purchasing/pembayaran_hutang/update', [
-            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@update',
-            //     'as'    => 'pembayaran_hutang.update'
-            // ]);
+            Route::get('/aktiva/aset', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@index',
+                'as'    => 'aktiva.index'
+            ]);
 
-            // Route::post('/purchasing/pembayaran_hutang/delete', [
-            //     'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@delete',
-            //     'as'    => 'pembayaran_hutang.delete'
-            // ]);
+            Route::get('/aktiva/aset/add', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@add',
+                'as'    => 'aktiva.add'
+            ]);
 
-        // End Kelompok AKtiva
+            Route::get('/aktiva/aset/form-resource', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@form_resource',
+                'as'    => 'aktiva.form_resource'
+            ]);
+
+            Route::post('/aktiva/aset/store', [
+                'uses'  => 'Keuangan\aktiva\aktiva_controller@store',
+                'as'    => 'aktiva.store'
+            ]);
+
+        // End Aktiva
 
 
         //Laporan Keuangan
@@ -1088,9 +1088,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('coba', 'transferItemController@data');
 //transfer selesai
 // Create spk Production
-    Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
     Route::get('/produksi/spk/tabelspk', 'Produksi\spkProductionController@tabelSpk');
-    Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
     Route::get('/produksi/spk/create-id/{x}', 'Produksi\spkProductionController@spkCreateId');
     Route::get('/produksi/spk/data-produc-plan', 'Produksi\spkProductionController@productplan');
     Route::get('/produksi/spk/cari-data-plan', 'Produksi\spkProductionController@cariDataSpk');

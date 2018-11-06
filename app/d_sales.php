@@ -21,7 +21,10 @@ class d_sales extends Model
 							's_disc_percent',
 							's_disc_value',
 							's_tax',
+							's_jatuh_tempo',
 							's_net',
-							's_status'];
+							's_sisa',
+							's_status',
+							's_resi'];
 		public $timestamps = false;
 }

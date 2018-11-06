@@ -55,6 +55,7 @@
                         <th>Customer</th>
                         <th>Nominal</th>
                         <th>Status</th>
+                        <th>Resi</th>
                         <th>Ubah Status</th>
                         <th>Aksi</th>
                         </thead>

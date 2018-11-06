@@ -282,6 +282,13 @@ class POSGrosirController extends Controller
     // dd($request->all());
     DB::beginTransaction();
           try {
+        //sisa
+    $s_kembalianP = $this->konvertRp($request->s_kembalianP);
+    $sisa = 0;
+    if ($s_kembalianP <= 0) {
+      $sisa = 0-($s_kembalianP);
+    }
+    //end sisa
     $s_id = d_sales::max('s_id') + 1;
     //nota fatkur
     $year = carbon::now()->format('y');
@@ -311,6 +318,7 @@ class POSGrosirController extends Controller
             's_gross' => ($this->konvertRp($request->s_gross)),
             's_tax' => $request->s_pajak,
             's_net' => ($this->konvertRp($request->s_net)),
+            's_sisa' => $sisa,
             's_status' => 'PR',
             's_insert' => Carbon::now(),
             's_update' => $request->s_update
@@ -362,10 +370,24 @@ class POSGrosirController extends Controller
   }
 
   public function sal_save_final(Request $request){
-    // dd($request->all());
     // return json_encode($request->all());
+    // dd($request->all());
     DB::beginTransaction();
             try {
+    //sisa
+    $s_kembalianF = $this->konvertRp($request->s_kembalianF);
+    $sisa = 0;
+    if ($s_kembalianF <= 0) {
+      $sisa = 0-($s_kembalianF);
+    }
+    //end sisa
+    //tgl jt
+    $tglJT = $request->s_jatuh_tempo;
+    $y2 = substr($tglJT, -4);
+    $m2 = substr($tglJT, -7,-5);
+    $d2 = substr($tglJT,0,2);
+      $tglJT = $y2.'-'.$m2.'-'.$d2;
+    //tgl jt
     $s_id = d_sales::max('s_id') + 1;
     //nota fatkur
     $year = carbon::now()->format('y');
@@ -395,6 +417,9 @@ class POSGrosirController extends Controller
           's_disc_value' => ($this->konvertRp($request->s_disc_value)),
           's_tax' => $request->s_pajak,
           's_net' => ($this->konvertRp($request->s_net)),
+          's_tax' => $request->s_pajak,
+          's_jatuh_tempo' => $tglJT,
+          's_sisa' => $sisa,
           's_status' => 'FN',
           's_insert' => Carbon::now(),
           's_update' => $request->s_update
@@ -449,6 +474,13 @@ class POSGrosirController extends Controller
     // dd($request->all());
     DB::beginTransaction();
     try {
+    //tgl jt
+    $tglJT = $request->s_jatuh_tempo;
+    $y2 = substr($tglJT, -4);
+    $m2 = substr($tglJT, -7,-5);
+    $d2 = substr($tglJT,0,2);
+      $tglJT = $y2.'-'.$m2.'-'.$d2;
+    //tgl jt
     $s_id = $request->s_id;
     $kodeItem = $request->kode_item;
     $qtyItem = $request->sd_qty;
@@ -465,6 +497,7 @@ class POSGrosirController extends Controller
             's_disc_percent' => ($this->konvertRp($request->s_disc_percent)),
             's_disc_value' => ($this->konvertRp($request->s_disc_value)),
             's_gross' => ($this->konvertRp($request->s_gross)),
+            's_jatuh_tempo' => $tglJT,
             's_tax' => $request->s_pajak,
             's_net' => ($this->konvertRp($request->s_net)),
             's_status' => "FN",
@@ -912,20 +945,22 @@ class POSGrosirController extends Controller
     if($request->status == 'SN'){
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
-                    <select id="setStatus" style="width: 75%; " class="pull-right">
+                    <select id="setStatus" style="width: 100%; " class="pull-right">
                            <option value="RC">Received</option>
                     </select>';
     }elseif($request->status == 'PC'){
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
-                    <select id="setStatus" style="width: 75%; " class="pull-right">
+                      
+                    <select id="setStatus" style="width: 100%;  class="pull-right">
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
-                    </select>';
+                    </select>
+                    <input type="text" name="resi" placeholder="Masukan Nomor Resi" style="width: 100%;" class="form-control input-sm" id="resi">';
     }else{
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
                     <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
-                    <select id="setStatus" style="width: 75%; " class="pull-right">
+                    <select id="setStatus" style="width: 100%; " class="pull-right">
                            <option value="PC">Packing</option>
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
@@ -942,6 +977,7 @@ class POSGrosirController extends Controller
         ->where('s_id',$request->id)
         ->update([
           's_status' => $request->status,
+          's_resi' => $request->resi
         ]);
 
       $nota = d_sales::select('s_note')
