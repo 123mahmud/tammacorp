@@ -407,7 +407,7 @@ class ManajemenReturnPenjualanController extends Controller
       ]);
 
     for ($i=0; $i < count($request->i_id); $i++) { 
-        $a[] = ($this->konvertRp($request->sd_return[$i])) - (($this->konvertRp($request->sd_disc[$i])) * $request->sd_qty_return[$i]) - (($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100;
+        // $a[] = ($this->konvertRp($request->sd_return[$i])) - (($this->konvertRp($request->sd_disc[$i])) * $request->sd_qty_return[$i]) - (($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100);
 
 
         d_sales_returndt::create([
@@ -420,12 +420,12 @@ class ManajemenReturnPenjualanController extends Controller
           'dsrdt_disc_percent' => $request->sd_disc_percent[$i],
           'dsrdt_disc_vpercent' => $request->value_disc_percent[$i],
           'dsrdt_disc_vpercentreturn' =>  ($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100 ,
-          'dsrdt_disc_value' => ($this->konvertRp($request->sd_disc[$i])),
-          'dsrdt_return_price' => ($this->konvertRp($request->sd_return[$i])) - $request->value_disc_percent[$i] - (($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100),
+          'dsrdt_disc_value' => ($this->konvertRp($request->sd_disc[$i])) * $request->sd_qty_return[$i],
+          'dsrdt_return_price' => ($this->konvertRp($request->sd_return[$i])) - (($this->konvertRp($request->sd_disc[$i])) * $request->sd_qty_return[$i]) - (($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100),
           'dsrdt_hasil' => ($this->konvertRp($request->sd_total[$i]))
         ]);
     }
-    dd($a);
+    // dd($a);
 
 
   DB::commit();
@@ -570,7 +570,7 @@ class ManajemenReturnPenjualanController extends Controller
               ]);
 
          }
-
+          dd($cek[$i]->dsrdt_disc_vpercent);
           d_sales_dt::where('sd_sales',$data->dsr_sid)
             ->where('sd_detailid',$i+1)
             ->update([
@@ -579,10 +579,9 @@ class ManajemenReturnPenjualanController extends Controller
               'sd_price' => $cek[$i]->dsrdt_price,
               'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
               'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
-              'sd_disc_value' => $cek[$i]->dsrdt_disc_value,
+              'sd_disc_value' => (($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm)),
               'sd_total' => $cek[$i]->dsrdt_hasil
               ]);
-     
         }
         
       }else{
@@ -664,7 +663,8 @@ class ManajemenReturnPenjualanController extends Controller
                                   'dsrdt_disc_value',
                                   'dsrdt_disc_vpercent',
                                   'dsrdt_return_price',
-                                  'dsrdt_hasil'
+                                  'dsrdt_hasil',
+                                  'dsrdt_disc_vpercentreturn'
                                   )
       ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
       ->join('m_item','m_item.i_id','=','dsrdt_item')
@@ -672,14 +672,21 @@ class ManajemenReturnPenjualanController extends Controller
       ->where('dsr_id',$id)
       ->get();
     $result = 0;
+    $totalRetur = 0;
+    $totalDiscount = 0;
     foreach ($dataItem as $item) {
       if ($item->dsrdt_qty_confirm != 0) {
         $retur[] = $item;
         $result += $item->dsrdt_hasil;
+        $totalRetur += $item->dsrdt_price;
+        $totalDiscount += $item->dsrdt_disc_vpercentreturn + $item->dsrdt_disc_value;
       }
     }
 
-    return view('penjualan.manajemenreturn.print.print_return_penjualan',compact('dataCus','retur','result'));
+    $subTotal = $totalRetur - $totalDiscount;
+
+
+    return view('penjualan.manajemenreturn.print.print_return_penjualan',compact('dataCus','retur','result','totalRetur','totalDiscount','subTotal'));
   }
 
   public function printfaktur($id){
