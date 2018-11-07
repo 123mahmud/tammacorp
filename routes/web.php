@@ -957,9 +957,24 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'periode.list_periode'
             ]);
 
-            Route::post('system/periode_keuangan/list-periode/store', [
+            Route::post('system/periode_keuangan/store', [
                 'uses'  => 'Keuangan\periode_keuangan\periode_controller@store',
                 'as'    => 'periode.store'
+            ]);
+
+            Route::post('system/periode_keuangan/update', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@update',
+                'as'    => 'periode.update'
+            ]);
+
+            Route::post('system/periode_keuangan/delete', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@delete',
+                'as'    => 'periode.delete'
+            ]);
+
+            Route::get('system/periode_keuangan/integrasi', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@integrasi',
+                'as'    => 'periode.integrasi'
             ]);
 
         // End Periode
