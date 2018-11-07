@@ -10,12 +10,13 @@ class d_sales_dt extends Model
     protected $primaryKey = 'sd_sales';
     
       protected $fillable = ['sd_sales',
-      						 'sd_item',
-      						 'sd_qty', 
-      						 'sd_price',
-      						 'sd_disc_percent',
-                   'sd_disc_vpercent',
-      						 'sd_disc_value',
-      						 'sd_total'];
+                             'sd_detailid',
+                						 'sd_item',
+                						 'sd_qty', 
+                						 'sd_price',
+                						 'sd_disc_percent',
+                             'sd_disc_vpercent',
+                						 'sd_disc_value',
+                						 'sd_total'];
 		public $timestamps = false;
 }
