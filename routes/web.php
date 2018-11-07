@@ -1091,12 +1091,14 @@ Route::group(['middleware' => 'auth'], function () {
     /*System*/
     Route::get('/system/hakuser/user', 'ManUser\aksesUserController@indexAksesUser');
     Route::get('/system/hakuser/tambah_user', 'ManUser\aksesUserController@tambah_user');
-    Route::get('/system/hakuser/tambah_user/simpan-user', 'ManUser\aksesUserController@simpanUser');
-    Route::get('/system/hakakses/edit-user-akses/{id}/edit', 'ManUser\aksesUserController@editUserAkses');
-    Route::get('/system/hakuser/perbarui-user/perbarui-user/{id}', 'ManUser\aksesUserController@perbaruiUser');
-    Route::get('/system/hakakses/simpan-user-akses', 'ManUser\aksesUserController@simpanUserAkses');
+    Route::post('/system/hakuser/simpan-user', 'ManUser\aksesUserController@simpanUser');
+    Route::get('/system/hakuser/edit-user-akses/{id}/edit', 'ManUser\aksesUserController@editUserAkses');
+    Route::post('/system/hakuser/perbarui-user/{id}', 'ManUser\aksesUserController@perbaruiUser');
+    Route::post('/system/hakuser/hapus-user', 'ManUser\aksesUserController@hapusUser');
+    Route::get('/system/hakuser/autocomplete-pegawai', 'ManUser\aksesUserController@autocompletePegawai');
 // hak akses group
     Route::get('/system/hakakses/akses', 'ManAkses\groupAksesController@indexHakAkses');
+    Route::get('/system/hakakses/simpan-user-akses', 'ManUser\aksesUserController@simpanUserAkses');
     Route::get('system/hakakses/hapus-akses-group/edit-Akses-Group/{id}/edit', 'ManAkses\groupAksesController@editAksesGroup');
     Route::get('system/hakakses/perbarui_akses-group/perbarui-group/{id}', 'ManAkses\groupAksesController@perbaruiGroup');
     Route::get('system/hakakses/hapus-akses-group/hapus-group/{id}', 'ManAkses\groupAksesController@hapusHakAkses');

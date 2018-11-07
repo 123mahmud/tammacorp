@@ -17,6 +17,7 @@
             <div class="clearfix">
             </div>
         </div>
+
         <div class="page-content fadeInRight">
             <div id="tab-general">
                 <div class="row mbl">
@@ -27,19 +28,16 @@
                             </div>
                         </div>
 
-
                         <ul id="generalTab" class="nav nav-tabs">
                             <li class="active"><a href="#alert-tab" data-toggle="tab">Manajemen User</a></li>
                             <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                             <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
                         </ul>
+
                         <div id="generalTabContent" class="tab-content responsive">
-
                             <div id="alert-tab" class="tab-pane fade in active">
-
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
-
                                         <div align="right">
                                             <a href="{{ url('/system/hakuser/tambah_user') }}" class="btn btn-box-tool"
                                                style="margin-bottom: 10px;"><i class="fa fa-plus"></i>&nbsp;Tambah Data</a>
@@ -48,34 +46,32 @@
                                         <div class="table-responsive">
                                             <table class="table tabelan table-hover table-bordered" id="data">
                                                 <thead>
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Nama</th>
-                                                    <th>Tanggal Lahir</th>
-                                                    <th>Alamat</th>
-                                                  {{--   <th>Akses Grub</th> --}}
-                                                    <th>Aksi</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>No</th>
+                                                        <th>Nama</th>
+                                                        <th>Tanggal Lahir</th>
+                                                        <th>Alamat</th>
+                                                      {{--   <th>Akses Grub</th> --}}
+                                                        <th>Aksi</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach($mem as $index => $data)
-                                                    <tr>
-                                                        <td>{{$index+1}}</td>
-                                                        <td>{{$data->m_name}}</td>
-                                                        <td>{{date('d-m-Y',strtotime($data->m_birth_tgl))}}</td>
-                                                        <td>{{$data->m_addr}}</td>
-                                                     {{--    <td>{{$data->g_name}}</td> --}}
-                                                        <td>
-                                                           {{--  <button class="btn btn-warning btn-sm" title="Edit"
-                                                                    onclick="editUser('{{$data->m_id}}')"><i
-                                                                        class="fa fa-pencil"></i></button> --}}
-                                                            <button class="btn btn-danger btn-sm" title="Hapus"
-                                                                    onclick="hapusUser('{{$data->m_id}}')"><i
-                                                                        class="fa fa-trash-o"></i></button>
-                                                        </td>
-                                                    </tr>
+                                                    @foreach($mem as $index => $data)
+                                                        <tr>
+                                                            <td>{{$index+1}}</td>
+                                                            <td>{{$data->m_name}}</td>
+                                                            <td>{{date('d-m-Y',strtotime($data->m_birth_tgl))}}</td>
+                                                            <td>{{$data->m_addr}}</td>
+                                                            <td>
+                                                                <button class="btn btn-warning btn-sm" title="Edit"
+                                                                        onclick="editUser('{{$data->m_id}}')"><i
+                                                                            class="fa fa-pencil"></i></button>
+                                                                <button class="btn btn-danger btn-sm" title="Hapus"
+                                                                        onclick="hapusUser('{{$data->m_id}}')"><i
+                                                                            class="fa fa-trash-o"></i></button>
+                                                            </td>
+                                                        </tr>
                                                     @endforeach
-                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -84,6 +80,7 @@
                                 </div>
 
                             </div><!-- /div alert-tab -->
+                            
                             <!-- div note-tab -->
                             <div id="note-tab" class="tab-pane fade">
                                 <div class="row">
@@ -92,6 +89,7 @@
                                     </div>
                                 </div>
                             </div><!--/div note-tab -->
+
                             <!-- div label-badge-tab -->
                             <div id="label-badge-tab" class="tab-pane fade">
                                 <div class="row">
@@ -105,54 +103,115 @@
                     </div>
                 </div>
 
-                @endsection
-                @section("extra_scripts")
-                    <script type="text/javascript">
-                        function editUser(id) {
-                            window.location.href = baseUrl + '/system/hakakses/edit-user-akses/' + id + '/edit';
-                        }
+            </div>
+        </div>
+    </div>
+    {{-- END PAGE WRAPPER --}}
+@endsection
 
-                        function hapusUser(id) {
-                            alert(id);
-                        }
+@section("extra_scripts")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var extensions = {
+                "sFilterInput": "form-control input-sm",
+                "sLengthSelect": "form-control input-sm"
+            }
+            // Used when bJQueryUI is false
+            $.extend($.fn.dataTableExt.oStdClasses, extensions);
+            // Used when bJQueryUI is true
+            $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+            $('#data').dataTable({
+                "responsive": true,
 
-                        $(document).ready(function () {
-                            var extensions = {
-                                "sFilterInput": "form-control input-sm",
-                                "sLengthSelect": "form-control input-sm"
-                            }
-                            // Used when bJQueryUI is false
-                            $.extend($.fn.dataTableExt.oStdClasses, extensions);
-                            // Used when bJQueryUI is true
-                            $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-                            $('#data').dataTable({
-                                "responsive": true,
+                "pageLength": 10,
+                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                "language": {
+                    "searchPlaceholder": "Cari Data",
+                    "emptyTable": "Tidak ada data",
+                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                    "sSearch": '<i class="fa fa-search"></i>',
+                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                    "infoEmpty": "",
+                    "paginate": {
+                        "previous": "Sebelumnya",
+                        "next": "Selanjutnya",
+                    }
+                }
 
-                                "pageLength": 10,
-                                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
+            });
+        });
 
-                            });
+        $('.datepicker').datepicker({
+            format: "mm",
+            viewMode: "months",
+            minViewMode: "months"
+        });
+        $('.datepicker2').datepicker({
+            format: "dd-mm-yyyy"
+        });
 
+        function editUser(id) {
+            window.location.href = baseUrl + '/system/hakuser/edit-user-akses/' + id + '/edit';
+        }
+
+        function hapusUser(id) {
+            iziToast.question({
+              close: false,
+              overlay: true,
+              displayMode: 'once',
+              //zindex: 999,
+              title: 'Hapus Data',
+              message: 'Apakah anda yakin ?',
+              position: 'center',
+              buttons: [
+                ['<button><b>Ya</b></button>', function (instance, toast) {
+                  $.ajax({
+                    url: baseUrl +'/system/hakuser/hapus-user',
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {id:id, "_token": "{{ csrf_token() }}"},
+                    success: function(response)
+                    {
+                      if(response.status == "sukses")
+                      {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        iziToast.success({
+                          position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                          title: 'Pemberitahuan',
+                          message: response.pesan,
+                          onClosing: function(instance, toast, closedBy){
+                            window.location = baseUrl + '/system/hakuser/user';
+                          }
                         });
-                        $('.datepicker').datepicker({
-                            format: "mm",
-                            viewMode: "months",
-                            minViewMode: "months"
-                        });
-                        $('.datepicker2').datepicker({
-                            format: "dd-mm-yyyy"
-                        });
-                    </script>
+                      }
+                      else
+                      {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                        iziToast.error({
+                          position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                          title: 'Pemberitahuan',
+                          message: response.pesan,
+                          onClosing: function(instance, toast, closedBy){
+                            window.location = baseUrl + '/system/hakuser/user';
+                          }
+                        }); 
+                      }
+                    },
+                    error: function(){
+                      instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                      iziToast.warning({
+                        icon: 'fa fa-times',
+                        message: 'Terjadi Kesalahan!'
+                      });
+                    },
+                    async: false
+                  }); 
+                }, true],
+                ['<button>Tidak</button>', function (instance, toast) {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                }],
+              ]
+            });
+        }
+    </script>
 @endsection()
