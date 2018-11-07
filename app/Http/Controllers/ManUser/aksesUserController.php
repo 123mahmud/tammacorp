@@ -15,6 +15,12 @@ use App\Http\Controllers\Controller;
 
 class aksesUserController extends Controller
 {
+    public $auth_admin;
+    public function __construct()
+    {
+        $auth_admin = Auth::user()->m_isadmin;
+    }
+
     public function indexAksesUser()
     {
         //mMember::with('access')
@@ -25,7 +31,7 @@ class aksesUserController extends Controller
              ->where('ma_type','=',DB::raw("'M'"))
     		 ->groupBy('m_id')
              ->get();
-
+        dd($auth_admin);
         return view('/system/hakuser/user',compact('mem'));
     }
 
@@ -125,8 +131,13 @@ class aksesUserController extends Controller
 
     public function editUserAkses($id){
         return DB::transaction(function () use ($id) {
-		    $mem = mMember::where('m_id',$id)->first();
-            $posisi = DB::table('m_pegawai_man')->select('c_jabatan_id')->where('c_id', $mem->m_pegawai_id)->first();
+		    $mem = mMember::join('m_pegawai_man', 'd_mem.m_pegawai_id', '=', 'm_pegawai_man.c_id' )
+                            ->select('d_mem.*', 'm_pegawai_man.c_lahir')
+                            ->where('m_id',$id)->first();
+            $posisi = DB::table('m_pegawai_man')
+                    ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                    ->select('m_pegawai_man.c_jabatan_id', 'm_jabatan.c_posisi')
+                    ->where('m_pegawai_man.c_id', $mem->m_pegawai_id)->first();
             $group = d_group::get();
 
     		$mem_group=d_mem_access::join('d_group',function($join) use ($id){
@@ -141,21 +152,15 @@ class aksesUserController extends Controller
     			$join->on('ma_type','=',DB::raw("'M'"));
             })->orderBy('a_id')->get();
 
-            $jabatan = m_jabatan::all();
-
             $data = [
                 'mem' => $mem,
                 'group' => $group,
                 'mem_group' => $mem_group,
                 'mem_access' => $mem_access,
-                'jabatan' => $jabatan,
-                'posisi' => $posisi->c_jabatan_id
+                'posisi' => $posisi
             ];
 
             //return response()->json($data);
-            // dd($data);
-            // return view('/system/hakuser/edit_user', ['mem' => $mem, 'group' => $group, 'mem_access' => $mem_access, 'mem_group' => $mem_group ]);
-
     		return view('/system/hakuser/edit_user', $data);
     	});
     }
@@ -163,9 +168,16 @@ class aksesUserController extends Controller
     public function perbaruiUser(Request $request, $m_id)
     {
         //dd($request->all());
-        // DB::beginTransaction();
-        // try 
-        // {  
+        DB::beginTransaction();
+        try 
+        {
+            $tgl_raw = explode(',', $request->TanggalLahir);
+            $arr_tgl = explode(' ', trim($tgl_raw[1]));
+            $tgl = $arr_tgl[0];
+            $bln = $this->convertMonthToBulan($arr_tgl[1]);
+            $thn = $arr_tgl[2];
+            $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
+
             $pass_lama = sha1(md5('passwordAllah').trim($request->PassLama));
             $mem_access = d_mem_access::where('ma_mem', $m_id)->first();
             //dd($mem_access);
@@ -173,7 +185,7 @@ class aksesUserController extends Controller
                 $mMember = mMember::find($m_id);
                 $mMember->m_username = $request->Username;
                 $mMember->m_name = $request->NamaLengkap;
-                $mMember->m_birth_tgl = Carbon::createFromFormat('Y-m-d', $request->TanggalLahir);
+                $mMember->m_birth_tgl = $hasilTgl;
                 $mMember->m_addr = $request->alamat;
                 $mMember->m_update = Carbon::now('Asia/Jakarta');
                 if ($pass_lama == $mMember->m_passwd) {
@@ -183,20 +195,20 @@ class aksesUserController extends Controller
 
                 DB::table('d_mem_access')->where('ma_mem','=',$m_id)->delete();
                 
-                $hakAkses=d_group::join('d_group_access','ga_group','=','g_id')
+                $hakAkses = d_group::join('d_group_access','ga_group','=','g_id')
                   ->join('d_access','a_id','=','ga_access')
                   ->where('g_id',$request->groupAkses)->get();
 
                 for ($i=0; $i < count($hakAkses) ; $i++) {
                     d_mem_access::create([
-                       'ma_mem' =>$m_id,
-                       'ma_access'=>$hakAkses[$i]->a_id,
-                       'ma_group' =>$hakAkses[$i]->g_id ,
-                       'ma_type' =>'G',
-                       'ma_read'=> $hakAkses[$i]->ga_read,
-                       'ma_insert' =>$hakAkses[$i]->ga_insert,
-                       'ma_update' =>$hakAkses[$i]->ga_update,
-                       'ma_delete' =>$hakAkses[$i]->ga_delete
+                       'ma_mem' => $m_id,
+                       'ma_access' => $hakAkses[$i]->a_id,
+                       'ma_group' => $hakAkses[$i]->g_id ,
+                       'ma_type' => 'G',
+                       'ma_read' => $hakAkses[$i]->ga_read,
+                       'ma_insert' => $hakAkses[$i]->ga_insert,
+                       'ma_update' => $hakAkses[$i]->ga_update,
+                       'ma_delete' => $hakAkses[$i]->ga_delete
                     ]);
                 }
 
@@ -220,6 +232,7 @@ class aksesUserController extends Controller
                     ]);
                 }
 
+                DB::commit();
                 return response()->json([
                     'status' => 'sukses',
                     'pesan' => 'Berhasil Update data Hak Akses User'
@@ -227,20 +240,21 @@ class aksesUserController extends Controller
             }
             else
             {
+                DB::commit();
                 return response()->json([
                     'status' => 'gagal',
                     'pesan' => 'Tidak terdapat data yang akan diubah'
                 ]); 
             }
-        // }
-        // catch (\Exception $e) 
-        // {
-        //   DB::rollback();
-        //   return response()->json([
-        //         'status' => 'gagal',
-        //         'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
-        //     ]); 
-        // }    
+        }
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+                'status' => 'gagal',
+                'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+            ]); 
+        }    
     }
 
     public function hapusUser(Request $request)

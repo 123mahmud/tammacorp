@@ -62,11 +62,9 @@
 
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <input id="m_id" type="hidden"
-                                                           class="form-control input-sm" name="m_id"
+                                                    <input id="m_id" type="hidden" class="form-control input-sm" name="m_id"
                                                            value="{{$mem->m_id}}">
-                                                    <input type="text" class="form-control input-sm"
-                                                           name="Username"
+                                                    <input type="text" class="form-control input-sm" name="Username"
                                                            value="{{$mem->m_username}}">
                                                 </div>
                                             </div>
@@ -90,9 +88,9 @@
 
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control input-sm"
-                                                           name="NamaLengkap"
+                                                    <input type="text" class="form-control input-sm" name="NamaLengkap"
                                                            value="{{$mem->m_name}}">
+                                                    <input type="hidden" name="IdPegawai" class="form-control input-sm" value="{{$mem->m_pegawai_id}}">
                                                 </div>
                                             </div>
 
@@ -102,8 +100,7 @@
 
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control input-sm"
-                                                           name="PassLama" disabled>
+                                                    <input type="text" class="form-control input-sm" name="PassLama" disabled>
                                                 </div>
                                             </div>
 
@@ -116,9 +113,8 @@
 
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <input class="form-control datepicker2 input-sm"
-                                                           type="text" name="TanggalLahir"
-                                                           value="{{$mem->m_birth_tgl}}">
+                                                    <input class="form-control input-sm" type="text" name="TanggalLahir"
+                                                        value="{{$mem->c_lahir}}" readonly>
                                                 </div>
 
                                             </div>
@@ -131,18 +127,10 @@
                                             </div>
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <select class="form-control input-sm" name="groupAkses">
-                                                        <option value="">-- Posisi --</option>
-                                                        @foreach($jabatan as $val)
-                                                            @if(count($jabatan)!=0)
-                                                                @if ($val->c_id == $posisi)
-                                                                    <option value="{{$val->c_id}}" selected>{{$val->c_posisi}}</option>
-                                                                @else 
-                                                                    <option value="{{$val->c_id}}">{{$val->c_posisi}}</option>
-                                                                @endif
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
+                                                    <input class="form-control input-sm" type="text" name="pp_jabatan" id="pp_jabatan"
+                                                        value="{{$posisi->c_posisi}}" readonly>
+                                                    <input type="hidden" class="form-control input-sm" name="id_jabatan" id="id_jabatan" 
+                                                        value="{{$posisi->c_jabatan_id}}">
                                                 </div>
                                             </div>
 
@@ -154,14 +142,13 @@
 
                                             <div class="col-md-9 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <textarea name="alamat" class="form-control disable">{{$mem->m_addr}}</textarea>
+                                                    <textarea name="alamat" class="form-control" readonly>{{$mem->m_addr}}</textarea>
                                                 </div>
                                             </div>
 
                                             <div align="right" style="padding-top:10px;">
                                                 <div id="div_button_save" class="form-group">
-                                                    <button type="button" id="button_save" class="btn btn-primary"
-                                                            onclick="perbaruiDataUser()">Simpan Data
+                                                    <button type="button" id="button_save" class="btn btn-primary" onclick="perbaruiDataUser()">Simpan Data
                                                     </button>
                                                 </div>
                                             </div>
@@ -335,7 +322,6 @@
         }
 
         function simpanDelete(id) {
-
             $('#status-' + id).val(1);
             if ($('#delete1-' + id).prop('checked')) {
                 $('#delete-' + id).val('Y')
@@ -353,68 +339,33 @@
             $.extend($.fn.dataTableExt.oStdClasses, extensions);
             // Used when bJQueryUI is true
             $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-            $('#data').dataTable({
-                "responsive": true,
-
-                "pageLength": 10,
-                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                "language": {
-                    "searchPlaceholder": "Cari Data",
-                    "emptyTable": "Tidak ada data",
-                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                    "sSearch": '<i class="fa fa-search"></i>',
-                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                    "infoEmpty": "",
-                    "paginate": {
-                        "previous": "Sebelumnya",
-                        "next": "Selanjutnya",
-                    }
-                }
-            });
-            $('#data2').dataTable({
-                "responsive": true,
-
-                "pageLength": 10,
-                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                "language": {
-                    "searchPlaceholder": "Cari Data",
-                    "emptyTable": "Tidak ada data",
-                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                    "sSearch": '<i class="fa fa-search"></i>',
-                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                    "infoEmpty": "",
-                    "paginate": {
-                        "previous": "Sebelumnya",
-                        "next": "Selanjutnya",
-                    }
-                }
-            });
-            $('#data3').dataTable({
-                "responsive": true,
-
-                "pageLength": 10,
-                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                "language": {
-                    "searchPlaceholder": "Cari Data",
-                    "emptyTable": "Tidak ada data",
-                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                    "sSearch": '<i class="fa fa-search"></i>',
-                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                    "infoEmpty": "",
-                    "paginate": {
-                        "previous": "Sebelumnya",
-                        "next": "Selanjutnya",
-                    }
-                }
+            
+            //autocomplete
+            $('input[name="NamaLengkap"]').focus(function() {
+               var key = 1;
+               $('input[name="NamaLengkap"]').autocomplete({
+                  source: baseUrl+'/system/hakuser/autocomplete-pegawai',
+                  minLength: 1,
+                  select: function(event, ui) {
+                    $('input[name="NamaLengkap"]').val(ui.item.label);
+                    $('input[name="IdPegawai"]').val(ui.item.id);
+                    $('input[name="TanggalLahir"]').val(ui.item.lahir_txt);
+                    $('input[name="id_jabatan"]').val(ui.item.jabatan_id);
+                    $('input[name="pp_jabatan"]').val(ui.item.jabatan_txt);
+                    $('textarea[name="alamat"]').text(ui.item.alamat_txt);
+                  }
+                });
+                $('input[name="NamaLengkap"]').val('');
+                $('input[name="IdPegawai"]').val('');
+                $('input[name="TanggalLahir"]').val('');
+                $('input[name="id_jabatan"]').val('');
+                $('input[name="pp_jabatan"]').val('');
+                $('textarea[name="alamat"]').text('');
             });
         });
 
         $("#perusahaan").load("/master/datasuplier/tambah_suplier", function () {
             $("#perusahaan").focus();
-        });
-        $('.datepicker2').datepicker({
-            format: "dd-mm-yyyy",
-            endDate: '0d'
         });
 
         $('input[name="PassBaru"]').keyup(function(event) {
