@@ -160,7 +160,8 @@
 					<td>Nama Barang</td>
 					<td colspan="2">Unit</td>
 					<td width="10%">Harga</td>
-					<td width="10%">Unit Disc</td>
+					<td width="10%">Unit Disc %</td>
+					<td width="10%">Unit Disc val</td>
 					<td width="10%">Total</td>
 				</tr>
 				{{-- {{ dd($retur) }} --}}
@@ -172,7 +173,8 @@
 					<td class="text-right" width="5%">{{ $retur[$i]['dsrdt_qty_confirm'] }}</td>
 					<td class="text-right border-none-left" width="1%">{{ $retur[$i]['m_sname'] }}</td>
 					<td class="text-right">{{number_format($retur[$i]['dsrdt_price'],0,',','.')}}</td>
-					<td class="text-right">{{number_format($retur[$i]['dsrdt_disc_value'] + $retur[$i]['dsrdt_disc_vpercent'],0,',','.')}} </td>
+					<td class="text-right">{{number_format($retur[$i]['dsrdt_disc_percent'],0,',','.')}} %</td>
+					<td class="text-right">{{number_format($retur[$i]['dsrdt_disc_value'],0,',','.')}} </td>
 					<td class="text-right">{{number_format($retur[$i]['dsrdt_return_price'] - ($retur[$i]['dsrdt_qty_confirm'] * $retur[$i]['dsrdt_disc_value']),0,',','.')}}</td>
 				</tr>
 				@endfor
@@ -191,6 +193,7 @@
 							<td></td>
 							<td></td>
 							<td class="text-right border-none-left" width="1%"></td>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
