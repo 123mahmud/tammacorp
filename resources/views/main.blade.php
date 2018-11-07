@@ -19,7 +19,7 @@
 
     <div class="overlay main">
       <div class="content-loader" style="background: none; width:60%; margin: 17em auto; text-align: center; color: #eee;">
-        <h3><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></h3>
+        <div class="lds-hourglass" style="margin-bottom: 20px;"></div><br>
         <span id="load-status-text"></span>
       </div>
     </div>

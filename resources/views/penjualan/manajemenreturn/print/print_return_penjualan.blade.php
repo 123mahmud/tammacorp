@@ -160,18 +160,27 @@
 					<td>Nama Barang</td>
 					<td colspan="2">Unit</td>
 					<td width="10%">Harga</td>
+					<td width="10%">Unit Disc val</td>
 					<td width="10%">Total</td>
 				</tr>
 				{{-- {{ dd($retur) }} --}}
 				@for($i=0; $i<count($retur); $i++)
-				<tr class="border-none-bottom">
+				<tr>
 					<td class="text-center">{{ $i + 1 }}</td>
 					<td>{{ $retur[$i]['i_code'] }}</td>
 					<td>{{ $retur[$i]['i_name'] }}</td>
 					<td class="text-right" width="5%">{{ $retur[$i]['dsrdt_qty_confirm'] }}</td>
 					<td class="text-right border-none-left" width="1%">{{ $retur[$i]['m_sname'] }}</td>
 					<td class="text-right">{{number_format($retur[$i]['dsrdt_price'],0,',','.')}}</td>
-					<td class="text-right">{{number_format($retur[$i]['dsrdt_hasil'],0,',','.')}}</td>
+					<td class="text-right">
+						@if ($retur[$i]->dsrdt_disc_vpercentreturn == '0.00')
+							{{number_format($retur[$i]['dsrdt_disc_value'],0,',','.')}}
+						@else
+							{{number_format($retur[$i]['dsrdt_disc_vpercentreturn'],0,',','.')}}
+						@endif
+						 
+					</td>
+					<td class="text-right">{{number_format($retur[$i]['dsrdt_return_price'],0,',','.')}}</td>
 				</tr>
 				@endfor
 				<?php
@@ -191,11 +200,12 @@
 							<td class="text-right border-none-left" width="1%"></td>
 							<td></td>
 							<td></td>
+							<td></td>
 						</tr>
 					@endforeach
 				
 				<tr class="border-none">
-					<td colspan="3" class="top"></td>
+					<td colspan="3" class="top">Terbilang : <?php echo terbilang($subTotal); ?></td>
 					<td class="text-right top"></td>
 					<td colspan="4">
 						<table class="border-none float-right" width="90%">
@@ -205,24 +215,24 @@
 							</tr>
 							<tr>
 								<td>Total Retur</td>
-								<td>{{number_format($result,0,',','.')}}</td>
+								<td class="text-right">{{number_format($totalRetur,0,',','.')}}</td>
 							</tr>
-						{{-- 	<tr>
+							<tr>
 								<td>Total Diskon</td>
-								<td>0,00</td>
-							</tr> --}}
-						{{-- 	<tr>
+								<td class="text-right">{{number_format($totalDiscount,0,',','.')}}</td>
+							</tr>
+							<tr>
 								<td>SubTotal</td>
-								<td>999.999.999,00</td>
-							</tr> --}}
-						{{-- 	<tr>
+								<td class="text-right">{{number_format($subTotal,0,',','.')}}</td>
+							</tr>
+							<tr>
 								<td>PPn</td>
-								<td>0,00</td>
+								<td class="text-right">0,00</td>
 							</tr>
 							<tr>
 								<td>Total</td>
-								<td>999.999.999,00</td>
-							</tr> --}}
+								<td class="text-right">{{number_format($subTotal,0,',','.')}}</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
@@ -265,3 +275,44 @@
 	</div>
 </body>
 </html>
+
+<?php
+    function penyebut($nilai)
+    {
+        $nilai = abs($nilai);
+        $huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+        $temp = "";
+        if ($nilai < 12) {
+            $temp = " " . $huruf[$nilai];
+        } else if ($nilai < 20) {
+            $temp = penyebut($nilai - 10) . " Belas";
+        } else if ($nilai < 100) {
+            $temp = penyebut($nilai / 10) . " Puluh" . penyebut($nilai % 10);
+        } else if ($nilai < 200) {
+            $temp = " Seratus" . penyebut($nilai - 100);
+        } else if ($nilai < 1000) {
+            $temp = penyebut($nilai / 100) . " Ratus" . penyebut($nilai % 100);
+        } else if ($nilai < 2000) {
+            $temp = " Seribu" . penyebut($nilai - 1000);
+        } else if ($nilai < 1000000) {
+            $temp = penyebut($nilai / 1000) . " Ribu" . penyebut($nilai % 1000);
+        } else if ($nilai < 1000000000) {
+            $temp = penyebut($nilai / 1000000) . " Juta" . penyebut($nilai % 1000000);
+        } else if ($nilai < 1000000000000) {
+            $temp = penyebut($nilai / 1000000000) . " Milyar" . penyebut(fmod($nilai, 1000000000));
+        } else if ($nilai < 1000000000000000) {
+            $temp = penyebut($nilai / 1000000000000) . " Trilyun" . penyebut(fmod($nilai, 1000000000000));
+        }
+        return $temp;
+    }
+
+    function terbilang($nilai)
+    {
+        if ($nilai < 0) {
+            $hasil = "Minus " . trim(penyebut($nilai));
+        } else {
+            $hasil = trim(penyebut($nilai));
+        }
+        return $hasil;
+    }
+    ?>

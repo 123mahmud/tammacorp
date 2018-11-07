@@ -96,7 +96,7 @@
         </td>
         <td>
             <span class="pull-right">
-                {{ $detail->dsrdt_disc_percent }}
+                {{ (int)$detail->dsrdt_disc_percent }}  %
             </span>
         </td>
         <td>Rp.
@@ -118,7 +118,7 @@
     @endforeach
     </tbody>
     </table>
-    <div class="modal-footer" style="border-top: none;">
+    <div class="modal-footer">
 
         @if ($data[0]->dsr_status == 'TR')
             <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>

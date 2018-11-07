@@ -18,6 +18,7 @@ class d_sales_returndt extends Model
 							'dsrdt_price',
 							'dsrdt_disc_percent',
 							'dsrdt_disc_vpercent',
+							'dsrdt_disc_vpercentreturn',
 							'dsrdt_disc_value',
 							'dsrdt_return_price',
 							'dsrdt_hasil'];

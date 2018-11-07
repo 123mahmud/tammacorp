@@ -121,8 +121,6 @@ class aktiva_controller extends Controller
     	$cek = DB::table('d_aktiva')->max('a_id');
     	$id = ($cek) ? ($cek + 1) : '1';
     	$nomor = 'ACT-'.str_pad($id, 3, '0', STR_PAD_LEFT);
-		$query = 'insert into d_jurnal (no_jurnal, ) values ';
-
 		$nilai_sisa = str_replace(',', '', $request->harga_beli);
 
 		if(jurnal_setting()->allow_jurnal_to_execute){
@@ -179,7 +177,7 @@ class aktiva_controller extends Controller
 			}
 	    }
 
-	    // return "okee";
+	    // return $query;
 
     	DB::table('d_aktiva')->insert([
     		'a_id'					=> $id,
@@ -193,6 +191,19 @@ class aktiva_controller extends Controller
     		'a_tanggal_habis'		=> $tanggal_berakhir,
     		'a_status'				=> 'active'
     	]);
+
+        $data =  [];
+
+        foreach ($request->tahun as $key => $tahun) {
+            $data[$key] = [
+                'ad_aktiva'         => $id,
+                'ad_tahun'          => $tahun,
+                'ad_jumlah_bulan'   => $request->jml_bulan[$key],
+                'ad_penyusutan'     => str_replace(',', '', $request->penyusutan[$key]),
+            ];
+        }
+
+        DB::table('dk_aktiva_detail')->insert($data);
 
     	return response()->json([
             'status'    => 'berhasil',

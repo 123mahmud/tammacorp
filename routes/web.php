@@ -418,6 +418,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/getdata', 'Penjualan\ManajemenReturnPenjualanController@detail');
     Route::get('/penjualan/returnpenjualan/return/{id}', 'Penjualan\ManajemenReturnPenjualanController@storeReturn');
     Route::get('/penjualan/returnpenjualan/printreturn/{id}', 'Penjualan\ManajemenReturnPenjualanController@printreturn');
+    Route::get('/penjualan/returnpenjualan/printfaktur/{id}', 'Penjualan\ManajemenReturnPenjualanController@printfaktur');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
@@ -957,9 +958,24 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'periode.list_periode'
             ]);
 
-            Route::post('system/periode_keuangan/list-periode/store', [
+            Route::post('system/periode_keuangan/store', [
                 'uses'  => 'Keuangan\periode_keuangan\periode_controller@store',
                 'as'    => 'periode.store'
+            ]);
+
+            Route::post('system/periode_keuangan/update', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@update',
+                'as'    => 'periode.update'
+            ]);
+
+            Route::post('system/periode_keuangan/delete', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@delete',
+                'as'    => 'periode.delete'
+            ]);
+
+            Route::get('system/periode_keuangan/integrasi', [
+                'uses'  => 'Keuangan\periode_keuangan\periode_controller@integrasi',
+                'as'    => 'periode.integrasi'
             ]);
 
         // End Periode
