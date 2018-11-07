@@ -171,6 +171,7 @@
                         message: 'Data customer tersimpan.'
                     });
               window.open(baseUrl + "/penjualan/returnpenjualan/printreturn/" + id );
+              window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );
             }else{
               iziToast.error({
                         position: "topRight",
