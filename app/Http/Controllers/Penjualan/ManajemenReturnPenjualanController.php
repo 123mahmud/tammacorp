@@ -369,7 +369,7 @@ class ManajemenReturnPenjualanController extends Controller
   }
 
   public function store($metode, Request $request){
-  // dd($request->all());
+  
   DB::beginTransaction();
     try {
       //nota
@@ -407,6 +407,9 @@ class ManajemenReturnPenjualanController extends Controller
       ]);
 
     for ($i=0; $i < count($request->i_id); $i++) { 
+        $a[] = ($this->konvertRp($request->sd_return[$i])) - (($this->konvertRp($request->sd_disc[$i])) * $request->sd_qty_return[$i]) - (($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100;
+
+
         d_sales_returndt::create([
           'dsrdt_idsr' => $dsr_id,
           'dsrdt_smdt' => $i + 1,
@@ -416,11 +419,13 @@ class ManajemenReturnPenjualanController extends Controller
           'dsrdt_price' => ($this->konvertRp($request->sd_price[$i])),
           'dsrdt_disc_percent' => $request->sd_disc_percent[$i],
           'dsrdt_disc_vpercent' => $request->value_disc_percent[$i],
+          'dsrdt_disc_vpercentreturn' =>  ($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100 ,
           'dsrdt_disc_value' => ($this->konvertRp($request->sd_disc[$i])),
-          'dsrdt_return_price' => ($this->konvertRp($request->sd_return[$i])),
+          'dsrdt_return_price' => ($this->konvertRp($request->sd_return[$i])) - $request->value_disc_percent[$i] - (($this->konvertRp($request->sd_return[$i])) * $request->sd_disc_percent[$i] / 100),
           'dsrdt_hasil' => ($this->konvertRp($request->sd_total[$i]))
         ]);
     }
+    dd($a);
 
 
   DB::commit();
