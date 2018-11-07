@@ -50,7 +50,7 @@
                   <div class="col-md-5" style="background: none; padding: 0px 10px 0px 0px;">
                     <form id="data-form">
                       <input type="hidden" value="{{csrf_token()}}" name="_token" readonly>
-
+                      <input type="hidden" v-model="single_data.id" name="id" readonly>
                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 15px; padding-top:10px; border-radius: 0px;">
 
                         <div class="row" style="padding: 0px 10px;">
@@ -79,7 +79,7 @@
                           <div class="col-md-7 col-sm-8 col-xs-11 mb-3">
                             <select class="form-control" v-model="single_data.status" name="status_periode">
                               <option value="1">Aktif</option>
-                              <option value="0">Non Aktif</option>
+                              <option value="0">Dikunci</option>
                             </select>
                           </div>
                         </div>
@@ -186,6 +186,7 @@
           column: [],
 
           single_data: {
+            id : '',
             status: '1',
             bulan: '',
           },
@@ -196,7 +197,6 @@
           register_validator();
           // $('.select2').select2();
           $('.overlay.main').fadeIn(200);
-          // $('.overlay.transaksi_list').fadeIn(200);
           $('#load-status-text').text('Harap Tunggu. Sedang Menyiapkan Form');  
         },
 
@@ -211,7 +211,7 @@
                         return e.split('-')[1]+' / '+e.split('-')[0];
                       }},
                       {name: 'Status Periode', context: 'pk_status', width: '15%', childStyle: 'text-align: center', override: function(e){
-                        return (e == 1) ? 'Aktif' : 'Non Aktif';
+                        return (e == 1) ? '<span style="color: #00C851; font-weight: 600;">Aktif</span>' : '<span style="color: #ff4444; font-weight: 600;">Dikunci</span>';
                       }},
                   ];
 
@@ -233,11 +233,12 @@
           simpan_data: function(evt){
               evt.preventDefault();
               this.btn_save_disabled = true;
-
+              $('#load-status-text').text('Sedang Menyimpan Periode Baru...');
               // console.log($('#data-form').serialize());
 
               if($('#data-form').data('bootstrapValidator').validate().isValid()){
-                axios.post(this.baseUrl+'/system/periode_keuangan/list-periode/store', 
+                $('.overlay.main').fadeIn(200);
+                axios.post(this.baseUrl+'/system/periode_keuangan/store', 
                   $('#data-form').serialize()
                 ).then((response) => {
                   console.log(response.data);
@@ -247,12 +248,17 @@
                           showHideTransition: 'slide',
                           position: 'top-right',
                           icon: response.data.flag
-                      })
+                      });
 
-                      // alert(response.data.context);
+                      this.data_table.unshift(response.data.context);
+                      var bulan = response.data.context.pk_periode;
 
-                      // if(response.data.context.length > 0)
-                        this.data_table.unshift(response.data.context);
+                      if(bulan.split('-')[0]+'-'+bulan.split('-')[1] == '{{ date("Y-m") }}' && response.data.context.pk_status == '1'){
+                        $('#load-status-text').text('Periode Baru Berhasil Disimpan ...');
+                        this.generateNewPeriode(response.data.context.pk_id);
+                      }else{
+                        $('.overlay.main').fadeOut(200);
+                      }
 
                       this.form_reset();
                     }else if(response.data.status == 'gagal'){
@@ -262,7 +268,9 @@
                           position: 'top-right',
                           icon: response.data.flag,
                           hideAfter: false
-                      })
+                      });
+
+                      $('.overlay.main').fadeOut(200);
                     }
                 }).catch((err) => {
                   alert(err);
@@ -275,12 +283,92 @@
               }
           },
 
-          update: function(){
-            alert('update')
+          update: function(evt){
+            evt.preventDefault();
+            this.btn_save_disabled = true;
+            // console.log($('#data-form').serialize());
+            var cfrm = true;
+
+            if(this.single_data.bulan == '{{ date('m-Y') }}')
+              cfrm = confirm('Anda Akan Melakukan Perubahan Pada Periode Bulan Ini. Apakah Anda Yakin ?')
+
+            if(cfrm && $('#data-form').data('bootstrapValidator').validate().isValid()){
+              axios.post(this.baseUrl+'/system/periode_keuangan/update', 
+                $('#data-form').serialize()
+              ).then((response) => {
+                console.log(response.data);
+                if(response.data.status == 'berhasil'){
+                    $.toast({
+                        text: response.data.content,
+                        showHideTransition: 'slide',
+                        position: 'top-right',
+                        icon: response.data.flag
+                    });
+
+                    var idx = this.data_table.findIndex(a => a.pk_id.toString() === response.data.context.id)
+                    this.data_table[idx].pk_status = response.data.context.status_periode;
+
+                  }else if(response.data.status == 'gagal'){
+                    $.toast({
+                        text: response.data.content,
+                        showHideTransition: 'slide',
+                        position: 'top-right',
+                        icon: response.data.flag,
+                        hideAfter: false
+                    });
+                  }
+              }).catch((err) => {
+                alert(err);
+                this.btn_save_disabled = false;
+              }).then(() => {
+                this.btn_save_disabled = false;
+              })
+            }else{
+              this.btn_save_disabled = false;
+            }
           },
 
-          hapus: function(){
-            alert('hapus')
+          hapus: function(evt){
+            evt.preventDefault();
+            this.btn_save_disabled = true;
+            // console.log($('#data-form').serialize());
+
+            if($('#data-form').data('bootstrapValidator').validate().isValid()){
+              axios.post(this.baseUrl+'/system/periode_keuangan/delete', 
+                $('#data-form').serialize()
+              ).then((response) => {
+                console.log(response.data);
+                if(response.data.status == 'berhasil'){
+                    $.toast({
+                        text: response.data.content,
+                        showHideTransition: 'slide',
+                        position: 'top-right',
+                        icon: response.data.flag
+                    });
+
+                    var idx = this.data_table.findIndex(a => a.pk_id.toString() === response.data.context.id);
+                    this.data_table.splice(idx, 1);
+
+                    this.form_reset();
+
+                  }else if(response.data.status == 'gagal'){
+                    $.toast({
+                        text: response.data.content,
+                        showHideTransition: 'slide',
+                        position: 'top-right',
+                        icon: response.data.flag,
+                        hideAfter: false
+                    });
+                  }
+              }).catch((err) => {
+                alert(err);
+                this.btn_save_disabled = false;
+              }).then(() => {
+                this.btn_save_disabled = false;
+              })
+            }else{
+              this.btn_save_disabled = false;
+            }
           },
 
           changeDate: function(e){
@@ -293,6 +381,7 @@
             var data = this.data_table[idx];
             var bulan = data.pk_periode.split('-')[1]+'-'+data.pk_periode.split('-')[0];
 
+            this.single_data.id = data.pk_id;
             this.single_data.status = data.pk_status;
             this.single_data.bulan = bulan;
             $('#bulan_periode').val(bulan);
@@ -301,8 +390,36 @@
 
           },
 
+          generateNewPeriode: function(e){
+            setTimeout(function(){
+              $('#load-status-text').text('Sedang Melakukan Integrasi Periode Baru. Harap Tunggu ...');
+
+              axios.get(this.baseUrl+'/system/periode_keuangan/integrasi?id='+e)
+                      .then((response) => {
+                        console.log(response.data);
+                        if(response.data.status == 'berhasil'){
+                          $('#load-status-text').text('Integrasi Berhasil. Halaman Sedang Dimuat Ulang...');
+                          location.reload();
+                        }else if(response.data.status == 'gagal'){
+                          $.toast({
+                              text: response.data.content,
+                              showHideTransition: 'slide',
+                              position: 'top-right',
+                              icon: response.data.flag,
+                              hideAfter: false
+                          });
+
+                          $('.overlay.main').fadeOut(200);
+                        }
+                      }).catch((err) => {
+                        alert(err);
+                      })
+            }, 1500);
+          },
+
           form_reset: function(){
             this.state = 'simpan';
+            this.single_data.id = '';
             this.single_data.bulan = '';
             this.single_data.status = '1';
 
