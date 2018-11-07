@@ -63,9 +63,9 @@
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
                                                     <input id="m_id" type="hidden" class="form-control input-sm" name="m_id"
-                                                           value="{{$mem->m_id}}">
+                                                       value="{{$mem->m_id}}">
                                                     <input type="text" class="form-control input-sm" name="Username"
-                                                           value="{{$mem->m_username}}">
+                                                       value="{{$mem->m_username}}">
                                                 </div>
                                             </div>
 
@@ -88,8 +88,16 @@
 
                                             <div class="col-md-3 col-sm-8 col-xs-12">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control input-sm" name="NamaLengkap"
+                                                    @if ($mem->m_isadmin == 'N' && $mem->m_pegawai_id == null)
+                                                        <input type="text" class="form-control input-sm" name="NamaLengkap"
+                                                           value="{{$mem->m_name}}" readonly>
+                                                    @elseif ($mem->m_isadmin == 'N' && $mem->m_pegawai_id != null)
+                                                        <input type="text" class="form-control input-sm autocomplete" name="NamaLengkap"
                                                            value="{{$mem->m_name}}">
+                                                    @elseif ($mem->m_isadmin == 'Y')
+                                                        <input type="text" class="form-control input-sm" name="NamaLengkap"
+                                                           value="{{$mem->m_name}}" readonly>
+                                                    @endif
                                                     <input type="hidden" name="IdPegawai" class="form-control input-sm" value="{{$mem->m_pegawai_id}}">
                                                 </div>
                                             </div>
@@ -253,6 +261,7 @@
     <script type="text/javascript">
         function perbaruiDataUser() {
             var m_id = $('#m_id').val();
+            $('#button_save').attr('disabled', true);
             $.ajax({
                 url: baseUrl + '/system/hakuser/perbarui-user/' + m_id,
                 type: 'post',
@@ -268,6 +277,7 @@
                         message: response.pesan,
                         onClosing: function(instance, toast, closedBy){
                            window.location = baseUrl + '/system/hakuser/user';
+                           $('#button_save').attr('disabled', false);
                         }
                       });
                     }
@@ -279,6 +289,7 @@
                         message: response.pesan,
                         onClosing: function(instance, toast, closedBy){
                            window.location = baseUrl + '/system/hakuser/user';
+                           $('#button_save').attr('disabled', false);
                         }
                       });
                     }
@@ -341,9 +352,9 @@
             $.extend($.fn.dataTableExt.oJUIClasses, extensions);
             
             //autocomplete
-            $('input[name="NamaLengkap"]').focus(function() {
+            $('.autocomplete').focus(function() {
                var key = 1;
-               $('input[name="NamaLengkap"]').autocomplete({
+               $('.autocomplete').autocomplete({
                   source: baseUrl+'/system/hakuser/autocomplete-pegawai',
                   minLength: 1,
                   select: function(event, ui) {

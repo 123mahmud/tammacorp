@@ -15,23 +15,28 @@ use App\Http\Controllers\Controller;
 
 class aksesUserController extends Controller
 {
-    public $auth_admin;
-    public function __construct()
-    {
-        $auth_admin = Auth::user()->m_isadmin;
-    }
-
     public function indexAksesUser()
     {
         //mMember::with('access')
-    	$mem=mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
-    		 ->Leftjoin('d_group',function($join){
-                    $join->on('ma_group','=','g_id');
-                  })
-             ->where('ma_type','=',DB::raw("'M'"))
-    		 ->groupBy('m_id')
-             ->get();
-        dd($auth_admin);
+        if ($this->cek_isadmin() == 'N') {
+            $mem = mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
+                  ->Leftjoin('d_group',function($join){
+                        $join->on('ma_group','=','g_id');
+                    })
+                  ->where('ma_type','=',DB::raw("'M'"))
+                  ->where('m_isadmin', '=', 'N')
+                  ->groupBy('m_id')
+                  ->get();
+        }else{
+            $mem = mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
+                  ->Leftjoin('d_group',function($join){
+                        $join->on('ma_group','=','g_id');
+                    })
+                  ->where('ma_type','=',DB::raw("'M'"))
+                  ->groupBy('m_id')
+                  ->get();
+        }
+
         return view('/system/hakuser/user',compact('mem'));
     }
 
@@ -131,27 +136,57 @@ class aksesUserController extends Controller
 
     public function editUserAkses($id){
         return DB::transaction(function () use ($id) {
-		    $mem = mMember::join('m_pegawai_man', 'd_mem.m_pegawai_id', '=', 'm_pegawai_man.c_id' )
-                            ->select('d_mem.*', 'm_pegawai_man.c_lahir')
-                            ->where('m_id',$id)->first();
-            $posisi = DB::table('m_pegawai_man')
+            $group = d_group::get();   
+
+            $mem_group = d_mem_access::join('d_group',function($join) use ($id){
+                $join->on('ma_mem','=',DB::raw("'$id'"));
+                $join->on('ma_group','=','g_id');
+            })->groupBy('g_id')->first();
+
+            $mem_access = d_access::Leftjoin('d_mem_access',function($join) use ($id){
+                $join->on('ma_mem','=',DB::raw("'$id'"));
+                $join->on('ma_access','=','a_id');
+                $join->on('ma_type','=',DB::raw("'M'"));
+            })->orderBy('a_id')->get();
+
+		    $mem = mMember::leftjoin('m_pegawai_man', 'd_mem.m_pegawai_id', '=', 'm_pegawai_man.c_id' )
+                        ->select('d_mem.*', 'm_pegawai_man.c_lahir')
+                        ->where('m_id',$id)->first();
+            
+            if ($mem->m_pegawai_id != null) 
+            {
+                $posisi = DB::table('m_pegawai_man')
                     ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
                     ->select('m_pegawai_man.c_jabatan_id', 'm_jabatan.c_posisi')
                     ->where('m_pegawai_man.c_id', $mem->m_pegawai_id)->first();
-            $group = d_group::get();
-
-    		$mem_group=d_mem_access::join('d_group',function($join) use ($id){
-                $join->on('ma_mem','=',DB::raw("'$id'"));
-    		    $join->on('ma_group','=','g_id');
-            })->groupBy('g_id')->first();
-
-
-    		$mem_access=d_access::Leftjoin('d_mem_access',function($join) use ($id){
-                $join->on('ma_mem','=',DB::raw("'$id'"));
-    			$join->on('ma_access','=','a_id');
-    			$join->on('ma_type','=',DB::raw("'M'"));
-            })->orderBy('a_id')->get();
-
+            }
+            else
+            {
+                if ($mem->m_isadmin == 'Y') {
+                    $mem->c_lahir = 'Surabaya, 17 Agustus 1945';
+                    $posisi = [
+                        'c_jabatan_id' => null,
+                        'c_posisi' => 'Developer',
+                    ];
+                    $posisi = (object) $posisi;
+                }else{
+                    $nm_peg = $mem->m_name;
+                    $data_pro = DB::table('m_pegawai_pro')
+                        ->join('m_jabatan_pro', 'm_pegawai_pro.c_jabatan_pro_id', '=', 'm_jabatan_pro.c_id')
+                        ->select('m_pegawai_pro.c_jabatan_pro_id', 'm_jabatan_pro.c_jabatan_pro')
+                        ->where('m_pegawai_pro.c_id', '=', function($query) use ($nm_peg){
+                            $query->select('c_id')
+                                  ->from('m_pegawai_pro')->where('c_nama', 'like', '%'.$nm_peg.'%');
+                        })->first();
+                    $mem->c_lahir = 'Surabaya, 17 Agustus 1945';
+                    $posisi = [
+                        'c_jabatan_id' => null,
+                        'c_posisi' => $data_pro->c_jabatan_pro
+                    ];
+                    $posisi = (object) $posisi;
+                }
+            }
+            
             $data = [
                 'mem' => $mem,
                 'group' => $group,
@@ -184,9 +219,11 @@ class aksesUserController extends Controller
             if (!empty($mem_access)) {
                 $mMember = mMember::find($m_id);
                 $mMember->m_username = $request->Username;
-                $mMember->m_name = $request->NamaLengkap;
+                if ($request->IdPegawai != null) {
+                    $mMember->m_name = $request->NamaLengkap;
+                    $mMember->m_addr = $request->alamat;
+                }
                 $mMember->m_birth_tgl = $hasilTgl;
-                $mMember->m_addr = $request->alamat;
                 $mMember->m_update = Carbon::now('Asia/Jakarta');
                 if ($pass_lama == $mMember->m_passwd) {
                     $mMember->m_passwd = sha1(md5('passwordAllah').trim($request->PassBaru));
@@ -212,7 +249,7 @@ class aksesUserController extends Controller
                     ]);
                 }
 
-                if($request->groupAkses==null)
+                if($request->groupAkses == null)
                 {
                     $hakAkses=d_access::get();
                     d_mem_access::create([
@@ -358,4 +395,8 @@ class aksesUserController extends Controller
         }
     }
 
+    public function cek_isadmin()
+    {
+        return Auth::user()->m_isadmin;
+    }
 }
