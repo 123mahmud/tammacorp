@@ -133,7 +133,7 @@
                                                     <tr>
                                                         <th>Nama Menu</th>
                                                         <th>Lihat</th>
-                                               {{--      <th>Tambah</th>
+                                                   {{-- <th>Tambah</th>
                                                         <th>Perbarui</th>
                                                         <th>Hapus</th>
                                                         <th>Laporan</th>
