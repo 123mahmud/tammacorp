@@ -570,8 +570,9 @@ class ManajemenReturnPenjualanController extends Controller
               ]);
 
          }
-          dd($cek[$i]->dsrdt_disc_vpercent);
-          d_sales_dt::where('sd_sales',$data->dsr_sid)
+
+          if ($cek[$i]->dsrdt_disc_value != 0.00) {
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
             ->where('sd_detailid',$i+1)
             ->update([
               'sd_item' => $cek[$i]->dsrdt_item,
@@ -579,9 +580,25 @@ class ManajemenReturnPenjualanController extends Controller
               'sd_price' => $cek[$i]->dsrdt_price,
               'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
               'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
-              'sd_disc_value' => (($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm)),
+              'sd_disc_value' =>($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm),
               'sd_total' => $cek[$i]->dsrdt_hasil
               ]);
+          }else{
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
+            ->where('sd_detailid',$i+1)
+            ->update([
+              'sd_item' => $cek[$i]->dsrdt_item,
+              'sd_qty' => $cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm,
+              'sd_price' => $cek[$i]->dsrdt_price,
+              'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+              'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+              'sd_disc_value' =>$cek[$i]->dsrdt_disc_value,
+              'sd_total' => $cek[$i]->dsrdt_hasil
+              ]);
+          }
+          
+          
+
         }
         
       }else{
