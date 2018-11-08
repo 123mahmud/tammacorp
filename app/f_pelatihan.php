@@ -9,7 +9,8 @@ class f_pelatihan extends Model
   protected $table = 'f_pelatihan';
   protected $primaryKey = 'fp_id';
   protected $fillable = [ 'fp_id',
-                          'fp_soal'
+                          'fp_soal',
+                          'fp_status'
                         ];
 
   public $incrementing = false;

@@ -272,7 +272,7 @@ class TrainingContoller extends Controller
       ->join('d_pelatihan','d_pelatihan.dp_id','=','pp_jenis_pelatihan')
       ->join('m_pegawai_man','m_pegawai_man.c_id','=','pp_pm')
       ->where('ppd_pp',$request->x)
-      ->where('ppd_fpd_fp',9)
+      ->where('ppd_fpd_fp',8)
       ->get();
     // dd($pengajuan);
     return view('hrd.training.view-waktu',compact('pengajuan'));
