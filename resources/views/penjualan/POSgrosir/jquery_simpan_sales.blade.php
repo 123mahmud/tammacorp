@@ -394,6 +394,7 @@
                                     instance.hide({
                                         transitionOut: 'fadeOutUp'
                                     }, toast);
+                                    window.location.href = baseUrl + "/penjualan/POSgrosir/index";
                                 }
                             ]
                         ]
