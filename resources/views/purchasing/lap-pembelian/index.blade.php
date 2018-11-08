@@ -99,6 +99,8 @@
 
     tanggal1 = $('#tanggal1').val();
     tanggal2 = $('#tanggal2').val();
+    tanggal3 = $('#tanggal3').val();
+    tanggal4 = $('#tanggal4').val();
 
     $('#tanggal1').change(function(event) {
       tanggal1 = $(this).val();
@@ -112,12 +114,25 @@
       $('#btn_print').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-beli/'+tanggal1+'/'+tanggal2+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
     });
 
+    $('#tanggal3').change(function(event) {
+      tanggal3 = $(this).val();
+      $('#btn_print_harian a').remove();
+      $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    });
+
+    $('#tanggal4').change(function(event) {
+      tanggal4 = $(this).val();
+      $('#btn_print_harian a').remove();
+      $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    });
+
      // fungsi jika modal hidden
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_row');
     });
     
     $('#btn_print').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-beli/'+tanggal1+'/'+tanggal2+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
 
     laporanByTanggal();
   });//end jquery
@@ -140,14 +155,15 @@
           className: 'center'
         }, 
         {
-          targets: 5 ,
+          targets: 6 ,
           className: 'right format_money'
         },
       ],
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
         {"data" : "d_pcs_code", "width" : "15%"},
-        {"data" : "m_name", "width" : "20%"},
+        {"data" : "d_pcs_method", "width" : "10%"},
+        {"data" : "m_name", "width" : "10%"},
         {"data" : "s_company", "width" : "30%"},
         {"data" : "tglOrder", "width" : "10%"},
         {"data" : "nett", "width" : "20%"}

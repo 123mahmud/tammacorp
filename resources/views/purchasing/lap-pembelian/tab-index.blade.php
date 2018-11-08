@@ -31,11 +31,6 @@
       
       <div id="btn_print" class="col-md-3 col-sm-3 col-xs-12" align="right">
       </div>
-      <!-- <div id="btn_print" class="col-md-3 col-sm-3 col-xs-12" align="right">
-        <a class="btn btn-primary" href="{{ url('purchasing/lap-pembelian/print-lap-beli') }}" target="_blank">
-          <i class="fa fa-print"></i>&nbsp;Print
-        </a>
-      </div> -->
 
       <div class="table-responsive">
         <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
@@ -43,6 +38,7 @@
             <tr>
               <th>No</th>
               <th>Kode</th>
+              <th>Metode</th>
               <th>Staff</th>
               <th>Supplier</th>
               <th>Tanggal</th>

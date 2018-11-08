@@ -29,6 +29,9 @@
         </button>
       </div>
 
+      <div id="btn_print_harian" class="col-md-3 col-sm-3 col-xs-12" align="right">
+      </div>
+
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="table-responsive">
           <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tbl-harian">
