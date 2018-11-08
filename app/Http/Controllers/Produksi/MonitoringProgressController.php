@@ -41,8 +41,7 @@ class MonitoringProgressController extends Controller
     $sales = DB::Table('d_sales')
       ->where('s_channel', DB::raw("'GR'"))
       ->where(function ($query) {
-          $query->where('s_status',DB::raw("'PR'"))
-                ->orWhere('s_status',DB::raw("'FN'"));
+          $query->where('s_status',DB::raw("'PR'"));
         })
       ->leftjoin('d_sales_dt','d_sales.s_id', '=' , 'd_sales_dt.sd_sales');
 

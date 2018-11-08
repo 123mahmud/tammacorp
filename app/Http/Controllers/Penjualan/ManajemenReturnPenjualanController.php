@@ -487,11 +487,11 @@ class ManajemenReturnPenjualanController extends Controller
     $sales = d_sales::where('s_id',$data->dsr_sid)
       ->join('d_sales_payment','d_sales_payment.sp_sales','=','s_id')
       ->first();
+    $cek = d_sales_returndt::select('*')
+      ->where('dsrdt_idsr',$data->dsr_id)->get();
     // dd($sales);
     if ($data->dsr_method == 'PN') {
       if ($data->dsr_jenis_return == 'BR') {
-        $cek = d_sales_returndt::select('*')
-          ->where('dsrdt_idsr',$data->dsr_id)->get();
         // dd($cek);
         for ($i=0; $i <count($cek) ; $i++) {
 
@@ -570,8 +570,9 @@ class ManajemenReturnPenjualanController extends Controller
               ]);
 
          }
-          dd($cek[$i]->dsrdt_disc_vpercent);
-          d_sales_dt::where('sd_sales',$data->dsr_sid)
+
+          if ($cek[$i]->dsrdt_disc_value != 0.00) {
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
             ->where('sd_detailid',$i+1)
             ->update([
               'sd_item' => $cek[$i]->dsrdt_item,
@@ -579,35 +580,54 @@ class ManajemenReturnPenjualanController extends Controller
               'sd_price' => $cek[$i]->dsrdt_price,
               'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
               'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
-              'sd_disc_value' => (($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm)),
+              'sd_disc_value' =>($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm),
               'sd_total' => $cek[$i]->dsrdt_hasil
               ]);
+          }else{
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
+            ->where('sd_detailid',$i+1)
+            ->update([
+              'sd_item' => $cek[$i]->dsrdt_item,
+              'sd_qty' => $cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm,
+              'sd_price' => $cek[$i]->dsrdt_price,
+              'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+              'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+              'sd_disc_value' =>$cek[$i]->dsrdt_disc_value,
+              'sd_total' => $cek[$i]->dsrdt_hasil
+              ]);
+          }
+
         }
         
       }else{
-        dd($requests->all());
+
+      if ($data->dsr_type_sales == 'GR') {
+        // dd($cek);
         for ($i=0; $i <count($cek) ; $i++) {
           if ($cek[$i]->dsrdt_qty_confirm != 0) {
             $stockGrosir = d_stock::where('s_item',$cek[$i]->dsrdt_item)
                 ->where('s_comp',2)
                 ->where('s_position',2)
                 ->first();
+
             $tambahStock = (int)$stockGrosir->s_qty + $cek[$i]->dsrdt_qty_confirm;
             // dd($cek[$i]->dsrdt_qty_confirm);
+            // dd($tambahStock);
             $stockGrosir->update([
               's_qty' => $tambahStock,
             ]);
+
             $sm_detailid = d_stock_mutation::select('sm_detailid')
               ->where('sm_stock',$stockGrosir->s_id)
               ->max('sm_detailid')+1;
-            // dd($sm_detailid);
+            //dd($sm_detailid);
             d_stock_mutation::create([
                     'sm_stock' =>  $stockGrosir->s_id,
                     'sm_detailid' => $sm_detailid,
                     'sm_date' => Carbon::now(),
                     'sm_comp' => 2,
                     'sm_position' => 2,
-                    'sm_mutcat' => 4,
+                    'sm_mutcat' => 9,
                     'sm_item' => $cek[$i]->dsrdt_item,
                     'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
                     'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
@@ -616,12 +636,386 @@ class ManajemenReturnPenjualanController extends Controller
                     'sm_insert' => Carbon::now()
                 ]);
           }
+
+           $sisa = $sales->sp_nominal - $data->dsr_net;
+           
+           $jSisa = 0;
+            if ($sisa <= 0) {
+              $jSisa = 0-($sisa);
+            }
+            // dd($jSisa);
+          d_sales::where('s_id',$data->dsr_sid)
+            ->update([
+              's_gross' => $data->dsr_sgross,
+              's_disc_percent' => $data->dsr_disc_vpercent,
+              's_disc_value' => $data->dsr_disc_value,
+              's_net' => $data->dsr_net,
+              's_sisa' => $jSisa,
+              ]);
+
+         
+
+          if ($cek[$i]->dsrdt_disc_value != 0.00) {
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
+            ->where('sd_detailid',$i+1)
+            ->update([
+              'sd_item' => $cek[$i]->dsrdt_item,
+              'sd_qty' => $cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm,
+              'sd_price' => $cek[$i]->dsrdt_price,
+              'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+              'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+              'sd_disc_value' =>($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm),
+              'sd_total' => $cek[$i]->dsrdt_hasil
+              ]);
+
+          }else{
+
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
+            ->where('sd_detailid',$i+1)
+            ->update([
+              'sd_item' => $cek[$i]->dsrdt_item,
+              'sd_qty' => $cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm,
+              'sd_price' => $cek[$i]->dsrdt_price,
+              'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+              'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+              'sd_disc_value' =>$cek[$i]->dsrdt_disc_value,
+              'sd_total' => $cek[$i]->dsrdt_hasil
+              ]);
+          }
         }
-        
+
+      }else{
+
+        for ($i=0; $i <count($cek) ; $i++) {
+          if ($cek[$i]->dsrdt_qty_confirm != 0) {
+            $stockGrosir = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',1)
+                ->where('s_position',1)
+                ->first();
+
+            $tambahStock = (int)$stockGrosir->s_qty + $cek[$i]->dsrdt_qty_confirm;
+            // dd($cek[$i]->dsrdt_qty_confirm);
+            // dd($tambahStock);
+            $stockGrosir->update([
+              's_qty' => $tambahStock,
+            ]);
+
+            $sm_detailid = d_stock_mutation::select('sm_detailid')
+              ->where('sm_stock',$stockGrosir->s_id)
+              ->max('sm_detailid')+1;
+            //dd($sm_detailid);
+            d_stock_mutation::create([
+                    'sm_stock' =>  $stockGrosir->s_id,
+                    'sm_detailid' => $sm_detailid,
+                    'sm_date' => Carbon::now(),
+                    'sm_comp' => 1,
+                    'sm_position' => 1,
+                    'sm_mutcat' => 9,
+                    'sm_item' => $cek[$i]->dsrdt_item,
+                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                    'sm_detail' => 'PENAMBAHAN',
+                    'sm_reff' => $data->dsr_code,
+                    'sm_insert' => Carbon::now()
+                ]);
+          }
+
+           $sisa = $sales->sp_nominal - $data->dsr_net;
+           
+           $jSisa = 0;
+            if ($sisa <= 0) {
+              $jSisa = 0-($sisa);
+            }
+            // dd($jSisa);
+          d_sales::where('s_id',$data->dsr_sid)
+            ->update([
+              's_gross' => $data->dsr_sgross,
+              's_disc_percent' => $data->dsr_disc_vpercent,
+              's_disc_value' => $data->dsr_disc_value,
+              's_net' => $data->dsr_net,
+              's_sisa' => $jSisa,
+              ]);
+
+         
+
+          if ($cek[$i]->dsrdt_disc_value != 0.00) {
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
+            ->where('sd_detailid',$i+1)
+            ->update([
+              'sd_item' => $cek[$i]->dsrdt_item,
+              'sd_qty' => $cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm,
+              'sd_price' => $cek[$i]->dsrdt_price,
+              'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+              'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+              'sd_disc_value' =>($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm),
+              'sd_total' => $cek[$i]->dsrdt_hasil
+              ]);
+
+          }else{
+
+            d_sales_dt::where('sd_sales',$data->dsr_sid)
+            ->where('sd_detailid',$i+1)
+            ->update([
+              'sd_item' => $cek[$i]->dsrdt_item,
+              'sd_qty' => $cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm,
+              'sd_price' => $cek[$i]->dsrdt_price,
+              'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+              'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+              'sd_disc_value' =>$cek[$i]->dsrdt_disc_value,
+              'sd_total' => $cek[$i]->dsrdt_hasil
+              ]);
+          }
+        }
       }
 
-    }else{
-      return 'b';
+      }
+
+    }else  if ($data->dsr_method == 'TB') {
+        for ($i=0; $i <count($cek) ; $i++) {
+
+        if ($cek[$i]->dsrdt_qty_confirm != 0) {
+           $coba[] = $cek[$i];
+           $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+              ->where('s_comp',8)
+              ->where('s_position',8)
+              ->first();
+            if ($stockRusak == null) {
+              $s_id = d_stock::select('s_id')->max('s_id')+1;
+              d_stock::create([
+                  's_id' => $s_id,
+                  's_comp' => 8,
+                  's_position' => 8,
+                  's_item' => $cek[$i]->dsrdt_item,
+                  's_qty' => $cek[$i]->dsrdt_qty_confirm
+                ]);
+              d_stock_mutation::create([
+                  'sm_stock' =>  $s_id,
+                  'sm_detailid' => 1,
+                  'sm_date' => Carbon::now(),
+                  'sm_comp' => 8,
+                  'sm_position' => 8,
+                  'sm_mutcat' => 4,
+                  'sm_item' => $cek[$i]->dsrdt_item,
+                  'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                  'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                  'sm_detail' => 'PENAMBAHAN',
+                  'sm_reff' => $data->dsr_code,
+                  'sm_insert' => Carbon::now()
+              ]);
+
+              if ($data->dsr_type_sales == 'GR') {
+
+                $stockGrosir = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',2)
+                ->where('s_position',2)
+                ->first();
+
+                $tambahStock = (int)$stockGrosir->s_qty - $cek[$i]->dsrdt_qty_confirm;
+                // dd($cek[$i]->dsrdt_qty_confirm);
+                // dd($tambahStock);
+                $stockGrosir->update([
+                  's_qty' => $tambahStock,
+                ]);
+
+                $sm_detailid = d_stock_mutation::select('sm_detailid')
+                  ->where('sm_stock',$stockGrosir->s_id)
+                  ->max('sm_detailid')+1;
+                //dd($sm_detailid);
+                d_stock_mutation::create([
+                        'sm_stock' =>  $stockGrosir->s_id,
+                        'sm_detailid' => $sm_detailid,
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => 2,
+                        'sm_position' => 2,
+                        'sm_mutcat' => 13,
+                        'sm_item' => $cek[$i]->dsrdt_item,
+                        'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_detail' => 'PENGURANGAN',
+                        'sm_reff' => $data->dsr_code,
+                        'sm_insert' => Carbon::now()
+                    ]);
+
+              }else{
+
+                $stockRetail = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',1)
+                ->where('s_position',1)
+                ->first();
+
+                $tambahStock = (int)$stockRetail->s_qty - $cek[$i]->dsrdt_qty_confirm;
+                // dd($cek[$i]->dsrdt_qty_confirm);
+                // dd($tambahStock);
+                $stockRetail->update([
+                  's_qty' => $tambahStock,
+                ]);
+
+                $sm_detailid = d_stock_mutation::select('sm_detailid')
+                  ->where('sm_stock',$stockRetail->s_id)
+                  ->max('sm_detailid')+1;
+                //dd($sm_detailid);
+                d_stock_mutation::create([
+                        'sm_stock' =>  $stockRetail->s_id,
+                        'sm_detailid' => $sm_detailid,
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => 2,
+                        'sm_position' => 2,
+                        'sm_mutcat' => 13,
+                        'sm_item' => $cek[$i]->dsrdt_item,
+                        'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_detail' => 'PENGURANGAN',
+                        'sm_reff' => $data->dsr_code,
+                        'sm_insert' => Carbon::now()
+                    ]);
+              }
+
+            }else{
+
+              $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
+              // dd($cek[$i]->dsrdt_qty_confirm);
+              $stockRusak->update([
+                's_qty' => $tambahStock,
+              ]);
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_stock',$stockRusak->s_id)
+                ->max('sm_detailid')+1;
+              // dd($sm_detailid);
+              d_stock_mutation::create([
+                      'sm_stock' =>  $stockRusak->s_id,
+                      'sm_detailid' => $sm_detailid,
+                      'sm_date' => Carbon::now(),
+                      'sm_comp' => 8,
+                      'sm_position' => 8,
+                      'sm_mutcat' => 4,
+                      'sm_item' => $cek[$i]->dsrdt_item,
+                      'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                      'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                      'sm_detail' => 'PENAMBAHAN',
+                      'sm_reff' => $data->dsr_code,
+                      'sm_insert' => Carbon::now()
+                  ]);
+
+              if ($data->dsr_type_sales == 'GR') {
+
+                $stockGrosir = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',2)
+                ->where('s_position',2)
+                ->first();
+
+                $tambahStock = (int)$stockGrosir->s_qty - $cek[$i]->dsrdt_qty_confirm;
+                // dd($cek[$i]->dsrdt_qty_confirm);
+                // dd($tambahStock);
+                $stockGrosir->update([
+                  's_qty' => $tambahStock,
+                ]);
+
+                $sm_detailid = d_stock_mutation::select('sm_detailid')
+                  ->where('sm_stock',$stockGrosir->s_id)
+                  ->max('sm_detailid')+1;
+                //dd($sm_detailid);
+                d_stock_mutation::create([
+                        'sm_stock' =>  $stockGrosir->s_id,
+                        'sm_detailid' => $sm_detailid,
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => 2,
+                        'sm_position' => 2,
+                        'sm_mutcat' => 9,
+                        'sm_item' => $cek[$i]->dsrdt_item,
+                        'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_detail' => 'PENAMBAHAN',
+                        'sm_reff' => $data->dsr_code,
+                        'sm_insert' => Carbon::now()
+                    ]);
+
+              }else{
+
+                $stockRetail = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                ->where('s_comp',1)
+                ->where('s_position',1)
+                ->first();
+
+                $tambahStock = (int)$stockRetail->s_qty - $cek[$i]->dsrdt_qty_confirm;
+                // dd($cek[$i]->dsrdt_qty_confirm);
+                // dd($tambahStock);
+                $stockRetail->update([
+                  's_qty' => $tambahStock,
+                ]);
+
+                $sm_detailid = d_stock_mutation::select('sm_detailid')
+                  ->where('sm_stock',$stockRetail->s_id)
+                  ->max('sm_detailid')+1;
+                //dd($sm_detailid);
+                d_stock_mutation::create([
+                        'sm_stock' =>  $stockRetail->s_id,
+                        'sm_detailid' => $sm_detailid,
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => 2,
+                        'sm_position' => 2,
+                        'sm_mutcat' => 9,
+                        'sm_item' => $cek[$i]->dsrdt_item,
+                        'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                        'sm_detail' => 'PENAMBAHAN',
+                        'sm_reff' => $data->dsr_code,
+                        'sm_insert' => Carbon::now()
+                    ]);
+              }
+
+         }
+         // dd($data);
+         $sisa = $sales->sp_nominal - $data->dsr_net;
+         
+         $jSisa = 0;
+          if ($sisa <= 0) {
+            $jSisa = 0-($sisa);
+          }
+          // dd($data->dsr_sid);
+        d_sales::where('s_id',$data->dsr_sid)
+          ->update([
+            's_gross' => $data->dsr_sgross,
+            's_disc_percent' => $data->dsr_disc_vpercent,
+            's_disc_value' => $data->dsr_disc_value,
+            's_net' => $data->dsr_net,
+            's_sisa' => $jSisa,
+            ]);
+
+       }
+
+        if ($cek[$i]->dsrdt_disc_value != 0.00) {
+          d_sales_dt::where('sd_sales',$data->dsr_sid)
+          ->where('sd_detailid',$i+1)
+          ->update([
+            'sd_item' => $cek[$i]->dsrdt_item,
+            'sd_qty' => $cek[$i]->dsrdt_qty,
+            'sd_price' => $cek[$i]->dsrdt_price,
+            'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+            'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+            'sd_disc_value' =>($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm) + $cek[$i]->dsrdt_disc_value,
+            'sd_total' => $cek[$i]->dsrdt_hasil + $cek[$i]->dsrdt_return_price
+            ]);
+        }else{
+          d_sales_dt::where('sd_sales',$data->dsr_sid)
+          ->where('sd_detailid',$i+1)
+          ->update([
+            'sd_item' => $cek[$i]->dsrdt_item,
+            'sd_qty' => $cek[$i]->dsrdt_qty,
+            'sd_price' => $cek[$i]->dsrdt_price,
+            'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
+            'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
+            'sd_disc_value' =>$cek[$i]->dsrdt_disc_value,
+            'sd_total' => $cek[$i]->dsrdt_hasil
+            ]);
+        }
+
+      }
+    }else if ($data->dsr_method == 'SB') {
+      # code...
+    }else if ($data->dsr_method == 'SA') {
+      # code...
+    }elseif ($data->dsr_method == 'KB') {
+      # code...
     }
     DB::commit();
     return response()->json([
