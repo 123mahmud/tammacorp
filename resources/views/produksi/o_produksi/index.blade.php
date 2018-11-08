@@ -249,7 +249,7 @@
                                         $("#spk_ref").val('');
                                         $("#JumlahItemSpk").val('');
                                         $("#TanggalProduksi").val('');
-                                        oProduct.ajax.reload();
+                                        cariTanggal();
                                         iziToast.success({
                                             timeout: 5000,
                                             position: "topRight",

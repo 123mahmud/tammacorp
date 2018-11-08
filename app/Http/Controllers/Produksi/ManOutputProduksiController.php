@@ -316,7 +316,10 @@ class ManOutputProduksiController extends Controller
             $cek = DB::table('d_productresult')
                 ->where('pr_spk', $request->spk_id)
                 ->get();
-            d_productplan::where('pp_id', $request->spk_id)
+            $status = d_spk::where('spk_id', $request->spk_id)
+                ->first();
+                // dd($status);
+            d_productplan::where('pp_id', $status->spk_ref)
                 ->update([
                     'pp_isspk' => 'P'
                 ]);
@@ -499,6 +502,10 @@ class ManOutputProduksiController extends Controller
             if ($autoStatus->pp_qty == $totalHasil) {
                 $autoStatus->update([
                     'spk_status' => 'FN'
+                ]);
+                d_productplan::where('pp_id', $status->spk_ref)
+                ->update([
+                    'pp_isspk' => 'C'
                 ]);
             }
 
