@@ -74,17 +74,17 @@
                                                  align="right">
 
                                                 <select name="tampilData" id="tampil_data"
-                                                        class="form-control input-sm">
+                                                        class="form-control input-sm" onchange="cariTanggal()">
                                                     <option value="Semua" class="form-control">Tampilkan Data : Semua
                                                     </option>
                                                     <option value="Belum-dikirim" class="form-control">
                                                         Tampilkan Data : Belum Terkirim
                                                     </option>
                                                     <option value="Dikirim" class="form-control">Tampilkan Data :
-                                                        Dikirim
+                                                        Di kirim
                                                     </option>
                                                     <option value="Terkirim" class="form-control">Tampilkan Data :
-                                                        Terkirim
+                                                        Di Terima
                                                     </option>
                                                 </select>
 
@@ -154,41 +154,10 @@
                                 //fungsi
                             })
 
+                            cariTanggal();
                         });
 
-                        var oProduct = $('#oProduct').DataTable({
-                            processing: true,
-                            serverSide: true,
-                            ajax: {
-                                url: baseUrl + "/produksi/o_produksi/tabel",
-                            },
-                            columns: [
-                                {data: 'pr_date', name: 'pr_date'},
-                                {data: 'spk_code', name: 'spk_code'},
-                                {data: 'mp_name', name: 'mp_name'},
-                                {data: 'i_name', name: 'i_name', orderable: false},
-                                {data: 'prdt_date', name: 'prdt_date'},
-                                {data: 'prdt_qty', name: 'prdt_qty', className: 'right'},
-                                {data: 'prdt_status', name: 'prdt_status'},
-                                {data: 'action', name: 'action'},
-                            ],
-                            "responsive": true,
 
-                            "pageLength": 10,
-                            "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                            "language": {
-                                "searchPlaceholder": "Cari Data",
-                                "emptyTable": "Tidak ada data",
-                                "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                "sSearch": '<i class="fa fa-search"></i>',
-                                "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                "infoEmpty": "",
-                                "paginate": {
-                                    "previous": "Sebelumnya",
-                                    "next": "Selanjutnya",
-                                }
-                            }
-                        });
 
                         var date = new Date();
                         var newdate = new Date(date);
@@ -303,7 +272,43 @@
                         }
 
                         function cariTanggal(){
-                            alert('a');
+                            $('#oProduct').dataTable().fnDestroy();
+                            var tgl1 = $('#tanggal1').val();
+                            var tgl2 = $('#tanggal2').val();
+                            var tampil = $('#tampil_data').val();
+                           $('#oProduct').DataTable({
+                            processing: true,
+                            serverSide: true,
+                            ajax: {
+                                url: baseUrl + "/produksi/o_produksi/tabel/" + tgl1 + "/" + tgl2 + "/" + tampil,
+                            },
+                            columns: [
+                                {data: 'pr_date', name: 'pr_date'},
+                                {data: 'spk_code', name: 'spk_code'},
+                                {data: 'mp_name', name: 'mp_name'},
+                                {data: 'i_name', name: 'i_name', orderable: false},
+                                {data: 'prdt_date', name: 'prdt_date'},
+                                {data: 'prdt_qty', name: 'prdt_qty', className: 'right'},
+                                {data: 'prdt_status', name: 'prdt_status'},
+                                {data: 'action', name: 'action'},
+                            ],
+                            "responsive": true,
+
+                            "pageLength": 10,
+                            "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                            "language": {
+                                "searchPlaceholder": "Cari Data",
+                                "emptyTable": "Tidak ada data",
+                                "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                                "sSearch": '<i class="fa fa-search"></i>',
+                                "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                                "infoEmpty": "",
+                                "paginate": {
+                                    "previous": "Sebelumnya",
+                                    "next": "Selanjutnya",
+                                }
+                            }
+                        });
                         }
 
                     </script>

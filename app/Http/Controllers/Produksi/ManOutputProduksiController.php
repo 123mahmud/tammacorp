@@ -82,9 +82,19 @@ class ManOutputProduksiController extends Controller
     }
 
 
-    public function tabel()
-    {
-        $data = DB::table('d_productresult_dt')
+    public function tabel($tgl1, $tgl2, $tampil){
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+         $tgl01 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+          $tgl02 = $y2.'-'.$m2.'-'.$d2;
+        //   dd($tgl01);
+        if ($tampil == 'Semua') {
+            $data = DB::table('d_productresult_dt')
             ->select('pr_date',
                 'spk_code',
                 'i_name',
@@ -100,8 +110,80 @@ class ManOutputProduksiController extends Controller
             ->join('m_item', 'i_id', '=', 'prdt_item')
             ->join('d_spk', 'pr_spk', '=', 'spk_id')
             ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
             ->orderBy('prdt_date', 'DESC')
             ->get();
+        }elseif ($tampil == 'Belum-dikirim') {
+
+           $data = DB::table('d_productresult_dt')
+            ->select('pr_date',
+                'spk_code',
+                'i_name',
+                'prdt_date',
+                'prdt_time',
+                'prdt_qty',
+                'prdt_productresult',
+                'prdt_detail',
+                'prdt_status',
+                'mp_name',
+                'prdt_produksi')
+            ->join('d_productresult', 'prdt_productresult', '=', 'pr_id')
+            ->join('m_item', 'i_id', '=', 'prdt_item')
+            ->join('d_spk', 'pr_spk', '=', 'spk_id')
+            ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('prdt_status','RD')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
+            ->orderBy('prdt_date', 'DESC')
+            ->get();
+
+        }elseif ($tampil == 'Dikirim') {
+            $data = DB::table('d_productresult_dt')
+            ->select('pr_date',
+                'spk_code',
+                'i_name',
+                'prdt_date',
+                'prdt_time',
+                'prdt_qty',
+                'prdt_productresult',
+                'prdt_detail',
+                'prdt_status',
+                'mp_name',
+                'prdt_produksi')
+            ->join('d_productresult', 'prdt_productresult', '=', 'pr_id')
+            ->join('m_item', 'i_id', '=', 'prdt_item')
+            ->join('d_spk', 'pr_spk', '=', 'spk_id')
+            ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('prdt_status','FN')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
+            ->orderBy('prdt_date', 'DESC')
+            ->get();
+        }elseif ($tampil == 'Terkirim') {
+            $data = DB::table('d_productresult_dt')
+            ->select('pr_date',
+                'spk_code',
+                'i_name',
+                'prdt_date',
+                'prdt_time',
+                'prdt_qty',
+                'prdt_productresult',
+                'prdt_detail',
+                'prdt_status',
+                'mp_name',
+                'prdt_produksi')
+            ->join('d_productresult', 'prdt_productresult', '=', 'pr_id')
+            ->join('m_item', 'i_id', '=', 'prdt_item')
+            ->join('d_spk', 'pr_spk', '=', 'spk_id')
+            ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('prdt_status','RC')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
+            ->orderBy('prdt_date', 'DESC')
+            ->get();
+        }
+        
 
         return DataTables::of($data)
             ->addColumn('action', function ($data) {
