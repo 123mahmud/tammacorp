@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px;">
-                  <form method="POST" class="form" action="{{ url('hrd/datajabatan/simpan-jabatan') }}" enctype="multipart/form-data" style="font-family:Arial;">
+                  <form method="POST" class="form" action="{{ url('master/datajabatan/simpan-jabatan') }}" enctype="multipart/form-data" style="font-family:Arial;">
                     {{ csrf_field() }}
                     <table class="table">
                     <div class="col-md-2 col-sm-4 col-xs-12">
