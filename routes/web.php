@@ -118,6 +118,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/belanjaproduk/produk', 'Pembelian\PurchasingController@produk');
     Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\PurchasingController@bahan');
     Route::get('/purchasing/belanjapasar/pasar', 'Pembelian\PurchasingController@pasar');
+//laporan Pembelian
+    Route::get('/purchasing/lap-pembelian/index', 'Pembelian\LapPembelianController@index');
+    Route::get('/purchasing/lap-pembelian/get-laporan-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@get_laporan_by_tgl');
+    Route::get('/purchasing/lap-pembelian/print-lap-beli/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_beli');
+    Route::get('/purchasing/lap-pembelian/get-bharian-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@get_bharian_by_tgl');
+    Route::get('/purchasing/lap-pembelian/print-lap-bharian/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_bharian');
 //end purchasing
     /*Inventory*/
     Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
@@ -1094,7 +1100,7 @@ Route::group(['middleware' => 'auth'], function () {
 //10-07-18
     Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
     Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
-    Route::post('/keuangan/konfirmasiConfrimBeliControllerpembelian/confirm-belanjaharian-submit', 'Keuangan\@submitBelanjaHarian');
+    Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
 //hutang piutang
     Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\HutangController@hutang');
     Route::get('/keuangan/l_hutangpiutang/get_hutang_by_tgl/{tgl1}/{tgl2}', 'Keuangan\HutangController@getHutangByTgl');
