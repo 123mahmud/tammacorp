@@ -16,6 +16,7 @@ use App\d_sales_dt;
 use App\d_sales;
 use App\d_stock;
 use App\d_stock_mutation;
+use App\m_item;
 
 
 class ManajemenReturnPenjualanController extends Controller
@@ -216,6 +217,7 @@ class ManajemenReturnPenjualanController extends Controller
                             's_disc_percent',
                             's_disc_value',
                             's_net',
+                            's_channel',
                             'pm_name')
       ->join('m_customer','c_id','=','s_customer')
       ->join('d_sales_dt','sd_sales','=','s_id')
@@ -971,43 +973,8 @@ class ManajemenReturnPenjualanController extends Controller
           if ($sisa <= 0) {
             $jSisa = 0-($sisa);
           }
-          // dd($data->dsr_sid);
-        // d_sales::where('s_id',$data->dsr_sid)
-        //   ->update([
-        //     's_gross' => $data->dsr_sgross,
-        //     's_disc_percent' => $data->dsr_disc_vpercent,
-        //     's_disc_value' => $data->dsr_disc_value,
-        //     's_net' => $data->dsr_net,
-        //     's_sisa' => $jSisa,
-        //     ]);
 
        }
-
-        // if ($cek[$i]->dsrdt_disc_value != 0.00) {
-        //   d_sales_dt::where('sd_sales',$data->dsr_sid)
-        //   ->where('sd_detailid',$i+1)
-        //   ->update([
-        //     'sd_item' => $cek[$i]->dsrdt_item,
-        //     'sd_qty' => $cek[$i]->dsrdt_qty,
-        //     'sd_price' => $cek[$i]->dsrdt_price,
-        //     'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
-        //     'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
-        //     'sd_disc_value' =>($cek[$i]->dsrdt_disc_value / $cek[$i]->dsrdt_qty_confirm) * ($cek[$i]->dsrdt_qty - $cek[$i]->dsrdt_qty_confirm) + $cek[$i]->dsrdt_disc_value,
-        //     'sd_total' => $cek[$i]->dsrdt_hasil + $cek[$i]->dsrdt_return_price
-        //     ]);
-        // }else{
-        //   d_sales_dt::where('sd_sales',$data->dsr_sid)
-        //   ->where('sd_detailid',$i+1)
-        //   ->update([
-        //     'sd_item' => $cek[$i]->dsrdt_item,
-        //     'sd_qty' => $cek[$i]->dsrdt_qty,
-        //     'sd_price' => $cek[$i]->dsrdt_price,
-        //     'sd_disc_percent' => $cek[$i]->dsrdt_disc_percent,
-        //     'sd_disc_vpercent' => $cek[$i]->dsrdt_disc_vpercent,
-        //     'sd_disc_value' =>$cek[$i]->dsrdt_disc_value,
-        //     'sd_total' => $cek[$i]->dsrdt_hasil
-        //     ]);
-        // }
 
       }
     }else if ($data->dsr_method == 'SB') {
@@ -1116,5 +1083,62 @@ class ManajemenReturnPenjualanController extends Controller
 
 
       return view('penjualan.manajemenreturn.print.print_faktur', compact('data', 'dataTotal', 'sales'));
+  }
+
+  public function setName(Request $request, $type){
+    $term = $request->term;
+    $results = array();
+    if ($type == 'GR') {
+      $queries = m_item::join('d_stock','d_stock.s_id','=','i_id')
+      ->where('s_comp',2)
+      ->where('s_position',2)
+      ->where('i_type', '=', DB::raw("'BP'"))
+      ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"'))        
+      ->orWhere('i_type', '=', DB::raw("'BJ'"))
+      ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"')) 
+      ->where('i_isactive','TRUE')      
+      ->take(25)->get();
+
+      if ($queries == null) {
+        $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
+      } else {
+        foreach ($queries as $query) {
+          $results[] = [ 'id' => $query->i_id,
+                         'label' => $query->i_code .' - '. $query->i_name,
+                         'harga' => $query->m_psell1,
+                         'kode' => $query->i_id,
+                         'nama' => $query->i_name,
+                         'satuan' => $query->m_sname,
+                         's_qty' =>$query->s_qty
+                       ];
+        }
+      }
+    }else{
+
+    $queries = m_item::where('i_type', '=', DB::raw("'BP'"))
+      ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"'))        
+      ->orWhere('i_type', '=', DB::raw("'BJ'"))
+      ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"')) 
+      ->where('i_isactive','TRUE')      
+      ->take(25)->get();
+
+
+      if ($queries == null) {
+        $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
+      } else {
+        foreach ($queries as $query) {
+          $results[] = [ 'id' => $query->i_id,
+                         'label' => $query->i_code .' - '. $query->i_name,
+                         'harga' => $query->m_psell1,
+                         'kode' => $query->i_id,
+                         'nama' => $query->i_name,
+                         'satuan' => $query->m_sname,
+                         's_qty'=>$query->s_qty
+                       ];
+        }
+      }
+    }
+
+    return Response::json($results);
   }
 }
