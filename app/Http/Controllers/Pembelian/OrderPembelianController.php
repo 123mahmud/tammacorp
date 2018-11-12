@@ -29,6 +29,7 @@ class OrderPembelianController extends Controller
                               ->select('d_purchasing.*','d_supplier.s_company')
                               ->where(function ($data) use ($datenow) {
                                 $data->where('d_purchasing.d_pcs_method', '=', 'DEPOSIT');
+                                $data->where('d_purchasing.d_pcs_status', '=', 'WT');
                                 $data->whereDate('d_purchasing.d_pcs_duedate', '>', $datenow);
                               })->get();
       $parsing = [
