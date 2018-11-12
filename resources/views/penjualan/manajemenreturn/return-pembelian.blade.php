@@ -860,13 +860,12 @@
         var dataInput = $('input.discvalue:text:eq('+getIndex+')').val();
         var qty = $('input.qty-item:text:eq('+getIndex+')').val();
         var hargaItem = $('input.harga-item:text:eq('+getIndex+')').val();
-        var dValue = $('input.sd_disc_value:text:eq('+getIndex+')').val();
+        // var dValue = $('input.sd_disc_value:text:eq('+getIndex+')').val();
         var retur = $('input.qtyreturn:text:eq('+getIndex+')').val();
         hargaItem = convertToAngka(hargaItem);
         x = hargaItem * (qty - retur);
-        hasil = x - dValue;
         y = (qty - retur) * dataInput;
-        $('input.sd_disc_value:text:eq('+getIndex+')').val(y);
+        var dValue = $('input.sd_disc_value:text:eq('+getIndex+')').val(y);
         if (dValue >= x) {
           dValue = 0;
           $('input.discvalue:text:eq('+getIndex+')').val(0);
@@ -876,10 +875,9 @@
         }else{
           $('input.discpercent:text:eq('+getIndex+')').attr("readonly",true);
         }
-        // $('input.qtyreturn:text:eq('+getIndex+')').val(0);
+        hasil = x - y;
         hasil = convertToRupiah(hasil);
         $('input.totalHarga:text:eq('+getIndex+')').val(hasil);
-        // $('input.hasilReturn:text:eq('+getIndex+')').val(0);
       a++;
       }) 
       autoJumlahNet();
