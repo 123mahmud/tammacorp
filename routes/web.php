@@ -425,6 +425,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/return/{id}', 'Penjualan\ManajemenReturnPenjualanController@storeReturn');
     Route::get('/penjualan/returnpenjualan/printreturn/{id}', 'Penjualan\ManajemenReturnPenjualanController@printreturn');
     Route::get('/penjualan/returnpenjualan/printfaktur/{id}', 'Penjualan\ManajemenReturnPenjualanController@printfaktur');
+    Route::get('/penjualan/returnpenjualan/setname/{type}', 'Penjualan\ManajemenReturnPenjualanController@setName');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');

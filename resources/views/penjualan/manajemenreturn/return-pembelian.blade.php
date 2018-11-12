@@ -65,7 +65,7 @@
                           <option value="TB"> Tukar Barang </option>
                           <option value="SB"> Salah Barang </option>
                           <option value="SA"> Salah Alamat </option>
-                          <option value="KB"> Kurang Barang </option>
+                       {{--    <option value="KB"> Kurang Barang </option> --}}
                         </select>
                       </div>
                     </div>
@@ -450,7 +450,7 @@
                                       +'</div>'
                                     +'</div>'
                                     +'</div>'
-
+                                    +'<input type="hidden" name="typeSales" readonly="" class="form-control input-sm totalGross" id="typeSales">'
                                     +'<div class="table-responsive">'
                                       +'<table class="table tabelan table-bordered" id="tabel-return-sales" width="100%">'
                                           +'{{ csrf_field() }}'
@@ -471,13 +471,53 @@
                                           +'</tbody>'
                                       +'</table>'
                                     +'</div>'
-                                    // +'</form>'
+                                    
+                                    +'<div class="col-md-12 tamma-bg" style="margin-top: 5px;margin-bottom: 5px;margin-bottom: 20px; padding-bottom:20px;padding-top:20px;">'
+                                      +'<div class="col-md-6">'
+                                          +'<label class="control-label tebal" for="">Masukan Kode / Nama</label>'
+                                          +'<div class="input-group input-group-sm" style="width: 100%;">'
+                                              +'<input type="text" id="namaitem" name="item" class="form-control">'
+                                              +'<input type="text" id="kode" name="sd_item" class="form-control">'
+                                              +'<input type="text" id="harga" name="sd_sell" class="form-control">'
+                                              +'<input type="text" id="detailnama" name="nama" class="form-control">'
+                                              +'<input type="text" id="satuan" name="satuan" class="form-control">'
+                                              +'<input type="text" id="i-type" name="i-type" class="form-control">'
+                                          +'</div>'
+                                      +'</div>'
+                                      +'<div class="col-md-3">'
+                                          +'<label class="control-label tebal" name="qty">Masukan Jumlah</label>'
+                                          +'<div class="input-group input-group-sm" style="width: 100%;">'
+                                              +'<input type="number" id="qty" name="qty" class="form-control">'
+                                          +'</div>'
+                                      +'</div>'
+                                      +'<div class="col-md-3">'
+                                          +'<label class="control-label tebal" name="qty">Kuantitas Stok</label>'
+                                          +'<div class="input-group input-group-sm" style="width: 100%;">'
+                                              +'<input type="number" id="s_qty" name="s_qty" readonly class="form-control">'
+                                          +'</div>'
+                                      +'</div>'
+                                  +'</div>'
 
-                                      +'<div align="right" style="padding-top: 15px;">'
-                                        +'<div id="div_button_save" class="form-group">'
-                                          +'<button type="button" id="button_save" class="btn btn-primary" onclick="simpanReturn()">Simpan Data</button>'
-                                        +'</div>'
-                                      +'</div>');
+                                  +'<div class="table-responsive">'
+                                    +'<table class="table tabelan table-bordered table-hover dt-responsive" id="detail-penjualan">'
+                                        +'<thead align="right">'
+                                        +'<tr>'
+                                            +'<th width="60%">Nama</th>'
+                                            +'<th width="20%">Jumlah</th>'
+                                            +'<th width="20%">Satuan</th>'
+                                            +'<th></th>'
+                                        +'</tr>'
+                                        +'</thead>'
+                                        +'<tbody>'
+                                        +'</tbody>'
+                                    +'</table>'
+                                  +'</div>'
+
+                                  +'<div align="right" style="padding-top: 15px;">'
+                                    +'<div id="div_button_save" class="form-group">'
+                                      +'<button type="button" id="button_save" class="btn btn-primary" onclick="simpanReturn()">Simpan Data</button>'
+                                    +'</div>'
+                                  +'</div>');
       }
       else if(method == "SA")
       {
@@ -772,6 +812,7 @@
               var s_disc_percent = parseInt(response[0].s_disc_percent);
               s_disc_percent = convertToRupiah(s_disc_percent);
             $('#total_percent').val(s_disc_percent);
+            $('#typeSales').val(response[0].s_channel);
 
             var tableReturn = $('#tabel-return-sales').DataTable({
               // processing: true,
@@ -814,9 +855,124 @@
         });
       });
 
+      $("#namaitem").focus(function () {
+        var type = $('#typeSales').val();
+            var key = 1;
+            $("#namaitem").autocomplete({
+                source: baseUrl + '/penjualan/returnpenjualan/setname/' + type,
+                minLength: 1,
+                select: function (event, ui) {
+                    $('#harga').val(ui.item.harga);
+                    $('#kode').val(ui.item.kode);
+                    $('#detailnama').val(ui.item.nama);
+                    $('#namaitem').val(ui.item.label);
+                    $('#satuan').val(ui.item.satuan);
+                    if (ui.item.s_qty == null) {
+                        $('#s_qty').val('0');
+                    } else {
+                        $('#s_qty').val(ui.item.s_qty);
+                    }
+                    $('#qty').val(ui.item.qty);
+                    $('#i-type').val(ui.item.i_type);
+                    $('#qty').val('');
+                    $("input[name='qty']").focus();
+                }
+            });
+            $("#s_qty").val('');
+            $("#qty").val('');
+            $("#namaitem").val('');
+        });
+
+      tableDetail = $('#detail-penjualan').DataTable();
+
+        $('#qty').keypress(function (e) {
+          alert('a');
+            var charCode;
+            if ((e.which && e.which == 13)) {
+                charCode = e.which;
+            } else if (window.event) {
+                e = window.event;
+                charCode = e.keyCode;
+            }
+            if ((e.which && e.which == 13)) {
+                var isi = $('#qty').val();
+                var jumlah = $('#detailnama').val();
+                var stok = $('#s_qty').val();
+                if (isi == '' || jumlah == '' || stok == '') {
+                    toastr.warning('Jumlah Item Melebihi Stok');
+                    return false;
+                }
+                var kode = $('#kode').val();
+                tambah();
+                qtyInput(stok, kode);
+                $("input[name='item']").val('');
+                $("input[name='s_qty']").val('');
+                $("input[name='qty']").val('');
+                $("input[name='item']").focus();
+                return false;
+            }
+        });
+
     });
     
   });
+
+
+        var index = 0;
+        var tamp = [];
+        function tambah() {
+            var kode = $('#kode').val();
+            var nama = $('#detailnama').val();
+            var harga = SetFormRupiah($('#harga').val());
+            var y = ($('#harga').val());
+            var qty = parseInt($('#qty').val());
+            var satuan = $('#satuan').val();
+            var hasil = parseFloat(qty * y).toFixed(2);
+            var x = SetFormRupiah(hasil);
+            var b = angkaDesimal(x);
+            var stok = $('#s_qty').val();
+            var pricevalue = 'pricevalue-' + kode + '';
+            var event = 'event';
+            var Hapus = '<button type="button" class="btn btn-danger hapus" onclick="hapus(this)"><i class="fa fa-trash-o"></i></button>';
+            var index = tamp.indexOf(kode);
+
+            if (index == -1) {
+                tableDetail.row.add([
+                    nama + '<input type="hidden" name="kode_item[]" class="kode_item kode" value="' + kode + '"><input type="hidden" name="nama_item[]" class="nama_item" value="' + nama + '"> ',
+
+                    '<input size="30" style="text-align:right" type="number"  name="sd_qty[]" class="sd_qty form-control qty-' + kode + '" value="' + qty + '" onkeyup="UpdateHarga(\'' + kode + '\');qtyInput(\'' + stok + '\', \'' + kode + '\');totalPenjualan()" onchange="qtyInput(\'' + stok + '\', \'' + kode + '\')"> ',
+
+                    satuan + '<input type="hidden" name="satuan[]" class="satuan" value="' + satuan + '"> ',
+
+                    Hapus
+
+                ]);
+                tableDetail.draw();
+
+                index++;
+                tamp.push(kode);
+
+            } else {
+
+                var qtyLawas = parseInt($(".qty-" + kode).val());
+                $(".qty-" + kode).val(qtyLawas + qty);
+                var q = parseInt(qtyLawas + qty);
+                var l = parseFloat(q * y).toFixed(2);
+                ;
+                var k = SetFormRupiah(l);
+                $(".hasil-" + kode).val(k);
+            }
+
+            $(function () {
+                var values = $("input[name='sd_qty[]']")
+                    .map(function () {
+                        return $(this).val();
+                    }).get();
+            });
+
+            UpdateTotal();
+            autoJumValPercent();
+        }
 
   function discpercent(inField, e){
     var a = 0;
