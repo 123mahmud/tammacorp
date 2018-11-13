@@ -1295,7 +1295,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/master/datajabatan/simpan-jabatan', 'Master\JabatanController@simpanJabatan');
     Route::put('/master/datajabatan/update-jabatan/{id}', 'Master\JabatanController@updateJabatan');
     Route::get('/master/datajabatan/tambah-jabatan', 'Master\JabatanController@tambahJabatan');
-    Route::delete('/master/datajabatan/delete-jabatan/{id}', 'Master\ManajemenSuratController@deleteJabatan');
+    Route::get('/master/datajabatan/delete-jabatan/{id}', 'Master\JabatanController@deleteJabatan');
     Route::get('/master/datajabatan/tableproduksi', 'Master\JabatanController@tablePro');
     Route::get('/master/datajabatan/tambah-jabatanpro', 'Master\JabatanController@tambahJabatanPro');
     Route::get('datajabatan/simpan-jabatanpro', 'Master\JabatanController@simpanJabatanPro');
