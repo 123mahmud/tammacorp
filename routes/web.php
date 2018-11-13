@@ -252,7 +252,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('produksi/garapan/table/data/{rumah}/{item}/{jabatan}/{tgl1}/{tgl2}', 'Produksi\GarapanPegawaiController@tableDataGarapan');
 //mahmud
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
-    Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
+    Route::get('/produksi/o_produksi/tabel/{tgl1}/{tgl2}/{pilih}', 'Produksi\ManOutputProduksiController@tabel');
     Route::get('/produksi/o_produksi/store', 'Produksi\ManOutputProduksiController@store');
     Route::get('/produksi/o_produksi/getdata/kirim/{y}', 'Produksi\ManOutputProduksiController@detailKirim');
     Route::get('/produksi/o_produksi/sending/{id1}/{id2}', 'Produksi\ManOutputProduksiController@sending');
@@ -426,6 +426,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/printreturn/{id}', 'Penjualan\ManajemenReturnPenjualanController@printreturn');
     Route::get('/penjualan/returnpenjualan/printfaktur/{id}', 'Penjualan\ManajemenReturnPenjualanController@printfaktur');
     Route::get('/penjualan/returnpenjualan/setname/{type}', 'Penjualan\ManajemenReturnPenjualanController@setName');
+    Route::get('/penjualan/returnpenjualan/getdata/SB', 'Penjualan\ManajemenReturnPenjualanController@detailSB');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
