@@ -55,6 +55,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\OrderPembelianController@getDataTabelHistory');
     Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
     Route::get('/purchasing/orderpembelian/get-order-by-tgl/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTgl');
+    Route::get('/purchasing/orderpembelian/get-order-by-tgl-span/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTglspan');
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
 // irA
@@ -83,6 +84,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/purchasing/belanjaharian/update-data-belanja', 'Pembelian\BelanjaHarianController@updateDataBelanja');
     Route::post('/purchasing/belanjaharian/delete-data-belanja', 'Pembelian\BelanjaHarianController@deleteDataBelanja');
     Route::get('/purchasing/belanjaharian/get-belanja-by-tgl/{tgl1}/{tgl2}', 'Pembelian\BelanjaHarianController@getBelanjaByTgl');
+    Route::get('/purchasing/belanjaharian/get-belanja-by-tgl-span/{tgl1}/{tgl2}', 'Pembelian\BelanjaHarianController@getBelanjaByTglspan');
     Route::get('/purchasing/belanjaharian/get-data-masterbarang', 'Pembelian\BelanjaHarianController@getDataMasterBarang');
     Route::get('/purchasing/belanjaharian/get-data-kodesatuan', 'Pembelian\BelanjaHarianController@getDataKodeSatuan');
     Route::post('/purchasing/belanjaharian/simpan-barang', 'Pembelian\BelanjaHarianController@simpanDataBarang');
@@ -348,6 +350,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSretail/getdataReq', 'Penjualan\POSRetailController@detailReq');
     Route::get('/penjualan/POSretail/retail/simpan-transfer', 'transferItemController@simpanTransfer');
     Route::get('/penjualan/POSretail/get-tanggal/{tgl1}/{tgl2}/{tampil}', 'Penjualan\POSRetailController@getTanggal');
+    Route::get('/penjualan/POSretail/get-tanggal-nota-penjualan/{tgl1}/{tgl2}', 'Penjualan\POSRetailController@getTanggalnoapenjualan');
     Route::get('/penjualan/POSretail/get-tanggaljual/{tgl1}/{tgl2}', 'Penjualan\POSRetailController@getTanggalJual');
     Route::get('/pembayaran/POSretail/pay-methode', 'Penjualan\POSRetailController@PayMethode');
     Route::get('/penjualan/POSretail/setbarcode', 'Penjualan\POSRetailController@setBarcode');
@@ -379,6 +382,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSgrosir/grosir/item_save', 'Penjualan\POSGrosirController@item_save');
     Route::get('/penjualan/POSgrosir/getdata', 'Penjualan\POSGrosirController@detail');
     Route::get('/penjualan/POSgrosir/get-tanggal/{tgl1}/{tgl2}/{tampil}', 'Penjualan\POSGrosirController@getTanggal');
+    Route::get('/penjualan/POSgrosir/get-tanggal-nota-penjualan/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getTanggalnoapenjualan');
     Route::get('/penjualan/POSgrosir/get-tanggaljual/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getTanggalJual');
     Route::get('/pembayaran/POSgrosir/pay-methode', 'Penjualan\POSGrosirController@PayMethode');
     Route::get('/penjualan/POSgrosir/setbarcode', 'Penjualan\POSGrosirController@setBarcode');
@@ -1097,6 +1101,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/tabel/returnpenjualan', 'Keuangan\ConfrimBeliController@tableReturnPenjualan');
     Route::get('/keuangan/returnpenjualan/getdata', 'Keuangan\ConfrimBeliController@detail');
     Route::get('/keuangan/returnpenjualan/update/{status}/{id}', 'Keuangan\ConfrimBeliController@updateReturnPenjualan');
+    Route::get('/keuangan/returnpenjualan/getdata/sb', 'Keuangan\ConfrimBeliController@detailSB');
     
     //end mahmud
 //10-07-18
