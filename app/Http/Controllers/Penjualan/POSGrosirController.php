@@ -21,10 +21,193 @@ class POSGrosirController extends Controller
   public function grosir(){
       $dataPayment = DB::table('m_paymentmethod')->get();
       $ket = 'create';
-    return view('/penjualan/POSgrosir/index',compact('dataPayment','ket'));
+
+      $tgl2 = date("d-m-Y");
+      $tgl1 = date('d-m-Y', strtotime("-3 day"));
+
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tgl2 = $y2.'-'.$m2.'-'.$d2;
+
+    $detalis_draft = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','DR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_progress = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','PR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_final = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','FN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_packing = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','PC')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_sending = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','SN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_received = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','RC')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    return view('/penjualan/POSgrosir/index',compact('dataPayment','ket','detalis_draft','detalis_progress','detalis_final','detalis_packing','detalis_sending','detalis_received'));
+  }
+  public function getTanggalnoapenjualan($tgl1,$tgl2)
+  {
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tgl2 = $y2.'-'.$m2.'-'.$d2;
+
+    $detalis_draft = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','DR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_progress = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','PR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_final = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','FN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_packing = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','PC')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_sending = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','SN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_received = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','RC')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+        return response()->json(['detalis_draft'=>$detalis_draft,'detalis_progress'=>$detalis_progress,'detalis_final'=>$detalis_final,'detalis_packing'=>$detalis_packing,'detalis_sending'=>$detalis_sending,'detalis_received'=>$detalis_received]);
   }
 
   public function edit_sales($id){
+      $tgl2 = date("d-m-Y");
+      $tgl1 = date('d-m-Y', strtotime("-3 day"));
+
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tgl2 = $y2.'-'.$m2.'-'.$d2;
+    $detalis_draft = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','DR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_progress = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','PR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_final = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','FN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_packing = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','PC')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_sending = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','SN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+    $detalis_received = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where('s_status','RC')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
       $edit = d_sales::select('c_name',
                               's_customer',
                               'c_address',
@@ -74,7 +257,7 @@ class POSGrosirController extends Controller
       $dataPayment = DB::table('m_paymentmethod')->get();
       $ket = 'edit';
       // dd($edit);
-    return view('/penjualan/POSgrosir/index',compact('edit','dataPayment','ket'));
+    return view('/penjualan/POSgrosir/index',compact('edit','dataPayment','ket','detalis_draft','detalis_progress','detalis_final','detalis_packing','detalis_sending','detalis_received'));
   }
 
   public function detail(Request $request){
@@ -765,13 +948,13 @@ class POSGrosirController extends Controller
         })
       ->editColumn('status', function ($data)
       {
-          if ($data->s_status == "DR") { return 'Draft'; }
-          elseif ($data->s_status == "WA") { return 'Waiting'; }
-          elseif ($data->s_status == "PR") { return 'Progress'; }
-          elseif ($data->s_status == "FN") { return 'Final'; }
-          elseif ($data->s_status == "PC") { return 'Packing'; }
-          elseif ($data->s_status == "SN") { return 'Sending'; }
-          elseif ($data->s_status == "RC") { return 'Received'; }
+          if ($data->s_status == "DR") { return '<span class="label label-default">Draft</span>'; }
+          elseif ($data->s_status == "WA") { return '<span class="label label-primary">Waiting</span>'; }
+          elseif ($data->s_status == "PR") { return '<span class="label label-orange">Progress</span>'; }
+          elseif ($data->s_status == "FN") { return '<span class="label label-success">Final</span>'; }
+          elseif ($data->s_status == "PC") { return '<span class="label label-purple">Packing</span>'; }
+          elseif ($data->s_status == "SN") { return '<span class="label label-danger">Sending</span>'; }
+          elseif ($data->s_status == "RC") { return '<span class="label label-info">Received</span>'; }
       })
       ->addColumn('action', function($data)
       {
@@ -835,7 +1018,7 @@ class POSGrosirController extends Controller
 
       })
       //inisisai column status agar kode html digenerate ketika ditampilkan
-      ->rawColumns(['action', 'action2','sGross'])
+      ->rawColumns(['action', 'action2','sGross','status'])
       ->make(true);
   }
 

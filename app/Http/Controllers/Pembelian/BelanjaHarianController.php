@@ -22,7 +22,95 @@ class BelanjaHarianController extends Controller
 
     public function belanja()
     {
-      return view('/purchasing/belanjaharian/index');
+      $tgl2 = date("d-m-Y");
+      $tgl1 = date('d-m-Y', strtotime("-30 day"));
+
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      $waiting = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','WT')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $confirm = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','CF')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $dapat_edit = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','DE')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $received = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','RC')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $revisi = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','RV')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      return view('/purchasing/belanjaharian/index',compact('waiting','confirm','dapat_edit','received','revisi'));
+    }
+
+    public function getBelanjaByTglspan($tgl1,$tgl2)
+    {
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      $waiting = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','WT')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $confirm = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','CF')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $dapat_edit = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','DE')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $received = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','RC')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      $revisi = d_purchasingharian::join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
+            ->where('d_pcsh_status','RV')
+            ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
+            ->count();
+
+      return response()->json(['waiting'=>$waiting,'confirm'=>$confirm,'dapat_edit'=>$dapat_edit,'received'=>$received,'revisi'=>$revisi]);
     }
 
     public function tambah_belanja()
