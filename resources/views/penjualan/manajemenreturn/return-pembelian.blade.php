@@ -477,11 +477,11 @@
                                           +'<label class="control-label tebal" for="">Masukan Kode / Nama</label>'
                                           +'<div class="input-group input-group-sm" style="width: 100%;">'
                                               +'<input type="text" id="namaitem" name="item" class="form-control">'
-                                              +'<input type="text" id="kode" name="sd_item" class="form-control">'
-                                              +'<input type="text" id="harga" name="sd_sell" class="form-control">'
-                                              +'<input type="text" id="detailnama" name="nama" class="form-control">'
-                                              +'<input type="text" id="satuan" name="satuan" class="form-control">'
-                                              +'<input type="text" id="i-type" name="i-type" class="form-control">'
+                                              +'<input type="hidden" id="kode" name="sd_item" class="form-control">'
+                                              +'<input type="hidden" id="harga" name="sd_sell" class="form-control">'
+                                              +'<input type="hidden" id="detailnama" name="nama" class="form-control">'
+                                              +'<input type="hidden" id="satuan" name="satuan" class="form-control">'
+                                              +'<input type="hidden" id="i-type" name="i-type" class="form-control">'
                                           +'</div>'
                                       +'</div>'
                                       +'<div class="col-md-3">'
@@ -886,7 +886,6 @@
       tableDetail = $('#detail-penjualan').DataTable();
 
         $('#qty').keypress(function (e) {
-          alert('a');
             var charCode;
             if ((e.which && e.which == 13)) {
                 charCode = e.which;
@@ -896,18 +895,24 @@
             }
             if ((e.which && e.which == 13)) {
                 var isi = $('#qty').val();
+                alert(isi);
                 var jumlah = $('#detailnama').val();
+                alert(jumlah);
                 var stok = $('#s_qty').val();
                 if (isi == '' || jumlah == '' || stok == '') {
                     toastr.warning('Jumlah Item Melebihi Stok');
                     return false;
                 }
+                else if (isi <= stok ) {
+                    toastr.warning('Jumlah Item Melebihi Stok');
+                    return false;
+                }
                 var kode = $('#kode').val();
                 tambah();
-                qtyInput(stok, kode);
-                $("input[name='item']").val('');
-                $("input[name='s_qty']").val('');
-                $("input[name='qty']").val('');
+                // qtyInput(stok, kode);
+                $("#s_qty").val('');
+                $("#qty").val('');
+                $("#namaitem").val('');
                 $("input[name='item']").focus();
                 return false;
             }
@@ -969,9 +974,28 @@
                         return $(this).val();
                     }).get();
             });
+        }
 
+        function hapus(a) {
+            var par = a.parentNode.parentNode;
+            tableDetail.row(par).remove().draw(false);
+
+            var sum = 0;
+            $('.hasil').each(function () {
+                sum += Number($(this).val());
+            });
+            $('#total').val(sum);
+
+            var inputs = document.getElementsByClassName('kode'),
+                names = [].map.call(inputs, function (input) {
+                    return input.value;
+                });
+            tamp = names;
             UpdateTotal();
+            autoJumValValue();
+            totalPenjualanDel();
             autoJumValPercent();
+            totalPenjualan();
         }
 
   function discpercent(inField, e){

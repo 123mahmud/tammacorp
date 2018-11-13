@@ -1090,6 +1090,7 @@ class ManajemenReturnPenjualanController extends Controller
     $results = array();
     if ($type == 'GR') {
       $queries = m_item::join('d_stock','d_stock.s_id','=','i_id')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
       ->where('s_comp',2)
       ->where('s_position',2)
       ->where('i_type', '=', DB::raw("'BP'"))
@@ -1098,7 +1099,7 @@ class ManajemenReturnPenjualanController extends Controller
       ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"')) 
       ->where('i_isactive','TRUE')      
       ->take(25)->get();
-
+      // dd($queries);
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
       } else {
