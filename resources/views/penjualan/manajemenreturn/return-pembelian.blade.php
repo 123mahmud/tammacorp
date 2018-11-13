@@ -471,6 +471,10 @@
                                           +'</tbody>'
                                       +'</table>'
                                     +'</div>'
+
+                                    +'<div class="col-md-3 col-sm-12 col-xs-12" style="padding-top:20px;">'
+                                      +'<label class="tebal">Masukan Item Salah Kirim :</label>'
+                                    +'</div>'
                                     
                                     +'<div class="col-md-12 tamma-bg" style="margin-top: 5px;margin-bottom: 5px;margin-bottom: 20px; padding-bottom:20px;padding-top:20px;">'
                                       +'<div class="col-md-6">'
