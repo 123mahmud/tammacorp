@@ -24,7 +24,18 @@ class OrderPembelianController extends Controller
 
     public function order()
     {
-        return view('purchasing/orderpembelian/index');
+      $datenow = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+      $tempo = d_purchasing::join('d_supplier', 'd_purchasing.s_id', '=', 'd_supplier.s_id')
+                              ->select('d_purchasing.*','d_supplier.s_company')
+                              ->where(function ($data) use ($datenow) {
+                                $data->where('d_purchasing.d_pcs_method', '=', 'DEPOSIT');
+                                $data->where('d_purchasing.d_pcs_status', '=', 'WT');
+                                $data->whereDate('d_purchasing.d_pcs_duedate', '>', $datenow);
+                              })->get();
+      $parsing = [
+        'tempo' => $tempo,
+      ];
+      return view('purchasing/orderpembelian/index', $parsing);
     }
 
     public function tambah_order()
@@ -578,7 +589,6 @@ class OrderPembelianController extends Controller
 
       DB::beginTransaction();
       try {
-        
           //insert to table d_purchasing
           $dataHeader = new d_purchasing;
           $dataHeader->d_pcsp_id = $request->cariKodePlan;
@@ -635,7 +645,22 @@ class OrderPembelianController extends Controller
           $dataIsi->d_pcsdt_total = str_replace($old_str, $new_str, $request->fieldHargaTotal[$i]);
           $dataIsi->d_pcsdt_created = Carbon::now();
           $dataIsi->save();
-        } 
+        }
+
+        //update TOP/DEPOSIT d_supplier
+        if ($request->methodBayar == 'DEPOSIT') {
+          DB::table('d_supplier')
+              ->where('s_id', $request->cariSup)
+              ->update([
+                's_deposit' => date('Y-m-d',strtotime($request->apdTgl))
+              ]);
+        }elseif($request->methodBayar == 'CREDIT'){
+          DB::table('d_supplier')
+              ->where('s_id', $request->cariSup)
+              ->update([
+                's_top' => date('Y-m-d',strtotime($request->apdTgl))
+              ]);
+        }
         
       DB::commit();
       return response()->json([

@@ -33,7 +33,42 @@
         <div id="tab-general">
           <div class="row mbl">
             <div class="col-lg-12">
+              @if (count($tempo) > 0)
+                <div class="col-md-12">
+                  <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                    <div class="panel-heading">Jatuh Tempo Pengiriman
+                      <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="panel-body">
+                      @foreach ($tempo as $key => $val)
+                        <?php $key++; ?>
+                        <p>{{$key.'. '.$val->d_pcs_code.' | '.$val->s_company.' | '.date('d M Y',strtotime($val->d_pcs_duedate))}}</p>
+                      @endforeach
+                    </div>
+                  </div>
+                </div>
+              @endif
+
+              <!-- <div class="col-md-4">
+                <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                  <div class="panel-heading">Copyright Info
+                    <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  </div>
+                  <div class="panel-body">&copy; some random dude</a>
+                  </div>
+                </div>
+              </div>
               
+              <div class="col-md-4">
+                <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                  <div class="panel-heading">Copyright Info
+                    <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  </div>
+                  <div class="panel-body">&copy; some random dude</a>
+                  </div>
+                </div>
+              </div> -->
+
               <div class="col-md-12">
                 <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                 </div>

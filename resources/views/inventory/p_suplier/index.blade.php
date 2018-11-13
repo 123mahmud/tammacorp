@@ -207,9 +207,11 @@
           });
           totalNilaiPenerimaan();
         },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
+        error: function(){
+          iziToast.warning({
+            icon: 'fa fa-times',
+            message: 'Data dengan nomor PO tersebut tidak ada yang bertipe BJ'
+          });
         }
       });
     });
