@@ -30,6 +30,24 @@
             </div>
         </div>
         <div class="page-content fadeInRight">
+            <div class="col-lg-12" >
+                <div class="col-lg-6" >
+                    <div style="background-color: #777;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_draft">{{ $detalis_draft }}</label>
+                        Draft
+                    </div>
+                </div>
+                <div class="col-lg-6" >
+                    <div style="background-color: #5cb85c;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_final">{{ $detalis_final }}</label>
+                        Final
+                    </div>
+                </div>
+            </div>
             <div id="tab-general">
                 <div class="row mbl">
                     <div class="col-lg-12">
@@ -1619,6 +1637,19 @@
                     {"data": "action", orderable: false, searchable: false, "width": "10%"},
                 ]
             });
+
+            $.ajax({
+                url: baseUrl + "/penjualan/POSretail/get-tanggal-nota-penjualan/" + tgl1 + '/' + tgl2,
+                type: 'get',
+                timeout: 10000,
+                dataType: 'json',
+                success: function (response) {
+                    $('.detalis_draft').html(response.detalis_draft);
+                    $('.detalis_final').html(response.detalis_final);
+                }
+            });
+
+
         }
 
         function cariTanggalJual() {

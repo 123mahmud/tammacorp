@@ -24,11 +24,70 @@ class POSRetailController extends Controller
   public function retail(){
     $dataPayment = DB::table('m_paymentmethod')->get();
     $ket = 'create';
+    
+      $tgl2 = date("d-m-Y");
+      $tgl1 = date('d-m-Y', strtotime("-3 day"));
 
-    return view('/penjualan/POSretail/index',compact('dataPayment','ket','idfatkur'));
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tgl2 = $y2.'-'.$m2.'-'.$d2;
+
+      $detalis_draft = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','RT')
+        ->where('s_status','DR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+      $detalis_final = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','RT')
+        ->where('s_status','FN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+      // return [$detalis_draft,$detalis_final];
+
+    return view('/penjualan/POSretail/index',compact('dataPayment','ket','idfatkur','detalis_draft','detalis_final'));
   }
 
   public function edit_sales($id){
+      $tgl2 = date("d-m-Y");
+      $tgl1 = date('d-m-Y', strtotime("-3 day"));
+
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tgl2 = $y2.'-'.$m2.'-'.$d2;
+
+      $detalis_draft = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','RT')
+        ->where('s_status','DR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+      $detalis_final = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','RT')
+        ->where('s_status','FN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
     $edit = d_sales::select('c_name',
                             's_customer',
                             'c_address',
@@ -72,7 +131,7 @@ class POSRetailController extends Controller
     $dataPayment = DB::table('m_paymentmethod')->get();
     $ket = 'edit';
     // dd($edit);
-    return view('/penjualan/POSretail/index',compact('edit','dataPayment', 'ket'));
+    return view('/penjualan/POSretail/index',compact('edit','dataPayment', 'ket','detalis_draft','detalis_final'));
   }
 
   public function detail(Request $request){
@@ -702,7 +761,39 @@ class POSRetailController extends Controller
 
     }
 
+  public function getTanggalnoapenjualan($tgl1,$tgl2)
+  {
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tgl2 = $y2.'-'.$m2.'-'.$d2;
+
+      $detalis_draft = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','RT')
+        ->where('s_status','DR')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+      $detalis_final = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','RT')
+        ->where('s_status','FN')
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->count();
+
+        return response()->json(['detalis_draft'=>$detalis_draft,'detalis_final'=>$detalis_final]);
+  }
   public function getTanggal($tgl1,$tgl2,$tampil){
+
+    // return [$tgl1,$tgl2];
 
     $y = substr($tgl1, -4);
     $m = substr($tgl1, -7,-5);
@@ -738,6 +829,8 @@ class POSRetailController extends Controller
           ->where('s_date','<=',$tgl2)
           ->get();
     }
+
+
 
     return DataTables::of($detalis)
         // ->addIndexColumn()

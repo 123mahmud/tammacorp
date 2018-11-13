@@ -28,7 +28,58 @@
             <div class="clearfix">
             </div>
         </div>
+
         <div class="page-content fadeInRight">
+            <div class="col-lg-12" >
+                <div class="col-lg-2" >
+                    <div style="background-color: #777;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_draft">{{ $detalis_draft }}</label>
+                        Draft
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #ff6a00;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_progress">{{ $detalis_progress }}</label>
+                        Progress
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #5cb85c;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_final">{{ $detalis_final }}</label>
+                        Final
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #8d10dc;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_packing">{{ $detalis_packing }}</label>
+                        Packing
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #d9534f;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_sending">{{ $detalis_sending }}</label>
+                        Sending
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #5bc0de;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary detalis_received">{{ $detalis_received }}</label>
+                        received
+                    </div>
+                </div>
+            </div>
             <div id="tab-general">
                 <div class="row mbl">
                     <div class="col-lg-12">
@@ -1712,6 +1763,22 @@
                     }
                 }
             });
+
+
+            $.ajax({
+                url: baseUrl + "/penjualan/POSgrosir/get-tanggal-nota-penjualan/" + tgl1 + '/' + tgl2,
+                type: 'get',
+                success: function (response) {
+                    $('.detalis_draft').html(response.detalis_draft);
+                    $('.detalis_progress').html(response.detalis_progress);
+                    $('.detalis_final').html(response.detalis_final);
+                    $('.detalis_packing').html(response.detalis_packing);
+                    $('.detalis_sending').html(response.detalis_sending);
+                    $('.detalis_received').html(response.detalis_received);
+                }
+            });
+
+
         }
 
         function cariTanggalJual() {
