@@ -18,6 +18,7 @@ use App\d_stock;
 use App\d_stock_mutation;
 use App\m_item;
 use App\d_sales_returnsb;
+use App\lib\mutasi;
 
 
 class ManajemenReturnPenjualanController extends Controller
@@ -65,6 +66,11 @@ class ManajemenReturnPenjualanController extends Controller
             {
                 return '<div class="text-center">
                             <span class="label label-blue">Di Setujui</span>
+                        </div>';
+            } elseif ($data->dsr_status == "FN")
+            {
+              return '<div class="text-center">
+                            <span class="label label-green">Selesai</span>
                         </div>';
             }
         })
@@ -126,7 +132,7 @@ class ManajemenReturnPenjualanController extends Controller
                             class="btn btn-success fa fa-eye btn-sm"
                             title="detail"
                             data-toggle="modal"
-                            onclick="lihatDetail('.$data->dsr_id.')"
+                            onclick="lihatDetailSB('.$data->dsr_id.')"
                             data-target="#myItemSB">
                         </button>
                         <a  onclick="distroyNota()"
@@ -135,16 +141,36 @@ class ManajemenReturnPenjualanController extends Controller
                             <i class="fa fa-trash-o"></i></a>
                       </div>';
           }else{
-            return '<div class="text-center">
+            if ($data->dsr_status_terima == 'WT'){
+              return '<div class="text-center">
                         <button type="button"
                             class="btn btn-success fa fa-eye btn-sm"
                             title="detail"
                             data-toggle="modal"
-                            onclick="lihatDetail('.$data->dsr_id.')"
+                            onclick="lihatDetailSB('.$data->dsr_id.')"
+                            data-target="#myItemSB">
+                        </button>
+                        <button type="button"
+                            class="btn btn-success fa fa-check btn-sm"
+                            title="Terima Barang"
+                            data-toggle="modal"
+                            onclick="lihatDetailSB('.$data->dsr_id.')"
                             data-target="#myItemSB">
                         </button>
                       </div>';
-          }
+            }else{
+              return '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetailSB('.$data->dsr_id.')"
+                            data-target="#myItemSB">
+                        </button>
+                      </div>';
+            }
+            
+         }
 
       }else{
 
@@ -699,6 +725,11 @@ class ManajemenReturnPenjualanController extends Controller
               's_sisa' => $jSisa,
               ]);
 
+          d_sales_return::where('dsr_id',$id)
+            ->update([
+              'dsr_status' => 'FN'
+            ]);
+
          }
 
           if ($cek[$i]->dsrdt_disc_value != 0.00) {
@@ -783,8 +814,12 @@ class ManajemenReturnPenjualanController extends Controller
               's_sisa' => $jSisa,
               ]);
 
-         
+          d_sales_return::where('dsr_id',$id)
+            ->update([
+              'dsr_status' => 'FN'
+            ]);
 
+         
           if ($cek[$i]->dsrdt_disc_value != 0.00) {
             d_sales_dt::where('sd_sales',$data->dsr_sid)
             ->where('sd_detailid',$i+1)
@@ -866,7 +901,10 @@ class ManajemenReturnPenjualanController extends Controller
               's_sisa' => $jSisa,
               ]);
 
-         
+          d_sales_return::where('dsr_id',$id)
+              ->update([
+                'dsr_status' => 'FN'
+              ]);
 
           if ($cek[$i]->dsrdt_disc_value != 0.00) {
             d_sales_dt::where('sd_sales',$data->dsr_sid)
@@ -1094,6 +1132,11 @@ class ManajemenReturnPenjualanController extends Controller
               }
 
          }
+
+         d_sales_return::where('dsr_id',$id)
+            ->update([
+              'dsr_status' => 'FN'
+            ]);
          // dd($data);
          $sisa = $sales->sp_nominal - $data->dsr_net;
          
@@ -1106,7 +1149,54 @@ class ManajemenReturnPenjualanController extends Controller
 
       }
     }else if ($data->dsr_method == 'SB') {
-      # code...
+      $cek = d_sales_return::where('dsr_id',$id)->first();
+
+      if ($cek->dsr_type_sales == 'GR') {
+        $sb = d_sales_returnsb::where('dsrs_sr',$id)->get();
+
+        for ($i=0; $i < count($sb); $i++) { 
+          $stockGrosir = d_stock::where('s_item',$sb[$i]->dsrs_item)
+            ->where('s_comp',2)
+            ->where('s_position',2)
+            ->first();
+
+          if(mutasi::mutasiStok(  $sb[$i]->dsrs_item,
+                                  $sb[$i]->dsrs_qty,
+                                  $comp=2,
+                                  $position=2,
+                                  $flag=10,
+                                  $cek->dsr_code)){}
+        }
+
+      }else{
+        $sb = d_sales_returnsb::where('dsrs_sr',$id)->get();
+
+        for ($i=0; $i < count($sb); $i++) { 
+          $stockGrosir = d_stock::where('s_item',$sb[$i]->dsrs_item)
+            ->where('s_comp',1)
+            ->where('s_position',1)
+            ->first();
+
+          if(mutasi::mutasiStok(  $sb[$i]->dsrs_item,
+                                  $sb[$i]->dsrs_qty,
+                                  $comp=1,
+                                  $position=1,
+                                  $flag=10,
+                                  $cek->dsr_code)){}
+        }
+      }
+
+      d_sales_return::where('dsr_id',$id)
+        ->update([
+          'dsr_status' => 'FN'
+        ]);
+
+      d_sales_return::where('dsr_id',$id)
+        ->update([
+          'dsr_status_terima' => 'WT'
+        ]);
+      
+
     }else if ($data->dsr_method == 'SA') {
       # code...
     }elseif ($data->dsr_method == 'KB') {

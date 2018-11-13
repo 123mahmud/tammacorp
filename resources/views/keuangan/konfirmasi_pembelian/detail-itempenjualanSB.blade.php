@@ -59,6 +59,31 @@
                   </div>
                 </div>
 
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                  <label class="tebal">Status:</label>
+                </div>
+
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                  <div class="form-group">
+                    <select name="statusReturnConfirm" id="status_return_confirm" class="form-control input-sm">
+                        @if ($data[0]->dsr_status == 'WT')
+                            <option value="WT" selected>Waiting</option>
+                            <option value="TL">Di Tolak</option>
+                            <option value="TR">Terima</option>
+                        @elseif ($data[0]->dsr_status == 'TL')
+                            <option value="WT">Waiting</option>
+                            <option value="TL" selected>Di Tolak</option>
+                            <option value="TR">Terima</option>
+                        @else
+                            <option value="WT">Waiting</option>
+                            <option value="TL">Di Tolak</option>
+                            <option value="TR" selected>Terima</option>
+                        @endif
+                  
+                </select>
+              </div>
+            </div>
+
               </div>
     {{-- </div> --}}
 
@@ -153,12 +178,7 @@
 
     <div class="modal-footer">
 
-        @if ($data[0]->dsr_status == 'TR')
-            <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
-        @endif
-        @if ($data[0]->dsr_status == 'FN')
-            <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>
-        @endif
+        <button type="button" class="btn btn-info" onclick="submitReturnPenjualan({{ $data[0]->dsr_id }})" id="button_confirm_return">Konfirmasi</button>
         
         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
     </div>
