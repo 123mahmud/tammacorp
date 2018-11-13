@@ -252,7 +252,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('produksi/garapan/table/data/{rumah}/{item}/{jabatan}/{tgl1}/{tgl2}', 'Produksi\GarapanPegawaiController@tableDataGarapan');
 //mahmud
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
-    Route::get('/produksi/o_produksi/tabel/{tgl1}/{tgl2}/{tampil}', 'Produksi\ManOutputProduksiController@tabel');
+    Route::get('/produksi/o_produksi/tabel/{tgl1}/{tgl2}/{pilih}', 'Produksi\ManOutputProduksiController@tabel');
     Route::get('/produksi/o_produksi/store', 'Produksi\ManOutputProduksiController@store');
     Route::get('/produksi/o_produksi/getdata/kirim/{y}', 'Produksi\ManOutputProduksiController@detailKirim');
     Route::get('/produksi/o_produksi/sending/{id1}/{id2}', 'Produksi\ManOutputProduksiController@sending');
@@ -426,6 +426,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/printreturn/{id}', 'Penjualan\ManajemenReturnPenjualanController@printreturn');
     Route::get('/penjualan/returnpenjualan/printfaktur/{id}', 'Penjualan\ManajemenReturnPenjualanController@printfaktur');
     Route::get('/penjualan/returnpenjualan/setname/{type}', 'Penjualan\ManajemenReturnPenjualanController@setName');
+    Route::get('/penjualan/returnpenjualan/getdata/SB', 'Penjualan\ManajemenReturnPenjualanController@detailSB');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
@@ -1295,7 +1296,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/master/datajabatan/simpan-jabatan', 'Master\JabatanController@simpanJabatan');
     Route::put('/master/datajabatan/update-jabatan/{id}', 'Master\JabatanController@updateJabatan');
     Route::get('/master/datajabatan/tambah-jabatan', 'Master\JabatanController@tambahJabatan');
-    Route::delete('/master/datajabatan/delete-jabatan/{id}', 'Master\ManajemenSuratController@deleteJabatan');
+    Route::get('/master/datajabatan/delete-jabatan/{id}', 'Master\JabatanController@deleteJabatan');
     Route::get('/master/datajabatan/tableproduksi', 'Master\JabatanController@tablePro');
     Route::get('/master/datajabatan/tambah-jabatanpro', 'Master\JabatanController@tambahJabatanPro');
     Route::get('datajabatan/simpan-jabatanpro', 'Master\JabatanController@simpanJabatanPro');

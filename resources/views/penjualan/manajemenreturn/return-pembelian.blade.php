@@ -487,7 +487,7 @@
                                       +'<div class="col-md-3">'
                                           +'<label class="control-label tebal" name="qty">Masukan Jumlah</label>'
                                           +'<div class="input-group input-group-sm" style="width: 100%;">'
-                                              +'<input type="number" id="qty" name="qty" class="form-control">'
+                                              +'<input type="number" id="qty" name="qty" class="form-control" onkeyup="setQty()">'
                                           +'</div>'
                                       +'</div>'
                                       +'<div class="col-md-3">'
@@ -895,21 +895,15 @@
             }
             if ((e.which && e.which == 13)) {
                 var isi = $('#qty').val();
-                alert(isi);
                 var jumlah = $('#detailnama').val();
-                alert(jumlah);
                 var stok = $('#s_qty').val();
                 if (isi == '' || jumlah == '' || stok == '') {
-                    toastr.warning('Jumlah Item Melebihi Stok');
-                    return false;
-                }
-                else if (isi <= stok ) {
-                    toastr.warning('Jumlah Item Melebihi Stok');
+                    toastr.warning('Isi nama item dan jumlah');
                     return false;
                 }
                 var kode = $('#kode').val();
                 tambah();
-                // qtyInput(stok, kode);
+                qtyInput(stok, kode);
                 $("#s_qty").val('');
                 $("#qty").val('');
                 $("#namaitem").val('');
@@ -943,9 +937,9 @@
 
             if (index == -1) {
                 tableDetail.row.add([
-                    nama + '<input type="hidden" name="kode_item[]" class="kode_item kode" value="' + kode + '"><input type="hidden" name="nama_item[]" class="nama_item" value="' + nama + '"> ',
+                    nama + '<input type="hidden" name="kode_itemsb[]" class="kode_item kode" value="' + kode + '"><input type="hidden" name="nama_item[]" class="nama_item" value="' + nama + '"> ',
 
-                    '<input size="30" style="text-align:right" type="number"  name="sd_qty[]" class="sd_qty form-control qty-' + kode + '" value="' + qty + '" onkeyup="UpdateHarga(\'' + kode + '\');qtyInput(\'' + stok + '\', \'' + kode + '\');totalPenjualan()" onchange="qtyInput(\'' + stok + '\', \'' + kode + '\')"> ',
+                    '<input size="30" style="text-align:right" type="number"  name="sd_qtysb[]" class="sd_qty form-control qty-' + kode + '" value="' + qty + '" onkeyup="qtyInput(\'' + stok + '\', \'' + kode + '\')" onchange="qtyInput(\'' + stok + '\', \'' + kode + '\')"> ',
 
                     satuan + '<input type="hidden" name="satuan[]" class="satuan" value="' + satuan + '"> ',
 
@@ -991,11 +985,26 @@
                     return input.value;
                 });
             tamp = names;
-            UpdateTotal();
-            autoJumValValue();
-            totalPenjualanDel();
-            autoJumValPercent();
-            totalPenjualan();
+        }
+
+      function setQty() {
+          var qty = $('#s_qty').val();
+          var input = $('#qty').val();
+          qty = parseInt(qty);
+          input = parseInt(input);
+          if (input > qty) {
+              $('#qty').val('');
+          }
+      }
+
+      function qtyInput(stok, kode) {
+          input = $('.qty-' + kode).val();
+          input = parseInt(input);
+          stok = parseInt(stok);
+          if (input > stok || input < 1) {
+              $('.qty-' + kode).val('1');
+              toastr.warning('Barang yang di beli melebihi stok');
+          }
         }
 
   function discpercent(inField, e){
