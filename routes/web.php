@@ -1101,6 +1101,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/tabel/returnpenjualan', 'Keuangan\ConfrimBeliController@tableReturnPenjualan');
     Route::get('/keuangan/returnpenjualan/getdata', 'Keuangan\ConfrimBeliController@detail');
     Route::get('/keuangan/returnpenjualan/update/{status}/{id}', 'Keuangan\ConfrimBeliController@updateReturnPenjualan');
+    Route::get('/keuangan/returnpenjualan/getdata/sb', 'Keuangan\ConfrimBeliController@detailSB');
     
     //end mahmud
 //10-07-18

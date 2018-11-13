@@ -123,6 +123,9 @@
         @if ($data[0]->dsr_status == 'TR')
             <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
         @endif
+        @if ($data[0]->dsr_status == 'FN')
+            <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>
+        @endif
         
         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
     </div>

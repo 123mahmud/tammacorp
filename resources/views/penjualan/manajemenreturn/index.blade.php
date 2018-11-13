@@ -144,7 +144,7 @@
 
   });
 
-  var dataHarga =  $('#tabel-sales-return').DataTable({
+  var tableRetur =  $('#tabel-sales-return').DataTable({
     processing: true,
     serverSide: true,
     ajax: {
@@ -202,6 +202,9 @@
           type: 'GET',
           success: function (response) {
             if (response.status == 'sukses') {
+              $('#myItem').modal('hide');
+              $('#myItemSB').modal('hide');
+              tableRetur.ajax.reload();
               iziToast.success({
                         timeout: 5000,
                         position: "topRight",
@@ -221,6 +224,11 @@
           }
       });
     }
+
+  function printReturn(id){
+    window.open(baseUrl + "/penjualan/returnpenjualan/printreturn/" + id );
+    window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );
+  }
   </script>
   
 @endsection()
