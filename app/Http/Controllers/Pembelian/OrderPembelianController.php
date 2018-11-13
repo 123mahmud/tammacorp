@@ -24,7 +24,18 @@ class OrderPembelianController extends Controller
 
     public function order()
     {
-        return view('purchasing/orderpembelian/index');
+      $datenow = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+      $tempo = d_purchasing::join('d_supplier', 'd_purchasing.s_id', '=', 'd_supplier.s_id')
+                              ->select('d_purchasing.*','d_supplier.s_company')
+                              ->where(function ($data) use ($datenow) {
+                                $data->where('d_purchasing.d_pcs_method', '=', 'DEPOSIT');
+                                $data->where('d_purchasing.d_pcs_status', '=', 'WT');
+                                $data->whereDate('d_purchasing.d_pcs_duedate', '>', $datenow);
+                              })->get();
+      $parsing = [
+        'tempo' => $tempo,
+      ];
+      return view('purchasing/orderpembelian/index', $parsing);
     }
 
     public function tambah_order()
@@ -578,8 +589,6 @@ class OrderPembelianController extends Controller
 
       DB::beginTransaction();
       try {
-        if (isset($request->apdTgl)) 
-        {
           //insert to table d_purchasing
           $dataHeader = new d_purchasing;
           $dataHeader->d_pcsp_id = $request->cariKodePlan;
@@ -592,33 +601,14 @@ class OrderPembelianController extends Controller
           $dataHeader->d_pcs_disc_percent = $replaceCharDisc;
           $dataHeader->d_pcs_disc_value = $discValue;
           $dataHeader->d_pcs_tax_percent = $replaceCharPPN;
-          $dataHeader->d_pcs_duedate = date('Y-m-d',strtotime($request->apdTgl));
+          if (isset($request->apdTgl)) {
+            $dataHeader->d_pcs_duedate = date('Y-m-d',strtotime($request->apdTgl));
+          }
           $dataHeader->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
           $dataHeader->d_pcs_total_net = $this->konvertRp($request->totalNett);
           $dataHeader->d_pcs_sisapayment = $this->konvertRp($request->totalNett);
           $dataHeader->d_pcs_date_created = date('Y-m-d',strtotime($request->tanggal));
           $dataHeader->save(); 
-        }
-        else
-        {
-          //insert to table d_purchasing
-          $dataHeader = new d_purchasing;
-          $dataHeader->d_pcsp_id = $request->cariKodePlan;
-          $dataHeader->s_id = $request->cariSup;
-          $dataHeader->d_pcs_code = $request->kodePo;
-          $dataHeader->d_pcs_staff = $request->idStaff;
-          $dataHeader->d_pcs_method = $request->methodBayar;
-          $dataHeader->d_pcs_total_gross = $totalGross;
-          $dataHeader->d_pcs_discount = $diskonPotHarga;
-          $dataHeader->d_pcs_disc_percent = $replaceCharDisc;
-          $dataHeader->d_pcs_disc_value = $discValue;
-          $dataHeader->d_pcs_tax_percent = $replaceCharPPN;
-          $dataHeader->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
-          $dataHeader->d_pcs_total_net = $this->konvertRp($request->totalNett);
-          $dataHeader->d_pcs_sisapayment = $this->konvertRp($request->totalNett);
-          $dataHeader->d_pcs_date_created = date('Y-m-d',strtotime($request->tanggal));
-          $dataHeader->save(); 
-        }
         
         //get last lastId then insert id to d_purchasing_dt
         $lastId = d_purchasing::select('d_pcs_id')->max('d_pcs_id');
@@ -641,6 +631,8 @@ class OrderPembelianController extends Controller
         //insert data isi
         for ($i=0; $i < $hitung_field; $i++) 
         {
+          $old_str = [".", ","];
+          $new_str = ["", "."];
           $dataIsi = new d_purchasing_dt;
           $dataIsi->d_pcs_id = $lastId;
           $dataIsi->i_id = $request->fieldItemId[$i];
@@ -648,12 +640,27 @@ class OrderPembelianController extends Controller
           $dataIsi->d_pcsdt_sat = $request->fieldIdSatuan[$i];
           $dataIsi->d_pcsdt_idpdt = $request->fieldidPlanDt[$i];
           $dataIsi->d_pcsdt_qty = $request->fieldQty[$i];
-          $dataIsi->d_pcsdt_price = $this->konvertRp($request->fieldHarga[$i]);
-          $dataIsi->d_pcsdt_prevcost = $this->konvertRp($request->fieldHargaPrev[$i]);
-          $dataIsi->d_pcsdt_total = $this->konvertRp($request->fieldHargaTotal[$i]);
+          $dataIsi->d_pcsdt_price = str_replace($old_str, $new_str, $request->fieldHarga[$i]);
+          $dataIsi->d_pcsdt_prevcost = str_replace($old_str, $new_str, $request->fieldHargaPrev[$i]);
+          $dataIsi->d_pcsdt_total = str_replace($old_str, $new_str, $request->fieldHargaTotal[$i]);
           $dataIsi->d_pcsdt_created = Carbon::now();
           $dataIsi->save();
-        } 
+        }
+
+        //update TOP/DEPOSIT d_supplier
+        if ($request->methodBayar == 'DEPOSIT') {
+          DB::table('d_supplier')
+              ->where('s_id', $request->cariSup)
+              ->update([
+                's_deposit' => date('Y-m-d',strtotime($request->apdTgl))
+              ]);
+        }elseif($request->methodBayar == 'CREDIT'){
+          DB::table('d_supplier')
+              ->where('s_id', $request->cariSup)
+              ->update([
+                's_top' => date('Y-m-d',strtotime($request->apdTgl))
+              ]);
+        }
         
       DB::commit();
       return response()->json([
@@ -698,11 +705,13 @@ class OrderPembelianController extends Controller
         
         //update to table d_purchasing_dt
         $hitung_field_edit = count($request->fieldIdPurchaseDt);
+        $old_str = [".", ","];
+        $new_str = ["", "."];
         for ($i=0; $i < $hitung_field_edit; $i++) 
         {
           $purchasingdt = d_purchasing_dt::find($request->fieldIdPurchaseDt[$i]);
-          $purchasingdt->d_pcsdt_price = $this->konvertRp($request->fieldHarga[$i]);
-          $purchasingdt->d_pcsdt_total = $this->konvertRp($request->fieldHargaTotal[$i]);
+          $purchasingdt->d_pcsdt_price = str_replace($old_str, $new_str, $request->fieldHarga[$i]);
+          $purchasingdt->d_pcsdt_total = str_replace($old_str, $new_str, $request->fieldHargaTotal[$i]);
           $purchasingdt->d_pcsdt_updated = Carbon::now('Asia/Jakarta');
           $purchasingdt->save();
         } 

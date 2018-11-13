@@ -3,37 +3,44 @@
 namespace App\Http\Controllers\ManUser;
 
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 use App\d_access;
-
 use App\d_group;
-
 use App\d_mem_access;
-
 use App\mMember;
 use App\m_jabatan;
-
 use Auth;
-
 use DB;
 use App\Http\Controllers\Controller;
+
 class aksesUserController extends Controller
 {
-     public function indexAksesUser()
+    public function indexAksesUser()
     {
         //mMember::with('access')
-    	$mem=mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
-    		 ->Leftjoin('d_group',function($join){
-                    $join->on('ma_group','=','g_id');
-                  })
-             ->where('ma_type','=',DB::raw("'G'"))
-    		 ->groupBy('m_id')
-             ->get();
+        if ($this->cek_isadmin() == 'N') {
+            $mem = mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
+                  ->Leftjoin('d_group',function($join){
+                        $join->on('ma_group','=','g_id');
+                    })
+                  ->where('ma_type','=',DB::raw("'M'"))
+                  ->where('m_isadmin', '=', 'N')
+                  ->groupBy('m_id')
+                  ->get();
+        }else{
+            $mem = mMember::Leftjoin('d_mem_access','m_id','=','ma_mem')
+                  ->Leftjoin('d_group',function($join){
+                        $join->on('ma_group','=','g_id');
+                    })
+                  ->where('ma_type','=',DB::raw("'M'"))
+                  ->groupBy('m_id')
+                  ->get();
+        }
 
         return view('/system/hakuser/user',compact('mem'));
     }
 
-     public function tambah_user()
+    public function tambah_user()
     {
     	$group =d_group::get();
     	$access=d_access::get();
@@ -41,224 +48,355 @@ class aksesUserController extends Controller
         return view('/system/hakuser/tambah_user',compact('access','group','jabatan'));
     }
 
-     public function simpanUser(Request $request){
-        // dd($request->all());
+    public function simpanUser(Request $request){
+        //dd($request->all());
         DB::beginTransaction();
-            try {
-                $tgl1 = $request->TanggalLahir;
-                $y = substr($tgl1, -4);
-                $m = substr($tgl1, -7,-5);
-                $d = substr($tgl1,0,2);
-                 $tgll = $y.'-'.$m.'-'.$d;
-     			$passwd= sha1(md5('passwordAllah').$request->password);
-                $m_id=(int)mMember::max('m_id')+1;
-     			mMember::create([
-                    'm_id'=>$m_id,
-                    'm_pegawai_id' => $request->pp_jabatan,
-     				'm_username' => $request->username,
-     				'm_passwd' => $passwd,
-     				'm_name' => $request->NamaLengkap,
-                    'm_birth_tgl' => $tgll,
-                    'm_addr' => $request->alamat,
+        try 
+        {
+            $tgl_raw = explode(',', $request->TanggalLahir);
+            $arr_tgl = explode(' ', trim($tgl_raw[1]));
+            $tgl = $arr_tgl[0];
+            $bln = $this->convertMonthToBulan($arr_tgl[1]);
+            $thn = $arr_tgl[2];
+            $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
 
-     			]);
+ 			$passwd= sha1(md5('passwordAllah').$request->password);
+            $m_id=(int)mMember::max('m_id')+1;
+ 			mMember::create([
+                'm_id'=>$m_id,
+                'm_pegawai_id' => $request->IdPegawai,
+ 				'm_username' => $request->username,
+ 				'm_passwd' => $passwd,
+ 				'm_name' => $request->NamaLengkap,
+                'm_birth_tgl' => $hasilTgl,
+                'm_addr' => $request->alamat,
+ 			]);
 
-         			$hakAkses=d_group::join('d_group_access','ga_group','=','g_id')
-        			  ->join('d_access','a_id','=','ga_access')
-        			  ->where('g_id',$request->groupAkses)->get();
-
-
-    			for ($i=0; $i < count($hakAkses) ; $i++) {
-    				// $ma_id=d_mem_access::max('ma_id')+1;
-    				d_mem_access::create([
-    					   // 'ma_id' =>$ma_id,
-    					   'ma_mem' =>$m_id,
-    					   'ma_access'=>$hakAkses[$i]->a_id,
-    					   'ma_group' =>$hakAkses[$i]->g_id ,
-    					   'ma_type' =>'G',
-    					   'ma_read'=> $hakAkses[$i]->ga_read,
-    					   'ma_insert' =>$hakAkses[$i]->ga_insert,
-    					   'ma_update' =>$hakAkses[$i]->ga_update,
-    					   'ma_delete' =>$hakAkses[$i]->ga_delete
-    				]);
-    			}
+ 			$hakAkses=d_group::join('d_group_access','ga_group','=','g_id')
+			  ->join('d_access','a_id','=','ga_access')
+			  ->where('g_id',$request->groupAkses)->get();
 
 
-                if($request->groupAkses==null){
-                    $hakAkses=d_access::get();
+			for ($i=0; $i < count($hakAkses) ; $i++) {
+				// $ma_id=d_mem_access::max('ma_id')+1;
+				d_mem_access::create([
+					   // 'ma_id' =>$ma_id,
+					   'ma_mem' =>$m_id,
+					   'ma_access'=>$hakAkses[$i]->a_id,
+					   'ma_group' =>$hakAkses[$i]->g_id ,
+					   'ma_type' =>'G',
+					   'ma_read'=> $hakAkses[$i]->ga_read,
+					   'ma_insert' =>$hakAkses[$i]->ga_insert,
+					   'ma_update' =>$hakAkses[$i]->ga_update,
+					   'ma_delete' =>$hakAkses[$i]->ga_delete
+				]);
+			}
 
-                    // $ma_id=d_mem_access::max('ma_id')+1;
-                    d_mem_access::create([
-                           // 'ma_id' =>$ma_id,
-                           'ma_mem' =>$m_id,
-                           'ma_access'=>$hakAkses[$i]->a_id,
-                           'ma_group' =>0 ,
-                           'ma_type' =>'G'
-                    ]);
 
-                }
+            if($request->groupAkses==null){
+                $hakAkses=d_access::get();
 
+                // $ma_id=d_mem_access::max('ma_id')+1;
+                d_mem_access::create([
+                       // 'ma_id' =>$ma_id,
+                       'ma_mem' =>$m_id,
+                       'ma_access'=>$hakAkses[$i]->a_id,
+                       'ma_group' =>0 ,
+                       'ma_type' =>'G'
+                ]);
 
-
+            }
 
             for ($i=0; $i < count($request->id_access) ; $i++) {
-                        d_mem_access::create([
-                                'ma_mem' =>$m_id,
-                                'ma_access' => $request->id_access[$i],
-                                'ma_type'  =>'M',
-                                'ma_read'=>$request->view[$i],
-                                'ma_insert'=>$request->insert[$i],
-                                'ma_update'=>$request->update[$i],
-                                'ma_delete'=>$request->delete[$i],
-                        ]);
-        }
-        DB::commit();
-        return response()->json([
-              'status' => 'sukses'
-          ]);
-        } catch (\Exception $e) {
-        DB::rollback();
-        return response()->json([
-            'status' => 'gagal',
-            'data' => $e
-          ]);
+                d_mem_access::create([
+                        'ma_mem' =>$m_id,
+                        'ma_access' => $request->id_access[$i],
+                        'ma_type'  =>'M',
+                        'ma_read'=>$request->view[$i],
+                        'ma_insert'=>$request->insert[$i],
+                        'ma_update'=>$request->update[$i],
+                        'ma_delete'=>$request->delete[$i],
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => 'sukses'
+            ]);
+        } 
+        catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
         }
      }
 
 
     public function editUserAkses($id){
         return DB::transaction(function () use ($id) {
-    			$mem=mMember::where('m_id',$id)->first();
-                $group=d_group::get();
+            $group = d_group::get();   
 
-    			$mem_group=d_mem_access::join('d_group',function($join) use ($id){
-                    $join->on('ma_mem','=',DB::raw("'$id'"));
-    				$join->on('ma_group','=','g_id');
-                  })->groupBy('g_id')->first();
+            $mem_group = d_mem_access::join('d_group',function($join) use ($id){
+                $join->on('ma_mem','=',DB::raw("'$id'"));
+                $join->on('ma_group','=','g_id');
+            })->groupBy('g_id')->first();
 
+            $mem_access = d_access::Leftjoin('d_mem_access',function($join) use ($id){
+                $join->on('ma_mem','=',DB::raw("'$id'"));
+                $join->on('ma_access','=','a_id');
+                $join->on('ma_type','=',DB::raw("'M'"));
+            })->orderBy('a_id')->get();
 
-    			$mem_access=d_access::Leftjoin('d_mem_access',function($join) use ($id){
-                    $join->on('ma_mem','=',DB::raw("'$id'"));
-    				$join->on('ma_access','=','a_id');
-    				$join->on('ma_type','=',DB::raw("'M'"));
-                  })->orderBy('a_order')->get();
-
-    			   return view('/system/hakuser/edit_user',compact('mem','group','mem_access','mem_group'));
-
-    	});
-    			}
-
-    public function perbaruiUser($m_id,Request $request){
-    return DB::transaction(function () use ($m_id,$request) {
-
-        $mMember=mMember::where('m_id',$m_id);
-        $mMember->update([
-                    'm_username' =>$request->Username,
-                    'm_name' =>$request->NamaLengkap,
-                ]);
-
-        $mem_access=d_mem_access::where('ma_mem',$m_id)
-                    ->where('ma_type','=',DB::raw("'G'"));
-
-         $hakAkses=d_group::join('d_group_access','ga_group','=','g_id')
-                          ->join('d_access','a_id','=','ga_access')
-                          ->where('g_id',$request->groupAkses)->get();
-
-
-
-        if($mem_access->first()){
-                if($mem_access->first()->ma_group!=$request->groupAkses){
-                    $mem_access=d_mem_access::where('ma_mem',$m_id)
-                                ->where('ma_type','=',DB::raw("'G'"));
-                    $mem_access->delete();
-                   if($request->groupAkses!=''){
-
-
-
-                        for ($i=0; $i < count($hakAkses) ; $i++) {
-                            $ma_id=d_mem_access::max('ma_id')+1;
-                            d_mem_access::create([
-                                   'ma_id' =>$ma_id,
-                                   'ma_mem' =>$m_id,
-                                   'ma_access'=>$hakAkses[$i]->a_id,
-                                   'ma_group' =>$hakAkses[$i]->g_id ,
-                                   'ma_type' =>'G',
-                                   'ma_read'=> $hakAkses[$i]->ga_read,
-                                   'ma_insert' =>$hakAkses[$i]->ga_insert,
-                                   'ma_update' =>$hakAkses[$i]->ga_update,
-                                   'ma_delete' =>$hakAkses[$i]->ga_delete
-                            ]);
-                        }
-
-                   }
-
-                elseif($request->groupAkses==null){
-                    $hakAkses=d_access::get();
-                for ($i=0; $i < count($hakAkses) ; $i++) {
-                    $ma_id=d_mem_access::max('ma_id')+1;
-                    d_mem_access::create([
-                           'ma_id' =>$ma_id,
-                           'ma_mem' =>$m_id,
-                           'ma_access'=>$hakAkses[$i]->a_id,
-                           'ma_group' =>0 ,
-                           'ma_type' =>'G'
-                    ]);
-
+		    $mem = mMember::leftjoin('m_pegawai_man', 'd_mem.m_pegawai_id', '=', 'm_pegawai_man.c_id' )
+                        ->select('d_mem.*', 'm_pegawai_man.c_lahir')
+                        ->where('m_id',$id)->first();
+            
+            if ($mem->m_pegawai_id != null) 
+            {
+                $posisi = DB::table('m_pegawai_man')
+                    ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
+                    ->select('m_pegawai_man.c_jabatan_id', 'm_jabatan.c_posisi')
+                    ->where('m_pegawai_man.c_id', $mem->m_pegawai_id)->first();
+            }
+            else
+            {
+                if ($mem->m_isadmin == 'Y') {
+                    $mem->c_lahir = 'Surabaya, 17 Agustus 1945';
+                    $posisi = [
+                        'c_jabatan_id' => null,
+                        'c_posisi' => 'Developer',
+                    ];
+                    $posisi = (object) $posisi;
+                }else{
+                    $nm_peg = $mem->m_name;
+                    $data_pro = DB::table('m_pegawai_pro')
+                        ->join('m_jabatan_pro', 'm_pegawai_pro.c_jabatan_pro_id', '=', 'm_jabatan_pro.c_id')
+                        ->select('m_pegawai_pro.c_jabatan_pro_id', 'm_jabatan_pro.c_jabatan_pro')
+                        ->where('m_pegawai_pro.c_id', '=', function($query) use ($nm_peg){
+                            $query->select('c_id')
+                                  ->from('m_pegawai_pro')->where('c_nama', 'like', '%'.$nm_peg.'%');
+                        })->first();
+                    $mem->c_lahir = 'Surabaya, 17 Agustus 1945';
+                    $posisi = [
+                        'c_jabatan_id' => null,
+                        'c_posisi' => $data_pro->c_jabatan_pro
+                    ];
+                    $posisi = (object) $posisi;
                 }
             }
+            
+            $data = [
+                'mem' => $mem,
+                'group' => $group,
+                'mem_group' => $mem_group,
+                'mem_access' => $mem_access,
+                'posisi' => $posisi
+            ];
 
+            //return response()->json($data);
+    		return view('/system/hakuser/edit_user', $data);
+    	});
+    }
+
+    public function perbaruiUser(Request $request, $m_id)
+    {
+        //dd($request->all());
+        DB::beginTransaction();
+        try 
+        {
+            $tgl_raw = explode(',', $request->TanggalLahir);
+            $arr_tgl = explode(' ', trim($tgl_raw[1]));
+            $tgl = $arr_tgl[0];
+            $bln = $this->convertMonthToBulan($arr_tgl[1]);
+            $thn = $arr_tgl[2];
+            $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
+
+            $pass_lama = sha1(md5('passwordAllah').trim($request->PassLama));
+            $mem_access = d_mem_access::where('ma_mem', $m_id)->first();
+            //dd($mem_access);
+            if (!empty($mem_access)) {
+                $mMember = mMember::find($m_id);
+                $mMember->m_username = $request->Username;
+                if ($request->IdPegawai != null) {
+                    $mMember->m_name = $request->NamaLengkap;
+                    $mMember->m_addr = $request->alamat;
+                }
+                $mMember->m_birth_tgl = $hasilTgl;
+                $mMember->m_update = Carbon::now('Asia/Jakarta');
+                if ($pass_lama == $mMember->m_passwd) {
+                    $mMember->m_passwd = sha1(md5('passwordAllah').trim($request->PassBaru));
+                }
+                $mMember->save();
+
+                DB::table('d_mem_access')->where('ma_mem','=',$m_id)->delete();
+                
+                $hakAkses = d_group::join('d_group_access','ga_group','=','g_id')
+                  ->join('d_access','a_id','=','ga_access')
+                  ->where('g_id',$request->groupAkses)->get();
+
+                for ($i=0; $i < count($hakAkses) ; $i++) {
+                    d_mem_access::create([
+                       'ma_mem' => $m_id,
+                       'ma_access' => $hakAkses[$i]->a_id,
+                       'ma_group' => $hakAkses[$i]->g_id ,
+                       'ma_type' => 'G',
+                       'ma_read' => $hakAkses[$i]->ga_read,
+                       'ma_insert' => $hakAkses[$i]->ga_insert,
+                       'ma_update' => $hakAkses[$i]->ga_update,
+                       'ma_delete' => $hakAkses[$i]->ga_delete
+                    ]);
                 }
 
-        }else{
+                if($request->groupAkses == null)
+                {
+                    $hakAkses=d_access::get();
+                    d_mem_access::create([
+                       'ma_mem' => $m_id,
+                       'ma_access'=> $hakAkses[$i]->a_id,
+                       'ma_group' => 0,
+                       'ma_type' => 'G'
+                    ]);
+                }
 
-                   for ($i=0; $i < count($hakAkses) ; $i++) {
-                            $ma_id=d_mem_access::max('ma_id')+1;
-                            d_mem_access::create([
-                                   'ma_id' =>$ma_id,
-                                   'ma_mem' =>$m_id,
-                                   'ma_access'=>$hakAkses[$i]->a_id,
-                                   'ma_group' =>$hakAkses[$i]->g_id ,
-                                   'ma_type' =>'G',
-                                   'ma_read'=> $hakAkses[$i]->ga_read,
-                                   'ma_insert' =>$hakAkses[$i]->ga_insert,
-                                   'ma_update' =>$hakAkses[$i]->ga_update,
-                                   'ma_delete' =>$hakAkses[$i]->ga_delete
-                            ]);
-                        }
+                for ($i=0; $i < count($request->id_access); $i++) { 
+                    d_mem_access::create([
+                       'ma_mem' =>$m_id,
+                       'ma_access'=>$request->id_access[$i],
+                       'ma_type' =>'M',
+                       'ma_read'=> $request->view[$i]
+                    ]);
+                }
 
+                DB::commit();
+                return response()->json([
+                    'status' => 'sukses',
+                    'pesan' => 'Berhasil Update data Hak Akses User'
+                ]);
+            }
+            else
+            {
+                DB::commit();
+                return response()->json([
+                    'status' => 'gagal',
+                    'pesan' => 'Tidak terdapat data yang akan diubah'
+                ]); 
+            }
+        }
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+                'status' => 'gagal',
+                'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+            ]); 
+        }    
+    }
+
+    public function hapusUser(Request $request)
+    {
+        DB::beginTransaction();
+        try {  
+          $mem_access = DB::table('d_mem_access')->where('ma_mem','=',$request->id)->delete();
+          $d_mem = DB::table('d_mem')->where('m_id','=',$request->id)->delete();
+
+          DB::commit();
+          return response()->json([
+              'status' => 'sukses',
+              'pesan' => 'Data Berhasil Dihapus'
+          ]);
+        } 
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
+    public function autocompletePegawai(Request $request)
+    {
+        $term = $request->term;
+        $results = array();
+        $queries = DB::table('m_pegawai_man')
+            ->select('m_pegawai_man.c_id','m_pegawai_man.c_nama', 'm_pegawai_man.c_jabatan_id', 'm_pegawai_man.c_ktp_alamat', 'm_pegawai_man.c_lahir', 'm_jabatan.c_posisi')
+            ->join('m_jabatan', function($join) {
+                $join->on('m_pegawai_man.c_jabatan_id','=','m_jabatan.c_id');
+            })
+            ->where('c_nama', 'LIKE', '%'.$term.'%')
+            ->take(10)->get();
+      
+        foreach ($queries as $val) {
+            if ($queries == null) {
+                $results[] = [ 'id' => null, 'label' => 'tidak di temukan data terkait'];
+            } 
+            else {
+                $results[] = [ 
+                    'id' => $val->c_id,
+                    'label' => $val->c_nama,
+                    'jabatan_id' => $val->c_jabatan_id,
+                    'jabatan_txt' => $val->c_posisi,
+                    'lahir_txt' => $val->c_lahir,
+                    'alamat_txt' => $val->c_ktp_alamat
+                ];
+            }
         }
 
-
-                for ($i=0; $i < count($request->id_access) ; $i++) {
-                    $mem_access=d_mem_access::where('ma_mem',$m_id)
-                                ->where('ma_access',$request->id_access[$i])
-                                ->where('ma_type','=',DB::raw("'M'"));
-                    if($mem_access->first()){
-                    $mem_access->update([
-                                'ma_read'=>$request->view[$i],
-                                'ma_insert'=>$request->insert[$i],
-                                'ma_update'=>$request->update[$i],
-                                'ma_delete'=>$request->delete[$i]
-                                ]);
-
-                    }else{
-                            d_mem_access::create([
-                                'ma_mem' =>$m_id,
-                                'ma_access' => $request->id_access[$i],
-                                'ma_type'  =>'M',
-                                'ma_read'=>$request->view[$i],
-                                'ma_insert'=>$request->insert[$i],
-                                'ma_update'=>$request->update[$i],
-                                'ma_delete'=>$request->delete[$i],
-                            ]);
-
-                    }
-
-                }
-
-                $data=['status'=>'sukses'];
-                return json_encode($data);
-            });
+        return response()->json($results);
     }
 
+    public function convertMonthToBulan($bulan)
+    {
+        switch ($bulan) {
+            case "Januari":
+                return "01";
+                break;
+            case "Februari":
+                return "02";
+                break;
+            case "Maret":
+                return "03";
+                break;
+            case "April":
+                return "04";
+                break;
+            case "Mei":
+                return "05";
+                break;
+            case "Juni":
+                return "06";
+                break;
+            case "Juli":
+                return "07";
+                break;
+            case "Agustus":
+                return "08";
+                break;
+            case "September":
+                return "09";
+                break;
+            case "Oktober":
+                return "10";
+                break;
+            case "November":
+                return "11";
+                break;
+            case "Nopember":
+                return "11";
+                break;
+            case "Desember":
+                return "12";
+                break;
+            default:
+                return "masukan format bulan dengan benar";
+        }
     }
+
+    public function cek_isadmin()
+    {
+        return Auth::user()->m_isadmin;
+    }
+}

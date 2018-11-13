@@ -657,7 +657,6 @@
             }},
             {name: 'Sudah Dibayar', context: 'd_pcs_payment', width: '20%', childStyle: 'text-align: right', override: function(el){
                 var bilangan = el;
-                var commas = bilangan.split('.')[1];var bilangan = el.toString();
                 var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
 
                 var number_string = bilangan.toString(),
@@ -742,6 +741,7 @@
 
         humanizePrice: function(alpha){
           var bilangan = alpha;
+          var commas = (bilangan.split('.').length == 1) ? '00' : bilangan.split('.')[1];
   
           var number_string = bilangan.toString(),
             sisa  = number_string.length % 3,
@@ -754,7 +754,7 @@
           }
 
           // Cetak hasil
-          return rupiah; // Hasil: 23.456.789
+          return rupiah+'.'+commas; // Hasil: 23.456.789
         },
 
         form_reset: function(){

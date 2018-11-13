@@ -67,6 +67,7 @@
 @endsection
 @section("extra_scripts")
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+<script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     //fix to issue select2 on modal when opening in firefox
@@ -80,6 +81,18 @@
     $.extend($.fn.dataTableExt.oStdClasses, extensions);
     // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+    $.fn.maskFunc = function(){
+      $('.currency').inputmask("currency", {
+        radixPoint: ",",
+        groupSeparator: ".",
+        digits: 2,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+      });
+    }
 
     var date = new Date();
     var newdate = new Date(date);
@@ -110,7 +123,7 @@
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_detail_row');
       $('tr').remove('.tbl_modal_edit_row');
-       $('tr').remove('.tbl_modal_row');
+      $('tr').remove('.tbl_modal_row');
       //remove span class in modal detail
       $('#txt_span_status_detail').removeClass();
       $('#txt_span_status_edit').removeClass();
@@ -461,36 +474,37 @@
         }
         //loop data
         Object.keys(data.data_isi).forEach(function(){
-          $('#tabel-order').append('<tr class="tbl_modal_row" id="row'+i+'">'
-                          +'<td>'+key+'</td>'
-                          +'<td>'
-                            +data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name
-                            +'<input type="hidden" class="input-sm form-control" name="ip_item[]" value="'+data.data_isi[key-1].i_id+'">'
-                          +'</td>'
-                          +'<td>'
-                            +data.data_isi[key-1].m_sname
-                            +'<input type="hidden" class="input-sm form-control" name="ip_sid[]" value="'+data.data_isi[key-1].m_sid+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_qty)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_qty[]" value="'+data.data_isi[key-1].d_pcsdt_qty+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_prevcost)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_prevcost[]" value="'+data.data_isi[key-1].d_pcsdt_prevcost+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_price)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_price[]" value="'+data.data_isi[key-1].d_pcsdt_price+'">'
-                          +'</td>'
-                          +'<td align="right">'
-                            +formatAngka(data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty)
-                            +'<input type="hidden" class="input-sm form-control" name="ip_total[]" value="'+data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty+'">'
-                          +'</td>'
-                        +'</tr>');
+          $('#tabel-order').append(
+            '<tr class="tbl_modal_row" id="row'+i+'">'
+              +'<td>'+key+'</td>'
+              +'<td>'
+                +data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name
+                +'<input type="hidden" class="input-sm form-control" name="ip_item[]" value="'+data.data_isi[key-1].i_id+'">'
+              +'</td>'
+              +'<td>'
+                +data.data_isi[key-1].m_sname
+                +'<input type="hidden" class="input-sm form-control" name="ip_sid[]" value="'+data.data_isi[key-1].m_sid+'">'
+              +'</td>'
+              +'<td align="right">'
+                +formatAngka(data.data_isi[key-1].d_pcsdt_qty)
+                +'<input type="hidden" class="input-sm form-control" name="ip_qty[]" value="'+data.data_isi[key-1].d_pcsdt_qty+'">'
+              +'</td>'
+              +'<td align="right">'
+                +formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]
+              +'</td>'
+              +'<td align="right">'
+                +separatorRibuan(data.data_isi[key-1].d_pcsdt_prevcost)
+                +'<input type="hidden" class="input-sm form-control" name="ip_prevcost[] currency" value="'+data.data_isi[key-1].d_pcsdt_prevcost+'">'
+              +'</td>'
+              +'<td align="right">'
+                +separatorRibuan(data.data_isi[key-1].d_pcsdt_price)
+                +'<input type="hidden" class="input-sm form-control currency" name="ip_price[]" value="'+data.data_isi[key-1].d_pcsdt_price+'">'
+              +'</td>'
+              +'<td align="right">'
+                +separatorRibuan(data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty)
+                +'<input type="hidden" class="input-sm form-control currency" name="ip_total[]" value="'+data.data_isi[key-1].d_pcsdt_price * data.data_isi[key-1].d_pcsdt_qty+'">'
+              +'</td>'
+            +'</tr>');
           key++;  
           i = randString(5);
         });
@@ -498,6 +512,7 @@
           '<button type="button" class="btn btn-success" onclick="ubahStatusToReceived('+data.header[0].d_pcs_id+')">Ubah Status</button>'+
           '<a href="'+ baseUrl +'/purchasing/returnpembelian/print-revisi-po/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
           '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+        $(this).maskFunc();
         //$('#modal-detail-rev').modal('show');
         $('#modal-detail-rev').appendTo("body").modal('show');
       },
@@ -724,7 +739,7 @@
   function separatorRibuan(num)
   {
     var num_parts = num.toString().split(".");
-    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return num_parts.join(".");
   }
 

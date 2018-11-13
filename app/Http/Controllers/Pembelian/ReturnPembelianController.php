@@ -572,7 +572,7 @@ class ReturnPembelianController extends Controller
       ]);
     }
 
-    if(jurnal_setting()->allow_jurnal_to_execute){
+    if(jurnal_setting()->allow_jurnal_to_execute && $request->metodeReturn == 'PN'){
       $state_jurnal = _initiateJournal_self_detail($request->kodeReturn, 'MM', date('Y-m-d', strtotime($request->tanggal)), 'Potong Nota Dari '.$request->namaSup.' Atas '.$pcs->d_pcs_code, $acc);
     }
 
@@ -807,7 +807,8 @@ class ReturnPembelianController extends Controller
               ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
               ->get();
 
-      foreach ($dataIsi as $val) 
+      //dd($datareturdt, $dataIsi);
+      foreach ($dataIsi as $key => $val)
       {
           //cek item type
           $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
@@ -816,7 +817,7 @@ class ReturnPembelianController extends Controller
           //compare dengan data returdt, jika sama replace qty
           for ($i=0; $i <count($datareturdt); $i++) { 
             if ($val->i_id == $datareturdt[$i]->d_pcsrdt_item) {
-              $dataIsi[$i]->d_pcsdt_qty = $val->d_pcsdt_qty - $datareturdt[$i]->d_pcsrdt_qtyconfirm;
+              $dataIsi[$key]->d_pcsdt_qty = $val->d_pcsdt_qty - $datareturdt[$i]->d_pcsrdt_qtyconfirm;
             }
           }
       }
@@ -841,6 +842,7 @@ class ReturnPembelianController extends Controller
 
   public function ubahStatusPo(Request $request, $id)
   {
+    //dd($request->all());
     DB::beginTransaction();
     try 
     {   

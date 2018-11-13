@@ -52,7 +52,7 @@
                                      <h4>Data Kelompok Aktiva</h4>
                                    </div>
                                    <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
-                                     <a href="{{ url('/keuangan/p_inputtransaksi/index') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
+                                     <a href="{{ url('master/aktiva/kelompok_aktiva') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                                    </div>
                                 </div>
 
@@ -137,42 +137,55 @@
                                           
                                         </div>
 
-                                        <div class="col-md-5 col-md-offset-1" style="background: white; padding: 0px;">
-                                          <table class="table table-bordered" style="margin-bottom: 0px;">
-                                            <thead>
-                                              <tr>
-                                                <td class="text-center" width="30%" style="background: #0099CC; color: white;">Metode</td>
-                                                <td class="text-center" width="35%" style="background: #0099CC; color: white;">Masa Manfaat</td>
-                                                <td class="text-center" width="35%" style="background: #0099CC; color: white;">% Penyusutan</td>
-                                              </tr>
-                                            </thead>
+                                        <div class="col-md-5 col-md-offset-1" style="background: none; padding: 0px;">
+                                          <div class="row" style="background: none; padding-right: 20px;">
+                                            <table class="table table-bordered" style="margin-bottom: 0px; background: white;">
+                                              <thead>
+                                                <tr>
+                                                  <td class="text-center" width="30%" style="background: #0099CC; color: white;">Metode</td>
+                                                  <td class="text-center" width="35%" style="background: #0099CC; color: white;">Masa Manfaat</td>
+                                                  <td class="text-center" width="35%" style="background: #0099CC; color: white;">% Penyusutan</td>
+                                                </tr>
+                                              </thead>
 
-                                            <tbody>
-                                              <tr>
-                                                <td class="text-center"><i>Garis Lurus</i></td>
-                                                <td class="text-center">
-                                                  <input type="hidden" readonly name="masa_manfaat" v-model='single_data.masa_manfaat'>
-                                                  <b v-html="single_data.masa_manfaat"></b> Tahun
-                                                </td>
-                                                <td class="text-center">
-                                                  <input type="hidden" readonly name="persentase_sm" v-model='single_data.persentase_sm'>
-                                                  <b v-html="single_data.persentase_sm"></b> %
-                                                </td>
-                                              </tr>
+                                              <tbody>
+                                                <tr>
+                                                  <td class="text-center"><i>Garis Lurus</i></td>
+                                                  <td class="text-center">
+                                                    <input type="hidden" readonly name="masa_manfaat" v-model='single_data.masa_manfaat'>
+                                                    <b v-html="single_data.masa_manfaat"></b> Tahun
+                                                  </td>
+                                                  <td class="text-center">
+                                                    <input type="hidden" readonly name="persentase_gl" v-model='single_data.persentase_gl'>
+                                                    <b v-html="single_data.persentase_gl"></b> %
+                                                  </td>
+                                                </tr>
 
+                                                <tr>
+                                                  <td class="text-center"><i>Saldo Menurun</i></td>
+                                                  <td class="text-center">
+                                                    <input type="hidden" readonly name="masa_manfaat" v-model='single_data.masa_manfaat'>
+                                                    <b v-html="single_data.masa_manfaat"></b> Tahun
+                                                  </td>
+                                                  <td class="text-center">
+                                                    <input type="hidden" readonly name="persentase_sm" v-model='single_data.persentase_sm'>
+                                                    <b v-html="single_data.persentase_sm"></b> %
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+
+                                          <div class="row" style="padding: 0px 10px 0px 5px; margin-top: 30px;" v-if="state == 'update'">
+                                            <table border="0" style="font-size: 9pt; color: #aaa;">
                                               <tr>
-                                                <td class="text-center"><i>Saldo Menurun</i></td>
-                                                <td class="text-center">
-                                                  <input type="hidden" readonly name="masa_manfaat" v-model='single_data.masa_manfaat'>
-                                                  <b v-html="single_data.masa_manfaat"></b> Tahun
-                                                </td>
-                                                <td class="text-center">
-                                                  <input type="hidden" readonly name="persentase_gl" v-model='single_data.persentase_gl'>
-                                                  <b v-html="single_data.persentase_gl"></b> %
+                                                <td style="vertical-align: top;"><b>NB:</b></td>
+                                                <td style="padding-left: 5px">
+                                                  Apabila Terdapat Aktiva Yang Sudah Disusutkan dan Menggunakan Kelompok Ini. Maka Perubahan Hanya Akan Mempengaruhi Nama dan Keterangan Kelompok Saja.
                                                 </td>
                                               </tr>
-                                            </tbody>
-                                          </table>
+                                            </table>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -207,7 +220,7 @@
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <data-list :data_resource="data_table_resource" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_kelompok" :index_column="'ga_id'"></data-list>
+                      <data-list :data_resource="data_table_resource" :columns="data_table_columns" :selectable="true" :ajax_on_loading="on_ajax_loading" @selected="get_kelompok" :index_column="'ga_nomor'"></data-list>
                     </div>
                   </div>
                 </div>
@@ -336,6 +349,7 @@
         state: 'simpan',
         on_ajax_loading: false,
 
+        edit : '{{ (isset($_GET['edit'])) ? $_GET['edit'] : 'null' }}',
         data_table_resource: [],
         data_table_columns: [],
 
@@ -411,10 +425,23 @@
       },
 
       created: function(){
-        // this.golonganChange(1);
-        axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/form-resource')
+        if(this.edit != 'null'){
+          axios.get(this.baseUrl+'/master/aktiva/kelompok_aktiva/list-kelompok')
+                    .then((response) => {
+                      // console.log(response.data);
+                      this.data_table_resource = response.data;
+                    }).then((a) => {
+                      this.get_kelompok(this.edit);
+                    }).catch((err) => {
+                      alert(err);
+                    });
+        }
+
+        axios.get(this.baseUrl+'/master/aktiva/kelompok_aktiva/form-resource')
               .then((response) => {
                 console.log(response.data);
+
+                // alert(this.edit);
 
                 if(response.data.akun_harta.length > 0){
                   this.akun_harta = response.data.akun_harta;
@@ -431,9 +458,8 @@
                   // this.single_data.akun_akumulasi = response.data.akun_penyusutan[0].id_akun;
                 }
 
-                // console.log(this.single_data.akun_kas);
-                // $('#supplier').select2();
                 $('.overlay.main').fadeOut(200);
+
               }).catch(err => {
                  $('#load-status-text').text('Sistem Bermasalah. Cobalah Memuat Ulang Halaman');
               }).then(() => {
@@ -446,6 +472,7 @@
       },
 
       methods: {
+
         simpan_data: function(evt){
           evt.preventDefault();
           this.btn_save_disabled = true;
@@ -453,7 +480,7 @@
           // console.log($('#data-form').serialize());
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/aktiva/kelompok_aktiva/store', 
+            axios.post(this.baseUrl+'/master/aktiva/kelompok_aktiva/store', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
@@ -479,11 +506,85 @@
         },
 
         update: function(evt){
-          
+            evt.preventDefault();
+            this.btn_save_disabled = true;
+
+            // console.log($('#data-form').serialize());
+
+            if($('#data-form').data('bootstrapValidator').validate().isValid()){
+              axios.post(this.baseUrl+'/master/aktiva/kelompok_aktiva/update', 
+                $('#data-form').serialize()
+              ).then((response) => {
+                console.log(response.data);
+                if(response.data.status == 'berhasil'){
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag
+                  })
+
+                  // this.form_reset();
+                }else if(response.data.status == 'gagal'){
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag,
+                      hideAfter: false
+                  })
+                }
+              }).catch((err) => {
+                alert(err);
+                this.btn_save_disabled = false;
+              }).then(() => {
+                this.btn_save_disabled = false;
+              })
+            }else{
+              this.btn_save_disabled = false;
+            }
         },
 
         hapus: function(){
-          
+          var cfrm = confirm('Apakah Anda Yakin ? ');
+
+          if(cfrm){
+            if(this.single_data.nomor_kelompok != ''){
+              this.btn_save_disabled = true;
+
+              axios.post(this.baseUrl+'/master/aktiva/kelompok_aktiva/delete', 
+                {id: this.single_data.nomor_kelompok}
+              ).then((response) => {
+                console.log(response.data);
+                if(response.data.status == 'berhasil'){
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag
+                  })
+
+                  this.form_reset();
+                }else if(response.data.status == 'gagal'){
+                  $.toast({
+                      text: response.data.content,
+                      showHideTransition: 'slide',
+                      position: 'top-right',
+                      icon: response.data.flag,
+                      hideAfter: false
+                  })
+                }
+              }).catch((err) => {
+                alert(err);
+                this.btn_save_disabled = false;
+              }).then(() => {
+                this.btn_save_disabled = false;
+              })
+            }else{
+              alert('Tidak Ada Nomor Kelompok Terdeteksi..');
+              this.btn_save_disabled = false;
+            }
+          }
         },
 
         close_list: function(){
@@ -526,7 +627,7 @@
           this.on_ajax_loading = true;
           this.data_table_resource = [];
 
-          axios.get(this.baseUrl+'/aktiva/kelompok_aktiva/list-kelompok')
+          axios.get(this.baseUrl+'/master/aktiva/kelompok_aktiva/list-kelompok')
                   .then((response) => {
                     console.log(response.data);
                     this.data_table_resource = response.data;
@@ -537,7 +638,29 @@
         },
 
         get_kelompok: function(e){
-          alert(e);
+          console.log(this.data_table_resource);
+          var idx = this.data_table_resource.findIndex(a => a.ga_nomor === e);
+
+          if(idx >= 0){
+             $('#golongan_kelompok').val(this.data_table_resource[idx].ga_golongan).trigger('change.select2');
+             $('#akun_harta').val(this.data_table_resource[idx].ga_akun_harta).trigger('change.select2');
+             $('#akun_penyusutan').val(this.data_table_resource[idx].ga_akun_penyusutan).trigger('change.select2').trigger('change.select2');
+             $('#akun_akumulasi').val(this.data_table_resource[idx].ga_akun_akumulasi).trigger('change.select2');
+
+             var aset = this.golongan_aset.findIndex(b => b.value === this.data_table_resource[idx].ga_golongan.toString());
+
+              this.single_data.nomor_kelompok = this.data_table_resource[idx].ga_nomor;
+              this.single_data.nama_kelompok = this.data_table_resource[idx].ga_nama;
+              this.single_data.keterangan_kelompok = this.data_table_resource[idx].ga_keterangan;
+              this.single_data.masa_manfaat = this.golongan_aset[aset].masa_manfaat;
+              this.single_data.persentase_gl = this.golongan_aset[aset].garis_lurus;
+              this.single_data.persentase_sm = this.golongan_aset[aset].saldo_menurun;
+
+              this.state = 'update';
+              $('.overlay.transaksi_list').fadeOut(200);
+          }else{
+            alert('Data Yang Dipilih Tidak Bisa Ditemukan');
+          }
         },
 
         golonganChange: function(e){
@@ -566,12 +689,13 @@
         },
 
         form_reset: function(){
-           // alert($('#akun_harta').val());
+           this.state = 'simpan';
            $('#golongan_kelompok').val(this.golongan_aset[0].value).trigger('change.select2');
            $('#akun_harta').val(this.akun_harta[0].value).trigger('change.select2');
            $('#akun_penyusutan').val(this.akun_penyusutan[0].value).trigger('change.select2').trigger('change.select2');
            $('#akun_akumulasi').val(this.akun_akumulasi[0].value).trigger('change.select2');
 
+          this.single_data.nomor_kelompok = '';
           this.single_data.nama_kelompok = '';
           this.single_data.keterangan_kelompok = '';
           this.single_data.masa_manfaat  = '4';

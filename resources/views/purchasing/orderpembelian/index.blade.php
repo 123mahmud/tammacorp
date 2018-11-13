@@ -33,7 +33,42 @@
         <div id="tab-general">
           <div class="row mbl">
             <div class="col-lg-12">
+              @if (count($tempo) > 0)
+                <div class="col-md-12">
+                  <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                    <div class="panel-heading">Jatuh Tempo Pengiriman
+                      <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="panel-body">
+                      @foreach ($tempo as $key => $val)
+                        <?php $key++; ?>
+                        <p>{{$key.'. '.$val->d_pcs_code.' | '.$val->s_company.' | '.date('d M Y',strtotime($val->d_pcs_duedate))}}</p>
+                      @endforeach
+                    </div>
+                  </div>
+                </div>
+              @endif
+
+              <!-- <div class="col-md-4">
+                <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                  <div class="panel-heading">Copyright Info
+                    <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  </div>
+                  <div class="panel-body">&copy; some random dude</a>
+                  </div>
+                </div>
+              </div>
               
+              <div class="col-md-4">
+                <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                  <div class="panel-heading">Copyright Info
+                    <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  </div>
+                  <div class="panel-body">&copy; some random dude</a>
+                  </div>
+                </div>
+              </div> -->
+
               <div class="col-md-12">
                 <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                 </div>
@@ -91,7 +126,7 @@
       $('.currency').inputmask("currency", {
         radixPoint: ",",
         groupSeparator: ".",
-        digits: 0,
+        digits: 2,
         autoGroup: true,
         prefix: '', //Space after $, this will not truncate the first character.
         rightAlign: false,
@@ -129,8 +164,7 @@
 
     //event focus on input harga
     $(document).on('focus', '.field_harga',  function(e){
-      var harga = convertToAngka($(this).val());
-      $(this).val(harga);
+      $('#button_save').attr('disabled', true);
     });
 
     $(document).on('focus', '#potongan_harga',  function(e){
@@ -157,11 +191,10 @@
       var harga = $(this).val();
       var qtyOrder = $('#qty_'+getid+'').val();
       //hitung nilai harga total
-      var valueHargaTotal = convertToRupiah(qtyOrder * harga);
-      //ubah format ke rupiah
-      var hargaRp = convertToRupiah($(this).val());
-      $(this).val(hargaRp);
+      harga = harga.replace('.','');
+      var valueHargaTotal = parseInt(qtyOrder) * parseFloat(harga.replace(',','.'));
       $('#total_'+getid+'').val(valueHargaTotal);
+      //panggil fungsi
       totalPembelianGross();
       totalPembelianNett();
       $('#button_save').attr('disabled', false);
@@ -466,24 +499,42 @@
         //loop data
         Object.keys(data.data_isi).forEach(function(){
           var qtyCost = data.data_isi[key-1].d_pcsdt_qty;
-          $('#tabel-edit').append('<tr class="tbl_modal_edit_row">'
-                            +'<td style="text-align:center">'+key+'</td>'
-                            +'<td><input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_id+'" name="fieldIdPurchaseDt[]" class="form-control input-sm"/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_idpdt+'" name="fieldIdPlanDt[]" class="form-control input-sm"/></td>'
-                            +'<td><input type="text" value="'+qtyCost+'" name="fieldQtyTxt[]" class="form-control currency input-sm" id="qtytxt_'+i+'" readonly style="text-align:right;"/>'
-                            +'<input type="hidden" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm" id="qty_'+i+'"/></td>'
-                            +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuan[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'" name="fieldHargaPrev[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga numberinput" style="text-align:right;"/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly style="text-align:right;"/></td>'
-                            +'<td><input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly style="text-align:right;"/></td>'
-                            +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
-                            +'</tr>');
+          $('#tabel-edit').append(
+            '<tr class="tbl_modal_edit_row">'
+              +'<td style="text-align:center">'+key+'</td>'
+              +'<td>'
+                +'<input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
+                +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
+                +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_id+'" name="fieldIdPurchaseDt[]" class="form-control input-sm"/>'
+                +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_idpdt+'" name="fieldIdPlanDt[]" class="form-control input-sm"/>'
+              +'</td>'
+              +'<td>'
+                +'<input type="text" value="'+separatorRibuan(qtyCost)+'" name="fieldQtyTxt[]" class="form-control input-sm" id="qtytxt_'+i+'" readonly style="text-align:right;"/>'
+                +'<input type="hidden" value="'+qtyCost+'" name="fieldQty[]" class="form-control input-sm" id="qty_'+i+'"/>'
+              +'</td>'
+              +'<td>'
+                +'<input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuan[]" class="form-control input-sm" readonly/>'
+              +'</td>'
+              +'<td>'
+                +'<input type="text" value="'+data.data_isi[key-1].d_pcsdt_prevcost+'" name="fieldHargaPrev[]" class="form-control input-sm currency" readonly style="text-align:right;"/>'
+              +'</td>'
+              +'<td>'
+                +'<input type="text" value="'+data.data_isi[key-1].d_pcsdt_price+'" name="fieldHarga[]" id="'+i+'" class="form-control input-sm field_harga currency" style="text-align:right;"/>'
+              +'</td>'
+              +'<td>'
+                +'<input type="text" value="'+data.data_isi[key-1].d_pcsdt_total+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem currency" id="total_'+i+'" readonly style="text-align:right;"/>'
+              +'</td>'
+              +'<td>'
+                +'<input type="text" value="'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'" name="fieldStok[]" class="form-control input-sm" readonly style="text-align:right;"/>'
+              +'</td>'
+              +'<td>'
+                +'<button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button>'
+              +'</td>'
+            +'</tr>');
           i = randString(5);
           key++;
         });
+        $(this).maskFunc();
         $('#modal-edit').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -723,7 +774,7 @@
   function separatorRibuan(num)
   {
     var num_parts = num.toString().split(".");
-    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return num_parts.join(".");
   }
 

@@ -47,7 +47,7 @@
                     <h4>Edit Data Jabatan</h4>
                   </div>
                   <div class="col-md-7 col-sm-6 col-xs-4 " align="right" style="margin-top:5px;margin-right: -25px;">
-                    <a href="{{ url('hrd/datajabatan/datajabatan') }}" class="btn">
+                    <a href="{{ url('master/datajabatan/datajabatan') }}" class="btn">
                       <i class="fa fa-arrow-left"></i>
                     </a>
                   </div>
@@ -55,7 +55,7 @@
 
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 15px;">
 
-                  <form method="POST" class="form" action="{{ url('hrd/datajabatan/update-jabatan') }}/{{$jabatan->c_id}}" enctype="multipart/form-data"
+                  <form method="POST" class="form" action="{{ url('master/datajabatan/update-jabatan') }}/{{$jabatan->c_id}}" enctype="multipart/form-data"
                     style="font-family:Arial;">
                     {{ csrf_field() }} {{ method_field('PUT') }}
                     <table class="table">

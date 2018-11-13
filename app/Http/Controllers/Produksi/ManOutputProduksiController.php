@@ -82,9 +82,19 @@ class ManOutputProduksiController extends Controller
     }
 
 
-    public function tabel()
-    {
-        $data = DB::table('d_productresult_dt')
+    public function tabel($tgl1, $tgl2, $tampil){
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+         $tgl01 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+          $tgl02 = $y2.'-'.$m2.'-'.$d2;
+        //   dd($tgl01);
+        if ($tampil == 'Semua') {
+            $data = DB::table('d_productresult_dt')
             ->select('pr_date',
                 'spk_code',
                 'i_name',
@@ -100,8 +110,80 @@ class ManOutputProduksiController extends Controller
             ->join('m_item', 'i_id', '=', 'prdt_item')
             ->join('d_spk', 'pr_spk', '=', 'spk_id')
             ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
             ->orderBy('prdt_date', 'DESC')
             ->get();
+        }elseif ($tampil == 'Belum-dikirim') {
+
+           $data = DB::table('d_productresult_dt')
+            ->select('pr_date',
+                'spk_code',
+                'i_name',
+                'prdt_date',
+                'prdt_time',
+                'prdt_qty',
+                'prdt_productresult',
+                'prdt_detail',
+                'prdt_status',
+                'mp_name',
+                'prdt_produksi')
+            ->join('d_productresult', 'prdt_productresult', '=', 'pr_id')
+            ->join('m_item', 'i_id', '=', 'prdt_item')
+            ->join('d_spk', 'pr_spk', '=', 'spk_id')
+            ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('prdt_status','RD')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
+            ->orderBy('prdt_date', 'DESC')
+            ->get();
+
+        }elseif ($tampil == 'Dikirim') {
+            $data = DB::table('d_productresult_dt')
+            ->select('pr_date',
+                'spk_code',
+                'i_name',
+                'prdt_date',
+                'prdt_time',
+                'prdt_qty',
+                'prdt_productresult',
+                'prdt_detail',
+                'prdt_status',
+                'mp_name',
+                'prdt_produksi')
+            ->join('d_productresult', 'prdt_productresult', '=', 'pr_id')
+            ->join('m_item', 'i_id', '=', 'prdt_item')
+            ->join('d_spk', 'pr_spk', '=', 'spk_id')
+            ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('prdt_status','FN')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
+            ->orderBy('prdt_date', 'DESC')
+            ->get();
+        }elseif ($tampil == 'Terkirim') {
+            $data = DB::table('d_productresult_dt')
+            ->select('pr_date',
+                'spk_code',
+                'i_name',
+                'prdt_date',
+                'prdt_time',
+                'prdt_qty',
+                'prdt_productresult',
+                'prdt_detail',
+                'prdt_status',
+                'mp_name',
+                'prdt_produksi')
+            ->join('d_productresult', 'prdt_productresult', '=', 'pr_id')
+            ->join('m_item', 'i_id', '=', 'prdt_item')
+            ->join('d_spk', 'pr_spk', '=', 'spk_id')
+            ->join('m_produksi', 'mp_id', '=', 'prdt_produksi')
+            ->where('prdt_status','RC')
+            ->where('pr_date', '>=' ,$tgl01)
+            ->where('pr_date', '<=' ,$tgl02)
+            ->orderBy('prdt_date', 'DESC')
+            ->get();
+        }
+        
 
         return DataTables::of($data)
             ->addColumn('action', function ($data) {
@@ -164,6 +246,7 @@ class ManOutputProduksiController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        // return json_encode($)
         DB::beginTransaction();
         try {
 
@@ -183,13 +266,34 @@ class ManOutputProduksiController extends Controller
                 if(!$item || !$item->m_akun_persediaan  || !$cek2){
                     $err = false;
                 }else{
-                    $acc_temp[count($acc_temp)] = [
-                        'td_acc'      => $item->m_akun_persediaan,
-                        'td_posisi'   => "D",
-                        'value'       => $item->m_hpp * $request->spk_qty
-                    ];
+                    if(array_key_exists($item->m_akun_persediaan, $acc_temp)){
+                        $acc_temp[$item->m_akun_persediaan] = [
+                            'td_acc'    => $item->m_akun_persediaan,
+                            'td_posisi' => 'D',
+                            'value'     => $acc_temp[$item->m_akun_persediaan]['value'] + $item->m_hpp * $request->spk_qty
+                        ];
+                    }else{
+                        $acc_temp[$item->m_akun_persediaan] = [
+                            'td_acc'    => $item->m_akun_persediaan,
+                            'td_posisi' => 'D',
+                            'value'     => $item->m_hpp * $request->spk_qty
+                        ];
+                    }
+
+                    // $acc_temp[count($acc_temp)] = [
+                    //     'td_acc'      => $item->m_akun_persediaan,
+                    //     'td_posisi'   => "D",
+                    //     'value'       => $item->m_hpp * $request->spk_qty
+                    // ];
 
                     $tot += $item->m_hpp * $request->spk_qty;
+                }
+
+                if(!DB::table('d_akun')->where('id_akun', '551.13')->first()){
+                    return response()->json([
+                        'status' => 'gagal',
+                        'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Akun Hasil Produksi Belum Ada.'
+                    ]);
                 }
 
                 if(!$err){
@@ -199,7 +303,7 @@ class ManOutputProduksiController extends Controller
                     ]);
                 }
 
-                $acc_temp[count($acc_temp)] = [
+                $acc_temp['551.13'] = [
                     'td_acc'      => '551.13',
                     'td_posisi'   => "K",
                     'value'       => $tot
@@ -212,7 +316,10 @@ class ManOutputProduksiController extends Controller
             $cek = DB::table('d_productresult')
                 ->where('pr_spk', $request->spk_id)
                 ->get();
-            d_productplan::where('pp_id', $request->spk_id)
+            $status = d_spk::where('spk_id', $request->spk_id)
+                ->first();
+                // dd($status);
+            d_productplan::where('pp_id', $status->spk_ref)
                 ->update([
                     'pp_isspk' => 'P'
                 ]);
@@ -396,15 +503,19 @@ class ManOutputProduksiController extends Controller
                 $autoStatus->update([
                     'spk_status' => 'FN'
                 ]);
+                d_productplan::where('pp_id', $status->spk_ref)
+                ->update([
+                    'pp_isspk' => 'C'
+                ]);
             }
 
 
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
             return response()->json([
                 'status' => 'gagal',
-                'data' => $e
+                'pesan' => $e
             ]);
         }
 

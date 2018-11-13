@@ -161,48 +161,57 @@
       });
     }
 
+
     function hapus(id){
-          iziToast.question({
-          timeout: 20000,
-          close: false,
-          overlay: true,
-          toastOnce: true,
-          id: 'question',
-          zindex: 999,
-          title: 'Hey',
-          message: 'Apakah anda yakin?',
-          position: 'center',
-          buttons: [
-            ['<button><b>YA</b></button>', function (instance, toast) {
-              $.ajax({
-              url: '{{ url("master/datajabatan/delete-jabatan") }}'+'/'+id,
-              async: false,
-              type: "DELETE",
-              data: {
-                "id": id,
-                "_method": 'DELETE',
-                "_token": '{{ csrf_token() }}',
-              },
-              dataType: "json",
-              success: function(data) {}
-            });
-                        window.location.reload();
-              instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-
-            }, true],
-            ['<button>TIDAK</button>', function (instance, toast) {
-
-              instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-
-            }]
-          ],
-          onClosing: function(instance, toast, closedBy){
-            console.info('Closing | closedBy: ' + closedBy);
-          },
-          onClosed: function(instance, toast, closedBy){
-            console.info('Closed | closedBy: ' + closedBy);
+      iziToast.show({
+      color: 'red',
+      title: 'Peringatan',
+      message: 'Apakah anda yakin!',
+      position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+      progressBarColor: 'rgb(0, 255, 184)',
+      buttons: [
+        [
+          '<button>Ok</button>',
+          function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast); 
+      $.ajax({
+            url: baseUrl + "/master/datajabatan/delete-jabatan/"+ id,
+            type: 'GET',
+            success: function (response, customer) {
+                if (response.status == 'sukses') {
+                    window.location.reload();
+                    iziToast.success({
+                        timeout: 5000,
+                        position: "topRight",
+                        icon: 'fa fa-chrome',
+                        title: '',
+                        message: 'Berhasil Menghapus.'
+                    });
+                } else {
+                    iziToast.error({
+                        position: "topRight",
+                        title: '',
+                        message: 'Hapus Gagal (Data Adalah Parent)'
+                    });
+                }
+            }
+        })
+      }
+        ],
+        [
+          '<button>Close</button>',
+           function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
           }
-        });
+        ]
+      ]
+    }); 
+
+         
       }
 
       function lihatJabPro(){
