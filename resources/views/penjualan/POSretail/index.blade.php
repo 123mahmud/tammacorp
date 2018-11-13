@@ -1604,6 +1604,11 @@
                     url: baseUrl + "/penjualan/POSretail/get-tanggal/" + tgl1 + '/' + tgl2 + '/' + tampil,
                     type: 'GET'
                 },
+                 'columnDefs': [
+                  {
+                      "targets": 4, // your case first column
+                      "className": "text-center",
+                 }],
                 "columns": [
                     // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
                     {"data": "sDate", "width": "5%"},

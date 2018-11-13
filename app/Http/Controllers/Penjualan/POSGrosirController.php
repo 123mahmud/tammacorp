@@ -765,13 +765,13 @@ class POSGrosirController extends Controller
         })
       ->editColumn('status', function ($data)
       {
-          if ($data->s_status == "DR") { return 'Draft'; }
-          elseif ($data->s_status == "WA") { return 'Waiting'; }
-          elseif ($data->s_status == "PR") { return 'Progress'; }
-          elseif ($data->s_status == "FN") { return 'Final'; }
-          elseif ($data->s_status == "PC") { return 'Packing'; }
-          elseif ($data->s_status == "SN") { return 'Sending'; }
-          elseif ($data->s_status == "RC") { return 'Received'; }
+          if ($data->s_status == "DR") { return '<span class="label label-default">Draft</span>'; }
+          elseif ($data->s_status == "WA") { return '<span class="label label-primary">Waiting</span>'; }
+          elseif ($data->s_status == "PR") { return '<span class="label label-orange">Progress</span>'; }
+          elseif ($data->s_status == "FN") { return '<span class="label label-success">Final</span>'; }
+          elseif ($data->s_status == "PC") { return '<span class="label label-purple">Packing</span>'; }
+          elseif ($data->s_status == "SN") { return '<span class="label label-danger">Sending</span>'; }
+          elseif ($data->s_status == "RC") { return '<span class="label label-info">Received</span>'; }
       })
       ->addColumn('action', function($data)
       {
@@ -835,7 +835,7 @@ class POSGrosirController extends Controller
 
       })
       //inisisai column status agar kode html digenerate ketika ditampilkan
-      ->rawColumns(['action', 'action2','sGross'])
+      ->rawColumns(['action', 'action2','sGross','status'])
       ->make(true);
   }
 

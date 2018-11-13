@@ -756,11 +756,11 @@ class POSRetailController extends Controller
         ->editColumn('status', function ($data)  {
             if ($data->s_status == "DR")
             {
-                return 'Draft';
+                return '<span class="label label-default">Draft</span>';
             }
             elseif ($data->s_status == "FN")
             {
-                return 'Final';
+                return '<span class="label label-success">Final</span>';
             }
         })
 
@@ -801,7 +801,7 @@ class POSRetailController extends Controller
 
           })
         //inisisai column status agar kode html digenerate ketika ditampilkan
-        ->rawColumns(['action','sGross'])
+        ->rawColumns(['action','sGross','status'])
         ->make(true);
   }
 
