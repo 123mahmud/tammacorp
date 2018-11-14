@@ -225,6 +225,34 @@
       });
     }
 
+    function simpanReturnSB(id){
+      $.ajax({
+          url: baseUrl + "/penjualan/returnpenjualan/return/"+ id,
+          type: 'GET',
+          success: function (response) {
+            if (response.status == 'sukses') {
+              $('#myItem').modal('hide');
+              $('#myItemSB').modal('hide');
+              tableRetur.ajax.reload();
+              iziToast.success({
+                        timeout: 5000,
+                        position: "topRight",
+                        icon: 'fa fa-chrome',
+                        title: '',
+                        message: 'Data customer tersimpan.'
+                    });
+              window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );
+            }else{
+              iziToast.error({
+                        position: "topRight",
+                        title: '',
+                        message: 'Mohon melengkapi data.'
+                    });
+            }
+          }
+      });
+    }
+
   function printReturn(id){
     window.open(baseUrl + "/penjualan/returnpenjualan/printreturn/" + id );
     window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );

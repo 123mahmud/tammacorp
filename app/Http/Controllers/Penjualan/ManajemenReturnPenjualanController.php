@@ -155,7 +155,7 @@ class ManajemenReturnPenjualanController extends Controller
                             title="Terima Barang"
                             data-toggle="modal"
                             onclick="lihatDetailSB('.$data->dsr_id.')"
-                            data-target="#myItemSB">
+                            data-target="#myItemTerimaSB">
                         </button>
                       </div>';
             }else{
