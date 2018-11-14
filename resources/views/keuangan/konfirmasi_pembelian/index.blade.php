@@ -1120,6 +1120,7 @@
       {data: 'dsr_jenis_return', name: 'dsr_jenis_return'},
       {data: 'dsr_type_sales', name: 'dsr_type_sales'},
       {data: 'dsr_status', name: 'dsr_status'},
+      {data: 'dsr_resi', name: 'dsr_resi'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
     language: {

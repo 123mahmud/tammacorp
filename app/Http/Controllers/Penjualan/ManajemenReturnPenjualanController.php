@@ -110,7 +110,7 @@ class ManajemenReturnPenjualanController extends Controller
         })
 
     ->addColumn('action', function($data){
-      if ($data->dsr_method == 'SB') {
+      if ($data->dsr_method == 'SB' || $data->dsr_method == 'SA') {
 
         if ($data->dsr_status == "WT"){
           return  '<div class="text-center">
@@ -461,7 +461,7 @@ class ManajemenReturnPenjualanController extends Controller
 
       $dsr_id = d_sales_return::select('dsr_id')->max('dsr_id')+1;
 
-      if ($metode == 'SB') {
+      if ($metode == 'SB' || $metode == 'SA') {
           d_sales_return::create([
             'dsr_id' => $dsr_id,
             'dsr_sid' => $sales->s_id,
@@ -606,7 +606,8 @@ class ManajemenReturnPenjualanController extends Controller
                                   'dsrdt_return_price',
                                   'dsrdt_hasil',
                                   'dsr_status',
-                                  'dsr_id')
+                                  'dsr_id',
+                                  'dsr_method')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
       ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
@@ -1214,7 +1215,52 @@ class ManajemenReturnPenjualanController extends Controller
       
 
     }else if ($data->dsr_method == 'SA') {
-      # code...
+      $cek = d_sales_return::where('dsr_id',$id)->first();
+
+      if ($cek->dsr_type_sales == 'GR') {
+        $sb = d_sales_returnsb::where('dsrs_sr',$id)->get();
+
+        for ($i=0; $i < count($sb); $i++) { 
+          $stockGrosir = d_stock::where('s_item',$sb[$i]->dsrs_item)
+            ->where('s_comp',2)
+            ->where('s_position',2)
+            ->first();
+
+          if(mutasi::mutasiStok(  $sb[$i]->dsrs_item,
+                                  $sb[$i]->dsrs_qty,
+                                  $comp=2,
+                                  $position=2,
+                                  $flag=10,
+                                  $cek->dsr_code)){}
+        }
+
+      }else{
+        $sb = d_sales_returnsb::where('dsrs_sr',$id)->get();
+
+        for ($i=0; $i < count($sb); $i++) { 
+          $stockGrosir = d_stock::where('s_item',$sb[$i]->dsrs_item)
+            ->where('s_comp',1)
+            ->where('s_position',1)
+            ->first();
+
+          if(mutasi::mutasiStok(  $sb[$i]->dsrs_item,
+                                  $sb[$i]->dsrs_qty,
+                                  $comp=1,
+                                  $position=1,
+                                  $flag=10,
+                                  $cek->dsr_code)){}
+        }
+      }
+
+      d_sales_return::where('dsr_id',$id)
+        ->update([
+          'dsr_status' => 'FN'
+        ]);
+
+      d_sales_return::where('dsr_id',$id)
+        ->update([
+          'dsr_status_terima' => 'WT'
+        ]);
     }elseif ($data->dsr_method == 'KB') {
       # code...
     }

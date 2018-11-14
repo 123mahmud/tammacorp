@@ -312,14 +312,13 @@
                   position: "topRight",
                   icon: 'fa fa-chrome',
                   title: '',
-                  message: 'Data customer tersimpan.'
+                  message: 'Item berhasil di simpan.'
               });
-        window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );
       }else{
         iziToast.error({
                   position: "topRight",
                   title: '',
-                  message: 'Mohon melengkapi data.'
+                  message: 'Gagal Menyimpan Item.'
               });
       }
     }

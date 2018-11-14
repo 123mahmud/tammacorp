@@ -149,9 +149,15 @@
     </table>
 
 
+    @if ($data[0]->dsr_method == 'SB')
     <div class="col-md-3 col-sm-12 col-xs-12">
         <label class="tebal">Tabel Salah Barang :</label>
     </div>
+    @else
+    <div class="col-md-3 col-sm-12 col-xs-12">
+        <label class="tebal">Item Akan Di kirim :</label>
+    </div>
+    @endif
 
     <table class="table tabelan table-bordered table-hover" id="TbDtDetailSB">
         <thead>
