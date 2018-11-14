@@ -48,6 +48,7 @@
                                     <th class="wd-10p">Jenis Return</th>
                                     <th class="wd-15p">Type Sales</th>
                                     <th class="wd-15p">Status</th>
+                                    <th class="wd-15p">Resi dari Cus</th>
                                     <th class="wd-15p">Aksi</th>
                                   </tr>
                                 </thead>
@@ -87,8 +88,7 @@
                             </div>
 
                      <!-- div label-badge-tab -->
-
-                                         <!-- End DIv note-tab -->
+                    <!-- End DIv note-tab -->
 
                             <div class="modal fade" id="myItemSB" role="dialog">
                                 <div class="modal-dialog modal-lg"
@@ -103,6 +103,34 @@
                                         </div>
                                         <div class="modal-body">
                                             <div id="sb">
+
+                                            </div>
+                                        </div>
+                                        <div id="buttonDetail" class="modal-footer">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                     <!-- div label-badge-tab -->
+
+                                         <!-- End DIv note-tab -->
+
+                            <div class="modal fade" id="myItemTerimaSB" role="dialog">
+                                <div class="modal-dialog modal-lg"
+                                     style="width: 90%;margin-left: auto;margin-top: 30px;">
+
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: #e77c38;">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title" style="color: white;">Nama Item</h4>
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="terimasb">
 
                                             </div>
                                         </div>
@@ -158,6 +186,7 @@
       {data: 'dsr_jenis_return', name: 'dsr_jenis_return'},
       {data: 'dsr_type_sales', name: 'dsr_type_sales'},
       {data: 'dsr_status', name: 'dsr_status'},
+      {data: 'dsr_resi', name: 'dsr_resi'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
     language: {
@@ -192,6 +221,17 @@
           data: {x: id},
           success: function (response) {
             $('#sb').html(response);
+          }
+      });
+  }
+
+  function lihatDetailTerimaSB(id){
+     $.ajax({
+          url: baseUrl + "/penjualan/returnpenjualan/getdata/terimaSB",
+          type: 'get',
+          data: {x: id},
+          success: function (response) {
+            $('#terimasb').html(response);
           }
       });
   }
@@ -254,9 +294,38 @@
     }
 
   function printReturn(id){
-    window.open(baseUrl + "/penjualan/returnpenjualan/printreturn/" + id );
     window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );
   }
+
+  function terimaSB(id){
+    var a = $('#resi').serialize();
+    $.ajax({
+    url: baseUrl + "/penjualan/returnpenjualan/terimasb/"+ id,
+    type: 'GET',
+    data: a,
+    success: function (response) {
+      if (response.status == 'sukses') {
+        $('#myItemTerimaSB').modal('hide');
+        tableRetur.ajax.reload();
+        iziToast.success({
+                  timeout: 5000,
+                  position: "topRight",
+                  icon: 'fa fa-chrome',
+                  title: '',
+                  message: 'Data customer tersimpan.'
+              });
+        window.open(baseUrl + "/penjualan/returnpenjualan/printfaktur/" + id );
+      }else{
+        iziToast.error({
+                  position: "topRight",
+                  title: '',
+                  message: 'Mohon melengkapi data.'
+              });
+      }
+    }
+});
+  }
+
   </script>
   
 @endsection()
