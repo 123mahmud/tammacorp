@@ -1041,7 +1041,7 @@ class ConfrimBeliController extends Controller
         })
 
     ->addColumn('action', function($data){
-         if ($data->dsr_method == 'SB') {
+         if ($data->dsr_method == 'SB' || $data->dsr_method == 'SA') {
           return  '<div class="text-center">
                     <button type="button"
                         class="btn btn-primary fa fa-check btn-sm"
@@ -1116,7 +1116,8 @@ class ConfrimBeliController extends Controller
                                   'dsrdt_return_price',
                                   'dsrdt_hasil',
                                   'dsr_status',
-                                  'dsr_id')
+                                  'dsr_id',
+                                  'dsr_method')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
       ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')

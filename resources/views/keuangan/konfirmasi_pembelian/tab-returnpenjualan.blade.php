@@ -18,6 +18,7 @@
             <th class="wd-10p">Jenis Return</th>
             <th class="wd-15p">Type Sales</th>
             <th class="wd-15p">Status</th>
+            <th class="wd-15p">Resi Dari Cus</th>
             <th class="wd-15p">Aksi</th>
           </tr>
         </thead>
