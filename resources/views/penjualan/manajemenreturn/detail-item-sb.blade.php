@@ -63,7 +63,7 @@
     {{-- </div> --}}
 
     <div class="col-md-3 col-sm-12 col-xs-12">
-        <label class="tebal">Tabel Nota Lama :</label>
+        <label class="tebal">Tabel Nota Pembelian :</label>
     </div>
 
     <table class="table tabelan table-bordered table-hover" id="TbDtDetail">
@@ -154,7 +154,7 @@
     <div class="modal-footer">
 
         @if ($data[0]->dsr_status == 'TR')
-            <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
+            <button type="button" class="btn btn-info" onclick="simpanReturnSB({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
         @endif
         @if ($data[0]->dsr_status == 'FN')
             <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>

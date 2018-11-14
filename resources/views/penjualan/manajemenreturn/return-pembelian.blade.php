@@ -1318,6 +1318,12 @@ function autoTotalGross(){
                 if (response.status == 'sukses') {
                     $('#form_return_pembelian')[0].reset();
                     $('#tabel-return-sales').dataTable().fnClearTable();
+                    tableDetail.row().clear().draw(false);
+                    var inputs = document.getElementById('kode'),
+                        names = [].map.call(inputs, function (input) {
+                            return input.value;
+                        });
+                    tamp = names;
                     iziToast.success({
                         timeout: 5000,
                         position: "topRight",
