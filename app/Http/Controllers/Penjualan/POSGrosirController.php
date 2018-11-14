@@ -395,7 +395,9 @@ class POSGrosirController extends Controller
   }
 
   public function sal_save_draft(Request $request){
-    // dd($request->all());
+    
+    // return json_encode($request->all());
+
     DB::beginTransaction();
         try {
     $s_id = d_sales::max('s_id') + 1;
@@ -564,6 +566,7 @@ class POSGrosirController extends Controller
       $sisa = 0-($s_kembalianF);
     }
     //end sisa
+
     //tgl jt
     $tglJT = $request->s_jatuh_tempo;
     $y2 = substr($tglJT, -4);
@@ -586,7 +589,102 @@ class POSGrosirController extends Controller
     }
 
     $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
-    //end nota fatkur
+
+    $err = true;
+      $akun_beban = []; $akun_persediaan = [];
+
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        $method = DB::table('m_paymentmethod')->where('pm_id', $request->sp_method[0])->first();
+        $akun[$method->pm_coa_code] = [
+            'td_acc'    => ($method) ? $method->pm_coa_code : null,
+            'td_posisi' => 'D',
+            'value'     => $this->konvertRp($request->sp_nominal[0])
+        ];
+
+        $akun['110.01'] = [
+            'td_acc'    => '110.01',
+            'td_posisi' => 'D',
+            'value'     => $this->konvertRp(str_replace('-', '', $request->s_kembalianF))
+        ];
+
+        if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
+          $akun['501.01'] = [
+              'td_acc'    => '501.01',
+              'td_posisi' => 'D',
+              'value'     => $this->konvertRp($request->totalDiscount),
+          ];
+        }
+
+      // start jurnal
+
+        foreach($request->kode_item as $acc_key => $data){
+            $cek = DB::table('m_item')
+                ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->join('m_price', 'm_price.m_pitem', '=', 'm_item.i_id')
+                ->where('i_id', $data)
+                ->select('m_group.m_akun_penjualan', 'm_group.m_akun_persediaan', 'm_group.m_akun_beban', 'm_group.m_gid', 'm_price.m_hpp')
+                ->first();
+
+            $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_penjualan)->first();
+
+            // return json_encode($cek);
+
+            if(!$cek || !$cek->m_akun_penjualan || !$cek->m_akun_persediaan || !$cek->m_akun_beban || !$cek2){
+                $err = false;
+            }else{
+                if(array_key_exists($cek->m_akun_penjualan, $akun)){
+                    $akun[$cek->m_akun_penjualan] = [
+                        'td_acc'    => $cek->m_akun_penjualan,
+                        'td_posisi' => 'K',
+                        'value'     => $akun[$cek->m_akun_penjualan]['value'] + ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key])
+                    ];
+                }else{
+                    $akun[$cek->m_akun_penjualan] = [
+                        'td_acc'    => $cek->m_akun_penjualan,
+                        'td_posisi' => 'K',
+                        'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key])
+                    ];
+                }
+
+                if(array_key_exists($cek->m_akun_beban, $akun_beban)){
+                    $akun_beban[$cek->m_akun_beban] = [
+                        'td_acc'    => $cek->m_akun_beban,
+                        'td_posisi' => 'D',
+                        'value'     => $akun_beban[$cek->m_akun_beban]['value'] + ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }else{
+                    $akun_beban[$cek->m_akun_beban] = [
+                        'td_acc'    => $cek->m_akun_beban,
+                        'td_posisi' => 'D',
+                        'value'     => ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }
+
+                if(array_key_exists($cek->m_akun_persediaan, $akun_persediaan)){
+                    $akun_persediaan[$cek->m_akun_persediaan] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'K',
+                        'value'     => $akun_persediaan[$cek->m_akun_persediaan]['value'] + ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }else{
+                    $akun_persediaan[$cek->m_akun_persediaan] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'K',
+                        'value'     => ($cek->m_hpp * $request->sd_qty[$acc_key])
+                    ];
+                }
+            }
+        }
+
+        if(!$err){
+            return response()->json([
+                'status' => 'gagal',
+                'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
+            ]);
+        }
+      }
+
+    // end nota fatkur
     $customer = DB::table('d_sales')
         ->insert([
           's_id' => $s_id,
@@ -640,17 +738,36 @@ class POSGrosirController extends Controller
       $nota = d_sales::where('s_id',$s_id)
         ->first();
     DB::commit();
-    return response()->json([
-          'status' => 'sukses',
-          'nota' => $nota
-        ]);
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
     DB::rollback();
     return response()->json([
         'status' => 'gagal',
         'data' => $e
         ]);
       }
+
+      $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
+      $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
+
+      if($request->sp_method[0] == '1'){
+        $state = 'KM';
+        $sts = 'Cash';
+      }
+      else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
+        $state = 'BM';
+        $sts = 'Transfer';
+      }
+
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun));
+      }
+
+      // return $state_jurnal;
+
+      return response()->json([
+          'status' => 'sukses',
+          'nota' => $nota
+        ]);
   }
 
   public function sal_save_finalUpdate(Request $request){

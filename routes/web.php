@@ -795,9 +795,9 @@ Route::group(['middleware' => 'auth'], function () {
                 'as'    => 'penerimaan_piutang.form_resource'
             ]);
 
-            Route::get('/penjualan/penerimaan_piutang/get-po', [
-                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@get_po',
-                'as'    => 'penerimaan_piutang.get_po'
+            Route::get('/penjualan/penerimaan_piutang/get-sales', [
+                'uses'  => 'Keuangan\Penerimaan_piutang\penerimaan_piutang_controller@get_sales',
+                'as'    => 'penerimaan_piutang.get_sales'
             ]);
 
             Route::get('/penjualan/penerimaan_piutang/get-transaksi', [
