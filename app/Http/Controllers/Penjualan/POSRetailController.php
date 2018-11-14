@@ -351,8 +351,9 @@ class POSRetailController extends Controller
       $akun_beban = []; $akun_persediaan = [];
 
       if(jurnal_setting()->allow_jurnal_to_execute){
-        $akun[$request->sp_method[0]] = [
-            'td_acc'    => $request->sp_method[0],
+        $method = DB::table('m_paymentmethod')->where('pm_id', $request->sp_method[0])->first();
+        $akun[$method->pm_coa_code] = [
+            'td_acc'    => ($method) ? $method->pm_coa_code : null,
             'td_posisi' => 'D',
             'value'     => $this->konvertRp($request->s_net)
         ];
@@ -588,7 +589,9 @@ class POSRetailController extends Controller
     }
 
     if(jurnal_setting()->allow_jurnal_to_execute){
-      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun_beban, $akun_persediaan, $akun));
+      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun));
+
+      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun_beban, $akun_persediaan));
     }
 
     return response()->json([
