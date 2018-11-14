@@ -356,8 +356,8 @@
       mounted: function () {
         var vm = this
         $(this.$el).inputmask("currency", {
-            radixPoint: ",",
-            groupSeparator: ".",
+            radixPoint: ".",
+            groupSeparator: ",",
             digits: 2,
             allowMinus: false,
             autoGroup: true,
