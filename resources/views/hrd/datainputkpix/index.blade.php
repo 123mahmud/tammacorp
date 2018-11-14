@@ -298,6 +298,8 @@
                   +'<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
                     +'<div class="form-group">'
                       +'<input type="text" id="value_kpi" name="value_kpix[]" class="form-control input-sm" placeholder="Realisasi......">'
+                      +'<input type="hidden" id="bobot_kpi" name="bobot_kpix[]" class="form-control input-sm" value="'+response.kpi[key-1].kpix_bobot+'">'
+                      +'<input type="hidden" id="target_kpi" name="target_kpix[]" class="form-control input-sm" value="'+response.kpi[key-1].kpix_target+'">'
                       +'<input type="hidden" id="index_kpi" name="index_kpix[]" class="form-control input-sm" value="'+response.kpi[key-1].kpix_id+'">'
                     +'</div>'
                   +'</div>');
@@ -485,6 +487,8 @@
                   +'<div class="form-group">'
                     +'<input type="text" id="e_value_kpi" name="e_value_kpix[]" class="form-control input-sm" value="'+response.data[key-1].d_kpixdt_value+'">'
                     +'<input type="hidden" id="e_index_kpi" name="e_index_kpix[]" class="form-control input-sm" value="'+response.data[key-1].kpix_id+'">'
+                    +'<input type="hidden" id="e_bobot_kpi" name="e_bobot_kpix[]" class="form-control input-sm" value="'+response.kpi[key-1].kpix_bobot+'">'
+                    +'<input type="hidden" id="e_target_kpi" name="e_target_kpix[]" class="form-control input-sm" value="'+response.kpi[key-1].kpix_target+'">'
                     +'<input type="hidden" id="e_dt" name="e_index_dt[]" class="form-control input-sm" value="'+response.data[key-1].d_kpixdt_id+'">'
                   +'</div>'
                 +'</div>');

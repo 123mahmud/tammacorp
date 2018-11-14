@@ -194,18 +194,26 @@ class DkpixController extends Controller
             $kpix->d_kpix_pid = $request->pegawai;
             $kpix->d_kpix_date = date('Y-m-d',strtotime($request->tglKpix));
             $kpix->d_kpix_created = Carbon::now('Asia/Jakarta');
-            $kpix->save();
 
             for ($i=0; $i < count($request->value_kpix); $i++) 
             { 
+                $skor = (int)($request->target_kpix[$i] / (int)$request->value_kpix[$i]) * 100;
+                $skor_akhir = $skor * (int)$request->bobot_kpix[$i] / 100;
                 d_kpix_dt::insert([
                             'd_kpixdt_dkpix_id' => $lastId,
                             'd_kpixdt_mkpix_id' => $request->index_kpix[$i],
-                            'd_kpixdt_value' => strtoupper($request->value_kpix[$i]),
+                            'd_kpixdt_value' => $request->value_kpix[$i],
+                            'd_kpixdt_score' => $skor,
+                            'd_kpixdt_scoreakhir' => $skor_akhir,
                             'd_kpixdt_created' => Carbon::now('Asia/Jakarta')
                         ]);
+
+                $skor_akhir += $skor_akhir;
             }
-                   
+
+            $kpix->d_kpix_scoretotal = $skor_akhir;
+            $kpix->save();
+
             DB::commit();
             return response()->json([
                 'status' => 'sukses',
@@ -279,16 +287,23 @@ class DkpixController extends Controller
             $d_kpix = d_kpix::find($request->e_old);
             $d_kpix->d_kpix_date = date('Y-m-d',strtotime($request->eTglKpix));
             $d_kpix->d_kpix_updated = $tanggal;
-            $d_kpix->save();
 
             for ($i=0; $i < count($request->e_value_kpix); $i++) 
             { 
+                $skor = (int)($request->e_target_kpix[$i] / (int)$request->e_value_kpix[$i]) * 100;
+                $skor_akhir = $skor * (int)$request->e_bobot_kpix[$i] / 100;
                 d_kpix_dt::where('d_kpixdt_id','=',$request->e_index_dt[$i])
                         ->update([
                             'd_kpixdt_value' => strtoupper($request->e_value_kpix[$i]),
-                            'd_kpixdt_updated' => Carbon::now('Asia/Jakarta')
+                            'd_kpixdt_score' => $skor,
+                            'd_kpixdt_scoreakhir' => $skor_akhir,
+                            'd_kpixdt_updated' => Carbon::now('Asia/Jakarta'),
                         ]);
+                $skor_akhir += $skor_akhir;
             }
+
+            $kpix->d_kpix_scoretotal = $skor_akhir;
+            $kpix->save();
 
             DB::commit();
             return response()->json([
