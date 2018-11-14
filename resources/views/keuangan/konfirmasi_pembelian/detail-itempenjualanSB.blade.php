@@ -59,8 +59,37 @@
                   </div>
                 </div>
 
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                  <label class="tebal">Status:</label>
+                </div>
+
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                  <div class="form-group">
+                    <select name="statusReturnConfirm" id="status_return_confirm" class="form-control input-sm">
+                        @if ($data[0]->dsr_status == 'WT')
+                            <option value="WT" selected>Waiting</option>
+                            <option value="TL">Di Tolak</option>
+                            <option value="TR">Terima</option>
+                        @elseif ($data[0]->dsr_status == 'TL')
+                            <option value="WT">Waiting</option>
+                            <option value="TL" selected>Di Tolak</option>
+                            <option value="TR">Terima</option>
+                        @else
+                            <option value="WT">Waiting</option>
+                            <option value="TL">Di Tolak</option>
+                            <option value="TR" selected>Terima</option>
+                        @endif
+                  
+                </select>
+              </div>
+            </div>
+
               </div>
     {{-- </div> --}}
+
+    <div class="col-md-3 col-sm-12 col-xs-12">
+        <label class="tebal">Tabel Nota Lama :</label>
+    </div>
 
     <table class="table tabelan table-bordered table-hover" id="TbDtDetail">
         <thead>
@@ -118,18 +147,49 @@
     @endforeach
     </tbody>
     </table>
+
+
+    @if ($data[0]->dsr_method == 'SB')
+    <div class="col-md-3 col-sm-12 col-xs-12">
+        <label class="tebal">Tabel Salah Barang :</label>
+    </div>
+    @else
+    <div class="col-md-3 col-sm-12 col-xs-12">
+        <label class="tebal">Item Akan Di kirim :</label>
+    </div>
+    @endif
+
+    <table class="table tabelan table-bordered table-hover" id="TbDtDetailSB">
+        <thead>
+            <tr>
+                <th width="60%">Nama</th>
+                <th width="20%">Jumlah</th>
+                <th width="20%">Satuan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($dataSB as $SB)
+            <tr>
+                <td>{{ $SB->i_name }}</td>
+                <td><span class="pull-right">
+                        {{ $SB->dsrs_qty }}
+                    </span>
+                </td>
+                <td>{{ $SB->m_sname }}</td>
+            </tr>
+            @endforeach
+            
+        </tbody>
+    </table>
+
     <div class="modal-footer">
 
-        @if ($data[0]->dsr_status == 'TR')
-            <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
-        @endif
-        @if ($data[0]->dsr_status == 'FN')
-            <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>
-        @endif
+        <button type="button" class="btn btn-info" onclick="submitReturnPenjualan({{ $data[0]->dsr_id }})" id="button_confirm_return">Konfirmasi</button>
         
         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
     </div>
 
 <script>
 $('#TbDtDetail').DataTable();
+$('#TbDtDetailSB').DataTable();
 </script>

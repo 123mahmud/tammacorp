@@ -4909,6 +4909,21 @@ a.label:focus {
 .label-danger[href]:focus {
   background-color: #c9302c;
 }
+.label-orange {
+  background-color: #ff6a00;
+}
+.label-orange[href]:hover,
+.label-orange[href]:focus {
+  background-color: #5e5e5e;
+}
+.label-purple {
+  background-color: #8d10dc;
+}
+.label-purple[href]:hover,
+.label-purple[href]:focus {
+  background-color: #5e5e5e;
+}
+
 .badge {
   display: inline-block;
   min-width: 10px;

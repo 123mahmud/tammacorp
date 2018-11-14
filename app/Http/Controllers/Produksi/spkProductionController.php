@@ -216,8 +216,9 @@ class spkProductionController extends Controller
     public function ubahStatusSpk($spk_id)
     {
         // return json_encode("asd");
-
-        d_productplan::where('pp_id', $spk_id)
+        $status = d_spk::where('spk_id', $spk_id)
+                ->first();
+        d_productplan::where('pp_id', $status->spk_ref)
             ->update([
                 'pp_isspk' => 'C'
             ]);

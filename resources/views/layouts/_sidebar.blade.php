@@ -407,8 +407,8 @@
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Laporan Pembelian','ma_read'))
-                                    <li class="{{ Request::is('purchasing/lapbeli/index') ? 'active' : '' || Request::is('purchasing/lapbeli/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/purchasing/lapbeli/pembelian') }}"><span
+                                    <li class="{{ Request::is('purchasing/lap-pembelian/index') ? 'active' : '' || Request::is('purchasing/lap-pembelian/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/purchasing/lap-pembelian/index') }}"><span
                                                     class="submenu-title">Laporan Pembelian</span><span class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif

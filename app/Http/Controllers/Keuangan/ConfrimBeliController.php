@@ -17,6 +17,7 @@ use App\d_purchasingreturn_dt;
 use App\d_purchasingharian;
 use App\d_purchasingharian_dt;
 use App\d_sales_return;
+use App\d_sales_returnsb;
 
 class ConfrimBeliController extends Controller
 {
@@ -1040,7 +1041,19 @@ class ConfrimBeliController extends Controller
         })
 
     ->addColumn('action', function($data){
-        return  '<div class="text-center">
+         if ($data->dsr_method == 'SB' || $data->dsr_method == 'SA') {
+          return  '<div class="text-center">
+                    <button type="button"
+                        class="btn btn-primary fa fa-check btn-sm"
+                        title="detail"
+                        data-toggle="modal"
+                        onclick="lihatDetailSB('.$data->dsr_id.')"
+                        data-target="#myItemSB">
+                    </button>';
+
+         }else{
+
+          return  '<div class="text-center">
                     <button type="button"
                         class="btn btn-primary fa fa-check btn-sm"
                         title="detail"
@@ -1048,6 +1061,8 @@ class ConfrimBeliController extends Controller
                         onclick="lihatDetail('.$data->dsr_id.')"
                         data-target="#myItem">
                     </button>';
+         }
+        
          
           })
     ->rawColumns(['dsr_date','dsr_status','dsr_method','dsr_jenis_return','action'])
@@ -1082,6 +1097,45 @@ class ConfrimBeliController extends Controller
       // dd($data);
 
     return view('keuangan.konfirmasi_pembelian.detail-itempenjualan',compact('data'));
+  }
+
+  public function detailSB(Request $request){
+    $data = d_sales_return::select('c_name',
+                                  's_note',
+                                  'dsr_price_return',
+                                  'dsr_sgross',
+                                  'dsr_disc_value',
+                                  'dsr_net',
+                                  'i_name',
+                                  'dsrdt_qty',
+                                  'dsrdt_qty_confirm',
+                                  'm_sname',
+                                  'dsrdt_price',
+                                  'dsrdt_disc_percent',
+                                  'dsrdt_disc_value',
+                                  'dsrdt_return_price',
+                                  'dsrdt_hasil',
+                                  'dsr_status',
+                                  'dsr_id',
+                                  'dsr_method')
+      ->join('m_customer','m_customer.c_id','=','dsr_cus')
+      ->join('d_sales','d_sales.s_id','=','dsr_sid')
+      ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
+      ->join('m_item','m_item.i_id','=','dsrdt_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('dsr_id',$request->x)
+      ->get();
+
+    $dataSB = d_sales_returnsb::select('i_id',
+                                        'i_name',
+                                        'dsrs_qty',
+                                        'm_sname')
+      ->join('m_item','m_item.i_id','=','dsrs_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->get();
+      // dd($data);
+
+    return view('keuangan.konfirmasi_pembelian.detail-itempenjualanSB',compact('data','dataSB'));
   }
 
   public function updateReturnPenjualan($status, $id){

@@ -30,10 +30,89 @@
       </div>
 
       <div class="page-content fadeInRight">
+          <div class="col-lg-12" >
+                <div class="col-lg-1" >
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #777;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary waiting">{{ $waiting }}</label>
+                        waiting
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #ff6a00;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary confirm">{{ $confirm }}</label>
+                        Diseujui
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #5cb85c;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary dapat_edit">{{ $dapat_edit }}</label>
+                        dapat_edit
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #8d10dc;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary received">{{ $received }}</label>
+                        received
+                    </div>
+                </div>
+                <div class="col-lg-2" >
+                    <div style="background-color: #d9534f;color: white;" class="alert alert-primary alert-dismissible" title="DP sudah Lunas">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        <strong>NOTICE !</strong> <br>
+                        <label class="badge badge-pill badge-primary revisi">{{ $revisi }}</label>
+                        revisi
+                    </div>
+                </div>
+            </div>
         <div id="tab-general">
           <div class="row mbl">
             <div class="col-lg-12">
+              @if (count($tempo) > 0)
+                <div class="col-md-12">
+                  <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                    <div class="panel-heading">Jatuh Tempo Pengiriman
+                      <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="panel-body">
+                      @foreach ($tempo as $key => $val)
+                        <?php $key++; ?>
+                        <p>{{$key.'. '.$val->d_pcs_code.' | '.$val->s_company.' | '.date('d M Y',strtotime($val->d_pcs_duedate))}}</p>
+                      @endforeach
+                    </div>
+                  </div>
+                </div>
+              @endif
+
+              <!-- <div class="col-md-4">
+                <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                  <div class="panel-heading">Copyright Info
+                    <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  </div>
+                  <div class="panel-body">&copy; some random dude</a>
+                  </div>
+                </div>
+              </div>
               
+              <div class="col-md-4">
+                <div class="panel panel-primary copyright-wrap" id="copyright-wrap">
+                  <div class="panel-heading">Copyright Info
+                    <button type="button" class="close" data-target="#copyright-wrap" data-dismiss="alert"> <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                  </div>
+                  <div class="panel-body">&copy; some random dude</a>
+                  </div>
+                </div>
+              </div> -->
+
               <div class="col-md-12">
                 <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                 </div>
@@ -366,6 +445,20 @@
         }
       }
     });
+
+
+    $.ajax({
+        url: baseUrl + "/purchasing/orderpembelian/get-order-by-tgl-span/" + tgl1 + '/' + tgl2,
+        type: 'get',
+        success: function (response) {
+            $('.waiting').html(response.waiting);
+            $('.confirm').html(response.confirm);
+            $('.dapat_edit').html(response.dapat_edit);
+            $('.received').html(response.received);
+            $('.revisi').html(response.revisi);
+        }
+    });
+
   }
 
   function detailMasukPeritem(id) 

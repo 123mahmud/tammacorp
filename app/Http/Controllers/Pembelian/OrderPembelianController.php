@@ -24,8 +24,127 @@ class OrderPembelianController extends Controller
 
     public function order()
     {
-        return view('purchasing/orderpembelian/index');
+      $datenow = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+      $tempo = d_purchasing::join('d_supplier', 'd_purchasing.s_id', '=', 'd_supplier.s_id')
+                              ->select('d_purchasing.*','d_supplier.s_company')
+                              ->where(function ($data) use ($datenow) {
+                                $data->where('d_purchasing.d_pcs_method', '=', 'DEPOSIT');
+                                $data->where('d_purchasing.d_pcs_status', '=', 'WT');
+                                $data->whereDate('d_purchasing.d_pcs_duedate', '>', $datenow);
+                              })->get();
+      
+
+      $tgl2 = date("d-m-Y");
+      $tgl1 = date('d-m-Y', strtotime("-30 day"));
+
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      $waiting = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              // ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','WT')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $confirm = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              // ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','CF')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $dapat_edit = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','DE')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $received = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','RC')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $revisi = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','RV')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $parsing = [
+        'tempo' => $tempo,
+        'waiting'=>$waiting,
+        'confirm'=>$confirm,
+        'dapat_edit'=>$dapat_edit,
+        'received'=>$received,
+        'revisi'=>$revisi
+      ];
+
+      // return $parsing;
+
+      return view('purchasing/orderpembelian/index', $parsing);
     }
+
+    public function getOrderByTglspan($tgl1,$tgl2)
+  {
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      $waiting = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              // ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','WT')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $confirm = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              // ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','CF')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $dapat_edit = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','DE')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $received = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','RC')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+      $revisi = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_status','RV')
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+              ->count();
+
+        return response()->json(['waiting'=>$waiting,'confirm'=>$confirm,'dapat_edit'=>$dapat_edit,'received'=>$received,'revisi'=>$revisi]);
+  }
 
     public function tambah_order()
     {
@@ -578,7 +697,6 @@ class OrderPembelianController extends Controller
 
       DB::beginTransaction();
       try {
-        
           //insert to table d_purchasing
           $dataHeader = new d_purchasing;
           $dataHeader->d_pcsp_id = $request->cariKodePlan;
@@ -635,7 +753,22 @@ class OrderPembelianController extends Controller
           $dataIsi->d_pcsdt_total = str_replace($old_str, $new_str, $request->fieldHargaTotal[$i]);
           $dataIsi->d_pcsdt_created = Carbon::now();
           $dataIsi->save();
-        } 
+        }
+
+        //update TOP/DEPOSIT d_supplier
+        if ($request->methodBayar == 'DEPOSIT') {
+          DB::table('d_supplier')
+              ->where('s_id', $request->cariSup)
+              ->update([
+                's_deposit' => date('Y-m-d',strtotime($request->apdTgl))
+              ]);
+        }elseif($request->methodBayar == 'CREDIT'){
+          DB::table('d_supplier')
+              ->where('s_id', $request->cariSup)
+              ->update([
+                's_top' => date('Y-m-d',strtotime($request->apdTgl))
+              ]);
+        }
         
       DB::commit();
       return response()->json([
