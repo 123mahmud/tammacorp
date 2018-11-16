@@ -20,7 +20,7 @@
             <div class="news-update-box hidden-xs"><span class="text-uppercase mrm pull-left text-white">News:</span>
             </div>
             <ul class="nav navbar navbar-top-links navbar-right mbn">
-                <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
+                {{-- <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
                                 class="fa fa-bell fa-fw"></i><span class="badge badge-green">!</span></a>
                     <ul class="dropdown-menu dropdown-user pull-right">
                         <li style="padding-left: 10px;"><h4>Notifikasi</h4></li>
@@ -56,7 +56,7 @@
                         <li class="divider"></li>
                         <li><a style="font-weight: bold;" href="#">5 Tugas Baru</a></li>
                     </ul>
-                </li>
+                </li> --}}
                 <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
                         @if(Auth::user()->m_username == 'Toni' && is_null(Auth::user()->m_pegawai_id))
                             <img src="{{ asset('assets/images/avatar/49.jpg')}}" alt="" class="img-responsive img-circle">
