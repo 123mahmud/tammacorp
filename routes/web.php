@@ -1328,6 +1328,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
     Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
     Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
+//mahmud master divisi dan posii
+    Route::get('/master/divisi/pos/index', 'Master\DivisiposController@index');
+    Route::get('/master/divisi/pos/table', 'Master\DivisiposController@tableDivisi');
+    Route::get('/master/divisi/pos/edit/{id}', 'Master\DivisiposController@editDivisi');
+    Route::post('/master/divisi/pos/updatedivisi/{id}', 'Master\DivisiposController@updateDivisi');
+    Route::get('/master/divisi/posisi/table', 'Master\DivisiposController@tablePosisi');
+    Route::get('/master/divisi/posisi/edit/{id}', 'Master\DivisiposController@editPosisi');
+    Route::post('/master/divisi/posisi/update/{id}', 'Master\DivisiposController@updatePosisi');
+    Route::get('/master/divisi/pos/tambahposisi/index', 'Master\DivisiposController@tambahPosisi');
+    Route::get('/master/divisi/pos/tambahposisi', 'Master\DivisiposController@savePosisi');
+    Route::get('/master/divisi/pos/tambahdivisi', 'Master\DivisiposController@tambahDivisi');
+    Route::get('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
+    Route::get('/master/divisi/pos/hapusdivisi/{id}', 'Master\DivisiposController@hapusDivisi');
+    Route::get('/master/divisi/pos/hapusposisi/{id}', 'Master\DivisiposController@hapusPosisi');
+   
 //Master data Scoreboard
     Route::get('/master/datascore/index', 'Master\ScoreController@index');
     Route::get('/master/datascore/tambah-score', 'Master\ScoreController@tambah_score');
