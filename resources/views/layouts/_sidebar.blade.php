@@ -167,6 +167,10 @@
                                         Data Pegawai
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Divisi & Posisi','ma_read'))
+                                        Data Divisi & Posisi
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                         Data Lowongan
                                     @endif
@@ -248,6 +252,12 @@
                                     </li>
                                 @endif
 
+                                @if(Auth::user()->punyaAkses('Data Divisi & Posisi','ma_read'))
+                                    <li class="{{ Request::is('master/divisi/pos/index') ? 'active' : '' || Request::is('master/divisi/pos/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/divisi/pos/index') }}"><span class="submenu-title">Data Divisi & Posisi</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                     <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
