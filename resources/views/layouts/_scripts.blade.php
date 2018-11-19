@@ -13,7 +13,7 @@
     <script src="{{ asset ('assets/script/jquery.cookie.js') }}"></script>
   {{--   <script src="{{ asset ('assets/script/icheck.min.js') }}"></script> --}}
     <script src="{{ asset ('assets/script/custom.min.js') }}"></script>
-    <script src="{{ asset ('assets/script/jquery.news-ticker.js') }}"></script>
+    {{-- <script src="{{ asset ('assets/script/jquery.news-ticker.js') }}"></script> --}}
     <script src="{{ asset ('assets/script/jquery.menu.js') }}"></script>
     <script src="{{ asset ('assets/script/pace.min.js') }}"></script>
     <script src="{{ asset ('assets/script/holder.js') }}"></script>
