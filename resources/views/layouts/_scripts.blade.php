@@ -24,7 +24,7 @@
     <script src="{{ asset ('assets/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset ('assets/select2/select2.min.js') }}"></script>
     <!--LOADING SCRIPTS FOR CHAfRTS-->
-    <script src="{{ asset ('assets/script/highcharts.js') }}"></script>
+   {{--  <script src="{{ asset ('assets/script/highcharts.js') }}"></script>
     <script src="{{ asset ('assets/script/data.js') }}"></script>
     <script src="{{ asset ('assets/script/drilldown.js') }}"></script>
     <script src="{{ asset ('assets/script/exporting.js') }}"></script>
@@ -34,7 +34,7 @@
     <script src="{{ asset ('assets/script/chartjs/Chart.bundle.js') }}"></script>
     <script src="{{ asset ('assets/script/chartjs/Chart.bundle.min.js') }}"></script>
     <script src="{{ asset ('assets/script/chartjs/Chart.js') }}"></script>
-    <script src="{{ asset ('assets/script/chartjs/Chart.min.js') }}"></script>
+    <script src="{{ asset ('assets/script/chartjs/Chart.min.js') }}"></script> --}}
     <!--CORE JAVASCRIPT-->
     <script src="{{ asset ('assets/script/main.js') }}"></script>
     <!-- End core -->
