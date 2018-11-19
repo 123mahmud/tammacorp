@@ -9,6 +9,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use DataTables;
 use URL;
+use App\d_stock_mutation;
 
 // use App\mmember
 
@@ -151,15 +152,67 @@ class barangController extends Controller
             {
                 //get last id
                 $id_stock = DB::table('d_stock')->max('s_id') + 1;
+                if ($request->type == "BJ") {
+                    DB::table('d_stock')->insert([
+                        's_id' => $id_stock,
+                        's_comp' => $s_comp,
+                        's_position' => $s_position,
+                        's_item' => $get_itemid->i_id,
+                        's_qty' => 0,
+                        's_qty_min' => $request->min_stock,
+                    ]);
+                    d_stock_mutation::insert([
+                        'sm_stock' => $id_stock,
+                        'sm_detailid' => '1',
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => $s_comp,
+                        'sm_position' => $s_position,
+                        'sm_mutcat' => '9',
+                        'sm_item' => $get_itemid->i_id,
+                        'sm_qty' => '0',
+                        'sm_qty_used' => '0',
+                        'sm_qty_sisa' => '0',
+                        'sm_qty_expired' => '0',
+                        'sm_detail' => 'PENAMBAHAN',
+                        'sm_insert' => Carbon::now()
+                      ]);
+
+                    DB::table('d_stock')->insert([
+                        's_id' => $id_stock + 1,
+                        's_comp' => '1',
+                        's_position' => '1',
+                        's_item' => $get_itemid->i_id,
+                        's_qty' => 0,
+                        's_qty_min' => $request->min_stock,
+                    ]);
+                    d_stock_mutation::insert([
+                        'sm_stock' => $id_stock + 1,
+                        'sm_detailid' => '1',
+                        'sm_date' => Carbon::now(),
+                        'sm_comp' => '1',
+                        'sm_position' => '1',
+                        'sm_mutcat' => '9',
+                        'sm_item' => $get_itemid->i_id,
+                        'sm_qty' => '0',
+                        'sm_qty_used' => '0',
+                        'sm_qty_sisa' => '0',
+                        'sm_qty_expired' => '0',
+                        'sm_detail' => 'PENAMBAHAN',
+                        'sm_insert' => Carbon::now()
+                      ]);
+                }else{
                 //insert value ke tbl d_stock
-                DB::table('d_stock')->insert([
-                    's_id' => $id_stock,
-                    's_comp' => $s_comp,
-                    's_position' => $s_position,
-                    's_item' => $get_itemid->i_id,
-                    's_qty' => 0,
-                    's_qty_min' => $request->min_stock,
-                ]);
+                    DB::table('d_stock')->insert([
+                        's_id' => $id_stock,
+                        's_comp' => $s_comp,
+                        's_position' => $s_position,
+                        's_item' => $get_itemid->i_id,
+                        's_qty' => 0,
+                        's_qty_min' => $request->min_stock,
+                    ]);
+                }
+                
+                
             } 
         
             DB::commit();
