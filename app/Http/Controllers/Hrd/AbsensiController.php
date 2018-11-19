@@ -173,20 +173,38 @@ class AbsensiController extends Controller
       $data = Excel::load($path, function($reader){})->get();
       if (!empty($data) && $data->count()) {
         foreach ($data as $key => $value) {
-          $absensi = new abs_pegawai_man();
-          $absensi->apm_pm = $value->id_manajemen;
-          $absensi->apm_tanggal = $value->tanggal;
-          $absensi->apm_jam_kerja = $value->jam_kerja;
-          $absensi->apm_jam_masuk = $value->jam_masuk;
-          $absensi->apm_jam_pulang = $value->jam_pulang;
-          $absensi->apm_scan_masuk = $value->scan_masuk;
-          $absensi->apm_scan_pulang = $value->scan_pulang;
-          $absensi->apm_terlambat = $value->terlambat;
-          $absensi->apm_plg_cepat = $value->plg_cepat;
-          $absensi->apm_absent = $value->absent;
-          $absensi->apm_lembur = $value->lembur;
-          $absensi->apm_jml_jamkerja = $value->jml_jam_kerja;
-          $absensi->save();
+          $cek = abs_pegawai_man::where('apm_pm',$value->id_manajemen)
+                    ->where('apm_tanggal',$value->tanggal)
+                    ->first();
+          if ($cek == null) {
+            $absensi = new abs_pegawai_man();
+            $absensi->apm_pm = $value->id_manajemen;
+            $absensi->apm_tanggal = $value->tanggal;
+            $absensi->apm_jam_kerja = $value->jam_kerja;
+            $absensi->apm_jam_masuk = $value->jam_masuk;
+            $absensi->apm_jam_pulang = $value->jam_pulang;
+            $absensi->apm_scan_masuk = $value->scan_masuk;
+            $absensi->apm_scan_pulang = $value->scan_pulang;
+            $absensi->apm_terlambat = $value->terlambat;
+            $absensi->apm_plg_cepat = $value->plg_cepat;
+            $absensi->apm_absent = $value->absent;
+            $absensi->apm_lembur = $value->lembur;
+            $absensi->apm_jml_jamkerja = $value->jml_jam_kerja;
+            $absensi->save();
+          }else{
+            $cek->update([
+                'apm_jam_kerja' => $value->jam_kerja,
+                'apm_jam_masuk' => $value->jam_masuk,
+                'apm_jam_pulang' => $value->jam_pulang,
+                'apm_scan_masuk' => $value->scan_masuk,
+                'apm_scan_pulang' => $value->scan_pulang,
+                'apm_terlambat' => $value->terlambat,
+                'apm_plg_cepat' => $value->plg_cepat,
+                'apm_absent' => $value->absent,
+                'apm_lembur' => $value->lembur,
+                'apm_jml_jamkerja' => $value->jml_jam_kerja
+            ]);
+          }
         }
       }
     }
@@ -200,20 +218,39 @@ class AbsensiController extends Controller
       $data = Excel::load($path, function($reader){})->get();
       if (!empty($data) && $data->count()) {
         foreach ($data as $key => $value) {
-          $absensi = new abs_pegawai_pro();
-          $absensi->app_pp = $value->id_produksi;
-          $absensi->app_tanggal = $value->tanggal;
-          $absensi->app_jam_kerja = $value->jam_kerja;
-          $absensi->app_jam_masuk = $value->jam_masuk;
-          $absensi->app_jam_pulang = $value->jam_pulang;
-          $absensi->app_scan_masuk = $value->scan_masuk;
-          $absensi->app_scan_pulang = $value->scan_pulang;
-          $absensi->app_terlambat = $value->terlambat;
-          $absensi->app_plg_cepat = $value->plg_cepat;
-          $absensi->app_absent = $value->absent;
-          $absensi->app_lembur = $value->lembur;
-          $absensi->app_jml_jamkerja = $value->jml_jam_kerja;
-          $absensi->save();
+          $cek = abs_pegawai_pro::where('app_pp',$value->id_produksi)
+                    ->where('app_tanggal',$value->tanggal)
+                    ->first();
+          if ($cek == null) {
+            $absensi = new abs_pegawai_pro();
+            $absensi->app_pp = $value->id_produksi;
+            $absensi->app_tanggal = $value->tanggal;
+            $absensi->app_jam_kerja = $value->jam_kerja;
+            $absensi->app_jam_masuk = $value->jam_masuk;
+            $absensi->app_jam_pulang = $value->jam_pulang;
+            $absensi->app_scan_masuk = $value->scan_masuk;
+            $absensi->app_scan_pulang = $value->scan_pulang;
+            $absensi->app_terlambat = $value->terlambat;
+            $absensi->app_plg_cepat = $value->plg_cepat;
+            $absensi->app_absent = $value->absent;
+            $absensi->app_lembur = $value->lembur;
+            $absensi->app_jml_jamkerja = $value->jml_jam_kerja;
+            $absensi->save();
+          }else{
+            $cek->update([
+              'app_jam_kerja' => $value->jam_kerja,
+              'app_jam_masuk' => $value->jam_masuk,
+              'app_jam_pulang' => $value->jam_pulang,
+              'app_scan_masuk' => $value->scan_masuk,
+              'app_scan_pulang' => $value->scan_pulang,
+              'app_terlambat' => $value->terlambat,
+              'app_plg_cepat' => $value->plg_cepat,
+              'app_absent' => $value->absent,
+              'app_lembur' => $value->lembur,
+              'app_jml_jamkerja' => $value->jml_jam_kerja
+            ]);
+          }
+          
         }
       }
     }
