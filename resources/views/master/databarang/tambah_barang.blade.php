@@ -373,8 +373,8 @@
 
 
     $('#change_function').on("click", "#save_data",function(){
-      alert('s');
       var IsValid = $("form[name='formTambahBarang']").valid();
+      alert(IsValid);
       if(IsValid){
         $.ajax({
           type: "POST",
