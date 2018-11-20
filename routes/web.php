@@ -447,6 +447,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
     Route::post('/import/data-manajemen', 'Hrd\AbsensiController@importDataManajemen');
     Route::post('/import/data-produksi', 'Hrd\AbsensiController@importDataProduksi');
+    Route::get('/export/id-manajemen', 'Hrd\AbsensiController@exportManajemen');
+    Route::get('/export/id-produksi', 'Hrd\AbsensiController@exportProduksi');
 /*hasil Pengerjaan Produksi*/
     Route::get('/hrd/hasilproduksi/index', 'Hrd\HproduksiController@index');
     Route::get('/hrd/hasilproduksi/get-hasil-by-tgl/{tgl1}/{tgl2}', 'Hrd\HproduksiController@getHasilByTgl');

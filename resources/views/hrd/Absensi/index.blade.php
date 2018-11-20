@@ -45,7 +45,7 @@
 
                     <div class="panel-body">
                     		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/contoh-master-manajemen.xlsx')}}');"><button class="btn btn-success">Download Contoh Master</button></a>
-                    		<a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/absensi-manajemen/id-manajemen.xlsx')}}');"><button class="btn btn-success">Download ID Manajemen</button></a>
+                        <a href="{{ url('/export/id-manajemen') }}"><button class="btn btn-success">Download ID Manajemen</button></a>
                     		<form
                           style="border: 4px solid #a1a1a1;margin-top: 15px;padding: 10px;     margin-bottom: 16px;"
                           action="{{url('/import/data-manajemen')}}"
