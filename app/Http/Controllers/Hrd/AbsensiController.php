@@ -11,6 +11,7 @@ use DB;
 use Response;
 use App\Http\Requests;
 use App\m_pegawai_man;
+use App\m_pegawai_pro;
 use App\m_divisi;
 use App\m_produksi;
 use App\abs_pegawai_man;
@@ -256,5 +257,23 @@ class AbsensiController extends Controller
     }
 
     return back();
+  }
+
+  public function exportManajemen(){
+    $manajemen = m_pegawai_man::select('c_id','c_nama')->get();
+    return Excel::create('id_manajemen', function($excel) use ($manajemen){
+      $excel->sheet('mysheet', function($sheet) use ($manajemen){
+        $sheet->fromArray($manajemen);
+      });
+    })->download('xls');
+  }
+
+  public function exportProduksi(){
+    $produksi = m_pegawai_pro::select('c_id','c_nama')->get();
+    return Excel::create('id_produksi', function($excel) use ($produksi){
+      $excel->sheet('mysheet', function($sheet) use ($produksi){
+        $sheet->fromArray($produksi);
+      });
+    })->download('xls');
   }
 }
