@@ -80,6 +80,18 @@ class GajiController extends Controller
                       </span>
                     </div>';
                 })
+                ->addColumn('c_status', function ($data) {
+                    if ($data->c_status == 'GR') {
+                        return '<div>
+                                    Garapan
+                                </div>';
+                    }else{
+                        return '<div>
+                                    Absensi
+                                </div>';
+                    }
+                    
+                })
                 ->addColumn('jabatan', function ($data) {
                     if ($data->c_gaji_jabatan != null) 
                     {
@@ -107,7 +119,7 @@ class GajiController extends Controller
                       </span>
                     </div>';
                 })
-                ->rawColumns(['action','lembur','jabatan','gaji'])
+                ->rawColumns(['action','lembur','jabatan','gaji','c_status'])
                 ->make(true);
     }
     public function potonganData(){
@@ -151,6 +163,7 @@ class GajiController extends Controller
         return view('hrd/payroll/tambah_set_produksi');
     }
     public function simpanGajiPro(Request $request){
+        // dd($request->all());
         $input = $request->all();
         $data = GajiProduksi::create($input);
         
@@ -182,6 +195,7 @@ class GajiController extends Controller
         m_gaji_pro::where('c_id', $id)
             ->update([
                 'nm_gaji' => $request->nm_gaji,
+                'c_status' => $request->c_status,
                 'c_gaji' => $request->c_gaji,
                 'c_lembur' => $request->c_lembur,
                 'c_gaji_jabatan' => $tunjangan,
