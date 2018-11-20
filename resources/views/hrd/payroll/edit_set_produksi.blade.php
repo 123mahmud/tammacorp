@@ -67,7 +67,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Jenis Gaji</label>
+                        <label class="tebal">Jenis Gaji:</label>
                       </div>
                       <div class="col-md-10 col-sm-8 col-xs-12">
                         <div class="form-group">
