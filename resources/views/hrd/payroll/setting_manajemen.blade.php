@@ -149,6 +149,7 @@
                                 <th class="wd-15p">Gaji</th>
                                 <th class="wd-15p">Lembur</th>
                                 <th class="wd-15p">Jabatan</th>
+                                <th class="wd-15p">Jenis</th>
                                 <th class="wd-15p">Aksi</th>
                               </tr>
                             </thead>
@@ -315,6 +316,7 @@
             { "data": "gaji" },
             { "data": "lembur" },
             { "data": "jabatan" },
+            { "data": "c_status" },
             { "data": "action" }
           ],
           "responsive": true,

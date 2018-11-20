@@ -67,6 +67,22 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">Jenis Gaji</label>
+                      </div>
+                      <div class="col-md-10 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <select class="form-control form-control-sm" name="c_status">
+                            @if ($data->c_status == 'HR')
+                               <option value="HR">Harian</option>
+                               <option value="GR">Garapan</option>
+                            @else
+                              <option value="GR">Garapan</option>
+                              <option value="HR">Harian</option>
+                            @endif
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">Untuk Jabatan:</label>
                       </div>
                       <div class="col-md-10 col-sm-8 col-xs-12" style="margin-bottom:20px">
