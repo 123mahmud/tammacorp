@@ -11,7 +11,7 @@ use DB;
 class penerimaan_piutang_controller extends Controller
 {
     public function index(){
-    	return view('Keuangan.penerimaan_piutang.index');
+    	return view('keuangan.penerimaan_piutang.index');
     }
 
     public function form_resource(){

@@ -24,6 +24,7 @@ class GarapanPegawaiController extends Controller
       $staff['id'] = Auth::User()->m_id;
       $m_gaji_pro = m_gaji_pro::select('c_id',
         'nm_gaji')
+        ->where('c_status','GR')
         ->get();
       $c_jabatan_pro = m_jabatan_pro::all();
       return view('produksi.Garapan.index',compact('produksi','staff','m_gaji_pro','c_jabatan_pro'));

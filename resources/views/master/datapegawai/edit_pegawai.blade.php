@@ -204,6 +204,9 @@
                             <option>--pilih pendidikan--</option>
                             <option value="S2" <?php if($data->c_pendidikan == "S2"){ echo "selected"; }?>>S2</option>
                             <option value="S1" <?php if($data->c_pendidikan == "S1"){ echo "selected"; }?>>S1</option>
+                            <option value="D3" <?php if($data->c_pendidikan == "D3"){ echo "selected"; }?>>D3</option>
+                            <option value="D2" <?php if($data->c_pendidikan == "D2"){ echo "selected"; }?>>D2</option>
+                            <option value="D1" <?php if($data->c_pendidikan == "D1"){ echo "selected"; }?>>S1</option>
                             <option value="SMA" <?php if($data->c_pendidikan == "SMA"){ echo "selected"; }?>>SMA</option>
                             <option value="SMP" <?php if($data->c_pendidikan == "SMP"){ echo "selected"; }?>>SMP</option>
                             <option value="SD" <?php if($data->c_pendidikan == "SD"){ echo "selected"; }?>>SD</option>

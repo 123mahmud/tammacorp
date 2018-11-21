@@ -11,6 +11,7 @@ use DB;
 use Response;
 use App\Http\Requests;
 use App\m_pegawai_man;
+use App\m_pegawai_pro;
 use App\m_divisi;
 use App\m_produksi;
 use App\abs_pegawai_man;
@@ -173,20 +174,38 @@ class AbsensiController extends Controller
       $data = Excel::load($path, function($reader){})->get();
       if (!empty($data) && $data->count()) {
         foreach ($data as $key => $value) {
-          $absensi = new abs_pegawai_man();
-          $absensi->apm_pm = $value->id_manajemen;
-          $absensi->apm_tanggal = $value->tanggal;
-          $absensi->apm_jam_kerja = $value->jam_kerja;
-          $absensi->apm_jam_masuk = $value->jam_masuk;
-          $absensi->apm_jam_pulang = $value->jam_pulang;
-          $absensi->apm_scan_masuk = $value->scan_masuk;
-          $absensi->apm_scan_pulang = $value->scan_pulang;
-          $absensi->apm_terlambat = $value->terlambat;
-          $absensi->apm_plg_cepat = $value->plg_cepat;
-          $absensi->apm_absent = $value->absent;
-          $absensi->apm_lembur = $value->lembur;
-          $absensi->apm_jml_jamkerja = $value->jml_jam_kerja;
-          $absensi->save();
+          $cek = abs_pegawai_man::where('apm_pm',$value->id_manajemen)
+                    ->where('apm_tanggal',$value->tanggal)
+                    ->first();
+          if ($cek == null) {
+            $absensi = new abs_pegawai_man();
+            $absensi->apm_pm = $value->id_manajemen;
+            $absensi->apm_tanggal = $value->tanggal;
+            $absensi->apm_jam_kerja = $value->jam_kerja;
+            $absensi->apm_jam_masuk = $value->jam_masuk;
+            $absensi->apm_jam_pulang = $value->jam_pulang;
+            $absensi->apm_scan_masuk = $value->scan_masuk;
+            $absensi->apm_scan_pulang = $value->scan_pulang;
+            $absensi->apm_terlambat = $value->terlambat;
+            $absensi->apm_plg_cepat = $value->plg_cepat;
+            $absensi->apm_absent = $value->absent;
+            $absensi->apm_lembur = $value->lembur;
+            $absensi->apm_jml_jamkerja = $value->jml_jam_kerja;
+            $absensi->save();
+          }else{
+            $cek->update([
+                'apm_jam_kerja' => $value->jam_kerja,
+                'apm_jam_masuk' => $value->jam_masuk,
+                'apm_jam_pulang' => $value->jam_pulang,
+                'apm_scan_masuk' => $value->scan_masuk,
+                'apm_scan_pulang' => $value->scan_pulang,
+                'apm_terlambat' => $value->terlambat,
+                'apm_plg_cepat' => $value->plg_cepat,
+                'apm_absent' => $value->absent,
+                'apm_lembur' => $value->lembur,
+                'apm_jml_jamkerja' => $value->jml_jam_kerja
+            ]);
+          }
         }
       }
     }
@@ -200,24 +219,61 @@ class AbsensiController extends Controller
       $data = Excel::load($path, function($reader){})->get();
       if (!empty($data) && $data->count()) {
         foreach ($data as $key => $value) {
-          $absensi = new abs_pegawai_pro();
-          $absensi->app_pp = $value->id_produksi;
-          $absensi->app_tanggal = $value->tanggal;
-          $absensi->app_jam_kerja = $value->jam_kerja;
-          $absensi->app_jam_masuk = $value->jam_masuk;
-          $absensi->app_jam_pulang = $value->jam_pulang;
-          $absensi->app_scan_masuk = $value->scan_masuk;
-          $absensi->app_scan_pulang = $value->scan_pulang;
-          $absensi->app_terlambat = $value->terlambat;
-          $absensi->app_plg_cepat = $value->plg_cepat;
-          $absensi->app_absent = $value->absent;
-          $absensi->app_lembur = $value->lembur;
-          $absensi->app_jml_jamkerja = $value->jml_jam_kerja;
-          $absensi->save();
+          $cek = abs_pegawai_pro::where('app_pp',$value->id_produksi)
+                    ->where('app_tanggal',$value->tanggal)
+                    ->first();
+          if ($cek == null) {
+            $absensi = new abs_pegawai_pro();
+            $absensi->app_pp = $value->id_produksi;
+            $absensi->app_tanggal = $value->tanggal;
+            $absensi->app_jam_kerja = $value->jam_kerja;
+            $absensi->app_jam_masuk = $value->jam_masuk;
+            $absensi->app_jam_pulang = $value->jam_pulang;
+            $absensi->app_scan_masuk = $value->scan_masuk;
+            $absensi->app_scan_pulang = $value->scan_pulang;
+            $absensi->app_terlambat = $value->terlambat;
+            $absensi->app_plg_cepat = $value->plg_cepat;
+            $absensi->app_absent = $value->absent;
+            $absensi->app_lembur = $value->lembur;
+            $absensi->app_jml_jamkerja = $value->jml_jam_kerja;
+            $absensi->save();
+          }else{
+            $cek->update([
+              'app_jam_kerja' => $value->jam_kerja,
+              'app_jam_masuk' => $value->jam_masuk,
+              'app_jam_pulang' => $value->jam_pulang,
+              'app_scan_masuk' => $value->scan_masuk,
+              'app_scan_pulang' => $value->scan_pulang,
+              'app_terlambat' => $value->terlambat,
+              'app_plg_cepat' => $value->plg_cepat,
+              'app_absent' => $value->absent,
+              'app_lembur' => $value->lembur,
+              'app_jml_jamkerja' => $value->jml_jam_kerja
+            ]);
+          }
+          
         }
       }
     }
 
     return back();
+  }
+
+  public function exportManajemen(){
+    $manajemen = m_pegawai_man::select('c_id','c_nama')->get();
+    return Excel::create('id_manajemen', function($excel) use ($manajemen){
+      $excel->sheet('mysheet', function($sheet) use ($manajemen){
+        $sheet->fromArray($manajemen);
+      });
+    })->download('xls');
+  }
+
+  public function exportProduksi(){
+    $produksi = m_pegawai_pro::select('c_id','c_nama')->get();
+    return Excel::create('id_produksi', function($excel) use ($produksi){
+      $excel->sheet('mysheet', function($sheet) use ($produksi){
+        $sheet->fromArray($produksi);
+      });
+    })->download('xls');
   }
 }

@@ -622,6 +622,7 @@ class ManajemenReturnPenjualanController extends Controller
                                         'm_sname')
       ->join('m_item','m_item.i_id','=','dsrs_item')
       ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('dsrs_sr',$request->x)
       ->get();
       // dd($data);
 

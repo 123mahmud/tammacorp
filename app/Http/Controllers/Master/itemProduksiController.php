@@ -15,6 +15,7 @@ use App\m_satuan;
 use App\m_group;
 use App\m_price;
 use App\d_stock;
+use App\d_stock_mutation;
 
 class itemProduksiController extends Controller
 {
@@ -110,8 +111,7 @@ class itemProduksiController extends Controller
     		'm_pcreated' => Carbon::now()
     	]);
     $s_id = d_stock::select('s_id')->max('s_id')+1;
-    $stock = d_stock::
-    	insert([
+    d_stock::insert([
     		's_id' => $s_id,
     		's_comp' => '2',
     		's_position' => '2',
@@ -119,6 +119,44 @@ class itemProduksiController extends Controller
     		's_qty_min' => $request->min_stock,
     		's_insert'	=> Carbon::now()
     	]);
+    d_stock_mutation::insert([
+        'sm_stock' => $s_id,
+        'sm_detailid' => '1',
+        'sm_date' => Carbon::now(),
+        'sm_comp' => '2',
+        'sm_position' => '2',
+        'sm_mutcat' => '9',
+        'sm_item' => $i_id,
+        'sm_qty' => '0',
+        'sm_qty_used' => '0',
+        'sm_qty_sisa' => '0',
+        'sm_qty_expired' => '0',
+        'sm_detail' => 'PENAMBAHAN',
+        'sm_insert' => Carbon::now()
+      ]);
+    d_stock::insert([
+        's_id' => $s_id + 1,
+        's_comp' => '1',
+        's_position' => '1',
+        's_item' => $i_id,
+        's_qty_min' => $request->min_stock,
+        's_insert'  => Carbon::now()
+      ]);
+    d_stock_mutation::insert([
+        'sm_stock' => $s_id + 1,
+        'sm_detailid' => '1',
+        'sm_date' => Carbon::now(),
+        'sm_comp' => '1',
+        'sm_position' => '1',
+        'sm_mutcat' => '9',
+        'sm_item' => $i_id,
+        'sm_qty' => '0',
+        'sm_qty_used' => '0',
+        'sm_qty_sisa' => '0',
+        'sm_qty_expired' => '0',
+        'sm_detail' => 'PENAMBAHAN',
+        'sm_insert' => Carbon::now()
+      ]);
 
   DB::commit();
     return response()->json([

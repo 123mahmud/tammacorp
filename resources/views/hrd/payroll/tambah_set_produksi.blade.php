@@ -65,6 +65,17 @@
                           <input type="number" name="c_lembur" class="form-control input-sm">
                         </div>
                       </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">Jenis Gaji</label>
+                      </div>
+                      <div class="col-md-10 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <select class="form-control form-control-sm" name="c_status">
+                            <option value="HR">Harian</option>
+                            <option value="GR">Garapan</option>
+                          </select>
+                        </div>
+                      </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">
                         <input type="button" value="Batal" class="btn btn-danger btn-block">
                       </div>

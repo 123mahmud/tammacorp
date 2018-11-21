@@ -461,7 +461,8 @@ class spkProductionController extends Controller
                 ->select('sm_hpp', 'sm_qty','sm_item')
                 ->where('sm_item', '=', $idItem)
                 ->where('sm_mutcat', '=', "14")
-                ->orderBy('sm_date', 'desc')
+                ->where('sm_qty_sisa', '>=', 0)
+                ->orderBy('sm_date', 'asc')
                 ->limit(1)
                 ->first();
 

@@ -20,7 +20,7 @@
             <div class="news-update-box hidden-xs"><span class="text-uppercase mrm pull-left text-white">News:</span>
             </div>
             <ul class="nav navbar navbar-top-links navbar-right mbn">
-                <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
+                {{-- <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
                                 class="fa fa-bell fa-fw"></i><span class="badge badge-green">!</span></a>
                     <ul class="dropdown-menu dropdown-user pull-right">
                         <li style="padding-left: 10px;"><h4>Notifikasi</h4></li>
@@ -56,7 +56,7 @@
                         <li class="divider"></li>
                         <li><a style="font-weight: bold;" href="#">5 Tugas Baru</a></li>
                     </ul>
-                </li>
+                </li> --}}
                 <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
                         @if(Auth::user()->m_username == 'Toni' && is_null(Auth::user()->m_pegawai_id))
                             <img src="{{ asset('assets/images/avatar/49.jpg')}}" alt="" class="img-responsive img-circle">
@@ -77,10 +77,6 @@
                         <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out"></i>Log Out</a></li>
                     </ul>
                 </li>
-                <li id="topbar-chat" class="hidden-xs"><a href="javascript:void(0)" data-step="4"
-                                                          data-intro="&lt;b&gt;Form chat&lt;/b&gt; keep you connecting with other coworker"
-                                                          data-position="left" class="btn-chat"><i
-                                class="fa fa-comments"></i><span class="badge badge-info">3</span></a></li>
             </ul>
         </div>
     </nav>
@@ -171,6 +167,10 @@
                                         Data Pegawai
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Divisi & Posisi','ma_read'))
+                                        Data Divisi & Posisi
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                         Data Lowongan
                                     @endif
@@ -252,6 +252,12 @@
                                     </li>
                                 @endif
 
+                                @if(Auth::user()->punyaAkses('Data Divisi & Posisi','ma_read'))
+                                    <li class="{{ Request::is('master/divisi/pos/index') ? 'active' : '' || Request::is('master/divisi/pos/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/divisi/pos/index') }}"><span class="submenu-title">Data Divisi & Posisi</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                     <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
@@ -942,7 +948,7 @@
                                         Laporan Keuangan
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                    {{-- @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                         Analisa PTP
                                     @endif
 
@@ -980,7 +986,7 @@
 
                                     @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
                                         Analisa ROE
-                                    @endif
+                                    @endif --}}
 
                                     @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
                                         Analisa Hutang Piutang
@@ -1023,7 +1029,7 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+{{--                                 @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
                                                     class="submenu-title">Analisa PTP</span><span
@@ -1037,13 +1043,13 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                {{-- @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
+                                @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaocf/analisa2b') ? 'active' : '' || Request::is('keuangan/analisaocf/analisa2b/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2b') }}"><span
                                                     class="submenu-title">Analisa OCF Terhadap Net Profit</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif --}}
+                                @endif
                                 @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaaset/analisa3a') }}"><span
@@ -1090,7 +1096,7 @@
                                         <a href="{{ url('/keuangan/analisaroe/analisa8') }}"><span
                                                     class="submenu-title">Analisa ROE</span><span class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisahutangpiutang/analisa9') ? 'active' : '' || Request::is('keuangan/analisahutangpiutang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisahutangpiutang/analisa9') }}"><span
@@ -1184,88 +1190,4 @@
         <!--BEGIN BACK TO TOP-->
         <a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
         <!--END BACK TO TOP-->
-        <!--BEGIN CHAT FORM-->
-        <div id="chat-form" class="fixed">
-            <div class="chat-inner">
-                <h2 class="chat-header">
-                    <a href="javascript:;" class="chat-form-close pull-right"><i class="glyphicon glyphicon-remove">
-                        </i></a><i class="fa fa-users"></i>&nbsp; Message &nbsp;<span class="badge badge-info">3</span>
-                </h2>
-                <div id="group-1" class="chat-group">
-                    <strong>Favorites</strong><a href="#"><span class="user-status is-online"></span>
-                        <small>
-                            Verna Morton
-                        </small>
-                        <span class="badge badge-info">2</span></a><a href="#"><span
-                                class="user-status is-online"></span>
-                        <small>Delores Blake</small>
-                        <span class="badge badge-info is-hidden">
-                                    0</span></a><a href="#"><span class="user-status is-busy"></span>
-                        <small>Nathaniel Morris</small>
-                        <span class="badge badge-info is-hidden">0</span></a><a href="#"><span
-                                class="user-status is-idle"></span>
-                        <small>Boyd Bridges</small>
-                        <span class="badge badge-info is-hidden">0</span></a><a
-                            href="#"><span class="user-status is-offline"></span>
-                        <small>Meredith Houston</small>
-                        <span class="badge badge-info is-hidden">0</span></a></div>
-                <div id="group-2" class="chat-group">
-                    <strong>Office</strong><a href="#"><span class="user-status is-busy"></span>
-                        <small>
-                            Ann Scott
-                        </small>
-                        <span class="badge badge-info is-hidden">0</span></a><a href="#"><span
-                                class="user-status is-offline"></span>
-                        <small>Sherman Stokes</small>
-                        <span class="badge badge-info is-hidden">
-                                    0</span></a><a href="#"><span class="user-status is-offline"></span>
-                        <small>Florence
-                            Pierce
-                        </small>
-                        <span class="badge badge-info">1</span></a></div>
-                <div id="group-3" class="chat-group">
-                    <strong>Friends</strong><a href="#"><span class="user-status is-online"></span>
-                        <small>
-                            Willard Mckenzie
-                        </small>
-                        <span class="badge badge-info is-hidden">0</span></a><a
-                            href="#"><span class="user-status is-busy"></span>
-                        <small>Jenny Frazier</small>
-                        <span class="badge badge-info is-hidden">0</span></a><a href="#"><span
-                                class="user-status is-offline"></span>
-                        <small>Chris Stewart</small>
-                        <span class="badge badge-info is-hidden">0</span></a><a
-                            href="#"><span class="user-status is-offline"></span>
-                        <small>Olivia Green</small>
-                        <span class="badge badge-info is-hidden">0</span></a></div>
-            </div>
-            <div id="chat-box" style="top: 400px">
-                <div class="chat-box-header">
-                    <a href="#" class="chat-box-close pull-right"><i class="glyphicon glyphicon-remove">
-                        </i></a><span class="user-status is-online"></span><span class="display-name">Willard
-                            Mckenzie</span>
-                    <small>Online</small>
-                </div>
-                <div class="chat-content">
-                    <ul class="chat-box-body">
-                        <li>
-                            <p>
-                                <img src="{{asset('assets/images/avatar/128.jpg')}}" class="avt"/><span class="user">John Doe</span><span
-                                        class="time">09:33</span></p>
-                            <p>
-                                Hi Swlabs, we have some comments for you.</p>
-                        </li>
-                        <li class="odd">
-                            <p>
-                                <img src="{{asset('assets/images/avatar/48.jpg')}}" class="avt"/><span class="user">Swlabs</span><span
-                                        class="time">09:33</span></p>
-                            <p>
-                                Hi, we're listening you...</p>
-                        </li>
-                    </ul>
-                </div>
-                <div class="chat-textarea">
-                    <input placeholder="Type your message" class="form-control"/></div>
-            </div>
-        </div>
-        <!--END CHAT FORM-->
+

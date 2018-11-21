@@ -114,7 +114,7 @@
                                                 <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg"
                                                      style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
                                                     <div class="col-md-4 col-sm-3 col-xs-12">
-                                                        <label class="tebal" name="nama_cus">Namaaaa<font
+                                                        <label class="tebal" name="nama_cus">Nama<font
                                                                     color="red">*</font></label>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-12">

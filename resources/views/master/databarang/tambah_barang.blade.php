@@ -399,7 +399,7 @@
                 title: 'Pemberitahuan',
                 message: "Data Gagal disimpan !",
                 onClosing: function(instance, toast, closedBy){
-                   window.location=('{{ route('barang') }}');
+                   // window.location=('{{ route('barang') }}');
                 }
               });
             }              
