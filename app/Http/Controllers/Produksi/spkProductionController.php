@@ -218,13 +218,17 @@ class spkProductionController extends Controller
         // return json_encode("asd");
         $status = d_spk::where('spk_id', $spk_id)
                 ->first();
-        d_productplan::where('pp_id', $status->spk_ref)
-            ->update([
-                'pp_isspk' => 'C'
-            ]);
+        // d_productplan::where('pp_id', $status->spk_ref)
+        //     ->update([
+        //         'pp_isspk' => 'C'
+        //     ]);
 
-        $hpp = []; $err = true; $acc_temp = []; $acc_temp2 = [];
-        $spk = d_spk::find($spk_id);
+        $hpp = []; $err = true; $acc_temp = []; $acc_temp2 = []; $hpp_value = 0;
+        $spk = d_spk::where('spk_id', $spk_id)
+                        ->join('d_productplan', 'pp_id', '=', 'spk_ref')
+                        ->select('d_spk.*', 'd_productplan.pp_qty')->first();
+
+        // return json_encode($spk);
 
         if(!$spk){
             return response()->json([
@@ -268,7 +272,10 @@ class spkProductionController extends Controller
                     // foreach ($prevCost as $value) {
                     if (empty($prevCost->sm_hpp)) 
                       {
+                        
                         $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $spkDt[$i]->fr_formula)->first();
+
+                        $hpp_value += $default_cost->m_pbuy1 * $spkDt[$i]->fr_value;
 
                         if(!$default_cost){
                             return response()->json([
@@ -307,6 +314,9 @@ class spkProductionController extends Controller
                       }
                       else
                       {
+
+                        $hpp_value += $prevCost->sm_hpp * $spkDt[$i]->fr_value;
+
                         if(array_key_exists($item->m_akun_persediaan, $acc_temp)){
                             $acc_temp[$item->m_akun_persediaan] = [
                                 'td_acc'      => $item->m_akun_persediaan,
@@ -349,7 +359,8 @@ class spkProductionController extends Controller
             ]);
         }
 
-        // return json_encode(array_merge($acc, $acc_2));
+        // return json_encode($hpp_value / $spk->pp_qty);
+        // return json_encode(array_merge($acc_temp, $acc_temp2));
 
         // cek jurnal end
 
@@ -375,7 +386,10 @@ class spkProductionController extends Controller
             $spk->save();
         }
 
-        if(jurnal_setting()->allow_jurnal_to_execute){
+        $jr = DB::table('d_jurnal')->where('jurnal_ref', $spk->spk_code)->first();
+        // return json_encode($jr);
+
+        if(!$jr && jurnal_setting()->allow_jurnal_to_execute){
             $item_spk = m_item::where('i_id', $spk->spk_item)->first();
 
             if($item_spk){
@@ -477,7 +491,7 @@ class spkProductionController extends Controller
         $ket = $spk[0]->spk_status;
         $id = $spk[0]->spk_id;
 
-        // return json_encode($bambang);
+        // return json_encode($spk);
         return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang','ket','id'));
 
     }

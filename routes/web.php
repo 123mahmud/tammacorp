@@ -1245,9 +1245,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datakeuangan/datatable_akun', 'Keuangan\akunController@datatable_akun')->name('datatable_akun');
     Route::get('/master/datakeuangan/tambah_akun', 'Keuangan\akunController@tambah_akun')->name('tambah_akun');
     Route::post('/master/datakeuangan/simpan', 'Keuangan\akunController@save_akun')->name('simpan_akun');
-    Route::get('/master/datakeuangan/edit_akun', 'keuangan\akunController@edit_akun')->name('edit_akun');
+    Route::get('/master/datakeuangan/edit_akun', 'Keuangan\akunController@edit_akun')->name('edit_akun');
     Route::post('/master/datakeuangan/update', 'Keuangan\akunController@update_akun')->name('update_akun');
-    Route::get('/master/datakeuangan/hapus_akun', 'keuangan\akunController@hapus_akun')->name('hapus_akun');
+    Route::get('/master/datakeuangan/hapus_akun', 'Keuangan\akunController@hapus_akun')->name('hapus_akun');
 // akun keuangan route end
 
 // transaksi keuangan

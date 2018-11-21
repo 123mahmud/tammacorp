@@ -489,6 +489,38 @@ class POSGrosirController extends Controller
     }
 
     $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
+
+    $err = true;
+    $akun_beban = []; $akun_persediaan = [];
+
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        $method = DB::table('m_paymentmethod')->where('pm_id', $request->sp_method[0])->first();
+        $akun[$method->pm_coa_code] = [
+            'td_acc'    => ($method) ? $method->pm_coa_code : null,
+            'td_posisi' => 'D',
+            'value'     => $this->konvertRp($request->totPembayaranDP)
+        ];
+
+        if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
+          $akun['310.01'] = [
+              'td_acc'    => '310.01',
+              'td_posisi' => 'K',
+              'value'     =>  $this->konvertRp($request->totPembayaranDP)
+          ];
+        }
+
+      // start jurnal
+
+        if(!$err){
+            return response()->json([
+                'status' => 'gagal',
+                'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
+            ]);
+        }
+      }
+
+      // return json_encode(array_merge($akun));
+
     //end nota fatkur
     $customer = DB::table('d_sales')
           ->insert([
@@ -541,17 +573,38 @@ class POSGrosirController extends Controller
     $nota = d_sales::where('s_id',$s_id)
         ->first();
   DB::commit();
-  return response()->json([
-        'status' => 'sukses',
-        'nota' => $nota
-      ]);
     } catch (\Exception $e) {
-  DB::rollback();
-  return response()->json([
-      'status' => 'gagal',
-      'data' => $e
-      ]);
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+          ]);
     }
+
+      $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
+      $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
+
+      if($request->sp_method[0] == '1'){
+        $state = 'KM';
+        $sts = 'Cash';
+      }
+      else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
+        $state = 'BM';
+        $sts = 'Transfer';
+      }
+
+      $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
+
+      if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
+        $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
+      }
+
+      // return $state_jurnal;
+
+      return response()->json([
+          'status' => 'sukses',
+          'nota' => $nota
+        ]);
   }
 
   public function sal_save_final(Request $request){
@@ -591,7 +644,7 @@ class POSGrosirController extends Controller
     $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
 
     $err = true;
-      $akun_beban = []; $akun_persediaan = [];
+    $akun_beban = []; $akun_persediaan = [];
 
       if(jurnal_setting()->allow_jurnal_to_execute){
         $method = DB::table('m_paymentmethod')->where('pm_id', $request->sp_method[0])->first();
@@ -601,11 +654,13 @@ class POSGrosirController extends Controller
             'value'     => $this->konvertRp($request->sp_nominal[0])
         ];
 
-        $akun['110.01'] = [
-            'td_acc'    => '110.01',
-            'td_posisi' => 'D',
-            'value'     => $this->konvertRp(str_replace('-', '', $request->s_kembalianF))
-        ];
+        if($this->konvertRp(str_replace('-', '', $request->s_kembalianF)) != 0){
+          $akun['110.01'] = [
+              'td_acc'    => '110.01',
+              'td_posisi' => 'D',
+              'value'     => $this->konvertRp(str_replace('-', '', $request->s_kembalianF))
+          ];
+        }
 
         if($this->konvertRp($request->s_disc_percent) != 0 || $this->konvertRp($request->s_disc_value) != 0){
           $akun['501.01'] = [
@@ -684,6 +739,8 @@ class POSGrosirController extends Controller
         }
       }
 
+      // return json_encode(array_merge($akun_persediaan, $akun_beban));
+
     // end nota fatkur
     $customer = DB::table('d_sales')
         ->insert([
@@ -758,8 +815,12 @@ class POSGrosirController extends Controller
         $sts = 'Transfer';
       }
 
-      if(jurnal_setting()->allow_jurnal_to_execute){
-        $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun));
+      $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Penjualan Tamma Atas%')->first();
+
+      if($jurnal && jurnal_setting()->allow_jurnal_to_execute){
+        $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
+
+        $state_jurnal = _initiateJournal_self_detail($fatkur, 'MM', date('Y-m-d',strtotime($request->s_date)), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun_beban, $akun_persediaan));
       }
 
       // return $state_jurnal;
@@ -1281,6 +1342,116 @@ class POSGrosirController extends Controller
   // dd($request->all());
     DB::beginTransaction();
       try {
+
+        $sales = DB::table('d_sales')->where('s_id', $request->id)->first();
+
+        if(!$sales){
+          return response()->json([
+            'status' => 'gagal',
+            'data' => 'Data Sales Tidak Bisa Ditemukan.'
+            ]);
+        }
+
+        $sales_dt = DB::table('d_sales_dt')->where('sd_sales', $sales->s_id)->get();
+        // return json_encode($sales);
+
+      $err = true;
+      $akun_beban = []; $akun_persediaan = [];
+      $um = $sales->s_net - $sales->s_sisa;
+      $disc = $sales->s_gross - $sales->s_net;
+
+      if(jurnal_setting()->allow_jurnal_to_execute){
+        if($um > 0){
+          $akun['310.01'] = [
+              'td_acc'    => '310.01',
+              'td_posisi' => 'D',
+              'value'     => $um
+          ]; // Uang Muka Penjualan
+        }
+
+        if($sales->s_sisa > 0){
+          $akun['110.01'] = [
+              'td_acc'    => '110.01',
+              'td_posisi' => 'D',
+              'value'     => $sales->s_sisa
+          ]; // Piutang Usaha
+        }
+
+        if($disc > 0){
+          $akun['501.01'] = [
+              'td_acc'    => '501.01',
+              'td_posisi' => 'D',
+              'value'     => $disc
+          ]; // Diskon Penjualan
+        }
+
+        // return json_encode($akun);
+
+      // start jurnal
+
+        foreach($sales_dt as $acc_key => $data){
+            $cek = DB::table('m_item')
+                ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->join('m_price', 'm_price.m_pitem', '=', 'm_item.i_id')
+                ->where('i_id', $data->sd_item)
+                ->select('m_group.m_akun_penjualan', 'm_group.m_akun_persediaan', 'm_group.m_akun_beban', 'm_group.m_gid', 'm_price.m_hpp')
+                ->first();
+
+            $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_penjualan)->first();
+
+            // return json_encode($cek);
+
+            if(!$cek || !$cek->m_akun_penjualan || !$cek->m_akun_persediaan || !$cek->m_akun_beban || !$cek2){
+                $err = false;
+            }else{
+                if(!array_key_exists($cek->m_akun_penjualan, $akun)){
+                    $akun[$cek->m_akun_penjualan] = [
+                        'td_acc'    => $cek->m_akun_penjualan,
+                        'td_posisi' => 'K',
+                        'value'     => $sales->s_gross
+                    ];
+                }
+
+                if(array_key_exists($cek->m_akun_beban, $akun_beban)){
+                    $akun_beban[$cek->m_akun_beban] = [
+                        'td_acc'    => $cek->m_akun_beban,
+                        'td_posisi' => 'D',
+                        'value'     => $akun_beban[$cek->m_akun_beban]['value'] + ($cek->m_hpp * $data->sd_qty)
+                    ];
+                }else{
+                    $akun_beban[$cek->m_akun_beban] = [
+                        'td_acc'    => $cek->m_akun_beban,
+                        'td_posisi' => 'D',
+                        'value'     => ($cek->m_hpp * $data->sd_qty)
+                    ];
+                }
+
+                if(array_key_exists($cek->m_akun_persediaan, $akun_persediaan)){
+                    $akun_persediaan[$cek->m_akun_persediaan] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'K',
+                        'value'     => $akun_persediaan[$cek->m_akun_persediaan]['value'] + ($cek->m_hpp * $data->sd_qty)
+                    ];
+                }else{
+                    $akun_persediaan[$cek->m_akun_persediaan] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'K',
+                        'value'     => ($cek->m_hpp * $data->sd_qty)
+                    ];
+                }
+            }
+        }
+
+        if(!$err){
+            return response()->json([
+                'status' => 'gagal',
+                'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
+            ]);
+        }
+      }
+
+      // return json_encode(array_merge($akun));
+
       $update = DB::Table('d_sales')
         ->where('s_id',$request->id)
         ->update([
@@ -1784,16 +1955,33 @@ class POSGrosirController extends Controller
 
       }
       DB::commit();
-    return response()->json([
-          'status' => 'sukses'
-        ]);
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
     DB::rollback();
     return response()->json([
         'status' => 'gagal',
         'data' => $e
         ]);
       }
+
+      $customer = DB::table('m_customer')->where('c_id', $sales->s_customer)->first();
+      $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
+      $jurnal = DB::table('d_jurnal')
+                    ->where('jurnal_ref', $sales->s_note)
+                    ->where('keterangan', 'like', 'Penjualan Tamma Atas%')->first();
+
+      // return json_encode($jurnal);
+
+      if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
+        // return 'blabla';
+        $state_jurnal = _initiateJournal_self_detail($sales->s_note, 'MM', date('Y-m-d'), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($sales->s_date)), array_merge($akun));
+
+        $state_jurnal = _initiateJournal_self_detail($sales->s_note, 'MM', date('Y-m-d'), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($sales->s_date)), array_merge($akun_beban, $akun_persediaan));
+      }
+
+      return response()->json([
+          'status' => 'sukses',
+          'nota' => $sales
+        ]);
   }
 
   public function print($id){
