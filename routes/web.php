@@ -1119,6 +1119,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/l_hutangpiutang/get_detail_hutangbeli/{id}', 'Keuangan\HutangController@getDetailHutangBeli');
 // end rizky
 //mahmud
+    Route::get('/keuangan/l_hutangpiutang/hitung-penjualan/cus', 'Keuangan\HutangController@cariCus');
+//mahmud
     Route::get('/produksi/lihatadonan/tabel/{id}/{qty}', 'Keuangan\spkFinancialController@tabelFormula');
 //endmahmud
 //thoriq
