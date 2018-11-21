@@ -366,6 +366,8 @@ class POSRetailController extends Controller
           ];
         }
 
+        // return json_encode($method);
+
       // start jurnal
 
         foreach($request->kode_item as $acc_key => $data){
@@ -575,11 +577,11 @@ class POSRetailController extends Controller
     $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
     $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
 
-    if(substr($request->sp_method[0], 0, 3) == '100'){
+    if(substr($method->pm_coa_code, 0, 3) == '100'){
       $state = 'KM';
       $sts = 'Cash';
     }
-    else if(substr($request->sp_method[0], 0, 3) == '101'){
+    else if(substr($method->pm_coa_code, 0, 3) == '101'){
       $state = 'BM';
       $sts = 'Transfer';
     }
@@ -588,10 +590,14 @@ class POSRetailController extends Controller
       $sts = 'Hutang';
     }
 
-    if(jurnal_setting()->allow_jurnal_to_execute){
+    $jurnal = DB::table('d_jurnal')
+                    ->where('jurnal_ref', $fatkur)
+                    ->where('keterangan', 'like', 'Penjualan Tamma Atas%')->first();
+
+    if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
       $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun));
 
-      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun_beban, $akun_persediaan));
+      $state_jurnal = _initiateJournal_self_detail($fatkur, 'MM', date('Y-m-d',strtotime($request->s_date)), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun_beban, $akun_persediaan));
     }
 
     return response()->json([

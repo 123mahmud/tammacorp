@@ -277,4 +277,24 @@
 		return $total;
 	}
 
+	function periodeExist(){
+		$periode = date('Y-m'.'-01');
+		$data = DB::table('d_periode_keuangan')
+					->where('pk_periode', $periode)->first();
+
+		if($data)
+			return true;
+
+		return false;
+	}
+
+	function nullperiode(){
+		$data = DB::table('d_periode_keuangan')->select('*')->get();
+
+		if(count($data) != 0)
+			return false;
+
+		return true;
+	}
+
 ?>

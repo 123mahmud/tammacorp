@@ -64,7 +64,7 @@
                             <label class="tebal">Bulan Periode</label>
                           </div>
                           <div class="col-md-5 col-sm-8 col-xs-11 mb-3">
-                            <datepicker :placeholder="'Plih Bulan Periode'" :name="'bulan_periode'" :id="'bulan_periode'" :disabled="state == 'update'" :required="true" @input="changeDate"></datepicker>
+                            <input type="text" class="form-control" name="bulan_periode" id="bulan_periode" readonly value="{{ date('m-Y') }}">
                           </div>
 
                           <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;" title="Bersihkan Form"> 
