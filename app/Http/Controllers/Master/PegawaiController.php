@@ -97,6 +97,8 @@ class PegawaiController extends Controller
     }
 
     public function simpanPegawai(Request $request){
+        DB::beginTransaction();
+        try {
         $maxid = DB::Table('m_pegawai_man')->select('c_id_by_production')->where([
             ['c_divisi_id', $request->get('c_divisi_id')],
             ['c_jabatan_id', $request->get('c_jabatan_id')]
@@ -116,7 +118,17 @@ class PegawaiController extends Controller
         $input['c_lahir'] = $request->get('c_tempat').", ".$request->get('c_tanggal');
         // dd($input);exit;
         $data = Pegawai::create($input);
-        return redirect('/master/datapegawai/pegawai');
+        DB::commit();
+        return response()->json([
+              'status' => 'sukses'
+            ]);
+          } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'data' => $e
+            ]);
+          }
     }
 
     public function simpanPegawaiPro(Request $request){
@@ -168,6 +180,9 @@ class PegawaiController extends Controller
     }
 
     public function updatePegawai(Request $request, $id){
+        dd($request->all());
+        DB::beginTransaction();
+        try {
         $input = $request->except('_token', '_method','c_hari_awal','c_hari_akhir','c_tempat','c_tanggal');
         $section = explode("-",$request->get('c_jabatan_id'));
         // $input['c_nik'] = date('y', strtotime($request->get('c_tahun_masuk'))).str_pad($request->get('c_divisi_id'), 2, '0', STR_PAD_LEFT).str_pad($section[1], 2, '0', STR_PAD_LEFT).str_pad($maxid, 3, '0', STR_PAD_LEFT);
@@ -177,7 +192,19 @@ class PegawaiController extends Controller
         $input['c_lahir'] = $request->get('c_tempat').", ".$request->get('c_tanggal');
         // dd($section);
         $data = Pegawai::where('c_id', $id)->update($input);
-        return redirect('master/datapegawai/pegawai');
+        // dd($input);exit;
+        $data = Pegawai::create($input);
+        DB::commit();
+        return response()->json([
+              'status' => 'sukses'
+            ]);
+          } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'data' => $e
+            ]);
+          }
     }
 
     public function updatePegawaiPro(Request $request, $id){
