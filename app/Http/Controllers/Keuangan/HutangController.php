@@ -14,6 +14,7 @@ use App\d_purchasingharian;
 use App\d_purchasingharian_dt;
 use App\d_terima_pembelian;
 use App\d_terima_pembelian_dt;
+use App\m_customer;
 
 class HutangController extends Controller
 {
@@ -25,7 +26,10 @@ class HutangController extends Controller
 
   public function hutang()
   {
-    return view('/keuangan/l_hutangpiutang/index');
+    $customer = m_customer::select('c_id','c_name')
+      ->get();
+
+    return view('/keuangan/l_hutangpiutang/index',compact('customer'));
   }
 
   public function getHutangByTgl($tgl1, $tgl2)
@@ -167,5 +171,38 @@ class HutangController extends Controller
 
     $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
     return $data;
+  }
+
+  public function cariCus(Request $request){
+    $formatted_tags = array();
+    $term = trim($request->q);
+    if (empty($term)) {
+    $sup = m_customer::select('s_id','c_id','c_name')
+        ->leftJoin('d_sales','d_sales.s_customer','=','c_id')
+        ->limit(50)
+        ->get();
+    // dd($sup);
+      foreach ($sup as $val) {
+          $formatted_tags[] = [ 'id' => $val->s_id, 
+                                'text' => $val->c_name ];
+      }
+      return Response::json($formatted_tags);
+
+    }else{
+
+     $sup = m_customer::select('s_id','c_id','c_name')
+        ->leftJoin('d_sales','d_sales.s_customer','=','c_id')
+        ->where(function ($b) use ($term) {
+              $b->orWhere('c_name', 'LIKE', '%'.$term.'%');
+          })
+        ->limit(50)
+        ->get();
+    // dd($sup);
+      foreach ($sup as $val) {
+          $formatted_tags[] = [ 'id' => $val->s_id, 
+                                'text' => $val->c_name ];
+      }
+      return Response::json($formatted_tags);
+    }
   }
 }

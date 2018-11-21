@@ -41,7 +41,10 @@ class BarangRusakController extends Controller
         $term = trim($request->q);
         if (empty($term)) 
         {
-            $data = DB::table('d_gudangcabang')->limit(10)->get();
+            $data = DB::table('d_gudangcabang')
+                ->where('cg_gudang','GG')
+                ->orWhere('cg_gudang','GR')
+                ->limit(10)->get();
             foreach ($data as $val) 
             {
                 $formatted_tags[] = ['id' => $val->cg_id, 'text' => $val->cg_cabang];
@@ -50,7 +53,10 @@ class BarangRusakController extends Controller
         }
         else
         {
-            $data = DB::table('d_gudangcabang')->where('cg_cabang', 'LIKE', '%'.$term.'%')->limit(10)->get();
+            $data = DB::table('d_gudangcabang')
+                ->where('cg_gudang','GG')
+                ->orWhere('cg_gudang','GR')
+                ->where('cg_cabang', 'LIKE', '%'.$term.'%')->limit(10)->get();
 
             foreach ($data as $val) 
             {
@@ -629,7 +635,7 @@ class BarangRusakController extends Controller
 
     public function prosesUbahJenis(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try 
         {
@@ -808,26 +814,47 @@ class BarangRusakController extends Controller
                 {
                   $hasil_id = (int)$lastIdSm[0]->zz + 1;
                 }
-
-                //insert to d_stock_mutation
-                DB::table('d_stock_mutation')->insert([
-                  'sm_stock' => $id_dstock,
-                  'sm_detailid' => $hasil_id,
-                  'sm_date' => Carbon::now(),
-                  'sm_comp' => '8',
-                  'sm_position' => '8',
-                  'sm_mutcat' => '4',
-                  'sm_item' => $request->fieldIpItem[$i],
-                  'sm_qty' => $hasilConvert,
-                  'sm_qty_used' => '0',
-                  'sm_qty_expired' => '0',
-                  'sm_qty_sisa' => $hasilConvert,
-                  'sm_detail' => "PENAMBAHAN",
-                  'sm_hpp' => $dt_price,
-                  'sm_sell' => '0',
-                  'sm_reff' => $kodeJenis,
-                  'sm_insert' => Carbon::now(),
-                ]);
+                if ($request->headGudangJenis == '2') {
+                    //insert to d_stock_mutation
+                    DB::table('d_stock_mutation')->insert([
+                      'sm_stock' => $id_dstock,
+                      'sm_detailid' => $hasil_id,
+                      'sm_date' => Carbon::now(),
+                      'sm_comp' => '2',
+                      'sm_position' => '2',
+                      'sm_mutcat' => '4',
+                      'sm_item' => $request->fieldIpItem[$i],
+                      'sm_qty' => $hasilConvert,
+                      'sm_qty_used' => '0',
+                      'sm_qty_expired' => '0',
+                      'sm_qty_sisa' => $hasilConvert,
+                      'sm_detail' => "PENAMBAHAN",
+                      'sm_hpp' => $dt_price,
+                      'sm_sell' => '0',
+                      'sm_reff' => $kodeJenis,
+                      'sm_insert' => Carbon::now(),
+                    ]);
+                }else{
+                    DB::table('d_stock_mutation')->insert([
+                      'sm_stock' => $id_dstock,
+                      'sm_detailid' => $hasil_id,
+                      'sm_date' => Carbon::now(),
+                      'sm_comp' => '1',
+                      'sm_position' => '1',
+                      'sm_mutcat' => '4',
+                      'sm_item' => $request->fieldIpItem[$i],
+                      'sm_qty' => $hasilConvert,
+                      'sm_qty_used' => '0',
+                      'sm_qty_expired' => '0',
+                      'sm_qty_sisa' => $hasilConvert,
+                      'sm_detail' => "PENAMBAHAN",
+                      'sm_hpp' => $dt_price,
+                      'sm_sell' => '0',
+                      'sm_reff' => $kodeJenis,
+                      'sm_insert' => Carbon::now(),
+                    ]);
+                }
+                
             }//end loop for
 
             //variabel u/ cek primary satuan pada field header
