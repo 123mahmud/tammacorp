@@ -948,7 +948,7 @@
                                         Laporan Keuangan
                                     @endif
 
-                                    {{-- @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                         Analisa PTP
                                     @endif
 
@@ -986,7 +986,7 @@
 
                                     @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
                                         Analisa ROE
-                                    @endif --}}
+                                    @endif
 
                                     @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
                                         Analisa Hutang Piutang
@@ -1029,7 +1029,7 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-{{--                                 @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
                                                     class="submenu-title">Analisa PTP</span><span
@@ -1096,7 +1096,7 @@
                                         <a href="{{ url('/keuangan/analisaroe/analisa8') }}"><span
                                                     class="submenu-title">Analisa ROE</span><span class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif --}}
+                                @endif
                                 @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisahutangpiutang/analisa9') ? 'active' : '' || Request::is('keuangan/analisahutangpiutang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisahutangpiutang/analisa9') }}"><span
