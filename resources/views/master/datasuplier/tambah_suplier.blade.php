@@ -328,12 +328,11 @@
     }else {
       rekening.removeClass('state-error');
     }
-    
-    var form = $('#form_suplier').serialize();
+
     $.ajax({
        type: "POST",
        url: baseUrl + '/master/datasuplier/suplier_proses',
-       data: form,
+       data: $('#form_suplier').serialize(),
        success: function(response){
         if(response.status=='sukses')
         {
