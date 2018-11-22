@@ -478,8 +478,9 @@
                     .then((response) => {
                       // console.log(response.data);
                       this.data_table_resource = response.data;
-                    }).then((a) => {
                       this.get_kelompok(this.edit);
+                    }).then((a) => {
+                      // alert(this.edit);
                     }).catch((err) => {
                       alert(err);
                     });
@@ -497,7 +498,7 @@
               }).catch(err => {
                  $('#load-status-text').text('Sistem Bermasalah. Cobalah Memuat Ulang Halaman');
               }).then(() => {
-                if(this.kelompok_aktiva.length > 0)
+                if(this.kelompok_aktiva.length > 0 && this.edit == 'null')
                   this.golonganChange(this.kelompok_aktiva[0].value);
                 $('#overlay-transaksi').fadeIn(200);
               })
@@ -670,10 +671,14 @@
           console.log(this.data_table_resource);
           var idx = this.data_table_resource.findIndex(a => a.a_nomor === e);
 
+          // alert('plok');
+
           console.log(this.data_table_resource[idx]);
 
           if(idx >= 0){
               var data = this.data_table_resource[idx];
+
+              // alert(data.ga_garis_lurus);
 
               $('#harga_beli').val(data.a_harga_beli);
               $('#kelompok_aktiva').val(data.a_kelompok).trigger('change.select2');
@@ -743,11 +748,13 @@
         generateInfo: function(){
           // alert(this.single_data.metode_penyusutan);
           var idx = this.kelompok_aktiva.findIndex(a => a.value === this.single_data.kelompok_aktiva);
+          console.log(idx);
 
           if(this.single_data.metode_penyusutan == "Garis Lurus")
-              this.single_data.persentase = this.kelompok_aktiva[idx].ga_garis_lurus
+              this.single_data.persentase = this.kelompok_aktiva[idx].ga_garis_lurus;
           else
             this.single_data.persentase = this.kelompok_aktiva[idx].ga_saldo_menurun;
+          
           this.calculated();
         },
 
@@ -812,8 +819,6 @@
           }
 
           this.simulasi_hitung = data;
-
-          console.log(data);
         },
 
         humanizePrice: function(alpha){
