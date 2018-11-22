@@ -207,8 +207,11 @@
 <script type="text/javascript">
 
     function simpan (){
-      
-
+      $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });      
       var nama = $("#nama_cus").val();
       var tgl_lahir = $("#tgl_lahir").val();
       var email = $("#email").val();
