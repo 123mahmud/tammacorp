@@ -115,7 +115,7 @@ class groupController extends Controller
     public function simpan_group(Request $request)
     {
         // dd($request->all());
-        $id = DB::table('m_group')->max('m_gid');
+        $id = DB::table('m_group')->max('m_gid')+1;
         if ($id == null) {
           $id = 1;
         }else{
@@ -127,7 +127,7 @@ class groupController extends Controller
         DB::table('m_group')
                   ->insert([
                       'm_gid'=>$id,
-                      'm_gcode'=>'0'. $request->id,
+                      'm_gcode'=>'0'. $code,
                       'm_gname'=>$request->nama,
                       'm_akun_persediaan'=>$request->akun,
                       'm_akun_beban'=>$request->akun_beban,
