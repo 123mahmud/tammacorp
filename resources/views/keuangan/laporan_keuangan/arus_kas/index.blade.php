@@ -216,7 +216,7 @@
               <td style="text-align: left; padding-top: 5px;">
                 Laporan Per  
                 @if($request->jenis == 'bulan')
-                	Bulan {{ date('m/Y', strtotime($data_real)) }}
+                	Bulan {{ date('m/Y', strtotime($durasi)) }}
                 @else
                 	Tahun {{ $request->durasi_1_neraca_tahun }}
                 @endif
@@ -225,43 +225,199 @@
           </thead>
         </table>
 
-        <table border="0" width="100%" style="margin-top: 15px; border-top: 1px dotted #aaa" class="table-ctn">
+        <table border="0" width="85%" style="margin: 15px 0px 15px 30px; border-top: 1px dotted #aaa" class="table-ctn">
+        	<?php $ocf = $icf = $fcf = 0; ?>
         	<tr>
-	        	<td class="first">
-	        		<?php $array = [ 5, 6, 7] ?>
+	        	<td class="first" colspan="3">
 	        		Arus Kas Dari kegiatan Operasional
 	        	</td>
 
-	        	<td>
-	        		&nbsp;
-	        	</td>
+	        	@foreach($tipeTransaksi as $key => $tipe)
 
-	        	@foreach($data as $key => $data_neraca)
-					@if(in_array($data_neraca->id_group, $array))
+					<?php $totDetail = 0; ?>
+
+	        		@if($tipe->tc_cashflow == 'OCF')
     					<tr>
     						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="60%">
-    							{{ $data_neraca->nama_group }}
+    							{{ $tipe->tc_name }}
     						</td>
 
     						<td width="20%" style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
-    							<?php 
-    								$nilai = count_laba_rugi($data, $data_neraca->id_group, 'pasiva', $data_real);
-    								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
-
-    								//$total_parrent += $nilai;
-    								//$total_aktiva += $nilai;
-    								//$lr_sebelum_pajak += $nilai;
-    							?>
-
-    							{{ $print }}
+    							@foreach($detail as $key => $numb)
+    								@if($numb->jrdt_cashflow == $tipe->tc_id)
+    									<?php 
+    										$nilai = ($numb->posisi_akun == 'D') ? ($numb->jrdt_value * -1) : $numb->jrdt_value;
+    										$totDetail += (double) $nilai;
+    									?>
+    								@endif
+    							@endforeach
+    							{{ formatAccounting($totDetail) }}
+    							<?php $ocf += $totDetail; ?>
     						</td>
-
-    						<td width="20%">&nbsp;</td>
+    						<td></td>
     					</tr>
     				@endif
+
 				@endforeach
+
+				<tr>
+					<td style="padding: 5px 5px 3px 45px; font-weight: 600;" width="60%">
+						Total Arus Kas Dari Kegiatan Operasional
+					</td>
+
+					<td style="border-top: 1px solid #aaa"></td>
+
+					<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #aaa">
+						{{ formatAccounting($ocf) }}
+					</td>
+				</tr>
 	        </tr>
 
+	        <tr>
+	        	<td colspan="3">&nbsp;</td>
+	        </tr>
+
+
+	        <tr>
+	        	<td class="first" colspan="3">
+	        		Arus Kas Dari kegiatan Pendanaan
+	        	</td>
+
+	        	@foreach($tipeTransaksi as $key => $tipe)
+
+					<?php $totDetail = 0; ?>
+
+	        		@if($tipe->tc_cashflow == 'FCF')
+    					<tr>
+    						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="60%">
+    							{{ $tipe->tc_name }}
+    						</td>
+
+    						<td width="20%" style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+    							@foreach($detail as $key => $numb)
+    								@if($numb->jrdt_cashflow == $tipe->tc_id)
+    									<?php 
+    										$nilai = ($numb->posisi_akun == 'D') ? ($numb->jrdt_value * -1) : $numb->jrdt_value;
+    										$totDetail += (double) $nilai;
+    									?>
+    								@endif
+    							@endforeach
+    							{{ formatAccounting($totDetail) }}
+    							<?php $fcf += $totDetail; ?>
+    						</td>
+    						<td></td>
+    					</tr>
+    				@endif
+
+				@endforeach
+
+				<tr>
+					<td style="padding: 5px 5px 3px 45px; font-weight: 600;" width="60%">
+						Total Arus Kas Dari Kegiatan Pendanaan
+					</td>
+
+					<td style="border-top: 1px solid #aaa"></td>
+
+					<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #aaa">
+						{{ formatAccounting($fcf) }}
+					</td>
+				</tr>
+	        </tr>
+
+	        <tr>
+	        	<td colspan="3">&nbsp;</td>
+	        </tr>
+
+	        <tr>
+	        	<td class="first" colspan="3">
+	        		Arus Kas Dari kegiatan Investasi
+	        	</td>
+
+	        	@foreach($tipeTransaksi as $key => $tipe)
+
+					<?php $totDetail = 0; ?>
+
+	        		@if($tipe->tc_cashflow == 'ICF')
+    					<tr>
+    						<td style="padding: 5px 5px 3px 45px; font-weight: 500;" width="60%">
+    							{{ $tipe->tc_name }}
+    						</td>
+
+    						<td width="20%" style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;">
+    							@foreach($detail as $key => $numb)
+    								@if($numb->jrdt_cashflow == $tipe->tc_id)
+    									<?php 
+    										$nilai = ($numb->posisi_akun == 'D') ? ($numb->jrdt_value * -1) : $numb->jrdt_value;
+    										$totDetail += (double) $nilai;
+    									?>
+    								@endif
+    							@endforeach
+    							{{ formatAccounting($totDetail) }}
+    							<?php $icf += $totDetail; ?>
+    						</td>
+    						<td></td>
+    					</tr>
+    				@endif
+
+				@endforeach
+
+				<tr>
+					<td style="padding: 5px 5px 3px 45px; font-weight: 600;" width="60%">
+						Total Arus Kas Dari Kegiatan Investasi
+					</td>
+
+					<td style="border-top: 1px solid #aaa"></td>
+
+					<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #aaa">
+						{{ formatAccounting($icf) }}
+					</td>
+				</tr>
+	        </tr>
+
+	        <tr>
+	        	<td colspan="3">&nbsp;</td>
+	        </tr>
+
+	        <tr>
+	        	<td colspan="3">&nbsp;</td>
+	        </tr>
+
+	        <tr>
+		        <td style="border-top: 1px solid #aaa; padding: 6px 10px">
+	        		Total Akumulasi Arus Kas Periode Ini
+	        	</td>
+
+	        	<td style="border-top: 1px solid #aaa;"></td>
+
+	        	<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #aaa">
+	        		{{ formatAccounting($ocf+$icf+$fcf) }}
+	        	</td>
+	        </tr>
+
+	        <tr>
+		        <td style="border-top: 1px solid #aaa; padding: 6px 10px">
+	        		Saldo Awal Kas Pada Periode Ini
+	        	</td>
+
+	        	<td style="border-top: 1px solid #aaa;"></td>
+
+	        	<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #aaa">
+	        		{{ formatAccounting(0) }}
+	        	</td>
+	        </tr>
+
+	        <tr>
+		        <td style="border-top: 1px solid #aaa; padding: 6px 10px">
+	        		Saldo Akhir Kas Seharusnya
+	        	</td>
+
+	        	<td style="border-top: 1px solid #aaa;"></td>
+
+	        	<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #555">
+	        		{{ formatAccounting($ocf+$icf+$fcf) }}
+	        	</td>
+
+	        </tr>
 
         </table>
     </div>

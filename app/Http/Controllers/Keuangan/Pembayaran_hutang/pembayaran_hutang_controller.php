@@ -58,13 +58,14 @@ class pembayaran_hutang_controller extends Controller
                 [
                     'td_acc'    => $akun,
                     'td_posisi' => 'K',
-                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                    'value'     => str_replace(',', '', $request->nominal_pembayaran)
                 ],
 
                 [
                     'td_acc'    => '301.01',
                     'td_posisi' => 'D',
-                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                    'value'     => str_replace(',', '', $request->nominal_pembayaran),
+                    'cashflow'  => '1'
                 ]
             ];
         }
@@ -87,13 +88,13 @@ class pembayaran_hutang_controller extends Controller
     		'payment_keterangan'	=> $request->keterangan_pembayaran,
     		'payment_date'			=> date('Y-m-d', strtotime($request->tanggal_pembayaran)),
     		'payment_type'			=> ($request->jenis_pembayaran == 'C') ? 'CASH' : 'TRANSFER',
-    		'payment_value'			=> str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]),
+    		'payment_value'			=> str_replace(',', '', $request->nominal_pembayaran),
     	]);
 
     	$purchase = DB::table('d_purchasing')
     					->where('d_pcs_code', $request->nomor_po)->first();
 
-    	$payment = $purchase->d_pcs_payment + str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]);
+    	$payment = $purchase->d_pcs_payment + str_replace(',', '', $request->nominal_pembayaran);
 
     	DB::table('d_purchasing')->where('d_pcs_id', $purchase->d_pcs_id)->update([
     		'd_pcs_payment'			=> $payment,
@@ -160,20 +161,21 @@ class pembayaran_hutang_controller extends Controller
                 [
                     'td_acc'    => $akun,
                     'td_posisi' => 'K',
-                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                    'value'     => str_replace(',', '', $request->nominal_pembayaran)
                 ],
 
                 [
                     'td_acc'    => '301.01',
                     'td_posisi' => 'D',
-                    'value'     => str_replace('.', '', explode(',', $request->nominal_pembayaran)[0])
+                    'value'     => str_replace(',', '', $request->nominal_pembayaran),
+                    'cashflow'  => '1'
                 ]
             ];
         }
 
         $state = ($request->jenis_pembayaran == 'T') ? 'BK' : 'KK';
 
-    	$update_payment = str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]) - $transaksi->first()->payment_value;
+    	$update_payment = str_replace(',', '', $request->nominal_pembayaran) - $transaksi->first()->payment_value;
 
     	// return json_encode($purchase->first()->d_payment + $update_payment);
     	// return json_encode($purchase->first()->d_pcs_total_net - ($purchase->first()->d_payment + $update_payment));
@@ -182,7 +184,7 @@ class pembayaran_hutang_controller extends Controller
     	$transaksi->update([
     		'payment_keterangan'	=> $request->keterangan_pembayaran,
     		'payment_type'			=> ($request->jenis_pembayaran == 'C') ? 'CASH' : 'TRANSFER',
-    		'payment_value'			=> str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]),
+    		'payment_value'			=> str_replace(',', '', $request->nominal_pembayaran),
     	]);
 
     	$purchase->update([

@@ -638,19 +638,19 @@ Route::group(['middleware' => 'auth'], function () {
     /*Keuangan*/
 
         Route::get('/keuangan/tes_jurnal', function(){
+            $cek = [];
 
-            $cek = [
-                [
-                    'td_acc'    => '1.10.01',
-                    'td_posisi' => 'K',
-                    'value'     => 25000000
-                ],
+            $cek['110.01'] = [
+                'td_acc'    => '110.01',
+                'td_posisi' => 'D',
+                'value'     => 25000000,
+            ];
 
-                [
-                    'td_acc'    => '1.10.01',
-                    'td_posisi' => 'D',
-                    'value'     => 25000000
-                ]
+            $cek['120.01'] = [
+                'td_acc'    => '200.01',
+                'td_posisi' => 'K',
+                'value'     => 25000000,
+                'cashflow'  => "F"
             ];
 
             // return _initiateJournal_self_detail('Hanya Coba 1', 'KK', '2018-09-02', 'Tes Self_detail', $cek);
