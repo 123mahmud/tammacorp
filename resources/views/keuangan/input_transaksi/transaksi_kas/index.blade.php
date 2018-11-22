@@ -127,6 +127,15 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
+                                              <label class="tebal">Type Transaksi Cashflow</label>
+                                            </div>
+                                            <div class="col-md-7 col-sm-9 col-xs-12 mb-3">
+                                                <chosen :name="'cashflow'" :option="cashflow" :id="'cashflow'"></chosen>
+                                            </div>
+                                          </div>
+
+                                          <div class="row">
+                                            <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Nominal Transaksi</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3">
@@ -330,6 +339,7 @@
 
         akun_perkiraan: [],
         akun_lawan: [],
+        cashflow: [],
         list_transaksi: [],
         data_table_columns: [],
 
@@ -359,6 +369,7 @@
                 console.log(response.data);
                 this.akun_perkiraan = response.data.akun_perkiraan;
                 this.akun_lawan = response.data.akun_lawan;
+                this.cashflow = response.data.cashflow;
 
                 $('#tanggal_transaksi').val('{{ date('d-m-Y') }}');
                 $('.overlay.main').fadeOut(200);
@@ -473,9 +484,9 @@
           // alert(this.list_transaksi[idx].jurnal.detail[0].jrdt_acc);
 
           $('#nominal').val(this.list_transaksi[idx].nominal);
-          $('#akun_perkiraan').val(this.list_transaksi[idx].jurnal.detail[0].jrdt_acc);
-          $('#akun_lawan').val(this.list_transaksi[idx].jurnal.detail[1].jrdt_acc);
-
+          $('#akun_perkiraan').val(this.list_transaksi[idx].jurnal.detail[0].jrdt_acc).trigger('change.select2');
+          $('#akun_lawan').val(this.list_transaksi[idx].jurnal.detail[1].jrdt_acc).trigger('change.select2');
+          $('#cashflow').val(this.list_transaksi[idx].jurnal.detail[1].jrdt_cashflow).trigger('change.select2');
 
           this.state = "update";
           $(".overlay.transaksi_list").fadeOut(200);
@@ -533,8 +544,9 @@
 
             $('#tanggal_transaksi').val('{{ date('d-m-Y') }}');
             $('#nominal').val('');
-            $('#akun_lawan').val(this.akun_lawan[0].id_akun);
-            $('#akun_perkiraan').val(this.akun_perkiraan[0].id_akun);
+            $('#akun_lawan').val(this.akun_lawan[0].id_akun).trigger('change.select2');
+            $('#cashflow').val(this.cashflow[0].id_akun).trigger('change.select2');
+            $('#akun_perkiraan').val(this.akun_perkiraan[0].id_akun).trigger('change.select2');
         }
       }
 

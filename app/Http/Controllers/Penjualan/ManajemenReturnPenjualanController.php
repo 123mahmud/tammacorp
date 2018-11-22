@@ -441,6 +441,8 @@ class ManajemenReturnPenjualanController extends Controller
 
   public function store($metode, Request $request){
   // dd($request->all());
+
+  // return json_encode($request->all());
   
   DB::beginTransaction();
     try {
@@ -663,92 +665,137 @@ class ManajemenReturnPenjualanController extends Controller
       ->first();
     $cek = d_sales_returndt::select('*')
       ->where('dsrdt_idsr',$data->dsr_id)->get();
-    // dd($sales);
+
+    $total_kas = $total_barang_rusak = 0; $akun_pendapatan = []; $akun_persediaan = []; $err = true;
+
+    // return json_encode($cek);
+
     if ($data->dsr_method == 'PN') {
       if ($data->dsr_jenis_return == 'BR') {
-        // dd($cek);
         for ($i=0; $i <count($cek) ; $i++) {
 
           if ($cek[$i]->dsrdt_qty_confirm != 0) {
-             $coba[] = $cek[$i];
-             $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
-                ->where('s_comp',8)
-                ->where('s_position',8)
-                ->first();
-              if ($stockRusak == null) {
-                $s_id = d_stock::select('s_id')->max('s_id')+1;
-                d_stock::create([
-                    's_id' => $s_id,
-                    's_comp' => 8,
-                    's_position' => 8,
-                    's_item' => $cek[$i]->dsrdt_item,
-                    's_qty' => $cek[$i]->dsrdt_qty_confirm
-                  ]);
-                d_stock_mutation::create([
-                    'sm_stock' =>  $s_id,
-                    'sm_detailid' => 1,
-                    'sm_date' => Carbon::now(),
-                    'sm_comp' => 8,
-                    'sm_position' => 8,
-                    'sm_mutcat' => 4,
-                    'sm_item' => $cek[$i]->dsrdt_item,
-                    'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
-                    'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
-                    'sm_detail' => 'PENAMBAHAN',
-                    'sm_reff' => $data->dsr_code,
-                    'sm_insert' => Carbon::now()
-                ]);
 
-              }else{
+              if(jurnal_setting()->allow_jurnal_to_execute){
+                $cek1 = DB::table('m_item')
+                  ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                  ->join('m_price', 'm_price.m_pitem', '=', 'm_item.i_id')
+                  ->where('i_id', $cek[$i]->dsrdt_item)
+                  ->select('m_group.m_akun_penjualan', 'm_group.m_akun_persediaan', 'm_group.m_akun_beban', 'm_group.m_gid', 'm_price.m_hpp', 'm_price.m_barang_rusak')
+                  ->first();
 
-                $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
-                // dd($cek[$i]->dsrdt_qty_confirm);
-                $stockRusak->update([
-                  's_qty' => $tambahStock,
-                ]);
-                $sm_detailid = d_stock_mutation::select('sm_detailid')
-                  ->where('sm_stock',$stockRusak->s_id)
-                  ->max('sm_detailid')+1;
-                // dd($sm_detailid);
-                d_stock_mutation::create([
-                        'sm_stock' =>  $stockRusak->s_id,
-                        'sm_detailid' => $sm_detailid,
-                        'sm_date' => Carbon::now(),
-                        'sm_comp' => 8,
-                        'sm_position' => 8,
-                        'sm_mutcat' => 4,
-                        'sm_item' => $cek[$i]->dsrdt_item,
-                        'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
-                        'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
-                        'sm_detail' => 'PENAMBAHAN',
-                        'sm_reff' => $data->dsr_code,
-                        'sm_insert' => Carbon::now()
+                $cek2 = DB::table('d_akun')->where('id_akun', $cek1->m_akun_penjualan)->first();
+
+                // return json_encode($cek1);
+
+                if(!$cek1 || !$cek1->m_akun_penjualan || !$cek2){
+                    $err = false;
+                }else{
+                  if(array_key_exists($cek1->m_akun_penjualan, $akun_pendapatan)){
+                      $akun_pendapatan[$cek->m_akun_penjualan] = [
+                          'td_acc'    => $cek1->m_akun_penjualan,
+                          'td_posisi' => 'D',
+                          'value'     => $akun_pendapatan[$cek1->m_akun_penjualan]['value'] + ($cek[$i]->dsrdt_price * $cek[$i]->dsrdt_qty_confirm)
+                      ];
+                  }else{
+                      $akun_pendapatan[$cek1->m_akun_penjualan] = [
+                          'td_acc'    => $cek1->m_akun_penjualan,
+                          'td_posisi' => 'D',
+                          'value'     => ($cek[$i]->dsrdt_price * $cek[$i]->dsrdt_qty_confirm)
+                      ];
+                  }
+                }
+
+                if(!$err){
+                    return response()->json([
+                        'status' => 'gagal',
+                        'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
                     ]);
+                }
+              }
 
-           }
-           // dd($data);
-           $sisa = $sales->sp_nominal - $data->dsr_net;
-           
-           $jSisa = 0;
-            if ($sisa <= 0) {
-              $jSisa = 0-($sisa);
-            }
-            // dd($data->dsr_sid);
-          d_sales::where('s_id',$data->dsr_sid)
-            ->update([
-              's_gross' => $data->dsr_sgross,
-              's_disc_percent' => $data->dsr_disc_vpercent,
-              's_disc_value' => $data->dsr_disc_value,
-              's_net' => $data->dsr_net,
-              's_sisa' => $jSisa,
+              $total_kas += ($cek[$i]->dsrdt_price * $cek[$i]->dsrdt_qty_confirm);
+              $total_barang_rusak += ($cek1->m_barang_rusak) ? ($cek1->m_barang_rusak * $cek[$i]->dsrdt_qty_confirm) : 0;
+
+               $coba[] = $cek[$i];
+
+               $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                  ->where('s_comp',8)
+                  ->where('s_position',8)
+                  ->first();
+                if ($stockRusak == null) {
+                  $s_id = d_stock::select('s_id')->max('s_id')+1;
+                  d_stock::create([
+                      's_id' => $s_id,
+                      's_comp' => 8,
+                      's_position' => 8,
+                      's_item' => $cek[$i]->dsrdt_item,
+                      's_qty' => $cek[$i]->dsrdt_qty_confirm
+                    ]);
+                  d_stock_mutation::create([
+                      'sm_stock' =>  $s_id,
+                      'sm_detailid' => 1,
+                      'sm_date' => Carbon::now(),
+                      'sm_comp' => 8,
+                      'sm_position' => 8,
+                      'sm_mutcat' => 4,
+                      'sm_item' => $cek[$i]->dsrdt_item,
+                      'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                      'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                      'sm_detail' => 'PENAMBAHAN',
+                      'sm_reff' => $data->dsr_code,
+                      'sm_insert' => Carbon::now()
+                  ]);
+
+                }else{
+
+                  $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
+                  // dd($cek[$i]->dsrdt_qty_confirm);
+                  $stockRusak->update([
+                    's_qty' => $tambahStock,
+                  ]);
+                  $sm_detailid = d_stock_mutation::select('sm_detailid')
+                    ->where('sm_stock',$stockRusak->s_id)
+                    ->max('sm_detailid')+1;
+                  // dd($sm_detailid);
+                  d_stock_mutation::create([
+                          'sm_stock' =>  $stockRusak->s_id,
+                          'sm_detailid' => $sm_detailid,
+                          'sm_date' => Carbon::now(),
+                          'sm_comp' => 8,
+                          'sm_position' => 8,
+                          'sm_mutcat' => 4,
+                          'sm_item' => $cek[$i]->dsrdt_item,
+                          'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                          'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                          'sm_detail' => 'PENAMBAHAN',
+                          'sm_reff' => $data->dsr_code,
+                          'sm_insert' => Carbon::now()
+                      ]);
+
+             }
+             // dd($data);
+             $sisa = $sales->sp_nominal - $data->dsr_net;
+             
+             $jSisa = 0;
+              if ($sisa <= 0) {
+                $jSisa = 0-($sisa);
+              }
+              // dd($data->dsr_sid);
+            d_sales::where('s_id',$data->dsr_sid)
+              ->update([
+                's_gross' => $data->dsr_sgross,
+                's_disc_percent' => $data->dsr_disc_vpercent,
+                's_disc_value' => $data->dsr_disc_value,
+                's_net' => $data->dsr_net,
+                's_sisa' => $jSisa,
+                ]);
+
+            d_sales_return::where('dsr_id',$id)
+              ->update([
+                'dsr_status' => 'FN'
               ]);
-
-          d_sales_return::where('dsr_id',$id)
-            ->update([
-              'dsr_status' => 'FN'
-            ]);
-
-         }
+          }
 
           if ($cek[$i]->dsrdt_disc_value != 0.00) {
             d_sales_dt::where('sd_sales',$data->dsr_sid)
@@ -777,6 +824,22 @@ class ManajemenReturnPenjualanController extends Controller
           }
 
         }
+
+        if(jurnal_setting()->allow_jurnal_to_execute){
+          $akun_pendapatan['110.02'] = [
+              'td_acc'    => '110.02',
+              'td_posisi' => 'K',
+              'value'     => $total_kas
+          ];
+
+          $akun_persediaan['550.09'] = [
+              'td_acc'    => '550.09',
+              'td_posisi' => 'K',
+              'value'     => $total_barang_rusak
+          ];
+        }
+
+        return json_encode(array_merge($akun_pendapatan, $akun_persediaan));
         
       }else{
 

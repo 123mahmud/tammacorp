@@ -55,7 +55,8 @@ class penerimaan_piutang_controller extends Controller
                 [
                     'td_acc'    => '110.01',
                     'td_posisi' => 'K',
-                    'value'     => str_replace(',', '', $request->nominal_pembayaran)
+                    'value'     => str_replace(',', '', $request->nominal_pembayaran),
+                    'cashflow'  => '4'
                 ]
             ];
         }
@@ -66,9 +67,13 @@ class penerimaan_piutang_controller extends Controller
                             ->orderBy('sr_date', 'desc')
                             ->first();
 
-        $code = ($cek2) ? (explode('/', $cek2->payment_code)[2] + 1) : 1;
+        // return json_encode($cek2);
+
+        $code = ($cek2) ? (explode('/', $cek2->sr_code)[2] + 1) : 1;
         $no_sr = 'SR-'.date('ymd').'/'.$request->supplier.'/'.str_pad($code, 4, '0', STR_PAD_LEFT);
         $state = ($request->jenis_pembayaran == 'T') ? 'BK' : 'KK';
+
+        // return json_encode($acc);
 
         DB::table('d_sales_receive')->insert([
             'sr_id'            => $cek,
@@ -152,7 +157,8 @@ class penerimaan_piutang_controller extends Controller
                 [
                     'td_acc'    => '110.01',
                     'td_posisi' => 'K',
-                    'value'     => str_replace(',', '', $request->nominal_pembayaran)
+                    'value'     => str_replace(',', '', $request->nominal_pembayaran),
+                    'cashflow'  => '4'
                 ]
             ];
         }

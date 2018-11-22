@@ -69,6 +69,7 @@ class stockOpnameController extends Controller
 
     function saveOpname(Request $request){
       // dd($request->all());
+      // return json_encode($request->all());
       DB::beginTransaction();
         try {
       $o_id = d_opname::max('o_id') + 1;
@@ -77,6 +78,9 @@ class stockOpnameController extends Controller
       $month = carbon::now()->format('m');
       $date = carbon::now()->format('d');
       $nota = 'OD'  . $year . $month . $date . $o_id;
+      $total_opname = 0;
+      $akun_first = [];
+      $err = true;
       //end Nota
       d_opname::insert([
           'o_id' => $o_id,
@@ -88,6 +92,36 @@ class stockOpnameController extends Controller
       ]);
 
       for ($i=0; $i < count($request->i_id); $i++) {
+
+          $total_opname += $request->opname[$i];
+
+          $cek = DB::table('m_item')
+                ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                ->join('m_price', 'm_price.m_pitem', '=', 'm_item.i_id')
+                ->where('i_id', $request->i_id[$i])
+                ->select('m_group.m_akun_penjualan', 'm_group.m_akun_persediaan', 'm_group.m_akun_beban', 'm_group.m_gid', 'm_price.m_hpp')
+                ->first();
+
+          $cek2 = DB::table('d_akun')->where('id_akun', $cek->m_akun_persediaan)->first();
+
+          // return json_encode($cek2);
+
+          if(!$cek || !$cek->m_akun_persediaan || !$cek2){
+              $err = false;
+          }else{
+              if(array_key_exists($cek->m_akun_persediaan, $akun_first)){
+                  $akun_first[$cek->m_akun_persediaan] = [
+                      'td_acc'    => $cek->m_akun_persediaan,
+                      'value'     => $akun_first[$cek->m_akun_persediaan]['value'] + ($request->opname[$i] * $cek->m_hpp)
+                  ];
+              }else{
+                  $akun_first[$cek->m_akun_persediaan] = [
+                      'td_acc'    => $cek->m_akun_persediaan,
+                      'value'     => ($request->opname[$i] * $cek->m_hpp)
+                  ];
+              }
+          }
+
           d_opnamedt::insert([
             'od_ido' => $o_id,
             'od_idodt' => $i+1,
@@ -140,21 +174,60 @@ class stockOpnameController extends Controller
           }
       }
 
+      if(!$err){
+          return response()->json([
+              'status' => 'gagal',
+              'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Penjualan.'
+          ]);
+      }
+
+      $akun = []; $selisih = 0;
+
+      foreach ($akun_first as $key => $data) {
+
+          $akun[$key] = [
+              'td_acc'    => $data['td_acc'],
+              'td_posisi' => ($data['value'] < 0) ? 'K' : 'D',
+              'value'     => str_replace('-', '', $data['value'])
+          ];
+
+          $selisih += $data['value'];
+
+      }
+
+      $akun['551.12'] = [
+          'td_acc'    => '551.12',
+          'td_posisi' => ($selisih < 0) ? 'D' : 'K',
+          'value'     => str_replace('-', '', $selisih)
+      ];
+
       $nota = d_opname::where('o_id',$o_id)
           ->first();
 
       DB::commit();
-      return response()->json([
-          'status' => 'sukses',
-          'nota' => $nota
-        ]);
-      } catch (\Exception $e) {
+      
+      } catch (Exception $e) {
       DB::rollback();
       return response()->json([
         'status' => 'gagal',
         'data' => $e
         ]);
       }
+
+      // return json_encode($o_id);
+
+      $jurnal = DB::table('d_jurnal')
+                    ->where('jurnal_ref', $o_id)
+                    ->where('keterangan', 'like', 'Stok Opname%')->first();
+
+      if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
+        $state_jurnal = _initiateJournal_self_detail($o_id, 'MM', date('Y-m-d'), 'Stok Opname Tanggal '.date('d/m/Y'), array_merge($akun));
+      }
+
+      return response()->json([
+          'status' => 'sukses',
+          'nota' => $nota
+        ]);
     }
 
     public function history($tgl1, $tgl2){

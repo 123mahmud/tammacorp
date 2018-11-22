@@ -477,13 +477,14 @@
           this.btn_save_disabled = true;
           // this.form_reset();
 
-          let nominal      = $('#nominal_pembayaran').val().split(',')[0].replace(/\./g, '');
-          let sisa_tagihan = $('#sisa_tagihan').val().split(',')[0].replace(/\./g, '');
+          let nominal      = $('#nominal_pembayaran').val().replace(/\,/g, '');
+          let sisa_tagihan = $('#sisa_tagihan').val().replace(/\,/g, '');
 
-          // alert(parseInt(nominal) > parseInt(sisa_tagihan));
+          // alert(parseFloat(nominal)+" -> "+parseFloat(sisa_tagihan));
+          // return false;
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            if(parseInt(nominal) > parseInt(sisa_tagihan)){
+            if(parseFloat(nominal) > parseFloat(sisa_tagihan)){
               alert('Jumlah Yang Anda Terima Lebih Banyak Dari Sisa Tagihan Yang Ada.');
               this.btn_save_disabled = false;
               return false;
@@ -518,12 +519,14 @@
           evt.preventDefault();
           this.btn_save_disabled = true;
 
-          let nominal      = $('#nominal_pembayaran').val().split(',')[0].replace(/\./g, '');
-          let sisa_tagihan = $('#total_tagihan').val().split(',')[0].replace(/\./g, '');
+          let nominal      = $('#nominal_pembayaran').val().replace(/\,/g, '');
+          let sisa_tagihan = $('#total_tagihan').val().replace(/\,/g, '');
+
+          // alert(nominal+" -> "+sisa_tagihan);
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
 
-            if(parseInt(nominal) > parseInt(sisa_tagihan)){
+            if(parseFloat(nominal) > parseFloat(sisa_tagihan)){
               alert('Jumlah Yang Anda Bayarkan Lebih Banyak Dari Total Tagihan Yang Ada.');
               this.btn_save_disabled = false;
               return false;

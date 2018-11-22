@@ -25,11 +25,14 @@ class transaksi_kas_controller extends Controller
 
     	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '!=', '100')->where(DB::raw('substring(id_akun,1,3)'), '!=', '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
+        $cashflow = DB::table('dk_transaksi_cashflow')->select('tc_id as id_akun', 'tc_name as nama_akun')->get();
+
     	// return json_encode($list_transaksi);
 
     	return response()->json([
     		'akun_perkiraan'	=> $akun_perkiraan,
     		'akun_lawan'		=> $akun_lawan,
+            'cashflow'          => $cashflow
     	]);
     }
 
@@ -105,7 +108,8 @@ class transaksi_kas_controller extends Controller
                         [
                             "td_acc"    => $request->akun_lawan,
                             "td_posisi" => "K",
-                            "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
+                            "value"     => str_replace('.', '', explode(',', $request->nominal)[0]),
+                            'cashflow'  => $request->cashflow
                         ]
                     ];
 
@@ -177,7 +181,8 @@ class transaksi_kas_controller extends Controller
                         [
                             "td_acc"    => $request->akun_lawan,
                             "td_posisi" => "D",
-                            "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
+                            "value"     => str_replace('.', '', explode(',', $request->nominal)[0]),
+                            'cashflow'  => $request->cashflow
                         ]
                     ];
 
@@ -295,7 +300,8 @@ class transaksi_kas_controller extends Controller
                         'jrdt_no'       => 2,
                         'jrdt_acc'      => $request->akun_lawan,
                         'jrdt_value'    => $val,
-                        'jrdt_dk'       => $pos
+                        'jrdt_dk'       => $pos,
+                        'jrdt_cashflow'  => $request->cashflow
                     ]);
                 }else{
                     jurnal_dt::insert([
@@ -321,7 +327,8 @@ class transaksi_kas_controller extends Controller
                         'jrdt_no'       => 2,
                         'jrdt_acc'      => $request->akun_lawan,
                         'jrdt_value'    => $val,
-                        'jrdt_dk'       => $pos
+                        'jrdt_dk'       => $pos,
+                        'jrdt_cashflow'  => $request->cashflow
                     ]);
                 }
 

@@ -363,6 +363,7 @@ class POSRetailController extends Controller
               'td_acc'    => '501.01',
               'td_posisi' => 'D',
               'value'     => $this->konvertRp($request->totalDiscount),
+              'cashflow'  => '2'
           ];
         }
 
@@ -389,13 +390,15 @@ class POSRetailController extends Controller
                     $akun[$cek->m_akun_penjualan] = [
                         'td_acc'    => $cek->m_akun_penjualan,
                         'td_posisi' => 'K',
-                        'value'     => $akun[$cek->m_akun_penjualan]['value'] + ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key])
+                        'value'     => $akun[$cek->m_akun_penjualan]['value'] + ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key]),
+                        'cashflow'  => '2'
                     ];
                 }else{
                     $akun[$cek->m_akun_penjualan] = [
                         'td_acc'    => $cek->m_akun_penjualan,
                         'td_posisi' => 'K',
-                        'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key])
+                        'value'     => ($this->konvertRp($request->harga_item[$acc_key]) * $request->sd_qty[$acc_key]),
+                        'cashflow'  => '2'
                     ];
                 }
 
@@ -437,7 +440,7 @@ class POSRetailController extends Controller
         }
       }
 
-      // return json_encode(array_merge($akun_beban, $akun_persediaan, $akun));
+      // return json_encode(array_merge($akun));
 
     // jurnal end
 
@@ -595,7 +598,7 @@ class POSRetailController extends Controller
                     ->where('keterangan', 'like', 'Penjualan Tamma Atas%')->first();
 
     if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
-      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, array_merge($akun));
+      $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)).' - '.$sts, $akun);
 
       $state_jurnal = _initiateJournal_self_detail($fatkur, 'MM', date('Y-m-d',strtotime($request->s_date)), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun_beban, $akun_persediaan));
     }

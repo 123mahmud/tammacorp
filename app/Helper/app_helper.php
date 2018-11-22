@@ -66,7 +66,8 @@
     			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data->td_acc,
     			'jrdt_value'	=> $val,
-    			'jrdt_dk'		=> $pos
+    			'jrdt_dk'		=> $pos,
+    			'jrdt_cashflow'	=> (isset($detail_data["cashflow"])) ? $detail_data["cashflow"] : null,
     		]);
 
     		$num++;
@@ -111,7 +112,8 @@
     			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data["td_acc"],
     			'jrdt_value'	=> $val,
-    			'jrdt_dk'		=> $pos
+    			'jrdt_dk'		=> $pos,
+    			'jrdt_cashflow'	=> (isset($detail_data["cashflow"])) ? $detail_data["cashflow"] : null,
     		]);
 
     		$num++;
@@ -162,7 +164,8 @@
     			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data->td_acc,
     			'jrdt_value'	=> $val,
-    			'jrdt_dk'		=> $pos
+    			'jrdt_dk'		=> $pos,
+    			'jrdt_cashflow'	=> (isset($detail_data["cashflow"])) ? $detail_data["cashflow"] : null,
     		]);
 
     		$num++;
@@ -210,7 +213,8 @@
     			'jrdt_no'		=> ($num+1),
     			'jrdt_acc' 		=> $detail_data["td_acc"],
     			'jrdt_value'	=> $val,
-    			'jrdt_dk'		=> $pos
+    			'jrdt_dk'		=> $pos,
+    			'jrdt_cashflow'	=> (isset($detail_data["cashflow"])) ? $detail_data["cashflow"] : null,
     		]);
 
     		$num++;
@@ -295,6 +299,11 @@
 			return false;
 
 		return true;
+	}
+
+	function formatAccounting($number){
+		$data = ($number < 0) ? '('.number_format(str_replace('-', '', $number), 2).')' : number_format($number, 2);
+		return $data;
 	}
 
 ?>
