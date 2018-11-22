@@ -301,11 +301,11 @@
               @include('hrd.recruitment.tab-berkas')
               <!-- tab finish step -->
               <div class="tab-pane" role="tabpanel" id="step4">
-                <h1 class="text-md-center">Complete</h1>
+                <h1 class="text-md-center">Apakah anda yakin?</h1>
                 <div class="row"></div>
                 <ul class="list-inline text-md-center">
-                    <li><button type="submit" class="btn btn-lg btn-primary next-button" id="btn_apply_finish">Finish</button></li>
-                    <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Back</a></li>
+                    <li><button type="submit" class="btn btn-lg btn-primary next-button" id="btn_apply_finish">Simpan</button></li>
+                    <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Kembali</a></li>
                 </ul>
               </div>
 
