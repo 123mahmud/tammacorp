@@ -207,7 +207,7 @@
 <script type="text/javascript">
 
     function simpan (){
-      var a = $('#form_cust').serialize();
+      
 
       var nama = $("#nama_cus").val();
       var tgl_lahir = $("#tgl_lahir").val();
@@ -217,24 +217,24 @@
 
       if(nama == '' || nama == null ){
 
-       toastr.warning('Data Harus nama Diisi!','Peringatan')
+       toastr.warning('Data Harus nama Diisi!','Peringatan');
         return false;
       }
 
       if(no_hp == '' || no_hp == null ){
 
-       toastr.warning('Data Harus no hp Diisi!','Peringatan')
+       toastr.warning('Data Harus no hp Diisi!','Peringatan');
         return false;
       }
 
       $.ajax({
         url : baseUrl + "/master/datacust/simpan_cust",
-        type:'get',
-        data: a,
+        type:'POST',
+        data: $('#form_cust').serialize(),
         success:function(response){
           if (response.status=='sukses') {
             toastr.info('Data berhasil di simpan.');
-            window.location = (baseUrl+'/master/datacust/cust')
+            window.location = (baseUrl+'/master/datacust/cust');
           }else{
             toastr.error('Data gagal di simpan.');
           }
