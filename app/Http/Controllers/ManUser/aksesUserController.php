@@ -206,12 +206,12 @@ class aksesUserController extends Controller
         DB::beginTransaction();
         try 
         {
-            $tgl_raw = explode(',', $request->TanggalLahir);
-            $arr_tgl = explode(' ', trim($tgl_raw[1]));
-            $tgl = $arr_tgl[0];
-            $bln = $this->convertMonthToBulan($arr_tgl[1]);
-            $thn = $arr_tgl[2];
-            $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
+            // $tgl_raw = explode(',', $request->TanggalLahir);
+            // $arr_tgl = explode(' ', trim($tgl_raw[1]));
+            // $tgl = $arr_tgl[0];
+            // $bln = $this->convertMonthToBulan($arr_tgl[1]);
+            // $thn = $arr_tgl[2];
+            // $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
 
             $pass_lama = sha1(md5('passwordAllah').trim($request->PassLama));
             $mem_access = d_mem_access::where('ma_mem', $m_id)->first();
