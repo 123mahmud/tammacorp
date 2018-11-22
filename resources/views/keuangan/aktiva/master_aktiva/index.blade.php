@@ -55,7 +55,7 @@ tr.details td.details-control {
                       <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                         <i class="fa fa-plus" aria-hidden="true">
                          &nbsp;
-                        </i>Tambah Data
+                        </i>Tambah / Edit Data
                       </button>
                     </a>
                   </div>
@@ -74,7 +74,7 @@ tr.details td.details-control {
                             <th class="wd-15p text-center">Metode Penyusutan</th>
                             <th class="wd-15p text-center">Harga Beli</th>
                             <th class="wd-15p text-center">Nilai Sisa</th>
-                            <th class="wd-15p text-center">Aksi</th>
+                            {{-- <th class="wd-15p text-center">Aksi</th> --}}
                           </tr>
                         </thead>
                        
@@ -131,7 +131,7 @@ tr.details td.details-control {
               { "data": "a_metode_penyusutan" },
               { "data": "a_harga_beli" },
               { "data": "a_nilai_sisa" },
-              { "data": "action" },
+              // { "data": "action" },
             ],
             "responsive":true,
             "pageLength": 10,
