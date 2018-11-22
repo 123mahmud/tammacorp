@@ -56,12 +56,12 @@
 
 
                 <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-top:15px;">
-                  <form method="POST" action="{{ url('master/datapegawai/update-pegawai')}}/{{$data->c_id}}">
+                  <form method="POST" id="updatePeg">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                     <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
                     <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">ID Pegawai</label>
+                        <label class="tebal">ID Pegawai<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -79,7 +79,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Divisi</label>
+                        <label class="tebal">Divisi<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -95,7 +95,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Jabatan</label>
+                        <label class="tebal">Jabatan<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -135,7 +135,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Shift</label>
+                        <label class="tebal">Shift<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -150,7 +150,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Nama Pegawai</label>
+                        <label class="tebal">Nama Pegawai<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -158,7 +158,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">KTP</label>
+                        <label class="tebal">KTP<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -166,7 +166,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Alamat KTP</label>
+                        <label class="tebal">Alamat KTP<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -174,7 +174,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">domisili sekarang</label>
+                        <label class="tebal">domisili sekarang<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -196,7 +196,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">pendidikan</label>
+                        <label class="tebal">pendidikan<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -214,7 +214,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">email</label>
+                        <label class="tebal">email<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -222,7 +222,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">no. handphone</label>
+                        <label class="tebal">no. handphone<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -230,7 +230,7 @@
                         </div>
                       </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Agama</label>
+                        <label class="tebal">Agama<font color="red">*</font></label>
                       </div>
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
@@ -314,7 +314,7 @@
                       </div>                    
                     </div>
                     <div align="right">
-                      <input type="submit" value="Simpan Data" class="btn btn-primary">
+                      <input type="submit" value="Simpan Data" class="btn btn-primary simpanPeg" onclick="simpanPegawai()">
                     </div>
                   </form>
                   </div>
@@ -378,4 +378,39 @@
               $('select[name="c_jabatan_id"]').empty();
             }
         });
+
+        function simpanPegawai(){
+          $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $('.simpanPeg').attr('disabled', 'disabled');
+        var a = $('#updatePeg').serialize();
+        $.ajax({
+            url: baseUrl + "/master/datapegawai/update-pegawai/{{$data->c_id}}",
+            type: 'POST',
+            data: a,
+            success: function (response,) {
+                if (response.status == 'sukses') {
+                    iziToast.success({
+                        timeout: 5000,
+                        position: "topRight",
+                        icon: 'fa fa-chrome',
+                        title: '',
+                        message: 'Data pegawai tersimpan.'
+                    });
+                    window.location.href = baseUrl + "/master/datapegawai/pegawai";
+                } else {
+                    iziToast.error({
+                        position: "topRight",
+                        title: '',
+                        message: 'Mohon melengkapi data.'
+                    });
+                    $('.simpanPeg').removeAttr('disabled', 'disabled');
+                }
+            }
+        })
+        }
+
           </script> @endsection

@@ -53,12 +53,12 @@ class aksesUserController extends Controller
         DB::beginTransaction();
         try 
         {
-            $tgl_raw = explode(',', $request->TanggalLahir);
-            $arr_tgl = explode(' ', trim($tgl_raw[1]));
-            $tgl = $arr_tgl[0];
-            $bln = $this->convertMonthToBulan($arr_tgl[1]);
-            $thn = $arr_tgl[2];
-            $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
+            // $tgl_raw = explode(',', $request->TanggalLahir);
+            // $arr_tgl = explode(' ', trim($tgl_raw[1]));
+            // $tgl = $arr_tgl[0];
+            // $bln = $this->convertMonthToBulan($arr_tgl[1]);
+            // $thn = $arr_tgl[2];
+            // $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
 
  			$passwd= sha1(md5('passwordAllah').$request->password);
             $m_id=(int)mMember::max('m_id')+1;
@@ -68,7 +68,7 @@ class aksesUserController extends Controller
  				'm_username' => $request->username,
  				'm_passwd' => $passwd,
  				'm_name' => $request->NamaLengkap,
-                'm_birth_tgl' => $hasilTgl,
+                // 'm_birth_tgl' => $hasilTgl,
                 'm_addr' => $request->alamat,
  			]);
 
@@ -206,12 +206,12 @@ class aksesUserController extends Controller
         DB::beginTransaction();
         try 
         {
-            $tgl_raw = explode(',', $request->TanggalLahir);
-            $arr_tgl = explode(' ', trim($tgl_raw[1]));
-            $tgl = $arr_tgl[0];
-            $bln = $this->convertMonthToBulan($arr_tgl[1]);
-            $thn = $arr_tgl[2];
-            $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
+            // $tgl_raw = explode(',', $request->TanggalLahir);
+            // $arr_tgl = explode(' ', trim($tgl_raw[1]));
+            // $tgl = $arr_tgl[0];
+            // $bln = $this->convertMonthToBulan($arr_tgl[1]);
+            // $thn = $arr_tgl[2];
+            // $hasilTgl = $thn.'-'.$bln.'-'.$tgl;
 
             $pass_lama = sha1(md5('passwordAllah').trim($request->PassLama));
             $mem_access = d_mem_access::where('ma_mem', $m_id)->first();
@@ -223,7 +223,7 @@ class aksesUserController extends Controller
                     $mMember->m_name = $request->NamaLengkap;
                     $mMember->m_addr = $request->alamat;
                 }
-                $mMember->m_birth_tgl = $hasilTgl;
+                // $mMember->m_birth_tgl = $hasilTgl;
                 $mMember->m_update = Carbon::now('Asia/Jakarta');
                 if ($pass_lama == $mMember->m_passwd) {
                     $mMember->m_passwd = sha1(md5('passwordAllah').trim($request->PassBaru));
