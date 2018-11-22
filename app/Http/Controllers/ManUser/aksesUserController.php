@@ -223,7 +223,7 @@ class aksesUserController extends Controller
                     $mMember->m_name = $request->NamaLengkap;
                     $mMember->m_addr = $request->alamat;
                 }
-                $mMember->m_birth_tgl = $hasilTgl;
+                // $mMember->m_birth_tgl = $hasilTgl;
                 $mMember->m_update = Carbon::now('Asia/Jakarta');
                 if ($pass_lama == $mMember->m_passwd) {
                     $mMember->m_passwd = sha1(md5('passwordAllah').trim($request->PassBaru));
