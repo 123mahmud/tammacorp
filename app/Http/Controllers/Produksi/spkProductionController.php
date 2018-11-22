@@ -491,7 +491,7 @@ class spkProductionController extends Controller
         $ket = $spk[0]->spk_status;
         $id = $spk[0]->spk_id;
 
-        return json_encode($bambang);
+        // return json_encode($bambang);
         return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang','ket','id'));
 
     }
