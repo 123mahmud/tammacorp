@@ -180,7 +180,7 @@ class PegawaiController extends Controller
     }
 
     public function updatePegawai(Request $request, $id){
-        dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try {
         $input = $request->except('_token', '_method','c_hari_awal','c_hari_akhir','c_tempat','c_tanggal');
@@ -193,7 +193,7 @@ class PegawaiController extends Controller
         // dd($section);
         $data = Pegawai::where('c_id', $id)->update($input);
         // dd($input);exit;
-        $data = Pegawai::create($input);
+        // $data = Pegawai::create($input);
         DB::commit();
         return response()->json([
               'status' => 'sukses'

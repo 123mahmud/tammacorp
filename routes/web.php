@@ -1313,6 +1313,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datajabatan/tambah-jabatanpro', 'Master\JabatanController@tambahJabatanPro');
     Route::get('datajabatan/simpan-jabatanpro', 'Master\JabatanController@simpanJabatanPro');
     Route::get('datajabatan/hapus-jabatanpro/{id}', 'Master\JabatanController@hapusJabatanPro');
+    Route::get('/master/datajabatan/pro/edit/{id}', 'Master\JabatanController@editPro');
+    Route::post('/master/datajabatan/pro/update-jabatan/{id}', 'Master\JabatanController@updatePro');
 //pegawai
     Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
     Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
