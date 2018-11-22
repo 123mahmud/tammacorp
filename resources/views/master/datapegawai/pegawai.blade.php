@@ -184,7 +184,7 @@
     // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
-    $('#tbl_pegawai').DataTable({
+    var tablePeg = $('#tbl_pegawai').DataTable({
       processing: true,
       // responsive:true,
       serverSide: true,
@@ -285,7 +285,8 @@
               dataType: "json",
               success: function (data) { }
             });
-            window.location.reload();
+            tablePeg.ajax.reload();
+
             instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
 
           }, true],

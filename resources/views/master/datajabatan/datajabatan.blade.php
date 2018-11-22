@@ -247,7 +247,20 @@
       }
 
     function editJPro(id){
-        alert(id);
+        $.ajax({
+          type: "GET",
+          url: '{{ url("master/datajabatan/pro/edit") }}' + '/' + id,
+          data: { id },
+          success: function (data) {
+          },
+          complete: function (argument) {
+            window.location = (this.url)
+          },
+          error: function () {
+
+          },
+          async: false
+        });
       }
 
     function hapusJPro(id){

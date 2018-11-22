@@ -187,4 +187,20 @@ class JabatanController extends Controller
           ]);
         }
     }
+
+    public function editPro($id){
+        $jPro = m_jabatan_pro::where('c_id',$id)
+            ->first();
+
+        return view('master.datajabatan.edit_jabatan_pro',compact('jPro'));
+    }
+
+    public function updatePro(Request $request, $id){
+        m_jabatan_pro::where('c_id',$id)
+            ->update([
+                'c_jabatan_pro' => $request->c_posisi
+            ]);
+
+        return view('master/datajabatan/datajabatan');
+    }
 }
