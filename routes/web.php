@@ -1343,7 +1343,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/divisi/pos/tambahposisi/index', 'Master\DivisiposController@tambahPosisi');
     Route::get('/master/divisi/pos/tambahposisi', 'Master\DivisiposController@savePosisi');
     Route::get('/master/divisi/pos/tambahdivisi', 'Master\DivisiposController@tambahDivisi');
-    Route::get('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
+    Route::post('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
     Route::get('/master/divisi/pos/hapusdivisi/{id}', 'Master\DivisiposController@hapusDivisi');
     Route::get('/master/divisi/pos/hapusposisi/{id}', 'Master\DivisiposController@hapusPosisi');
    
