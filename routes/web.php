@@ -1341,7 +1341,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/divisi/posisi/edit/{id}', 'Master\DivisiposController@editPosisi');
     Route::post('/master/divisi/posisi/update/{id}', 'Master\DivisiposController@updatePosisi');
     Route::get('/master/divisi/pos/tambahposisi/index', 'Master\DivisiposController@tambahPosisi');
-    Route::get('/master/divisi/pos/tambahposisi', 'Master\DivisiposController@savePosisi');
+    Route::post('/master/divisi/pos/tambahposisi', 'Master\DivisiposController@savePosisi');
     Route::get('/master/divisi/pos/tambahdivisi', 'Master\DivisiposController@tambahDivisi');
     Route::post('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
     Route::get('/master/divisi/pos/hapusdivisi/{id}', 'Master\DivisiposController@hapusDivisi');
