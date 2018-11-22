@@ -92,11 +92,10 @@
             }
           });
         $('.submitDivisi').attr('disabled', 'disabled');
-        var a = $('#divisi').serialize();
         $.ajax({
             url: baseUrl + "/master/divisi/pos/simpandivisi/",
-            type: 'GET',
-            data: a,
+            type: 'POST',
+            data: $('#divisi').serialize(),
             success: function (response) {
                 if (response.status == 'sukses') {
                     iziToast.success({

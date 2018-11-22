@@ -1185,7 +1185,7 @@ Route::group(['middleware' => 'auth'], function () {
 //customer
     Route::get('/master/datacust/cust', 'Master\custController@cust')->name('cust');
     Route::get('/master/datacust/tambah_cust', 'Master\custController@tambah_cust')->name('tambah_cust');
-    Route::get('/master/datacust/simpan_cust', 'Master\custController@simpan_cust')->name('simpan_cust');
+    Route::post('/master/datacust/simpan_cust', 'Master\custController@simpan_cust')->name('simpan_cust');
     Route::get('/master/datacust/hapus_cust', 'Master\custController@hapus_cust')->name('hapus_cust');
     Route::get('/master/datacust/edit_cust', 'Master\custController@edit_cust')->name('edit_cust');
     Route::get('/master/datacust/update_cust', 'Master\custController@update_cust')->name('update_cust');
@@ -1341,9 +1341,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/divisi/posisi/edit/{id}', 'Master\DivisiposController@editPosisi');
     Route::post('/master/divisi/posisi/update/{id}', 'Master\DivisiposController@updatePosisi');
     Route::get('/master/divisi/pos/tambahposisi/index', 'Master\DivisiposController@tambahPosisi');
-    Route::get('/master/divisi/pos/tambahposisi', 'Master\DivisiposController@savePosisi');
+    Route::post('/master/divisi/pos/tambahposisi', 'Master\DivisiposController@savePosisi');
     Route::get('/master/divisi/pos/tambahdivisi', 'Master\DivisiposController@tambahDivisi');
-    Route::get('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
+    Route::post('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
     Route::get('/master/divisi/pos/hapusdivisi/{id}', 'Master\DivisiposController@hapusDivisi');
     Route::get('/master/divisi/pos/hapusposisi/{id}', 'Master\DivisiposController@hapusPosisi');
    
