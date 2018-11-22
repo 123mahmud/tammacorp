@@ -55,7 +55,7 @@ tr.details td.details-control {
                       <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                         <i class="fa fa-plus" aria-hidden="true">
                          &nbsp;
-                        </i>Tambah Data
+                        </i>Tambah / Edit Data
                       </button>
                     </a>
                   </div>
