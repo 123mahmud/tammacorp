@@ -58,13 +58,7 @@ class itemProduksiController extends Controller
 	                				<i class="fa fa-check-square" aria-hidden="true"></i>
                     </button>';
       	}else{
-      		return  '<button id="edit" 
-               									onclick="edit('.$data->i_id.')" 
-               									class="btn btn-warning btn-sm" 
-               									title="Edit">
-               									<i class="glyphicon glyphicon-pencil"></i>
-               					</button>'.'
-                        <button id="status'.$data->i_id.'" 
+      		return  '<button id="status'.$data->i_id.'" 
                         				onclick="ubahStatus('.$data->i_id.')" 
                         				class="btn btn-danger btn-sm" 
                         				title="Tidak Aktif">
