@@ -68,7 +68,7 @@ class aksesUserController extends Controller
  				'm_username' => $request->username,
  				'm_passwd' => $passwd,
  				'm_name' => $request->NamaLengkap,
-                'm_birth_tgl' => $hasilTgl,
+                // 'm_birth_tgl' => $hasilTgl,
                 'm_addr' => $request->alamat,
  			]);
 
