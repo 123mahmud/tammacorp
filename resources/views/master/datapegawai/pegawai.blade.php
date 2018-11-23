@@ -222,7 +222,7 @@
         }
       }
     });
-    $('#tbl_pegawai_pro').DataTable({
+    var tablePro = $('#tbl_pegawai_pro').DataTable({
       processing: true,
       // responsive:true,
       serverSide: true,
@@ -287,12 +287,16 @@
             });
             tablePeg.ajax.reload();
 
-            instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+            instance.hide({
+                  transitionOut: 'fadeOutUp'
+              }, toast);
 
           }, true],
           ['<button>TIDAK</button>', function (instance, toast) {
 
-            instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+            instance.hide({
+                  transitionOut: 'fadeOutUp'
+              }, toast);
 
           }]
         ],
@@ -348,13 +352,17 @@
               dataType: "json",
               success: function (data) { }
             });
-            window.location.reload();
-            instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+            tablePro.ajax.reload();
+            instance.hide({
+                  transitionOut: 'fadeOutUp'
+              }, toast);
 
           }, true],
           ['<button>TIDAK</button>', function (instance, toast) {
 
-            instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+            instance.hide({
+                  transitionOut: 'fadeOutUp'
+              }, toast);
 
           }]
         ],
