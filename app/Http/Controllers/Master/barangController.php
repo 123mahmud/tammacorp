@@ -38,13 +38,16 @@ class barangController extends Controller
         {  
             if ($data->i_isactive == "TRUE") 
             {
-                return  '<button id="edit" onclick=edit("'.$data->i_id.'") class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                      <button id="delete" onclick=gantiStatus("'.$data->i_id.'","aktif") class="btn btn-danger btn-sm" title="Nonaktifan"><i class="glyphicon glyphicon-remove"></i></button>';
+                return  '<div class="text-center">'.
+                            '<button id="edit" onclick=edit("'.$data->i_id.'") class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
+                            <button id="delete" onclick=gantiStatus("'.$data->i_id.'","aktif") class="btn btn-primary btn-sm" title="Aktif"><i class="fa fa-check-square"></i></button>'.
+                        '</div>';
             }
             else
             {
-                return  '<button id="edit" onclick=edit("'.$data->i_id.'") class="btn btn-warning btn-sm disabled" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                      <button id="delete" onclick=gantiStatus("'.$data->i_id.'","nonaktif") class="btn btn-info btn-sm" title="Aktifkan"><i class="glyphicon glyphicon-ok"></i></button>';
+                return  '<div class="text-center">'.
+                            '<button id="delete" onclick=gantiStatus("'.$data->i_id.'","nonaktif") class="btn btn-danger btn-sm" title="Tidak Aktif"><i class="fa fa-minus-square"></i></button>'.
+                        '</div>';
             }
         })
         ->addColumn('none', function ($data) {
