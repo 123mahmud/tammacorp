@@ -1059,7 +1059,7 @@ class POSGrosirController extends Controller
           elseif ($data->s_status == "WA") { return '<span class="label label-primary">Waiting</span>'; }
           elseif ($data->s_status == "PR") { return '<span class="label label-orange">Progress</span>'; }
           elseif ($data->s_status == "FN") { return '<span class="label label-success">Final</span>'; }
-          elseif ($data->s_status == "PC") { return '<span class="label label-purple">Packing</span>'; }
+          elseif ($data->s_status == "PC") { return '<span class="label label-dark">Packing</span>'; }
           elseif ($data->s_status == "SN") { return '<span class="label label-danger">Sending</span>'; }
           elseif ($data->s_status == "RC") { return '<span class="label label-info">Received</span>'; }
       })

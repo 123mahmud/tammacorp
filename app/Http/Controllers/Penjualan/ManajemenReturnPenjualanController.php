@@ -121,7 +121,7 @@ class ManajemenReturnPenjualanController extends Controller
                           onclick="lihatDetailSB('.$data->dsr_id.')"
                           data-target="#myItemSB">
                       </button>
-                      <a  onclick="distroyNota()"
+                      <a  onclick="distroyNota('.$data->dsr_id.')"
                           class="btn btn-danger btn-sm"
                           title="Hapus">
                           <i class="fa fa-trash-o"></i></a>
@@ -135,7 +135,7 @@ class ManajemenReturnPenjualanController extends Controller
                             onclick="lihatDetailSB('.$data->dsr_id.')"
                             data-target="#myItemSB">
                         </button>
-                        <a  onclick="distroyNota()"
+                        <a  onclick="distroyNota('.$data->dsr_id.')"
                             class="btn btn-danger btn-sm"
                             title="Hapus">
                             <i class="fa fa-trash-o"></i></a>
@@ -183,7 +183,7 @@ class ManajemenReturnPenjualanController extends Controller
                           onclick="lihatDetail('.$data->dsr_id.')"
                           data-target="#myItem">
                       </button>
-                      <a  onclick="distroyNota()"
+                      <a  onclick="distroyNota('.$data->dsr_id.')"
                           class="btn btn-danger btn-sm"
                           title="Hapus">
                           <i class="fa fa-trash-o"></i></a>
@@ -197,7 +197,7 @@ class ManajemenReturnPenjualanController extends Controller
                             onclick="lihatDetail('.$data->dsr_id.')"
                             data-target="#myItem">
                         </button>
-                        <a  onclick="distroyNota()"
+                        <a  onclick="distroyNota('.$data->dsr_id.')"
                             class="btn btn-danger btn-sm"
                             title="Hapus">
                             <i class="fa fa-trash-o"></i></a>
@@ -1594,5 +1594,11 @@ class ManajemenReturnPenjualanController extends Controller
         'data' => $e
       ]);
     }
+  }
+
+  public function deleteRetur($id){
+    d_sales_returndt::where('dsrdt_idsr',$id)->delete();
+    d_sales_return::where('dsr_id',$id)->delete();
+    d_sales_returnsb::where('dsrs_sr',$id)->delete();
   }
 }

@@ -1362,11 +1362,6 @@ function autoTotalGross(){
                     $('#form_return_pembelian')[0].reset();
                     $('#tabel-return-sales').dataTable().fnClearTable();
                     tableDetail.row().clear().draw(false);
-                    var inputs = document.getElementById('kode'),
-                        names = [].map.call(inputs, function (input) {
-                            return input.value;
-                        });
-                    tamp = names;
                     iziToast.success({
                         timeout: 5000,
                         position: "topRight",
@@ -1374,6 +1369,12 @@ function autoTotalGross(){
                         title: '',
                         message: 'Data Return Tersimpan.'
                     });
+                    window.location.href = baseUrl + "/penjualan/manajemenreturn/r_penjualan";
+                    var inputs = document.getElementById('kode'),
+                        names = [].map.call(inputs, function (input) {
+                            return input.value;
+                        });
+                    tamp = names;
                 } else {
                     iziToast.error({
                         position: "topRight",
