@@ -19,9 +19,15 @@
                   </div>  
                 </div>
                 
-                <div class="col-md-3 col-sm-12 col-xs-12">
+                @if ($data[0]->dsr_method == 'KB')
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                  <label class="tebal">Jumlah Kurang :</label>
+                </div>
+                @else
+                    <div class="col-md-3 col-sm-12 col-xs-12">
                   <label class="tebal">Jumlah Return :</label>
                 </div>
+                @endif
 
                 <div class="col-md-3 col-sm-12 col-xs-12">
                   <div class="form-group">
@@ -67,12 +73,20 @@
             <tr>
                 <th>Nama</th>
                 <th width="5%">Jumlah</th>
-                <th width="5%">return</th>
+                @if ($data[0]->dsr_method == 'KB')
+                    <th width="5%">Kurang</th>
+                @else
+                    <th width="5%">return</th>
+                @endif
                 <th>Satuan</th>
                 <th>Harga</th>
                 <th width="10%">Disc Percent</th>
                 <th>Disc Value</th>
-                <th>Jumlah return</th>
+                @if ($data[0]->dsr_method == 'KB')
+                    <th>Jumlah Kurang</th>
+                @else
+                    <th>Jumlah return</th>
+                @endif
                 <th width="20%">Total</th>
             </tr>
         </thead>
@@ -120,11 +134,20 @@
     </table>
     <div class="modal-footer">
 
-        @if ($data[0]->dsr_status == 'TR')
-            <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
-        @endif
-        @if ($data[0]->dsr_status == 'FN')
-            <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>
+        @if ($data[0]->dsr_method == 'KB')
+            @if ($data[0]->dsr_status == 'TR')
+                <button type="button" class="btn btn-info" onclick="simpanReturnKB({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
+            @endif
+            @if ($data[0]->dsr_status == 'FN')
+                <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>
+            @endif
+        @else
+            @if ($data[0]->dsr_status == 'TR')
+                <button type="button" class="btn btn-info" onclick="simpanReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Proses</button>
+            @endif
+            @if ($data[0]->dsr_status == 'FN')
+                <button type="button" class="btn btn-info" onclick="printReturn({{ $data[0]->dsr_id }})" id="button_confirm_return">Print</button>
+            @endif
         @endif
         
         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
