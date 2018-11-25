@@ -353,6 +353,41 @@
 });
   }
 
+  function distroyNota(id){
+    iziToast.show({
+                color: 'red',
+                title: 'Peringatan',
+                message: 'Apakah anda yakin!',
+                position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                progressBarColor: 'rgb(0, 255, 184)',
+                buttons: [
+                    [
+                        '<button>Ok</button>',
+                        function (instance, toast) {
+                            instance.hide({
+                                transitionOut: 'fadeOutUp'
+                            }, toast);
+                            $.ajax({
+                                type: 'get',
+                                url: baseUrl + "/penjualan/returnpenjualan/deleteretur/" + id,
+                                success: function () {
+                                    tableRetur.ajax.reload();
+                                }
+                            });
+                        }
+                    ],
+                    [
+                        '<button>Close</button>',
+                        function (instance, toast) {
+                            instance.hide({
+                                transitionOut: 'fadeOutUp'
+                            }, toast);
+                        }
+                    ]
+                ]
+            });
+  }
+
   </script>
   
 @endsection()

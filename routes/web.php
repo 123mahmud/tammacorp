@@ -433,7 +433,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/getdata/SB', 'Penjualan\ManajemenReturnPenjualanController@detailSB');
     Route::get('/penjualan/returnpenjualan/getdata/terimaSB', 'Penjualan\ManajemenReturnPenjualanController@detailTerimaSB');
     Route::get('/penjualan/returnpenjualan/terimasb/{id}', 'Penjualan\ManajemenReturnPenjualanController@simpanPenerimaanSB');
-    
+    Route::get('/penjualan/returnpenjualan/deleteretur/{id}', 'Penjualan\ManajemenReturnPenjualanController@deleteRetur');
 //End
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
