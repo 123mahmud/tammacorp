@@ -142,6 +142,7 @@
                                     icon: 'fa fa-chrome',
                                     title: '',
                                     message: 'Status brhasil di ganti.'});
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
               }
               else
               {
@@ -150,6 +151,7 @@
                 iziToast.error({position: "topRight",
                                   title: '',
                                   message: 'Status gagal di ubah.'});
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
               }
             },
             error: function(){
