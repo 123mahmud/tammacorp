@@ -1057,7 +1057,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         // analisa keuangan start
             Route::get('/keuangan/analisahutangpiutang/analisa9', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@hutang_piutang');
+
             Route::get('/keuangan/analisaocf/analisa2', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@ocf_profit');
+            Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@cashflow');
 
     // keuangan end
 
@@ -1071,7 +1073,6 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::get('/keuangan/analisaaset/analisa3', 'Keuangan\KeuanganController@analisa3');
     Route::get('/keuangan/analisaaset/analisa3a', 'Keuangan\KeuanganController@analisa3a');
     Route::get('/keuangan/analisaaset/analisa3b', 'Keuangan\KeuanganController@analisa3b');
-    Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\KeuanganController@analisa4');
     Route::get('/keuangan/analisaindex/analisa5', 'Keuangan\KeuanganController@analisa5');
     Route::get('/keuangan/analisarasio/analisa6', 'Keuangan\KeuanganController@analisa6');
     Route::get('/keuangan/analisabottom/analisa7', 'Keuangan\KeuanganController@analisa7');

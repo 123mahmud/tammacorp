@@ -1029,13 +1029,13 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
                                         <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
                                                     class="submenu-title">Analisa PTP</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit / OCF">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
@@ -1050,7 +1050,7 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif --}}
-                                @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaaset/analisa3a') }}"><span
                                                     class="submenu-title">Analisa Pertumbuhan Aset</span><span
@@ -1063,40 +1063,40 @@
                                                     class="submenu-title">Analisa Aset Terhadap Ekuitas</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
+                                @endif --}}
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisacashflow/analisa4') ? 'active' : '' || Request::is('keuangan/analisacashflow/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisacashflow/analisa4') }}"><span
                                                     class="submenu-title">Analisa Cashflow</span><span class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa CSI">
                                         <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
                                                     class="submenu-title">Analisa CSI</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Analisa Rasio Keuangan','ma_read'))
+                                @endif --}}
+                                {{-- @if(Auth::user()->punyaAkses('Analisa Rasio Keuangan','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisarasio/analisa6') ? 'active' : '' || Request::is('keuangan/analisarasio/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisarasio/analisa6') }}"><span
                                                     class="submenu-title">Analisa Rasio Keuangan</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Analisa Three Bottom Line','ma_read'))
+                                @endif --}}
+                               {{--  @if(Auth::user()->punyaAkses('Analisa Three Bottom Line','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisabottom/analisa7') ? 'active' : '' || Request::is('keuangan/analisabottom/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisabottom/analisa7') }}"><span
                                                     class="submenu-title">Analisa Three Bottom Line</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
+                                @endif --}}
+                                {{-- @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaroe/analisa8') ? 'active' : '' || Request::is('keuangan/analisaroe/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisaroe/analisa8') }}"><span
                                                     class="submenu-title">Analisa ROE</span><span class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisahutangpiutang/analisa9') ? 'active' : '' || Request::is('keuangan/analisahutangpiutang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisahutangpiutang/analisa9') }}"><span

@@ -20,7 +20,7 @@ class laporan_buku_besar_controller extends Controller
 
     	$d1 = date_format(date_create($request->durasi_1_buku_besar_bulan), "n"); $y1 = date_format(date_create($request->durasi_1_buku_besar_bulan), "Y");
       
-      $d2 = date_format(date_create($request->durasi_2_buku_besar_bulan), "n"); $y2 = date_format(date_create($request->durasi_2_buku_besar_bulan), "Y");
+      $d2 = date_format(date_create($request->durasi_1_buku_besar_bulan), "n"); $y2 = date_format(date_create($request->durasi_2_buku_besar_bulan), "Y");
 
       $data_date = date_format(date_create($request->durasi_1_buku_besar_bulan), "Y-m").'-01';
 

@@ -964,7 +964,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_neraca">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>
@@ -1014,7 +1014,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_neraca_perbandingan">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>

@@ -387,7 +387,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_laba_rugi">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>
