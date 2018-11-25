@@ -375,10 +375,13 @@ class RencanaBahanController extends Controller
         $term = trim($request->q);
         if (empty($term)) 
         {
-          $list_sup = DB::table('d_barang_sup')->select('d_bs_supid')->where('d_bs_itemid', $request->itemid)->get();
+          $list_sup = DB::table('d_barang_sup')->select('d_bs_supid')
+            ->join('d_supplier','d_supplier.s_id','=','d_bs_supid')
+            ->where('s_active','TRUE')
+            ->where('d_bs_itemid', $request->itemid)->get();
           foreach ($list_sup as $val) 
           {
-            $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_id', $val->d_bs_supid)->first();
+            $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_active','TRUE')->where('s_id', $val->d_bs_supid)->first();
             $formatted_tags[] = ['id' => $sup->s_id, 'text' => $sup->s_company];
           }
           return Response::json($formatted_tags);
@@ -387,10 +390,13 @@ class RencanaBahanController extends Controller
         {
           $list_sup = DB::table('d_barang_sup')
           ->join('d_supplier', 'd_barang_sup.d_bs_supid','=','d_supplier.s_id')
-          ->select('d_bs_supid')->where('s_company', 'LIKE', '%'.$term.'%')->where('d_bs_itemid', $request->itemid)->get();
+          ->select('d_bs_supid')->where('s_company', 'LIKE', '%'.$term.'%')->where('d_bs_itemid', $request->itemid)
+          ->where('s_active','TRUE')
+          ->get();
+          dd($list_sup);
           foreach ($list_sup as $val) 
           {
-            $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_id', $val->d_bs_supid)->first();
+            $sup = DB::table('d_supplier')->select('s_id','s_company')->where('s_active','TRUE')->where('s_id', $val->d_bs_supid)->first();
             $formatted_tags[] = ['id' => $sup->s_id, 'text' => $sup->s_company];
           }
 

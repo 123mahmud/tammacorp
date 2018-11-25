@@ -24,6 +24,7 @@ class BrgsupController extends Controller
         $data = DB::table('d_barang_sup')
                 ->join('m_item', 'd_barang_sup.d_bs_itemid', '=', 'm_item.i_id')
                 ->join('d_supplier', 'd_barang_sup.d_bs_supid', '=', 'd_supplier.s_id')
+                ->where('s_active','TRUE')
                 ->select('d_barang_sup.*',
                          'm_item.i_name',
                          'm_item.i_code',
@@ -56,13 +57,13 @@ class BrgsupController extends Controller
         $mod = $sup % 2;
         if ($mod == 0) {
             $part = $sup / 2;
-            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->limit($part)->get();
-            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->limit($part)->get();
+            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->where('s_active','TRUE')->orderBy('s_company', 'ASC')->limit($part)->get();
+            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->where('s_active','TRUE')->orderBy('s_company', 'DESC')->limit($part)->get();
         }else{
             $part1 = ($sup-$mod) / 2;
             $part2 = $part1 + $mod;
-            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->limit($part1)->get();
-            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->limit($part2)->get();
+            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->where('s_active','TRUE')->limit($part1)->get();
+            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->where('s_active','TRUE')->limit($part2)->get();
         }
         return view('master.databrgsup.tambah_barang', [ 'data1' => $data_sup1, 'data2' => $data_sup2 ]);
     }
@@ -100,6 +101,7 @@ class BrgsupController extends Controller
         $results = array();
         $queries = DB::table('d_supplier')
             ->select('s_id','s_company')
+            ->where('s_active','TRUE')
             ->where('s_company', 'LIKE', '%'.$term.'%')
             ->take(10)->get();
       
@@ -161,13 +163,13 @@ class BrgsupController extends Controller
         $mod = $sup % 2;
         if ($mod == 0) {
             $part = $sup / 2;
-            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->limit($part)->get();
-            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->limit($part)->get();
+            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->where('s_active','TRUE')->limit($part)->get();
+            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->where('s_active','TRUE')->limit($part)->get();
         }else{
             $part1 = ($sup-$mod) / 2;
             $part2 = $part1 + $mod;
-            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->limit($part1)->get();
-            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->limit($part2)->get();
+            $data_sup1 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'ASC')->where('s_active','TRUE')->limit($part1)->get();
+            $data_sup2 = DB::table('d_supplier')->select('s_id', 's_company')->orderBy('s_company', 'DESC')->where('s_active','TRUE')->limit($part2)->get();
         }
 
         $data = DB::table('d_barang_sup')
@@ -185,6 +187,7 @@ class BrgsupController extends Controller
                     ->join('d_supplier', 'd_barang_sup.d_bs_supid', '=', 'd_supplier.s_id')
                     ->join('m_item', 'd_barang_sup.d_bs_itemid', '=', 'm_item.i_id')
                     ->select('d_barang_sup.*', 'm_item.i_name', 'm_item.i_code', 'd_supplier.s_company', 'd_supplier.s_address')
+                    ->where('s_active','TRUE')
                     ->where('d_bs_itemid','=',$request->id)->get();
 
         return response()->json([
@@ -264,6 +267,7 @@ class BrgsupController extends Controller
         $data = DB::table('d_supplier_brg')
                 ->join('d_supplier', 'd_supplier_brg.d_sb_supid', '=', 'd_supplier.s_id')
                 ->join('m_item', 'd_supplier_brg.d_sb_itemid', '=', 'm_item.i_id')
+                ->where('s_active','TRUE')
                 ->select('d_supplier_brg.*',
                          'd_supplier.s_address',
                          'd_supplier.s_company',
