@@ -1025,7 +1025,7 @@ class ConfrimBeliController extends Controller
             }
              elseif ($data->dsr_method == "KB")
             {
-                return 'Kelebihan Barang';
+                return 'Kurang Barang';
             }
         })
 

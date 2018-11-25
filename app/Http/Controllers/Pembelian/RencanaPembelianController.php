@@ -349,7 +349,9 @@ class RencanaPembelianController extends Controller
       $formatted_tags = array();
       $term = trim($request->q);
       if (empty($term)) {
-          $sup = DB::table('d_supplier')->take(10)->get();
+          $sup = DB::table('d_supplier')
+            ->where('s_active','TRUE')
+            ->take(10)->get();
           foreach ($sup as $val) {
               $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
           }
@@ -357,7 +359,9 @@ class RencanaPembelianController extends Controller
       }
       else
       {
-          $sup = DB::table('d_supplier')->where('s_company', 'LIKE', '%'.$term.'%')->take(10)->get();
+          $sup = DB::table('d_supplier')
+            ->where('s_active','TRUE')
+            ->where('s_company', 'LIKE', '%'.$term.'%')->take(10)->get();
           foreach ($sup as $val) {
               $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
           }

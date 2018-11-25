@@ -65,7 +65,7 @@
                           <option value="TB"> Tukar Barang </option>
                           <option value="SB"> Salah Barang </option>
                           <option value="SA"> Salah Alamat </option>
-                       {{--    <option value="KB"> Kurang Barang </option> --}}
+                          <option value="KB"> Kurang Barang </option>
                         </select>
                       </div>
                     </div>
