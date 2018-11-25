@@ -1086,7 +1086,8 @@ class ConfrimBeliController extends Controller
                                   'dsrdt_disc_percent',
                                   'dsrdt_disc_value',
                                   'dsrdt_return_price',
-                                  'dsrdt_hasil')
+                                  'dsrdt_hasil',
+                                  'dsr_method')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
       ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')

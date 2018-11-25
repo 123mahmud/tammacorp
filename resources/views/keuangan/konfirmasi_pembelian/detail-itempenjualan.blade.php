@@ -18,10 +18,18 @@
                 <label id="lblTglPlan">{{ $data[0]->s_note }}</label>
               </div>  
             </div>
+
+            @if ($data[0]->dsr_method == 'KB')
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                  <label class="tebal">Jumlah Kurang :</label>
+                </div>
+            @else
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                  <label class="tebal">Jumlah Return :</label>
+                </div>
+            @endif
             
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Jumlah Return :</label>
-            </div>
+            
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
@@ -92,12 +100,20 @@
         <tr>
             <th>Nama</th>
             <th width="5%">Jumlah</th>
-            <th width="5%">return</th>
+            @if ($data[0]->dsr_method == 'KB')
+                <th width="5%">Kurang</th>
+            @else
+                <th width="5%">return</th>
+            @endif
             <th>Satuan</th>
             <th>Harga</th>
             <th width="10%">Disc Percent</th>
             <th>Disc Value</th>
-            <th>Jumlah return</th>
+            @if ($data[0]->dsr_method == 'KB')
+                <th>Jumlah Kurang</th>
+            @else
+                <th>Jumlah return</th>
+            @endif
             <th width="20%">Total</th>
         </tr>
     </thead>

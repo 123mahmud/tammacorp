@@ -578,7 +578,8 @@ class ManajemenReturnPenjualanController extends Controller
                                   'dsrdt_return_price',
                                   'dsrdt_hasil',
                                   'dsr_status',
-                                  'dsr_id')
+                                  'dsr_id',
+                                  'dsr_method')
       ->join('m_customer','m_customer.c_id','=','dsr_cus')
       ->join('d_sales','d_sales.s_id','=','dsr_sid')
       ->join('d_sales_returndt','d_sales_returndt.dsrdt_idsr','=','dsr_id')
@@ -1326,7 +1327,16 @@ class ManajemenReturnPenjualanController extends Controller
           'dsr_status_terima' => 'WT'
         ]);
     }elseif ($data->dsr_method == 'KB') {
-      # code...
+      
+      d_sales_return::where('dsr_id',$id)
+        ->update([
+          'dsr_status' => 'FN'
+        ]);
+
+      d_sales_return::where('dsr_id',$id)
+        ->update([
+          'dsr_status_terima' => 'WT'
+        ]);
     }
     DB::commit();
     return response()->json([

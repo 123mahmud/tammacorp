@@ -144,7 +144,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}', 'Inventory\stockOpnameController@history');
     Route::get('/inventory/namaitem/detail', 'Inventory\stockOpnameController@getOPname');
     // Ari Print Stock OPname
-    Route::get('/inventory/stockopname/print_stockopname', 'Inventory\stockOpnameController@print_stockopname');    
+    Route::get('/inventory/stockopname/print_stockopname/{id}', 'Inventory\stockOpnameController@print_stockopname');    
     //mahmud stock gudang
     Route::get('/inventory/datagudang/gudang', 'Inventory\stockGudangController@index');
     Route::get('/inventory/namaitem/tablegudang/{x}/{y}', 'Inventory\stockGudangController@tableGudang');

@@ -321,7 +321,7 @@
               success: function (response) {
                   $('#view-formula').html(response);
                   $('#btn-modal').html(
-                    '<a class="btn btn-primary" target="_blank" href="'+ baseUrl +'/inventory/stockopname/print_stockopname">'+
+                    '<a class="btn btn-primary" target="_blank" href='+ baseUrl +'/inventory/stockopname/print_stockopname/'+id+'>'+
                       '<i class="fa fa-print"></i> Print'+
                     '</a>'+
                     '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>'

@@ -12,6 +12,7 @@
 			font-size: 14px;
 			font-family: "calibri";
 		}
+		.names { font-weight: bold; }
 		.s16{
 			font-size: 16px !important;
 		}
@@ -231,14 +232,7 @@
 					</td>
 					<td width="1%">:</td>
 					<td>
-						OD1810231
-					</td>
-					<td>
-						<label class="bold">Staff</label>
-					</td>
-					<td width="1%">:</td>
-					<td>
-						Masok Toni
+						{{ $data[0]->o_nota }}
 					</td>
 				</tr>
 				<tr>
@@ -247,32 +241,35 @@
 					</td>
 					<td width="1%">:</td>
 					<td>
-						Gudang Bahan Baku1
+						{{ $data[0]->comp }}
 					</td>
 					<td>
 						<label class="bold">Posisi</label>
 					</td>
 					<td width="1%">:</td>
 					<td>
-						Gudang Bahan Baku2
+						{{ $data[0]->position }}
 					</td>
 				</tr>
 			</table>
 			<table width="100%" cellpadding="3px">
 				<tr>
-					<th width="1%">No</th>
-					<th>Kode - Nama Item</th>
-					<th>i_type</th>
-					<th>Opname</th>
-					<th>Satuan</th>
+					<td width="1%"><span class="names">No</span></td>
+					<td><span class="names">Kode - Nama Item</span></td>
+					<td><span class="names">i_type</span></td>
+					<td><span class="names">Opname</span></td>
+					<td><span class="names">Satuan</span></td>
 				</tr>
+				@foreach ($data as $index => $opname)
 				<tr>
-					<td align="center">1</td>
-					<td>000000000003 - TP</td>
-					<td>BB</td>
-					<td align="right">1.725.000</td>
-					<td>GR</td>
+					<td align="center">{{ $index+1 }}</td>
+					<td>{{ $opname->i_code }} - {{ $opname->i_name }}</td>
+					<td>{{ $opname->i_type }}</td>
+					<td align="right">{{ (int)$opname->od_opname }}</td>
+					<td>{{ $opname->m_sname }}</td>
 				</tr>
+				@endforeach
+				
 			</table>
 		</div>
 			
