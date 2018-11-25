@@ -39,7 +39,7 @@ class MasterFormulaController extends Controller
 
     ->addColumn('fr_result', function ($data) {
     return '<div class="text-right">
-              '.$data->fr_result.'
+              '.(int)$data->fr_result.'
             </div>';
 
     })

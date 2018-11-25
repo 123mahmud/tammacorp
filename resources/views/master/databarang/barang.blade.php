@@ -107,10 +107,6 @@
           targets: 0 ,
           className: 'd_id center'
         }, 
-        {
-          targets: 2 ,
-          className: 'right format_money'
-        },
       ],
         "columns": [
           {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
