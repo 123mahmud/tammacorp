@@ -38,7 +38,7 @@
                              <h4>Form Master Data Customer</h4>
                            </div>
                            <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
-                             <a href="{{ url('master/datacust/cust') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
+                             <a href="{{ url('master/datasatuan/satuan') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                            </div>
                          </div>
                         <hr>
