@@ -840,7 +840,7 @@ class ManajemenReturnPenjualanController extends Controller
           ];
         }
 
-        return json_encode(array_merge($akun_pendapatan, $akun_persediaan));
+        // return json_encode(array_merge($akun_pendapatan, $akun_persediaan));
         
       }else{
 
