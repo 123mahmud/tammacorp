@@ -720,16 +720,17 @@ class ManajemenReturnPenjualanController extends Controller
 
                $coba[] = $cek[$i];
 
-               $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
-                  ->where('s_comp',8)
-                  ->where('s_position',8)
+               if ($data->dsr_type_sales == 'GR') {
+                 $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                  ->where('s_comp',2)
+                  ->where('s_position',2)
                   ->first();
                 if ($stockRusak == null) {
                   $s_id = d_stock::select('s_id')->max('s_id')+1;
                   d_stock::create([
                       's_id' => $s_id,
-                      's_comp' => 8,
-                      's_position' => 8,
+                      's_comp' => 2,
+                      's_position' => 2,
                       's_item' => $cek[$i]->dsrdt_item,
                       's_qty' => $cek[$i]->dsrdt_qty_confirm
                     ]);
@@ -737,8 +738,8 @@ class ManajemenReturnPenjualanController extends Controller
                       'sm_stock' =>  $s_id,
                       'sm_detailid' => 1,
                       'sm_date' => Carbon::now(),
-                      'sm_comp' => 8,
-                      'sm_position' => 8,
+                      'sm_comp' => 2,
+                      'sm_position' => 2,
                       'sm_mutcat' => 4,
                       'sm_item' => $cek[$i]->dsrdt_item,
                       'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
@@ -763,8 +764,8 @@ class ManajemenReturnPenjualanController extends Controller
                           'sm_stock' =>  $stockRusak->s_id,
                           'sm_detailid' => $sm_detailid,
                           'sm_date' => Carbon::now(),
-                          'sm_comp' => 8,
-                          'sm_position' => 8,
+                          'sm_comp' => 2,
+                          'sm_position' => 2,
                           'sm_mutcat' => 4,
                           'sm_item' => $cek[$i]->dsrdt_item,
                           'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
@@ -774,7 +775,67 @@ class ManajemenReturnPenjualanController extends Controller
                           'sm_insert' => Carbon::now()
                       ]);
 
-             }
+                }
+               }else{
+
+                $stockRusak = d_stock::where('s_item',$cek[$i]->dsrdt_item)
+                  ->where('s_comp',1)
+                  ->where('s_position',1)
+                  ->first();
+                if ($stockRusak == null) {
+                  $s_id = d_stock::select('s_id')->max('s_id')+1;
+                  d_stock::create([
+                      's_id' => $s_id,
+                      's_comp' => 1,
+                      's_position' => 1,
+                      's_item' => $cek[$i]->dsrdt_item,
+                      's_qty' => $cek[$i]->dsrdt_qty_confirm
+                    ]);
+                  d_stock_mutation::create([
+                      'sm_stock' =>  $s_id,
+                      'sm_detailid' => 1,
+                      'sm_date' => Carbon::now(),
+                      'sm_comp' => 1,
+                      'sm_position' => 1,
+                      'sm_mutcat' => 4,
+                      'sm_item' => $cek[$i]->dsrdt_item,
+                      'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                      'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                      'sm_detail' => 'PENAMBAHAN',
+                      'sm_reff' => $data->dsr_code,
+                      'sm_insert' => Carbon::now()
+                  ]);
+
+                }else{
+
+                  $tambahStock = (int)$stockRusak->s_qty + $cek[$i]->dsrdt_qty_confirm;
+                  // dd($cek[$i]->dsrdt_qty_confirm);
+                  $stockRusak->update([
+                    's_qty' => $tambahStock,
+                  ]);
+                  $sm_detailid = d_stock_mutation::select('sm_detailid')
+                    ->where('sm_stock',$stockRusak->s_id)
+                    ->max('sm_detailid')+1;
+                  // dd($sm_detailid);
+                  d_stock_mutation::create([
+                          'sm_stock' =>  $stockRusak->s_id,
+                          'sm_detailid' => $sm_detailid,
+                          'sm_date' => Carbon::now(),
+                          'sm_comp' => 1,
+                          'sm_position' => 1,
+                          'sm_mutcat' => 4,
+                          'sm_item' => $cek[$i]->dsrdt_item,
+                          'sm_qty' => $cek[$i]->dsrdt_qty_confirm,
+                          'sm_qty_sisa' => $cek[$i]->dsrdt_qty_confirm,
+                          'sm_detail' => 'PENAMBAHAN',
+                          'sm_reff' => $data->dsr_code,
+                          'sm_insert' => Carbon::now()
+                      ]);
+
+                }
+
+               }
+               
              // dd($data);
              $sisa = $sales->sp_nominal - $data->dsr_net;
              
