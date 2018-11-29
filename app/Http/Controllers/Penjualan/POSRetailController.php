@@ -16,7 +16,7 @@ use App\d_sales_dt;
 use App\m_customer;
 use DataTables;
 use URL;
-
+use PDF;
 // use App\mmember
 
 class POSRetailController extends Controller
@@ -1037,10 +1037,50 @@ class POSRetailController extends Controller
       ->join('m_item','i_id','=','sd_item')
       ->where('sd_sales',$id)->get();
 
-
+      // $pdf = PDF::loadView('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));
+      // return $pdf->download('invoice.pdf');
 
       return view('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));
   }
+
+    public function print_pdf($id){
+    $sales = d_sales::select( 'c_name',
+                              'c_address',
+                              's_date',
+                              's_note')
+      ->join('m_customer','c_id','=','s_customer')
+      ->where('s_id',$id)
+      ->first();
+    // dd($sales);
+
+    $data_chunk = DB::table('d_sales_dt')->select( 'i_code',
+                                'i_name',
+                                'm_sname',
+                                'sd_price',
+                                'sd_total',
+                                'sd_disc_value',
+                                'sd_qty',
+                                'sd_disc_percent')
+      ->join('m_item','i_id','=','sd_item')
+      ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
+      ->where('sd_sales',$id)->get()->toArray();
+
+      $data = array_chunk($data_chunk, 12);
+      // return $chunk;
+      // return $data;
+
+      $dataTotal = d_sales_dt::select(DB::raw('SUM(sd_total) as total'))
+      ->join('m_item','i_id','=','sd_item')
+      ->where('sd_sales',$id)->get();
+
+      $tgl = Carbon::now();
+
+      $pdf = PDF::loadView('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));
+      return $pdf->download('faktur_retail_'.$tgl.'.pdf');
+
+      // return view('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));
+  }
+
   public function print_surat_jalan($id){
     $sales = d_sales::select( 'c_name',
                               'c_address',
@@ -1071,4 +1111,5 @@ class POSRetailController extends Controller
 
       return view('penjualan.POSretail.print_surat_jalan', compact('data', 'dataTotal', 'sales'));
   }
+
 }

@@ -357,10 +357,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSretail/stock/table-stock', 'Penjualan\stockController@tableStock');
 //Nota
     Route::get('/penjualan/POSretail/print/{id}', 'Penjualan\POSRetailController@print');
+    Route::get('/penjualan/POSretail/print_pdf/{id}', 'Penjualan\POSRetailController@print_pdf');
     Route::get('/penjualan/POSretail/print_surat_jalan/{id}', 'Penjualan\POSRetailController@print_surat_jalan');
+    
     Route::get('/penjualan/print_jangan_dibanting/{id}', 'Penjualan\POSGrosirController@print_awas_barang_panas');
+
 //ferdy
     Route::get('/penjualan/POSgrosir/print/{id}', 'Penjualan\POSGrosirController@print');
+    Route::get('/penjualan/POSgrosir/print_pdf/{id}', 'Penjualan\POSGrosirController@print_pdf');
     Route::get('/penjualan/POSgrosir/dp/{id}', 'Penjualan\POSGrosirController@printDP');
     Route::get('/penjualan/POSgrosir/print_surat_jalan/{id}', 'Penjualan\POSGrosirController@print_surat_jalan');
 //end ferdy
