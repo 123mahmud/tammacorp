@@ -57,25 +57,20 @@
                         <li><a style="font-weight: bold;" href="#">5 Tugas Baru</a></li>
                     </ul>
                 </li> --}}
-                <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
+                <li class="topbar-user">
+                    <a  href="javascript:void(0);">
                         @if(Auth::user()->m_username == 'Toni' && is_null(Auth::user()->m_pegawai_id))
                             <img src="{{ asset('assets/images/avatar/49.jpg')}}" alt="" class="img-responsive img-circle">
                         @else
                             <img src="{{ asset('assets/images/avatar/48.jpg')}}" alt="" class="img-responsive img-circle">
                         @endif
-                            &nbsp;<span
-                                class="hidden-xs">{{ Auth::user()->m_name }}</span>&nbsp;<span class="caret"></span></a>
-                    <ul class="dropdown-menu dropdown-user pull-right">
-                        <li><a href="#"><i class="fa fa-user"></i>My Profile</a></li>
-                        <li><a href="#"><i class="fa fa-calendar"></i>My Calendar</a></li>
-                        <li><a href="#"><i class="fa fa-envelope"></i>My Inbox<span class="badge badge-danger">3</span></a>
-                        </li>
-                        <li><a href="#"><i class="fa fa-tasks"></i>My Tasks<span
-                                        class="badge badge-success">7</span></a></li>
-                        <li class="divider"></li>
-                        <li><a href="#"><i class="fa fa-lock"></i>Lock Screen</a></li>
-                        <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out"></i>Log Out</a></li>
-                    </ul>
+                            &nbsp;<span class="hidden-xs">{{ Auth::user()->m_name }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{url('/logout')}}" class="log-out-m8">
+                        <i class="fa fa-sign-out"></i>&nbsp;<span class="hidden-xs">Logout</span>
+                    </a>
                 </li>
             </ul>
         </div>

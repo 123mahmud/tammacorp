@@ -167,3 +167,41 @@
     }
     //END COUNTER FOR SUMMARY BOX
     </script>
+
+    {{-- Logout Question --}}
+    <script type="text/javascript">
+      $('.log-out-m8').click(function(e){
+        e.preventDefault();
+        
+        iziToast.question({
+            timeout: 20000,
+            close: false,
+            overlay: true,
+            displayMode: 'once',
+            id: 'question',
+            icon: 'fa fa-sign-out',
+            zindex: 999,
+            title: 'Log Out ?' ,
+            message: 'Apakah anda yakin?',
+            position: 'center',
+            buttons: [
+                ['<button><b>YES</b></button>', function (instance, toast) {
+         
+                    window.location.href = $('.log-out-m8').attr('href');
+         
+                }, true],
+                ['<button>NO</button>', function (instance, toast) {
+         
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+         
+                }],
+            ],
+            onClosing: function(instance, toast, closedBy){
+                console.info('Closing | closedBy: ' + closedBy);
+            },
+            onClosed: function(instance, toast, closedBy){
+                console.info('Closed | closedBy: ' + closedBy);
+            }
+        });
+      });
+    </script>
