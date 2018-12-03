@@ -93,7 +93,7 @@
           });
         $('.submitDivisi').attr('disabled', 'disabled');
         $.ajax({
-            url: baseUrl + "/master/divisi/pos/simpandivisi/",
+            url: baseUrl + "/master/divisi/pos/simpandivisi",
             type: 'POST',
             data: $('#divisi').serialize(),
             success: function (response) {

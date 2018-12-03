@@ -85,7 +85,7 @@
           });
         $('.submitPosisi').attr('disabled', 'disabled');
         $.ajax({
-            url: baseUrl + "/master/divisi/pos/tambahposisi/",
+            url: baseUrl + "/master/divisi/pos/tambahposisi",
             type: 'POST',
             data: $('#divisi').serialize(),
             success: function (response) {
