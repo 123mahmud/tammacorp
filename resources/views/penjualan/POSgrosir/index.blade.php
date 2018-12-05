@@ -691,6 +691,16 @@
                         '</ul>' +
                         '</div>' +
 
+                        '<div class="btn-group" style="margin-right:10px;">' +
+                        '<a type="button" class="btn btn-danger dropdown-toggle" href="' + baseUrl + '/penjualan/POSgrosir/print_pdf/' + idDetail + '" >' +
+                        '<i class="fa fa-print"></i>&nbsp;PDF&nbsp;</a>' +
+                        '<ul class="dropdown-menu" role="menu" style="text-align:left;">' +
+
+                        // '<li><a target="_blank" href="' + baseUrl + '/penjualan/POSretail/print_pdf/' + idDetail + '"><i class="fa fa-print"></i>&nbsp;Print Faktur</a></li>' +
+                        
+                        '</ul>' +
+                        '</div>' +
+
                         '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
                     $('#detailNota').html(response);
                 }
