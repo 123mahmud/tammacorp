@@ -84,9 +84,6 @@
                         </td>
                     </tr>
                 @endfor
-
-
-
                 </tbody>
             </table>
         </form>

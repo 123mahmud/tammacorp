@@ -246,9 +246,20 @@ class ManOutputProduksiController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        // return json_encode($)
+        // return json_encode($request->all());
         DB::beginTransaction();
         try {
+
+            $dat_spk = DB::table('d_spk')->where('spk_id', $request->spk_id)->first();
+
+            if(!$dat_spk){
+                return response()->json([
+                    'status' => 'gagal',
+                    'pesan'  => 'SPK Tidak Bisa Ditemukan...'
+                ]);
+            }
+
+            // return json_encode($dat_spk);
 
             $acc_temp = []; $tot = 0; $err = true; $ref = '';
 
@@ -270,7 +281,7 @@ class ManOutputProduksiController extends Controller
                         $acc_temp[$item->m_akun_persediaan] = [
                             'td_acc'    => $item->m_akun_persediaan,
                             'td_posisi' => 'D',
-                            'value'     => $acc_temp[$item->m_akun_persediaan]['value'] + $item->m_hpp * $request->spk_qty
+                            'value'     => $acc_temp[$item->m_akun_persediaan]['value'] + $dat_spk->spk_hpp * $request->spk_qty
                         ];
                     }else{
                         $acc_temp[$item->m_akun_persediaan] = [
@@ -286,7 +297,7 @@ class ManOutputProduksiController extends Controller
                     //     'value'       => $item->m_hpp * $request->spk_qty
                     // ];
 
-                    $tot += $item->m_hpp * $request->spk_qty;
+                    $tot += $dat_spk->spk_hpp * $request->spk_qty;
                 }
 
                 if(!DB::table('d_akun')->where('id_akun', '551.13')->first()){
@@ -439,6 +450,7 @@ class ManOutputProduksiController extends Controller
                     'sm_qty_used' => 0,
                     'sm_qty_sisa' => $request->spk_qty,
                     'sm_qty_expired' => 0,
+                    'sm_hpp'    => $tot,
                     'sm_detail' => 'PENAMBAHAN',
                     'sm_reff' => $nota->spk_code,
                     'sm_insert' => Carbon::now()
@@ -470,6 +482,7 @@ class ManOutputProduksiController extends Controller
                     'sm_qty_used' => 0,
                     'sm_qty_sisa' => $request->spk_qty,
                     'sm_qty_expired' => 0,
+                    'sm_hpp'    => $tot,
                     'sm_detail' => 'PENAMBAHAN',
                     'sm_reff' => $nota->spk_code,
                     'sm_insert' => Carbon::now()
