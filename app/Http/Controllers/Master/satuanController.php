@@ -72,7 +72,7 @@ class satuanController extends Controller
     public function hapus_satuan(Request $request)
     {
       $data = DB::table('m_satuan')->where('m_scode','=',$request->id)->delete();
-      return response()->json(['status'=>1]);
+      return response()->json(['status'=>'sukses']);
     }
     public function edit_satuan(Request $request)
     {
