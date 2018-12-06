@@ -207,7 +207,7 @@ class PayrollmanController extends Controller
         if (count($d_absen) > 0) {
             foreach ($d_absen as $val) {
                 if ($val->apm_absent != null) { $alpha[] = $val->apm_absent; } else { $hadir[] = $val->apm_absent; }
-                if ($val->apm_lembur != null) { $lembur[] = $val->apm_lembur; } else { $lembur[] = "01:00:00"; }
+                if ($val->apm_lembur != null) { $lembur[] = $val->apm_lembur; } else { $lembur[] = "00:00:00"; }
                 if ($val->apm_scan_masuk != null) { $dt_scanmasuk[] = $val->apm_tanggal.' '.$val->apm_scan_masuk; } else { $dt_scanmasuk[] = null; }
                 if ($val->apm_jam_masuk != null) { $dt_jammasuk[] = $val->apm_tanggal.' '.$val->apm_jam_masuk; } else { $dt_jammasuk[] = null; }
             }
@@ -220,12 +220,11 @@ class PayrollmanController extends Controller
         for ($i=0; $i < count($lembur); $i++) {
             $d_lembur = explode(':', $lembur[$i]);
             if ($d_lembur[1] <= '30') { 
-                $jam_lembur += (int)$d_lembur[0];
+                $jam_lembur += (int)$d_lembur[0]; 
             }else{
                 $jam_lembur += ((int)$d_lembur[0] + 1);
             }
         }
-
         $tunjangan = DB::table('m_tunjangan_man')->get();
         $list = explode(",", $d_pegawai->c_tunjangan);
         foreach ($tunjangan as $value) 
