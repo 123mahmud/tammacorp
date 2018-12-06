@@ -89,7 +89,6 @@
                             <option value="JM">Jam</option>
                             <option value="HR">Hari</option>
                             <option value="MG">Minggu</option>
-                            <option value="BL">Bulan</option>
                             <option value="TH">Tahun</option>
                             @if ($data->tman_periode == "ST")
                               <option value="ST" selected>Statis</option>
@@ -99,8 +98,6 @@
                               <option value="HR" selected>Hari</option>
                             @elseif($data->tman_periode == "MG")
                               <option value="MG" selected>Minggu</option>
-                            @elseif($data->tman_periode == "BL")
-                              <option value="BL" selected>Bulan</option>
                             @elseif($data->tman_periode == "TH")
                               <option value="TH" selected>Tahun</option>
                             @endif

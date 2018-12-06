@@ -82,7 +82,6 @@
                             <option value="JM">Jam</option>
                             <option value="HR">Hari</option>
                             <option value="MG">Minggu</option>
-                            <option value="BL">Bulan</option>
                             <option value="TH">Tahun</option>
                           </select>
                         </div>
