@@ -110,7 +110,7 @@ class ManajemenSuratController extends Controller
 
         DB::table('d_phk')->insert($input);
 
-        return redirect('/hrd/manajemensurat/surat/form_phk/surat-phk');
+        return redirect('/hrd/manajemensurat/surat-phk');
     }
     public function editPhk($id){
         $phk = DB::table('d_phk')->where('c_id', $id)->first();
@@ -194,7 +194,10 @@ class ManajemenSuratController extends Controller
         foreach ($pegawai as $val) {
             if ($val->c_pendidikan == 'S2') {
                 $akronim_title = 'c_s1';
-            }else{
+            }elseif($val->c_pendidikan == null){
+                $akronim_title = 'c_sma';
+            }
+            else{
                 $akronim_title = strtolower('c_'.$val->c_pendidikan);
             }
 
