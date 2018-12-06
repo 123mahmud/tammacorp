@@ -122,7 +122,7 @@ class ManajemenSuratController extends Controller
         $input['updated_at'] = Carbon::now('Asia/Jakarta');
 
         $data = DB::table('d_phk')->where('c_id', $id)->update($input);
-        return redirect('/hrd/manajemensurat/surat/form_phk/surat-phk');
+        return redirect('/hrd/manajemensurat/surat-phk');
     }
     public function deletePhk($id){
         $data = DB::table('d_phk')->where('c_id', $id)->delete();
