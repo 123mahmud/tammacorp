@@ -155,6 +155,7 @@ class GajiController extends Controller
         return redirect('/hrd/payroll/setting-gaji');
     }
     public function deleteGajiMan($id){
+
         $data = DB::table('m_gaji_man')->where('c_id', $id)->delete();
 
         return redirect('/hrd/payroll/setting-gaji');
