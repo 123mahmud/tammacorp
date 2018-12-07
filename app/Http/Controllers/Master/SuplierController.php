@@ -100,12 +100,21 @@ class SuplierController extends Controller
         }
       })
       ->addColumn('aksi', function ($xyzab) {
-        return  '<div class="btn-group">'.
-                 '<a href="suplier_edit/'.$xyzab->s_id.'" class="btn btn-warning btn-xs" title="edit">'.
-                 '<label class="fa fa-pencil"></label></a>'.
-                 '<a href="#" onclick=hapus("'.$xyzab->s_id.'") class="btn btn-danger btn-xs" title="hapus">'.
-                 '<label class="fa fa-trash-o"></label></a>'.
-                '</div>';
+        if ($xyzab->s_active == 'TRUE') {
+          return  '<div class="text-center">'.
+                   '<a href="suplier_edit/'.$xyzab->s_id.'" class="btn btn-warning btn-sm" title="edit">'.
+                   '<label class="fa fa-pencil"></label></a>'.
+
+                   '<a href="#" onclick=hapus("'.$xyzab->s_id.'") class="btn btn-primary btn-sm" title="Actif">'.
+                   '<label class="fa fa-check-square"></label></a>'.
+                  '</div>';
+        }else{
+          return  '<div class="text-center">'.
+                   '<a href="#" onclick=hapus("'.$xyzab->s_id.'") class="btn btn-danger btn-sm" title="Tidak Aktif">'.
+                   '<label class="fa fa-minus-square"></label></a>'.
+                  '</div>';
+        }
+        
       })
       ->addColumn('hutang', function ($xyzab) {
         return  '<div style="float:left;">'.
@@ -183,7 +192,18 @@ class SuplierController extends Controller
 
     public function suplier_hapus(Request $request)
     {
-      $type = DB::Table('d_supplier')->where('s_id','=',$request->id)->delete();
+      $type = DB::Table('d_supplier')->where('s_id','=',$request->id)
+        ->first();
+      // dd($type->s_active);
+      if ($type->s_active == 'TRUE') {
+        DB::Table('d_supplier')->where('s_id','=',$request->id)->update([
+          's_active' => 'FALSE'
+        ]);
+      }else{
+        DB::Table('d_supplier')->where('s_id','=',$request->id)->update([
+          's_active' => 'TRUE'
+        ]);
+      }
       return response()->json([
                 'status' => 'sukses',
                 'pesan' => 'Data Suppler Berhasil Dihapus'

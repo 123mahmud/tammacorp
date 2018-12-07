@@ -98,7 +98,7 @@
         {"data" : "tglTop", "width" : "10%"},
         {"data" : "hutang", "width" : "10%"},
         {"data" : "limit", "width" : "10%"},
-        {"data" : "aksi", orderable: false, searchable: false, "width" : "5%"}
+        {"data" : "aksi", orderable: false, searchable: false, "width" : "10%"}
       ],
       "language": {
         "searchPlaceholder": "Cari Data",
@@ -122,7 +122,7 @@
       overlay: true,
       displayMode: 'once',
       //zindex: 999,
-      title: 'Hapus Data Supplier',
+      title: 'Ubah Status',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [
@@ -136,27 +136,20 @@
             {
               if(response.status == "sukses")
               {
-                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                iziToast.success({
-                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-                  title: 'Pemberitahuan',
-                  message: response.pesan,
-                  onClosing: function(instance, toast, closedBy){
-                    $('#t90').DataTable().ajax.reload();
-                  }
-                });
+                $('#t90').DataTable().ajax.reload();
+                iziToast.success({timeout: 5000,
+                                    position: "topRight",
+                                    icon: 'fa fa-chrome',
+                                    title: '',
+                                    message: 'Status brhasil di ganti.'});
               }
               else
               {
                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                iziToast.error({
-                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-                  title: 'Pemberitahuan',
-                  message: response.pesan,
-                  onClosing: function(instance, toast, closedBy){
-                    $('#t90').DataTable().ajax.reload();
-                  }
-                }); 
+                $('#t90').DataTable().ajax.reload();
+                iziToast.error({position: "topRight",
+                                  title: '',
+                                  message: 'Status gagal di ubah.'});
               }
             },
             error: function(){
