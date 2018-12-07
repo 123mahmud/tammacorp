@@ -215,7 +215,7 @@
           <thead>
             <tr>
               <td style="text-align: left; padding-top: 5px;">
-              	Periode : {{ $request->durasi_1_buku_besar_bulan }} s/d {{ $request->durasi_2_buku_besar_bulan }}
+              	Periode : {{ $request->durasi_1_buku_besar_bulan }}
               </td>
               
             </tr>
@@ -441,16 +441,16 @@
                         </div>
 
                         <div class="col-md-4 durasi_bulan_buku_besar">
-                          <input type="text" name="durasi_1_buku_besar_bulan" placeholder="periode Mulai" class="form-control" id="d1_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
+                          <input type="text" name="durasi_1_buku_besar_bulan" placeholder="Pilih Periode" class="form-control" id="d1_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
                         </div>
 
-                        <div class="col-md-1">
+                        {{-- <div class="col-md-1">
                           s/d
                         </div>
 
                         <div class="col-md-4 durasi_bulan_buku_besar">
                           <input type="text" name="durasi_2_buku_besar_bulan" placeholder="Periode Akhir" class="form-control" id="d2_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
-                        </div>
+                        </div> --}}
 
                       </div>
 

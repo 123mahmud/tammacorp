@@ -5,12 +5,12 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Analisa OCF Terhadap Net Profit</div>
+      <div class="page-title">Analisa Nilai Cashflow</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
       <li><i></i>&nbsp;Keuangan&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Analisa OCF Terhadap Net Profit</li>
+      <li class="active">Analisa Nilai Cashflow</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -42,8 +42,15 @@
               </tr>
 
               <tr>
-                <td class="text-center" style="background: #3E4551; color: white; font-size: 8pt;">Net Profit</td>
-                @foreach(json_decode($tot_pendapatan) as $key => $a)
+                <td class="text-center" style="background: #3E4551; color: white; font-size: 8pt;">FCF</td>
+                @foreach(json_decode($tot_fcf) as $key => $a)
+                  <th class="text-right" style="font-size: 8pt;">{{ formatAccounting($a) }} Jt</th>
+                @endforeach
+              </tr>
+
+              <tr>
+                <td class="text-center" style="background: #3E4551; color: white; font-size: 8pt;">ICF</td>
+                @foreach(json_decode($tot_icf) as $key => $a)
                   <th class="text-right" style="font-size: 8pt;">{{ formatAccounting($a) }} Jt</th>
                 @endforeach
               </tr>
@@ -159,14 +166,19 @@
   data: {
     labels: {!! $date !!},
     datasets: [{ 
-        data: {!! $tot_pendapatan !!},
-        label: "Pendapatan",
+        data: {!! $tot_ocf !!},
+        label: "Nilai OCF",
         borderColor: "#FF8800",
         fill: false
       }, { 
-        data: {!! $tot_ocf !!},
-        label: "Net Profit",
+        data: {!! $tot_fcf !!},
+        label: "Nilai FCF",
         borderColor: "#3E4551",
+        fill: false
+      }, { 
+        data: {!! $tot_icf !!},
+        label: "Nilai ICF",
+        borderColor: "#0099CC",
         fill: false
       }
     ]
@@ -176,7 +188,7 @@
   options: {
     title: {
       display: true,
-      text: 'Nilai OCF Terhadap Net Profit (Juta)'
+      text: 'Pergerakan Nilai Cashflow (Juta)'
     }
     // responsive: true;
   }

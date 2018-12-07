@@ -419,7 +419,8 @@
 
 		        						<td class="number">
 		        							<?php 
-		        								$nilai = count_neraca($data, $data_neraca->id_group, 'pasiva', $data_real);
+		        								$nilai = ($data_neraca->id_group == 25) ? $saldo_laba : count_neraca($data, $data_neraca->id_group, 'pasiva', $data_real);
+
 		        								$print = ($nilai < 0) ? '('.str_replace('-', '', number_format($nilai, 2)).')' : number_format($nilai, 2);
 
 		        								$total_parrent += $nilai;
@@ -509,7 +510,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_neraca">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>
@@ -559,7 +560,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_neraca_perbandingan">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>

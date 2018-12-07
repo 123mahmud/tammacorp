@@ -239,16 +239,16 @@
                         </div>
 
                         <div class="col-md-4 durasi_bulan_buku_besar">
-                          <input type="text" name="durasi_1_buku_besar_bulan" placeholder="periode Mulai" class="form-control" id="d1_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
+                          <input type="text" name="durasi_1_buku_besar_bulan" placeholder="Pilih Periode" class="form-control" id="d1_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
                         </div>
 
-                        <div class="col-md-1">
+                        {{-- <div class="col-md-1">
                           s/d
                         </div>
 
                         <div class="col-md-4 durasi_bulan_buku_besar">
                           <input type="text" name="durasi_2_buku_besar_bulan" placeholder="Periode Akhir" class="form-control" id="d2_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
-                        </div>
+                        </div> --}}
 
                       </div>
 
@@ -323,16 +323,16 @@
                         </div>
 
                         <div class="col-md-4 durasi_bulan_neraca_saldo">
-                          <input type="text" name="durasi_1_neraca_saldo_bulan" placeholder="periode Mulai" class="form-control" id="d1_neraca_saldo" autocomplete="off" required readonly style="cursor: pointer;">
+                          <input type="text" name="durasi_1_neraca_saldo_bulan" placeholder="Pilih Periode" class="form-control" id="d1_neraca_saldo" autocomplete="off" required readonly style="cursor: pointer;">
                         </div>
 
-                        <div class="col-md-1">
+                        {{-- <div class="col-md-1">
                           s/d
                         </div>
 
                         <div class="col-md-4 durasi_bulan_neraca_saldo">
                           <input type="text" name="durasi_2_neraca_saldo_bulan" placeholder="Periode Akhir" class="form-control" id="d2_neraca_saldo" autocomplete="off" required readonly style="cursor: pointer;">
-                        </div>
+                        </div> --}}
                       </div>
                     </div>
                     
@@ -364,7 +364,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_neraca">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>
@@ -412,7 +412,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_laba_rugi">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>
@@ -460,7 +460,7 @@
                         <div class="col-md-4">
                           <select name="jenis" class="form-control" id="jenis_periode_arus_kas">
                             <option value="bulan">Bulan</option>
-                            <option value="tahun">Tahun</option>
+                            {{-- <option value="tahun">Tahun</option> --}}
                           </select>
                         </div>
                     </div>

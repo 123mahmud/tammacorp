@@ -351,7 +351,6 @@ class spkProductionController extends Controller
         }
 
         // return json_encode(array_merge($acc_temp, $acc_temp2));
-
         if(!$err){
             return response()->json([
                 'status' => 'gagal',
@@ -359,7 +358,7 @@ class spkProductionController extends Controller
             ]);
         }
 
-        // return json_encode($hpp_value / $spk->pp_qty);
+        return json_encode($hpp_value / $spk->pp_qty);
         // return json_encode(array_merge($acc_temp, $acc_temp2));
 
         // cek jurnal end
@@ -389,19 +388,19 @@ class spkProductionController extends Controller
         $jr = DB::table('d_jurnal')->where('jurnal_ref', $spk->spk_code)->first();
         // return json_encode($jr);
 
-        if(!$jr && jurnal_setting()->allow_jurnal_to_execute){
-            $item_spk = m_item::where('i_id', $spk->spk_item)->first();
+        // if(!$jr && jurnal_setting()->allow_jurnal_to_execute){
+        //     $item_spk = m_item::where('i_id', $spk->spk_item)->first();
 
-            if($item_spk){
-                // return "aa";
-                $state_jurnal = _initiateJournal_self_detail($spk->spk_code, 'MM', date('Y-m-d', strtotime($spk->spk_date)), 'Proses Produksi '.$item_spk->i_name.' '.date('Y/m/d', strtotime($spk->spk_date)), array_merge($acc_temp, $acc_temp2));
-            }else{
-                return response()->json([
-                    'status' => 'gagal',
-                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Barang Yang Akan Diproduksi Tidak Bisa Ditemukan....'
-                ]);
-            }
-        }
+        //     if($item_spk){
+        //         // return "aa";
+        //         $state_jurnal = _initiateJournal_self_detail($spk->spk_code, 'MM', date('Y-m-d', strtotime($spk->spk_date)), 'Proses Produksi '.$item_spk->i_name.' '.date('Y/m/d', strtotime($spk->spk_date)), array_merge($acc_temp, $acc_temp2));
+        //     }else{
+        //         return response()->json([
+        //             'status' => 'gagal',
+        //             'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Barang Yang Akan Diproduksi Tidak Bisa Ditemukan....'
+        //         ]);
+        //     }
+        // }
 
         return response()->json([
             'status' => 'sukses',

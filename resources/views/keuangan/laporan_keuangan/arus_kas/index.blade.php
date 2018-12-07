@@ -185,7 +185,7 @@
 	          </div>
 	          <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
 	            <ul>
-	              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Arus Kas"></i></li>
+	              {{-- <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Arus Kas"></i></li> --}}
 
 	              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
 	            </ul>
