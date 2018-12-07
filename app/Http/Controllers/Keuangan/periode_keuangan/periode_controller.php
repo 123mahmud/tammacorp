@@ -140,9 +140,6 @@ class periode_controller extends Controller
             ]);
         }
 
-        $saldo = DB::table('d_akun_saldo')->select('*')->get();
-        $insert = [];
-
         // DB::table('d_periode_keuangan')->update([
         //     'pk_status'     => '0'
         // ]);
@@ -151,94 +148,191 @@ class periode_controller extends Controller
         //     'pk_status'     => '1'
         // ]);
 
-        $aktiva = DB::table('d_aktiva')
-                        ->join('d_golongan_aktiva', 'd_golongan_aktiva.ga_nomor', '=', 'd_aktiva.a_kelompok')
-                        ->where('a_tanggal_beli', '<=', $periode->pk_periode)
-                        ->where('a_tanggal_habis', '>=', $periode->pk_periode)
-                        ->where('a_status', 'active')
-                        ->select('d_aktiva.*', 'd_golongan_aktiva.ga_akun_harta', 'd_golongan_aktiva.ga_akun_penyusutan', 'd_golongan_aktiva.ga_akun_akumulasi')
-                        ->get();
+        // $aktiva = DB::table('d_aktiva')
+                        // ->join('d_golongan_aktiva', 'd_golongan_aktiva.ga_nomor', '=', 'd_aktiva.a_kelompok')
+                        // ->where('a_tanggal_beli', '<=', $periode->pk_periode)
+                        // ->where('a_tanggal_habis', '>=', $periode->pk_periode)
+                        // ->where('a_status', 'active')
+                        // ->select('d_aktiva.*', 'd_golongan_aktiva.ga_akun_harta', 'd_golongan_aktiva.ga_akun_penyusutan', 'd_golongan_aktiva.ga_akun_akumulasi')
+                        // ->get();
 
-        foreach($aktiva as $key => $value){
-            $penyusutan = DB::table('dk_aktiva_detail')
-                                ->where('ad_aktiva', $value->a_id)
-                                ->where('ad_tahun', date('Y', strtotime($periode->pk_periode)))
-                                ->first();
-            if($penyusutan){
+        // foreach($aktiva as $key => $value){
+        //     $penyusutan = DB::table('dk_aktiva_detail')
+        //                         ->where('ad_aktiva', $value->a_id)
+        //                         ->where('ad_tahun', date('Y', strtotime($periode->pk_periode)))
+        //                         ->first();
+        //     if($penyusutan){
 
-                $acc = [];
-                $nilaiPenyusutan = $penyusutan->ad_penyusutan / $penyusutan->ad_jumlah_bulan;
+        //         $acc = [];
+        //         $nilaiPenyusutan = $penyusutan->ad_penyusutan / $penyusutan->ad_jumlah_bulan;
 
-                $acc[$value->ga_akun_penyusutan] = [
-                    'td_acc'    => $value->ga_akun_penyusutan,
-                    'td_posisi' => 'D',
-                    'value'     => $nilaiPenyusutan
-                ];
+        //         $acc[$value->ga_akun_penyusutan] = [
+        //             'td_acc'    => $value->ga_akun_penyusutan,
+        //             'td_posisi' => 'D',
+        //             'value'     => $nilaiPenyusutan
+        //         ];
 
-                $acc[$value->ga_akun_akumulasi] = [
-                    'td_acc'    => $value->ga_akun_akumulasi,
-                    'td_posisi' => 'K',
-                    'value'     => $nilaiPenyusutan
-                ];
+        //         $acc[$value->ga_akun_akumulasi] = [
+        //             'td_acc'    => $value->ga_akun_akumulasi,
+        //             'td_posisi' => 'K',
+        //             'value'     => $nilaiPenyusutan
+        //         ];
 
-                $state_jurnal = _initiateJournal_self_detail($value->a_nomor, 'MM', date('Y-m-d', strtotime($periode->pk_periode)), 'Penyusutan Atas Aset '.$value->a_name.' ('.$value->a_nomor.'),  Periode Bulan '.date('m/Y', strtotime($periode->pk_periode)), $acc);
+        //         $state_jurnal = _initiateJournal_self_detail($value->a_nomor, 'MM', date('Y-m-d', strtotime($periode->pk_periode)), 'Penyusutan Atas Aset '.$value->a_name.' ('.$value->a_nomor.'),  Periode Bulan '.date('m/Y', strtotime($periode->pk_periode)), $acc);
 
-                $nilai_sisa = $value->a_nilai_sisa - $nilaiPenyusutan;
+        //         $nilai_sisa = $value->a_nilai_sisa - $nilaiPenyusutan;
 
-                DB::table('d_aktiva')->where('a_id', $value->a_id)->update([
-                    'a_nilai_sisa'  => $nilai_sisa
-                ]);
+        //         DB::table('d_aktiva')->where('a_id', $value->a_id)->update([
+        //             'a_nilai_sisa'  => $nilai_sisa
+        //         ]);
 
-            }else{
-                return json_encode("err");
-            }
+        //     }else{
+        //         return json_encode("err");
+        //     }
 
-            // return json_encode($acc);
-        }
+        //     // return json_encode($acc);
+        // }
 
         // return json_encode($aktiva);
 
-        if(count($saldo) == 0){
-            $akun = DB::table('d_akun')->where('type_akun', 'DETAIL')->select('id_akun as id_akun', DB::raw("'".$periode->pk_periode."' as periode"), 'opening_balance as saldo')->get()->toArray();
+        $saldo = DB::table('d_akun_saldo')->get();
+        $insert = [];
+        $d1 = $periode->pk_periode;
+        $d2 = date('Y-m-d', strtotime('+1  months', strtotime($d1)));
+        $d3 = date('Y-m-d', strtotime('-1  months', strtotime($d1)));
 
-            foreach ($akun as $key => $value) {
-                $insert[$key] = [
-                    'id_akun'   => $value->id_akun,
-                    'periode'   => $value->periode,
-                    'saldo'     => $value->saldo
-                ];
+        $akun = akun::select('id_akun as id_akun', 'posisi_akun', DB::raw('coalesce(opening_balance, 0) as saldo_akun'))
+                ->with([
+                      'mutasi_kas_debet' => function($query) use ($d1, $d2, $d3){
+                            $query->whereIn('jrdt_jurnal', function($alpha) use ($d1, $d2, $d3){
+                            $alpha->select('jurnal_id')
+                                    ->from('d_jurnal')
+                                    ->where("d_jurnal.tanggal_jurnal", ">=", $d1)
+                                    ->where("d_jurnal.tanggal_jurnal", "<", $d2)
+                                    ->where(DB::raw('substring(d_jurnal.no_jurnal,1,1)'), "K")
+                                    ->distinct('d_jurnal.jurnal_id')->get();
+                            })
+                            ->where("jrdt_dk", "D")
+                            ->groupBy('jrdt_acc')
+                            ->select('jrdt_acc', DB::raw('sum(coalesce(abs(jrdt_value), 0)) as total'));
+                      },
+                      'mutasi_kas_kredit' => function($query) use ($d1, $d2, $d3){
+                            $query->whereIn('jrdt_jurnal', function($alpha) use ($d1, $d2, $d3){
+                            $alpha->select('jurnal_id')
+                                    ->from('d_jurnal')
+                                    ->where("d_jurnal.tanggal_jurnal", ">=", $d1)
+                                    ->where("d_jurnal.tanggal_jurnal", "<", $d2)
+                                    ->where(DB::raw('substring(d_jurnal.no_jurnal,1,1)'), "K")
+                                    ->distinct('d_jurnal.jurnal_id')->get();
+                            })
+                            ->where("jrdt_dk", "K")
+                            ->groupBy('jrdt_acc')
+                            ->select('jrdt_acc', DB::raw('sum(coalesce(abs(jrdt_value), 0)) as total'));
+                      },
+                      'mutasi_bank_debet' => function($query) use ($d1, $d2, $d3){
+                            $query->whereIn('jrdt_jurnal', function($alpha) use ($d1, $d2, $d3){
+                            $alpha->select('jurnal_id')
+                                    ->from('d_jurnal')
+                                    ->where("d_jurnal.tanggal_jurnal", ">=", $d1)
+                                    ->where("d_jurnal.tanggal_jurnal", "<", $d2)
+                                    ->where(DB::raw('substring(d_jurnal.no_jurnal,1,1)'), "B")
+                                    ->distinct('d_jurnal.jurnal_id')->get();
+                            })
+                            ->where("jrdt_dk", "D")
+                            ->groupBy('jrdt_acc')
+                            ->select('jrdt_acc', DB::raw('sum(coalesce(abs(jrdt_value), 0)) as total'));
+                      },
+                      'mutasi_bank_kredit' => function($query) use ($d1, $d2, $d3){
+                            $query->whereIn('jrdt_jurnal', function($alpha) use ($d1, $d2, $d3){
+                            $alpha->select('jurnal_id')
+                                    ->from('d_jurnal')
+                                    ->where("d_jurnal.tanggal_jurnal", ">=", $d1)
+                                    ->where("d_jurnal.tanggal_jurnal", "<", $d2)
+                                    ->where(DB::raw('substring(d_jurnal.no_jurnal,1,1)'), "B")
+                                    ->distinct('d_jurnal.jurnal_id')->get();
+                            })
+                            ->where("jrdt_dk", "K")
+                            ->groupBy('jrdt_acc')
+                            ->select('jrdt_acc', DB::raw('sum(coalesce(abs(jrdt_value), 0)) as total'));
+                      },
+                      'mutasi_memorial_debet' => function($query) use ($d1, $d2, $d3){
+                            $query->whereIn('jrdt_jurnal', function($alpha) use ($d1, $d2, $d3){
+                            $alpha->select('jurnal_id')
+                                    ->from('d_jurnal')
+                                    ->where("d_jurnal.tanggal_jurnal", ">=", $d1)
+                                    ->where("d_jurnal.tanggal_jurnal", "<", $d2)
+                                    ->where(DB::raw('substring(d_jurnal.no_jurnal,1,1)'), "M")
+                                    ->distinct('d_jurnal.jurnal_id')->get();
+                            })
+                            ->where("jrdt_dk", "D")
+                            ->groupBy('jrdt_acc')
+                            ->select('jrdt_acc', DB::raw('sum(coalesce(abs(jrdt_value), 0)) as total'));
+                      },
+                      'mutasi_memorial_kredit' => function($query) use ($d1, $d2, $d3){
+                            $query->whereIn('jrdt_jurnal', function($alpha) use ($d1, $d2, $d3){
+                            $alpha->select('jurnal_id')
+                                    ->from('d_jurnal')
+                                    ->where("d_jurnal.tanggal_jurnal", ">=", $d1)
+                                    ->where("d_jurnal.tanggal_jurnal", "<", $d2)
+                                    ->where(DB::raw('substring(d_jurnal.no_jurnal,1,1)'), "M")
+                                    ->distinct('d_jurnal.jurnal_id')->get();
+                            })
+                            ->where("jrdt_dk", "K")
+                            ->groupBy('jrdt_acc')
+                            ->select('jrdt_acc', DB::raw('sum(coalesce(abs(jrdt_value), 0)) as total'));
+                      },
+                ])
+                ->where('type_akun', 'DETAIL')
+                ->get();
+
+        foreach ($akun as $key => $data) {
+            $plus = $minus = 0;
+            $mutasiKasDebet         = (count($data->mutasi_kas_debet) > 0) ? $data->mutasi_kas_debet[0]['total'] : 0;
+            $mutasiKasKredit        = (count($data->mutasi_kas_kredit) > 0) ? $data->mutasi_kas_kredit[0]['total'] : 0;
+            $mutasiBankDebet        = (count($data->mutasi_bank_debet) > 0) ? $data->mutasi_bank_debet[0]['total'] : 0;
+            $mutasiBankKredit       = (count($data->mutasi_bank_kredit) > 0) ? $data->mutasi_bank_kredit[0]['total'] : 0;
+            $mutasiMemorialDebet    = (count($data->mutasi_memorial_debet) > 0) ? $data->mutasi_memorial_debet[0]['total'] : 0;
+            $mutasiMemorialKredit   = (count($data->mutasi_memorial_kredit) > 0) ? $data->mutasi_memorial_kredit[0]['total'] : 0;
+
+            if($data->posisi_akun == "D"){
+                $plus  = ($mutasiKasDebet + $mutasiBankDebet + $mutasiMemorialDebet);
+                $minus = ($mutasiKasKredit + $mutasiBankKredit + $mutasiMemorialKredit);
+            }else{
+                $plus = ($mutasiKasKredit + $mutasiBankKredit + $mutasiMemorialKredit);
+                $minus  = ($mutasiKasDebet + $mutasiBankDebet + $mutasiMemorialDebet);
             }
-        }else{
-            $bulanBefore = date('Y-m-d', strtotime('-1 months', strtotime($periode->pk_periode)));
 
-            $akun = akun::select('id_akun as id_akun', DB::raw("'".$periode->pk_periode."' as periode", 'opening_balance'))
-                            ->with([
-                                  'mutasi_bank_debet' => function($query) use ($bulanBefore, $periode){
-                                        $query->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'jrdt_jurnal')
-                                              ->where('tanggal_jurnal', '>=', $bulanBefore)
-                                              ->where('tanggal_jurnal', '<', $periode->pk_periode)
-                                              ->groupBy('jrdt_acc')
-                                              ->select('jrdt_acc', DB::raw('sum(jrdt_value) as mutasi'));
-                                  },
-                            ])
-                            ->where('type_akun', 'DETAIL')
-                            ->get();
-
-            // return json_encode($akun);
-
-            foreach ($akun as $key => $value) {
-                $saldoBefore = DB::table('d_akun_saldo')
-                                    ->where('id_akun', $value->id_akun)
-                                    ->where('periode', $bulanBefore)
-                                    ->select('saldo')
+            if(count($saldo) == 0){
+                $insert[$key] = [
+                    "id_akun"                   => $data->id_akun,
+                    "saldo_awal"                => $data->saldo_akun,
+                    "periode"                   => $periode->pk_periode,
+                    "mutasi_kas_debet"          => $mutasiKasDebet,
+                    "mutasi_kas_kredit"         => $mutasiKasKredit,
+                    "mutasi_bank_debet"         => $mutasiBankDebet,
+                    "mutasi_bank_kredit"        => $mutasiBankKredit,
+                    "mutasi_memorial_debet"     => $mutasiMemorialDebet,
+                    "mutasi_memorial_kredit"    => $mutasiMemorialKredit,
+                    "saldo_akhir"               => ($data->opening_balance + ($plus - $minus)),
+                ];
+            }else{
+                $saldoAwal = DB::table('d_akun_saldo')
+                                    ->where('periode', $d3)
+                                    ->where('id_akun', $data->id_akun)
+                                    ->select('saldo_akhir')
                                     ->first();
 
-                $mutasi = (count($value->mutasi_bank_debet) > 0) ? $value->mutasi_bank_debet[0]->mutasi : 0;
-
                 $insert[$key] = [
-                    'id_akun'   => $value->id_akun,
-                    'periode'   => $value->periode,
-                    'saldo'     => ($saldoBefore) ? ($saldoBefore->saldo + $mutasi) : ($value->opening_balance + $mutasi)
+                    "id_akun"                   => $data->id_akun,
+                    "saldo_awal"                => (!$saldoAwal) ? 0 : $saldoAwal->saldo_akhir,
+                    "periode"                   => $periode->pk_periode,
+                    "mutasi_kas_debet"          => $mutasiKasDebet,
+                    "mutasi_kas_kredit"         => $mutasiKasKredit,
+                    "mutasi_bank_debet"         => $mutasiBankDebet,
+                    "mutasi_bank_kredit"        => $mutasiBankKredit,
+                    "mutasi_memorial_debet"     => $mutasiMemorialDebet,
+                    "mutasi_memorial_kredit"    => $mutasiMemorialKredit,
+                    "saldo_akhir"               => ($saldoAwal->saldo_akhir + ($plus - $minus)),
                 ];
             }
         }
