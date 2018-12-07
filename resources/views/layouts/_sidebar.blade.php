@@ -1011,13 +1011,13 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Laporan Hutang Piutang','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Laporan Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/l_hutangpiutang/hutang') ? 'active' : '' || Request::is('keuangan/l_hutangpiutang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/l_hutangpiutang/hutang') }}"><span
                                                     class="submenu-title">Laporan Hutang Piutang</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Laporan Keuangan','ma_read'))
                                     <li class="{{ Request::is('keuangan/laporan_keuangan') ? 'active' : '' || Request::is('keuangan/laporan_keuangan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/laporan_keuangan') }}"><span class="submenu-title">Laporan Keuangan</span><span

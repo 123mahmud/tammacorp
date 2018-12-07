@@ -450,7 +450,7 @@ class ManOutputProduksiController extends Controller
                     'sm_qty_used' => 0,
                     'sm_qty_sisa' => $request->spk_qty,
                     'sm_qty_expired' => 0,
-                    'sm_hpp'    => $tot,
+                    'sm_hpp'    => $tot / $request->spk_qty,
                     'sm_detail' => 'PENAMBAHAN',
                     'sm_reff' => $nota->spk_code,
                     'sm_insert' => Carbon::now()

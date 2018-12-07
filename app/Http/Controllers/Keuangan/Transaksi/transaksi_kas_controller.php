@@ -270,6 +270,8 @@ class transaksi_kas_controller extends Controller
             // Pembukuan Jurnal
                 $jurnal = jurnal::where('jurnal_ref', $transaksi->first()->no_bukti);
 
+                dropSaldo($jurnal->first());
+
                 $jurnal->update([
                     'keterangan'    => $request->keterangan
                 ]);
@@ -332,6 +334,8 @@ class transaksi_kas_controller extends Controller
                     ]);
                 }
 
+                properSaldo($jurnal->first());
+
             // Pembukuan Jurnal End
         }
 
@@ -353,8 +357,7 @@ class transaksi_kas_controller extends Controller
         transaksi_detail::where('tkd_transaksi', $request->id)->delete();
 
         $jurnal = jurnal::where('jurnal_ref', $transaksi->first()->no_bukti);
-
-        jurnal_dt::where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
+        dropSaldo($jurnal->first());
 
         $jurnal->delete();
         $transaksi->delete();

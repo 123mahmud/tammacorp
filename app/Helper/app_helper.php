@@ -119,7 +119,9 @@
     		$num++;
 		}
 
-		return 'okee';
+		properSaldo(DB::table('d_jurnal')->where('jurnal_id', $id_jurnal)->first());
+
+		return true;
 
 	}
 
@@ -143,6 +145,8 @@
 			'tanggal_jurnal'	 => date('Y-m-d', strtotime($tanggal_jurnal)),
 			'keterangan'		 => $keterangan
 		]);
+
+		dropSaldo($jurnal->first());
 
 		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
 		$detail = DB::table('m_transaksi_detail')->where('td_transaksi', $id_transaksi)->get();
@@ -170,6 +174,9 @@
 
     		$num++;
 		}
+
+		properSaldo($jurnal->first());
+		
 		return 'okee';
 	}
 
@@ -193,6 +200,8 @@
 			'tanggal_jurnal'	 => date('Y-m-d', strtotime($tanggal_jurnal)),
 			'keterangan'		 => $keterangan
 		]);
+
+		dropSaldo($jurnal->first());
 
 		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
 
@@ -220,6 +229,8 @@
     		$num++;
 		}
 
+		properSaldo($jurnal->first());
+
 		return 'okee';
 	}
 	
@@ -229,7 +240,7 @@
 		if(!$jurnal->first())
 			return 'false';
 
-		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
+		dropSaldo($jurnal->first());
 		$jurnal->delete();
 
 		return 'true';
@@ -241,8 +252,7 @@
 		foreach ($array as $key => $data) {
 			if($data->id_group == $id_group){
 				foreach ($data->akun_neraca as $key => $detail) {
-					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
-					$saldo = $detail->opening_balance;
+					$mutasi = $detail->saldo;
 
 					if($status == 'aktiva' && $detail->posisi_akun == 'K'){
 						$mutasi = $mutasi * -1;
@@ -250,7 +260,7 @@
 						$mutasi = $mutasi * -1;
 					}
 
-					$total += ($saldo + $mutasi);
+					$total +=  $mutasi;
 				}
 			}
 		}
@@ -264,16 +274,15 @@
 		foreach ($array as $key => $data) {
 			if($data->id_group == $id_group){
 				foreach ($data->akun_laba_rugi as $key => $detail) {
-					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
-					$saldo = $detail->opening_balance;
+					$mutasi = $detail->saldo;
 
-					if($status == 'aktiva' && $detail->posisi_akun == 'K'){
-						$mutasi = $mutasi * -1;
+					if($status == 'pasiva' && $detail->posisi_akun == 'K'){
+						$mutasi = $mutasi;
 					}elseif($status == 'pasiva' && $detail->posisi_akun == 'D'){
 						$mutasi = $mutasi * -1;
 					}
 
-					$total += ($saldo + $mutasi);
+					$total += $mutasi;
 				}
 			}
 		}
@@ -304,6 +313,160 @@
 	function formatAccounting($number){
 		$data = ($number < 0) ? '('.number_format(str_replace('-', '', $number), 2).')' : number_format($number, 2);
 		return $data;
+	}
+
+	function properSaldo($jurnal){
+		$d1 = date('Y-m', strtotime($jurnal->tanggal_jurnal)).'-01';
+		$flag = substr($jurnal->no_jurnal, 0, 1);
+		
+		$data = DB::table('d_jurnal_dt')
+					->join('d_akun', 'd_akun.id_akun', '=', 'd_jurnal_dt.jrdt_acc')
+					->where('jrdt_jurnal', $jurnal->jurnal_id)
+					->select('d_jurnal_dt.*', 'd_akun.posisi_akun')
+					->get();
+
+		$allowPeriode = DB::table('d_periode_keuangan')->where('pk_periode', $d1)->first();
+
+		foreach ($data as $key => $detail) {
+
+			$periode = DB::table('d_akun_saldo')->where('periode', '>=', $d1)->where('id_akun', $detail->jrdt_acc)->get();
+
+			foreach($periode as $key => $period){
+				$saldoAwal 				= $period->saldo_awal;
+				$mutasiKasDebet 		= $period->mutasi_kas_debet;
+				$mutasiKasKredit 		= $period->mutasi_kas_kredit; 
+				$mutasiBankDebet 		= $period->mutasi_bank_debet;
+				$mutasiBankKredit 		= $period->mutasi_bank_kredit;
+				$mutasiMemorialDebet 	= $period->mutasi_memorial_debet;
+				$mutasiMemorialKredit 	= $period->mutasi_memorial_kredit;
+				$saldoAkhir				= $period->saldo_akhir;
+				$feeder = [];
+
+				switch ($flag) {
+					case 'K':
+						if($detail->jrdt_dk == 'D')
+							$mutasiKasDebet += str_replace('-', '', $detail->jrdt_value);
+						else
+							$mutasiKasKredit += str_replace('-', '', $detail->jrdt_value);
+						break;
+					
+					case 'B':
+						if($detail->jrdt_dk == 'D')
+							$mutasiBankDebet += str_replace('-', '', $detail->jrdt_value);
+						else
+							$mutasiBankKredit += str_replace('-', '', $detail->jrdt_value);
+						break;
+
+					case 'M':
+						if($detail->jrdt_dk == 'D')
+							$mutasiMemorialDebet += str_replace('-', '', $detail->jrdt_value);
+						else
+							$mutasiMemorialKredit += str_replace('-', '', $detail->jrdt_value);
+						break;
+				}
+
+				if($allowPeriode && $period->periode == $d1){
+					$feeder = [
+						"saldo_awal"				=> $saldoAwal,
+						"mutasi_bank_debet"			=> $mutasiBankDebet,
+						"mutasi_bank_kredit"		=> $mutasiBankKredit,
+						"mutasi_kas_debet"			=> $mutasiKasDebet,
+						"mutasi_kas_kredit"			=> $mutasiKasKredit,
+						"mutasi_memorial_debet"		=> $mutasiMemorialDebet,
+						"mutasi_memorial_kredit"	=> $mutasiMemorialKredit,
+						"saldo_akhir"				=> $saldoAkhir + $detail->jrdt_value
+					];
+				}else if($allowPeriode){
+					$feeder = [
+						"saldo_awal"				=> $saldoAwal + $detail->jrdt_value,
+						"saldo_akhir"				=> $saldoAkhir + $detail->jrdt_value
+					];
+				}
+
+				DB::table('d_akun_saldo')
+					->where('id_akun', $detail->jrdt_acc)
+					->where('periode', $period->periode)
+					->update($feeder);
+			}
+
+		}
+	}
+
+	function dropSaldo($jurnal){
+		$d1 = date('Y-m', strtotime($jurnal->tanggal_jurnal)).'-01';
+		$flag = substr($jurnal->no_jurnal, 0, 1);
+		
+		$data = DB::table('d_jurnal_dt')
+					->join('d_akun', 'd_akun.id_akun', '=', 'd_jurnal_dt.jrdt_acc')
+					->where('jrdt_jurnal', $jurnal->jurnal_id)
+					->select('d_jurnal_dt.*', 'd_akun.posisi_akun')
+					->get();
+
+		$allowPeriode = DB::table('d_periode_keuangan')->where('pk_periode', $d1)->first();
+
+		foreach ($data as $key => $detail) {
+
+			$periode = DB::table('d_akun_saldo')->where('periode', '>=', $d1)->where('id_akun', $detail->jrdt_acc)->get();
+
+			foreach($periode as $key => $period){
+				$saldoAwal 				= $period->saldo_awal;
+				$mutasiKasDebet 		= $period->mutasi_kas_debet;
+				$mutasiKasKredit 		= $period->mutasi_kas_kredit; 
+				$mutasiBankDebet 		= $period->mutasi_bank_debet;
+				$mutasiBankKredit 		= $period->mutasi_bank_kredit;
+				$mutasiMemorialDebet 	= $period->mutasi_memorial_debet;
+				$mutasiMemorialKredit 	= $period->mutasi_memorial_kredit;
+				$saldoAkhir				= $period->saldo_akhir;
+				$feeder = [];
+
+				switch ($flag) {
+					case 'K':
+						if($detail->jrdt_dk == 'D')
+							$mutasiKasDebet -= str_replace('-', '', $detail->jrdt_value);
+						else
+							$mutasiKasKredit -= str_replace('-', '', $detail->jrdt_value);
+						break;
+					
+					case 'B':
+						if($detail->jrdt_dk == 'D')
+							$mutasiBankDebet -= str_replace('-', '', $detail->jrdt_value);
+						else
+							$mutasiBankKredit -= str_replace('-', '', $detail->jrdt_value);
+						break;
+
+					case 'M':
+						if($detail->jrdt_dk == 'D')
+							$mutasiMemorialDebet -= str_replace('-', '', $detail->jrdt_value);
+						else
+							$mutasiMemorialKredit -= str_replace('-', '', $detail->jrdt_value);
+						break;
+				}
+
+				if($allowPeriode && $period->periode == $d1){
+					$feeder = [
+						"saldo_awal"				=> $saldoAwal,
+						"mutasi_bank_debet"			=> $mutasiBankDebet,
+						"mutasi_bank_kredit"		=> $mutasiBankKredit,
+						"mutasi_kas_debet"			=> $mutasiKasDebet,
+						"mutasi_kas_kredit"			=> $mutasiKasKredit,
+						"mutasi_memorial_debet"		=> $mutasiMemorialDebet,
+						"mutasi_memorial_kredit"	=> $mutasiMemorialKredit,
+						"saldo_akhir"				=> $saldoAkhir - $detail->jrdt_value
+					];
+				}else if($allowPeriode){
+					$feeder = [
+						"saldo_awal"				=> $saldoAwal - $detail->jrdt_value,
+						"saldo_akhir"				=> $saldoAkhir - $detail->jrdt_value
+					];
+				}
+
+				DB::table('d_akun_saldo')
+					->where('id_akun', $detail->jrdt_acc)
+					->where('periode', $period->periode)
+					->update($feeder);
+			}
+
+		}
 	}
 
 ?>
