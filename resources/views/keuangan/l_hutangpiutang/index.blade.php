@@ -86,7 +86,7 @@
                       <h4 class="modal-title" id="myModalLabel">Setting Buku Besar</h4>
                     </div>
 
-                    <form id="form-jurnal" method="get" action="{{ route('laporan_buku_besar.index') }}" target="_blank">
+                    <form id="form-jurnal" method="get" action="{{ route('laporan_hutang.index') }}" target="_blank">
                     <div class="modal-body">
                       <div class="row" style="margin-bottom: 15px;">
                         <div class="col-md-3">
@@ -109,24 +109,14 @@
 
                       <div class="row" style="margin-bottom: 15px;">
                         <div class="col-md-3">
-                          Pilih Semua
-                        </div>
-
-                        <div class="checkbox">
-                          <label><input type="checkbox" value=""></label>
-                        </div>
-
-                      </div>
-
-                      <div class="row" style="margin-bottom: 15px;">
-                        <div class="col-md-3">
                           Pilih Customer
                         </div>
 
                         <div class="col-md-9 durasi_bulan_buku_besar">
                           <select id="hitPenjualan" class="form-control select-2" name="akun_1">
+                            <option value="all">Semua</option>
                             @foreach ($customer as $cus)
-                              <option value=""></option>
+                              <option value="{{ $cus->c_id }}">{{ $cus->c_name }}</option>
                             @endforeach
                           </select>
                         </div>
@@ -136,7 +126,7 @@
                     </div>
                     
                     <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary">Proses</button>
+                      <button type="submit" class="btn btn-primary" onclick="lihatHutang()">Proses</button>
                     </div>
 
                     </form>
@@ -238,138 +228,9 @@
     });
   }
 
-  // function detailHutangBeli(id) 
-  // {
-  //   $.ajax({
-  //     url : baseUrl + "/keuangan/l_hutangpiutang/get_detail_hutangbeli/" + id,
-  //     type: "GET",
-  //     dataType: "JSON",
-  //     success: function(data)
-  //     {
-  //       var key = 1;
-  //       var datePo = data.header[0].d_pcs_date_created;
-  //       var newDatePo = datePo.split("-").reverse().join("-");
-        
-  //       if (data.header[0].d_pcs_method != "CASH") 
-  //       {
-  //         var dueDate = data.header[0].d_pcs_duedate;
-  //         var newDueDate = dueDate.split("-").reverse().join("-");
-  //       } 
-  //       var totalDisc = parseInt(data.header[0].d_pcs_disc_value) + parseInt(data.header[0].d_pcs_discount);
-
-  //       $('#lblNoPo').text(data.header[0].d_pcs_code);
-  //       $('#lblCaraBayar').text(data.header[0].d_pcs_method);
-  //       $('#lblTglPo').text(newDatePo);
-  //       $('#lblSupplier').text(data.header[0].s_company);
-  //       $('#lblTotGross').text(convertDecimalToRupiah(data.header[0].d_pcs_total_gross));
-  //       $('#lblTotDiskon').text(convertDecimalToRupiah(totalDisc));
-  //       $('#lblPPN').text(convertDecimalToRupiah(data.header[0].d_pcs_tax_value));
-  //       $('#lblTotalNett').text(convertDecimalToRupiah(data.header[0].d_pcs_total_net));
-  //       if (data.header[0].d_pcs_method == "DEPOSIT") 
-  //       {
-  //         $('#append-modal-detail div').remove();
-  //         $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
-  //                                             +'<label class="tebal">Batas Akhir Kirim</label>'
-  //                                         +'</div>'
-  //                                         +'<div class="col-md-3 col-sm-12 col-xs-12">'
-  //                                           +'<div class="form-group">'
-  //                                             +'<label id="lblApdTgl">'+newDueDate+'</label>'
-  //                                           +'</div>'
-  //                                         +'</div>')
-  //       }
-  //       else if (data.header[0].d_pcs_method == "CREDIT")
-  //       {
-  //         $('#append-modal-detail div').remove();
-  //         $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
-  //                                             +'<label class="tebal">TOP (Termin Of Payment)</label>'
-  //                                         +'</div>'
-  //                                         +'<div class="col-md-3 col-sm-12 col-xs-12">'
-  //                                           +'<div class="form-group">'
-  //                                             +'<label id="lblApdTgl">'+newDueDate+'</label>'
-  //                                           +'</div>'
-  //                                         +'</div>')
-  //       }
-  //       //loop data
-  //       Object.keys(data.isi).forEach(function(){
-  //         var dateRcv = data.isi[0].d_tbdt_date_received;
-  //         var newDateRcv = dateRcv.split("-").reverse().join("-");
-  //         $('#tabel-detail-peritem').append('<tr class="tbl_modal_detailhtg_row">'
-  //                         +'<td>'+key+'</td>'
-  //                         +'<td>'+data.isi[key-1].d_tb_code+'</td>'
-  //                         +'<td>'+newDateRcv+'</td>'
-  //                         +'<td>'+data.isi[key-1].i_code+' '+data.isi[key-1].i_name+'</td>'
-  //                         +'<td>'+data.isi[key-1].m_sname+'</td>'
-  //                         +'<td>'+data.isi[key-1].d_tbdt_qty+'</td>'
-  //                         +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
-  //                         +'<td>'+convertDecimalToRupiah(data.isi[key-1].d_tbdt_price)+'</td>'
-  //                         +'<td>'+convertDecimalToRupiah(data.isi[key-1].d_tbdt_pricetotal)+'</td>'
-  //                         +'</tr>');
-  //         key++;
-  //       });
-  //       $('#modal-detail-htgbeli').modal('show');
-  //     },
-  //     error: function (jqXHR, textStatus, errorThrown)
-  //     {
-  //         alert('Error get data from ajax');
-  //     }
-  //   });
-  // }
-
-  // function convertDecimalToRupiah(decimal) 
-  // {
-  //   var angka = parseInt(decimal);
-  //   var rupiah = '';        
-  //   var angkarev = angka.toString().split('').reverse().join('');
-  //   for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-  //   var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
-  //   return hasil+',00';
-  // }
-
-  // function randString(angka) 
-  // {
-  //   var text = "";
-  //   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  //   for (var i = 0; i < angka; i++)
-  //     text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  //   return text;
-  // }
-
-  // function convertToRupiah(angka) 
-  // {
-  //   var rupiah = '';        
-  //   var angkarev = angka.toString().split('').reverse().join('');
-  //   for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
-  //   var hasil = 'Rp. '+rupiah.split('',rupiah.length-1).reverse().join('');
-  //   return hasil+',00'; 
-  // }
-
-  // function convertToAngka(rupiah)
-  // {
-  //   return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
-  // }
-
-  // function convertDiscToAngka(disc) {
-  //   return parseInt(disc.replace('%', ''), 10);
-  // }
-
-  $('#d2_buku_besar').datepicker( {
-            format: "yyyy-mm",
-            viewMode: "months", 
-            minViewMode: "months"
-        });
-
-  $('#d1_buku_besar').datepicker({
-      format: "yyyy-mm",
-      viewMode: "months", 
-      minViewMode: "months"
-    }).on("changeDate", function(){
-        $('#d2_buku_besar').val("");
-        $('#d2_buku_besar').datepicker("setStartDate", $(this).val());
-    });
-
-//select2
+  function lihatHutang(){
+    
+  }
 
 
 </script>
