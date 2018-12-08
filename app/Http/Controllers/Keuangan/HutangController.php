@@ -15,6 +15,7 @@ use App\d_purchasingharian_dt;
 use App\d_terima_pembelian;
 use App\d_terima_pembelian_dt;
 use App\m_customer;
+use App\d_sales;
 
 class HutangController extends Controller
 {
@@ -205,4 +206,14 @@ class HutangController extends Controller
       return Response::json($formatted_tags);
     }
   }
+
+  public function laporanHutang(Request $request){
+      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa')
+        ->join('m_customer','m_customer.c_id','=','s_customer')
+        ->where('s_sisa','!=','0.00')
+        ->get();
+        // dd($hutang);
+    return view('keuangan.l_hutangpiutang.laporan_hutang',compact('hutang'));
+  }
+
 }
