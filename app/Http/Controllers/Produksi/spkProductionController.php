@@ -215,7 +215,7 @@ class spkProductionController extends Controller
 
     public function ubahStatusSpk($spk_id)
     {
-        // return json_encode("asd");
+        // return json_encode($request->all());
         $status = d_spk::where('spk_id', $spk_id)
                 ->first();
         // d_productplan::where('pp_id', $status->spk_ref)
@@ -358,7 +358,12 @@ class spkProductionController extends Controller
             ]);
         }
 
-        return json_encode($hpp_value / $spk->pp_qty);
+        // return json_encode($hpp_value / $spk->pp_qty);
+        DB::table('m_price')->where('m_pitem', $spk->spk_item)->update([
+            "m_hpp" => $hpp_value / $spk->pp_qty
+        ]);
+
+        // return "okee"
         // return json_encode(array_merge($acc_temp, $acc_temp2));
 
         // cek jurnal end
