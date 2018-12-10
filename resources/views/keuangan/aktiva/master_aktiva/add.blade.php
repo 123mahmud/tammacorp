@@ -779,11 +779,13 @@
           var np = parseFloat(this.single_data.harga_beli.replace(/\,/g, ''));
           var tahun = parseInt(this.single_data.tanggal_beli.split('-')[1]);
           var bulan = parseInt(this.single_data.tanggal_beli.split('-')[0]);
-          var loop = (bulan > 1) ? this.single_data.masa_manfaat + 1 : this.single_data.masa_manfaat;
+          var loop = (bulan > 1) ? parseFloat(this.single_data.masa_manfaat) + 1 : parseFloat(this.single_data.masa_manfaat);
           var nilai_penyusutan = nilai_akumulasi = 0 ;
           var nilai_sisa = np;
           var data = []; 
           var persentase = this.single_data.persentase/100;
+          
+          // alert(loop);
 
           for(var i = 0; i < loop; i++){
             
@@ -792,7 +794,7 @@
 
             if((tahun+i) == tahun){
               bulan_jalan = 12 - (bulan-1);
-            }else if((tahun+i) == (tahun+this.single_data.masa_manfaat)){
+            }else if((tahun+i) == (tahun + parseFloat(this.single_data.masa_manfaat))){
               bulan_jalan = (bulan - 1);
             }
 
