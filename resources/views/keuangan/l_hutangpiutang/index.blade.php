@@ -59,7 +59,6 @@
             <ul id="generalTab" class="nav nav-tabs">
               <li class="active"><a href="#htgbeli-tab" data-toggle="tab">Hutang Pembelian</a></li>
               <li><a href="#htgjual-tab" data-toggle="tab">Hutang Penjualan</a></li>
-              <!-- <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
             </ul>
 
             <div id="generalTabContent" class="tab-content responsive">
@@ -75,65 +74,8 @@
     </div><!-- end div.page-content -->
     <!-- modal -->
     <!-- modal detail hutang pembelian -->
-    @include('keuangan.l_hutangpiutang.modal-detail-htgbeli')
+  {{--   @include('keuangan.l_hutangpiutang.modal-detail-htgbeli') --}}
     <!-- /modal -->
-                  <!-- Modal -->
-              <div class="modal fade" id="modal_buku_besar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog" role="document" style="width: 35%;">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="myModalLabel">Setting Buku Besar</h4>
-                    </div>
-
-                    <form id="form-jurnal" method="get" action="{{ route('laporan_hutang.index') }}" target="_blank">
-                    <div class="modal-body">
-                      <div class="row" style="margin-bottom: 15px;">
-                        <div class="col-md-3">
-                          Periode
-                        </div>
-
-                        <div class="col-md-4 durasi_bulan_buku_besar">
-                          <input type="text" name="durasi_1_buku_besar_bulan" placeholder="periode Mulai" class="form-control" id="d1_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
-                        </div>
-
-                        <div class="col-md-1">
-                          s/d
-                        </div>
-
-                        <div class="col-md-4 durasi_bulan_buku_besar">
-                          <input type="text" name="durasi_2_buku_besar_bulan" placeholder="Periode Akhir" class="form-control" id="d2_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
-                        </div>
-
-                      </div>
-
-                      <div class="row" style="margin-bottom: 15px;">
-                        <div class="col-md-3">
-                          Pilih Customer
-                        </div>
-
-                        <div class="col-md-9 durasi_bulan_buku_besar">
-                          <select id="hitPenjualan" class="form-control select-2" name="akun_1">
-                            <option value="all">Semua</option>
-                            @foreach ($customer as $cus)
-                              <option value="{{ $cus->c_id }}">{{ $cus->c_name }}</option>
-                            @endforeach
-                          </select>
-                        </div>
-
-                      </div>
-
-                    </div>
-                    
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary" onclick="lihatHutang()">Proses</button>
-                    </div>
-
-                    </form>
-                  </div>
-                </div>
-              </div>
-  <!--END PAGE WRAPPER-->  
   </div>
 
 @endsection
@@ -156,21 +98,34 @@
     var date = new Date();
     var newdate = new Date(date);
 
-    newdate.setDate(newdate.getDate()-30);
+    newdate.setDate(newdate.getDate()-7);
     var nd = new Date(newdate);
 
-    $('.datepicker1').datepicker({
-      autoclose: true,
-      format:"dd-mm-yyyy",
-      endDate: 'today'
-    }).datepicker("setDate", nd);
-
-    $('.datepicker2').datepicker({
-      autoclose: true,
-      format:"dd-mm-yyyy",
-      endDate: 'today'
-    });//datepicker("setDate", "0");
-
+      $('.datepicker').datepicker({
+        format: "mm",
+        viewMode: "months",
+        minViewMode: "months"
+      });
+      $('.datepicker1').datepicker({
+        autoclose: true,
+        format:"dd-mm-yyyy",
+        endDate: 'today'
+      });
+      $('.datepicker2').datepicker({
+        autoclose: true,
+        format:"dd-mm-yyyy",
+        endDate: 'today'
+      });//.datepicker("setDate", "0"); 
+      $('.datepicker3').datepicker({
+        autoclose: true,
+        format:"dd-mm-yyyy",
+        endDate: 'today'
+      });
+      $('.datepicker4').datepicker({
+        autoclose: true,
+        format:"dd-mm-yyyy",
+        endDate: 'today'
+      });//.datepicker("setDate", "0"); 
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -187,50 +142,9 @@
     });
 
     //load list hutang
-    lihatHutangByTanggal();
-
+    $('.select-1').select2();
     $('.select-2').select2();
   }); //end jquery
-
-  function lihatHutangByTanggal()
-  {
-    var tgl1 = $('#tanggal1').val();
-    var tgl2 = $('#tanggal2').val();
-    $('#tbl-htgbeli').dataTable({
-      "destroy": true,
-      "processing" : true,
-      "serverside" : true,
-      "ajax" : {
-        url: baseUrl + "/keuangan/l_hutangpiutang/get_hutang_by_tgl/"+tgl1+"/"+tgl2,
-        type: 'GET'
-      },
-      "columns" : [
-        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
-        {"data" : "d_pcs_code", "width" : "20%"},
-        {"data" : "s_company", "width" : "35%"},
-        {"data" : "tglPo", "width" : "10%"},
-        {"data" : "tglSelesai", "width" : "10%"},
-        {"data" : "hargaTotalNet", "width" : "15%"},
-        {"data" : "action", orderable: false, searchable: false, "width" : "5%"}
-      ],
-      "language": {
-        "searchPlaceholder": "Cari Data",
-        "emptyTable": "Tidak ada data",
-        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-        "sSearch": '<i class="fa fa-search"></i>',
-        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-        "infoEmpty": "",
-        "paginate": {
-              "previous": "Sebelumnya",
-              "next": "Selanjutnya",
-        }
-      }
-    });
-  }
-
-  function lihatHutang(){
-    
-  }
 
 
 </script>
