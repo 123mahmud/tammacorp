@@ -1,57 +1,74 @@
 <div id="htgbeli-tab" class="tab-pane fade in active">
   <div class="row">
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="col-md-8 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
-        <div style="margin-left:-30px;">
-          <div class="col-md-2 col-sm-2 col-xs-12">
-            <label class="tebal" style="padding-top: 7px; font-size: 15px; margin-right:100px;">Periode</label>
-          </div>
-
-          <div class="col-md-6 col-sm-7 col-xs-12">
-            <div class="form-group" style="display: ">
-              <div class="input-daterange input-group">
-                <input id="tanggal1" class="form-control input-sm datepicker1" name="iTanggal1" type="text">
-                <span class="input-group-addon">-</span>
-                <input id="tanggal2" class="input-sm form-control datepicker2" name="iTanggal2" type="text" value="{{ date('d-m-Y') }}">
-              </div>
-            </div>
-          </div>
+    <div class="row">
+      <div class="panel-body">
+        <!-- Isi Content -->
+        <div class="col-md-3 transaksi-wrapper">
+        <div class="col-md-12 icon">
+          <i class="fa fa-book" style="color: #FF8800;"></i>
         </div>
 
-        <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-          <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="lihatHtgBeliByTgl()">
-            <strong>
-              <i class="fa fa-search" aria-hidden="true"></i>
-            </strong>
-          </button>
-          <button class="btn btn-info btn-sm btn-flat refresh-data-htgbeli" type="button">
-            <strong>
-              <i class="fa fa-undo" aria-hidden="true"></i>
-            </strong>
-          </button>
+        <div class="col-md-12 text">
+          <a href="#" data-toggle="modal" data-target="#modal_buku_piutang">Lihat Piutang Pembelian</a>
         </div>
-
       </div>
-    </div>
-
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="table-responsive">
-        <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tbl-htgbeli">
-          <thead>
-            <tr>
-              <th class="wd-5p">No</th>
-              <th class="wd-25p">PO</th>
-              <th class="wd-35p">Nama Supplier</th>
-              <th class="wd-10p">Tgl PO</th>
-              <th class="wd-10p">Tgl Selesai</th>
-              <th class="wd-10p">Total Harga</th>
-              <th style="text-align: center;" class="wd-5p">Detail</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table> 
-      </div>                                       
+      </div>
     </div>
   </div>     
 </div><!-- /div alert-tab -->
+
+ <div class="modal fade" id="modal_buku_piutang" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document" style="width: 35%;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Setting Buku Besar</h4>
+          </div>
+
+          <form id="form-piutang" method="get" action="{{ route('laporan_piutang.index') }}" target="_blank">
+          <div class="modal-body">
+            <div class="row" style="margin-bottom: 15px;">
+              <div class="col-md-3">
+                Periode
+              </div>
+
+              <div class="col-md-4 durasi_bulan_buku_besar">
+                <input type="text" name="periode1" placeholder="periode Mulai" class="form-control datepicker1" id="d1_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
+              </div>
+
+              <div class="col-md-1">
+                s/d
+              </div>
+
+              <div class="col-md-4 durasi_bulan_buku_besar">
+                <input type="text" name="periode2" placeholder="Periode Akhir" class="form-control datepicker2" id="d2_buku_besar" autocomplete="off" required readonly style="cursor: pointer;">
+              </div>
+
+            </div>
+
+            <div class="row" style="margin-bottom: 15px;">
+              <div class="col-md-3">
+                Pilih Supplier
+              </div>
+
+              <div class="col-md-9 durasi_bulan_buku_besar">
+                <select id="hitPenjualan" class="form-control select-1" name="cus">
+                  <option value="all">Semua</option>
+                  @foreach ($supplier as $sup)
+                    <option value="{{ $sup->s_id }}">{{ $sup->s_company }}</option>
+                  @endforeach
+                </select>
+              </div>
+
+            </div>
+
+          </div>
+          
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Proses</button>
+          </div>
+
+          </form>
+        </div>
+      </div>
+    </div>

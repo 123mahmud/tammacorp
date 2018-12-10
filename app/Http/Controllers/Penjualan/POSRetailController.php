@@ -1075,7 +1075,7 @@ class POSRetailController extends Controller
 
       $tgl = Carbon::now();
 
-      $pdf = PDF::loadView('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));
+      $pdf = PDF::loadView('penjualan.POSretail.print_faktur_pdf', compact('data', 'dataTotal', 'sales'));
       return $pdf->download('faktur_retail_'.$tgl.'.pdf');
 
       // return view('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));

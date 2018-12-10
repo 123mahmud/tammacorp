@@ -1126,6 +1126,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\HutangController@hutang');
     Route::get('/keuangan/l_hutangpiutang/get_hutang_by_tgl/{tgl1}/{tgl2}', 'Keuangan\HutangController@getHutangByTgl');
     Route::get('/keuangan/l_hutangpiutang/get_detail_hutangbeli/{id}', 'Keuangan\HutangController@getDetailHutangBeli');
+    //laporan Buku Besar
+    Route::get('keuangan/laporan_keuangan/laporan_piutang', [
+        'uses'  => 'Keuangan\HutangController@laporanPiutang',
+        'as'    => 'laporan_piutang.index'
+    ]);
+    Route::get('keuangan/laporan_keuangan/laporan_hutang', [
+        'uses'  => 'Keuangan\HutangController@laporanHutang',
+        'as'    => 'laporan_hutang.index'
+    ]);
+    // end laporan buku besar
 // end rizky
 //mahmud
     Route::get('/keuangan/l_hutangpiutang/hitung-penjualan/cus', 'Keuangan\HutangController@cariCus');

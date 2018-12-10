@@ -15,6 +15,7 @@ use App\d_purchasingharian_dt;
 use App\d_terima_pembelian;
 use App\d_terima_pembelian_dt;
 use App\m_customer;
+use App\d_sales;
 
 class HutangController extends Controller
 {
@@ -29,7 +30,10 @@ class HutangController extends Controller
     $customer = m_customer::select('c_id','c_name')
       ->get();
 
-    return view('/keuangan/l_hutangpiutang/index',compact('customer'));
+    $supplier = DB::table('d_supplier')->select('s_id','s_company')
+      ->get();
+
+    return view('/keuangan/l_hutangpiutang/index',compact('customer','supplier'));
   }
 
   public function getHutangByTgl($tgl1, $tgl2)
@@ -205,4 +209,35 @@ class HutangController extends Controller
       return Response::json($formatted_tags);
     }
   }
+
+  public function laporanHutang(Request $request){
+    // $durasi        = $request->durasi_1_arus_kas_bulan."-01";
+    // $durasi_before = date('Y-m-d', strtotime('-1 months', strtotime($durasi)));
+    // $durasi_end    = date('Y-m-d', strtotime('+1 months', strtotime($durasi)));
+        $y = substr($request->periode1, -4);
+        $m = substr($request->periode1, -7, -5);
+        $d = substr($request->periode1, 0, 2);
+        $tanggal1 = $y . '-' . $m . '-' . $d;
+
+        $y2 = substr($request->periode2, -4);
+        $m2 = substr($request->periode2, -7, -5);
+        $d2 = substr($request->periode2, 0, 2);
+        $tanggal2 = $y2 . '-' . $m2 . '-' . $d2;
+    if ($request->cus == 'all') {
+      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa')
+        ->join('m_customer','m_customer.c_id','=','s_customer')
+        ->where('s_sisa','!=','0.00')
+        ->whereBetween('s_date', [$tanggal1, $tanggal2])
+        ->get();
+    }else{
+      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa')
+        ->join('m_customer','m_customer.c_id','=','s_customer')
+        ->where('s_sisa','!=','0.00')
+        ->where('s_customer',$request->cus)
+        ->whereBetween('s_date', [$tanggal1, $tanggal2])
+        ->get();
+    }
+    return view('keuangan.l_hutangpiutang.laporan_hutang',compact('hutang'));
+  }
+
 }
