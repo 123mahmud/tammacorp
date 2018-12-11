@@ -198,7 +198,7 @@
         <table width="100%" border="0" style="border-bottom: 1px solid #333;" id="contentnya">
           <thead>
             <tr>
-              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Hutang Customer</th>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Piutang Supplier</th>
             </tr>
 
             <tr>
@@ -215,15 +215,13 @@
 				<thead>
 					<tr>
 						<th width="20%">Nama - Kode</th>
-				        <th width="5%">Type</th>
 				        <th width="15%">No. Hp</th>
-				        <th width="10%">Wilayah</th>
 				        <th width="30%">Alamat</th>
-				        <th width="20%">Hutang</th>
+				        <th width="20%">Piutang</th>
 					</tr>
 				</thead>
 				<tbody>
-					@foreach ($hutang as $cus)
+					{{-- @foreach ($hutang as $cus)
 					<tr>
 						<td>{{ $cus->c_name }} / {{ $cus->c_code }} </td>
 						@if ($cus->c_type == 'GR')
@@ -237,7 +235,7 @@
 						<td> {{ $cus->c_address }} </td>
 						<td class="text-right">  {{ number_format($cus->s_sisa, 2) }} </td>
 					</tr>
-					@endforeach
+					@endforeach --}}
 				</tbody>
 			</table>
 
