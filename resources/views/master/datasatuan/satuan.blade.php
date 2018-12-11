@@ -158,7 +158,7 @@ tr.details td.details-control {
                     transitionOut: 'fadeOutUp'
                   }, toast);
                   var parent = $(a).parents('tr');
-                  var id = $(parent).find('.d_id').text();
+                  var id = a;
                   console.log(id);
                   $.ajax({
                        type: "get",
