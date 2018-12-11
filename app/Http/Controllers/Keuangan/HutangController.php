@@ -240,4 +240,9 @@ class HutangController extends Controller
     return view('keuangan.l_hutangpiutang.laporan_hutang',compact('hutang'));
   }
 
+  public function laporanPiutang(){
+
+    return view('keuangan.l_hutangpiutang.laporan_piutang');
+  }
+
 }
