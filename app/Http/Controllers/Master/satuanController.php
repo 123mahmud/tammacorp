@@ -31,7 +31,7 @@ class satuanController extends Controller
             
                 ->addColumn('aksi', function ($data) {
               return  
-              '<button id="edit" onclick="edit(this)" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.
+              '<button id="edit" onclick="edit('.$data->m_sid.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.
               '<button id="delete" onclick="hapus(this)" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
                 })
                 ->addColumn('none', function ($data) {
@@ -76,7 +76,7 @@ class satuanController extends Controller
     }
     public function edit_satuan(Request $request)
     {
-      $data = DB::table('m_satuan')->where('m_scode','=',$request->id)->first();
+      $data = DB::table('m_satuan')->where('m_sid','=',$request->id)->first();
       json_encode($data);
       return view('master/datasatuan/edit_satuan',compact('data'));
     }
