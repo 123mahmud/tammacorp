@@ -42,7 +42,7 @@
                                 <th>Harga A</th>
                                 <th>Harga B</th>
                                 <th>Harga C</th>
-                                <th>HPP</th>
+                             {{--    <th>HPP</th> --}}
                                 <th>Barang Rusak</th>
                                 <th>Aksi</th>
                               </tr>
@@ -145,7 +145,7 @@
       {data: 'm_psell1', name: 'm_psell1'},
       {data: 'm_psell2', name: 'm_psell2'},
       {data: 'm_psell3', name: 'm_psell3'},
-      {data: 'm_hpp', name: 'm_hpp'},
+      // {data: 'm_hpp', name: 'm_hpp'},
       {data: 'm_barang_rusak', name: 'm_barang_rusak'},
       {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
