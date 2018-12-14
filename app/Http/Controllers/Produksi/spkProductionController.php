@@ -272,7 +272,7 @@ class spkProductionController extends Controller
                                     ->get();
 
                     if(count($prevCost) == 0){
-                        $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $idItem)->first();
+                        $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $item->i_id)->first();
                         $hargaLalu = $default_cost->m_pbuy1;
                     }else{
                         $hppTemp = 0;
