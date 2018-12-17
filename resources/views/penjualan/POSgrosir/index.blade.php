@@ -321,7 +321,7 @@
                                                             Tempo</label>
                                                         <div class="input-group input-group-sm" style="width: 100%;">
                                                             <input type="text" id="no_faktur" name="s_jatuh_tempo"
-                                                                   class="form-control datepicker4" autocomplete="off">
+                                                                   class="form-control datepicker4" readonly autocomplete="off">
                                                         </div>
                                                     </div>
                                                 </form>

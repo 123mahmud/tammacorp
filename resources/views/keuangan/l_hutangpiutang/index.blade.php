@@ -109,22 +109,22 @@
       $('.datepicker1').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });
       $('.datepicker2').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });//.datepicker("setDate", "0"); 
       $('.datepicker3').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });
       $('.datepicker4').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });//.datepicker("setDate", "0"); 
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {

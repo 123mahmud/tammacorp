@@ -219,6 +219,7 @@
 				        <th width="15%">No. Hp</th>
 				        <th width="10%">Wilayah</th>
 				        <th width="30%">Alamat</th>
+				        <th width="30%">Jatuh Tempo</th>
 				        <th width="20%">Hutang</th>
 					</tr>
 				</thead>
@@ -235,6 +236,7 @@
 						<td> {{ $cus->c_hp1 }} / {{ $cus->c_hp2 }} </td>
 						<td> {{ $cus->c_region }} </td>
 						<td> {{ $cus->c_address }} </td>
+						<td> {{ date('d M Y', strtotime($cus->s_jatuh_tempo)) }} </td>
 						<td class="text-right">  {{ number_format($cus->s_sisa, 2) }} </td>
 					</tr>
 					@endforeach
