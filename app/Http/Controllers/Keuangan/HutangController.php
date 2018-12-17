@@ -243,7 +243,7 @@ class HutangController extends Controller
   }
 
   public function laporanPiutang(Request $request){
-        dd($request->all());
+        //dd($request->all());
         $y = substr($request->periode1, -4);
         $m = substr($request->periode1, -7, -5);
         $d = substr($request->periode1, 0, 2);
@@ -254,18 +254,21 @@ class HutangController extends Controller
         $d2 = substr($request->periode2, 0, 2);
         $tanggal4 = $y2 . '-' . $m2 . '-' . $d2;
         if ($request->cus == 'all') {
-          $piutang = d_purchasing::select('')
-            ->join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
+          $piutang = d_purchasing::join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
             ->where('d_pcs_sisapayment','!=','0.00')
             ->whereBetween('d_pcs_duedate', [$tanggal3, $tanggal4])
             ->get();
         }else{
-
+          $piutang = d_purchasing::join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
+            ->where('d_pcs_sisapayment','!=','0.00')
+            ->where('d_purchasing.s_id',$request->cus)
+            ->whereBetween('d_pcs_duedate', [$tanggal3, $tanggal4])
+            ->get();
         }
 
 
 
-    return view('keuangan.l_hutangpiutang.laporan_piutang');
+    return view('keuangan.l_hutangpiutang.laporan_piutang',compact('piutang'));
   }
 
 }

@@ -214,28 +214,23 @@
 			<table id="table-data" class="table_neraca tree" border="0" width="100%">
 				<thead>
 					<tr>
-						<th width="20%">Nama - Kode</th>
+						<th width="20%">Supplier</th>
 				        <th width="15%">No. Hp</th>
 				        <th width="30%">Alamat</th>
+				        <th width="15%">Jatuh Tempo</th>
 				        <th width="20%">Piutang</th>
 					</tr>
 				</thead>
 				<tbody>
-					{{-- @foreach ($hutang as $cus)
+					@foreach ($piutang as $sup)
 					<tr>
-						<td>{{ $cus->c_name }} / {{ $cus->c_code }} </td>
-						@if ($cus->c_type == 'GR')
-							<td> Grosir </td>
-						@else
-							<td> Retail </td>
-						@endif
-						
-						<td> {{ $cus->c_hp1 }} / {{ $cus->c_hp2 }} </td>
-						<td> {{ $cus->c_region }} </td>
-						<td> {{ $cus->c_address }} </td>
-						<td class="text-right">  {{ number_format($cus->s_sisa, 2) }} </td>
+						<td>{{ $sup->s_company }}</td>						
+						<td> {{ $sup->s_phone1 }} / {{ $sup->s_phone2 }} </td>
+						<td> {{ $sup->s_address }} </td>
+						<td> {{ date('d M Y', strtotime($sup->d_pcs_duedate)) }} </td>
+						<td class="text-right">  {{ number_format($sup->d_pcs_sisapayment, 2) }} </td>
 					</tr>
-					@endforeach --}}
+					@endforeach
 				</tbody>
 			</table>
 
