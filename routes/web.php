@@ -1392,4 +1392,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/spk/print/{spk_id}', 'Produksi\spkProductionController@print')->name('spk_print');
 
 // irA
+//Company Profile
+    Route::get('profil-perusahaan', 'SystemController@profil');
+    Route::post('profil-perusahaanu/update', 'SystemController@updateProfil');
 }); // End Route Groub middleware auth

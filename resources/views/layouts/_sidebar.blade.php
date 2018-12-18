@@ -1119,7 +1119,7 @@
                     @endif
                     @if(Auth::user()->punyaAkses('System','ma_read'))
                         <div class="clearfix"></div>
-                        <li class="{{Request::is('system') ? 'active' : '' || Request::is('system/*') ? 'active' : '' }}">
+                        <li class="{{Request::is('profil-perusahaan') ? 'active' : '' || Request::is('system') ? 'active' : '' || Request::is('system/*') ? 'active' : '' }}">
                             <a href="#"><i class="fa fa-cog fa-fw fa-spin">
                                     <div class="icon-bg bg-green"></div>
                                 </i><span class="menu-title">System</span><span class="fa arrow"></span>
@@ -1160,8 +1160,8 @@
                                     </li>
                                 @endif --}}
                                 @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
-                                    <li class="{{ Request::is('system/profilperusahaan/profil') ? 'active' : '' || Request::is('system/profilperusahaan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/system/profilperusahaan/profil') }}"><span
+                                    <li class="{{ Request::is('profil-perusahaan') ? 'active' : '' || Request::is('profil-perusahaan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('profil-perusahaan') }}"><span
                                                     class="submenu-title">Profil Perusahaan</span><span class="hidden">System</span></a>
                                     </li>
                                 @endif
