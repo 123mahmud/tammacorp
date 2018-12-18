@@ -13,6 +13,7 @@ use App\d_send_product;
 use App\d_productplan;
 use App\spk_formula;
 use App\spk_actual;
+use App\d_productresult_dt;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\lib\mutasi;
@@ -156,7 +157,15 @@ class spkProductionController extends Controller
             ->editColumn('spk_date', function ($user) {
                 return $user->spk_date ? with(new Carbon($user->spk_date))->format('d M Y') : '';
             })
-            ->rawColumns(['status', 'action'])
+
+            ->editColumn('produksi', function ($user) {
+                return $result = d_productresult_dt::
+                    join('d_productresult','d_productresult.pr_id','=','prdt_productresult')
+                    ->where('pr_spk',$user->spk_id)
+                    ->sum('d_productresult_dt.prdt_qty');
+            })
+
+            ->rawColumns(['status', 'action','produksi'])
             ->make(true);
     }
 
@@ -209,7 +218,15 @@ class spkProductionController extends Controller
             ->editColumn('spk_date', function ($user) {
                 return $user->spk_date ? with(new Carbon($user->spk_date))->format('d M Y') : '';
             })
-            ->rawColumns(['status', 'action'])
+
+            ->editColumn('produksi', function ($user) {
+                return $result = d_productresult_dt::
+                    join('d_productresult','d_productresult.pr_id','=','prdt_productresult')
+                    ->where('pr_spk',$user->spk_id)
+                    ->sum('d_productresult_dt.prdt_qty');
+            })
+
+            ->rawColumns(['status', 'action','produksi'])
             ->make(true);
     }
 
@@ -272,7 +289,7 @@ class spkProductionController extends Controller
                                     ->get();
 
                     if(count($prevCost) == 0){
-                        $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $idItem)->first();
+                        $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $item->i_id)->first();
                         $hargaLalu = $default_cost->m_pbuy1;
                     }else{
                         $hppTemp = 0;

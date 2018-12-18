@@ -49,7 +49,7 @@
     <div class="page-content fadeInRight">
       <div id="tab-general">
         <div class="row mbl">
-          <div class="col-lg-12">
+          <div class="col-md-12 col-sm-12 col-xs-12">
               
             <div class="col-md-12">
               <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
@@ -57,8 +57,8 @@
             </div>
 
             <ul id="generalTab" class="nav nav-tabs">
-              <li class="active"><a href="#htgbeli-tab" data-toggle="tab">Hutang Pembelian</a></li>
-              <li><a href="#htgjual-tab" data-toggle="tab">Hutang Penjualan</a></li>
+              <li class="active"><a href="#htgbeli-tab" data-toggle="tab">Laporan Hutang Piutang</a></li>
+              {{-- <li><a href="#htgjual-tab" data-toggle="tab">Hutang Penjualan</a></li> --}}
             </ul>
 
             <div id="generalTabContent" class="tab-content responsive">
@@ -109,22 +109,22 @@
       $('.datepicker1').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });
       $('.datepicker2').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });//.datepicker("setDate", "0"); 
       $('.datepicker3').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });
       $('.datepicker4').datepicker({
         autoclose: true,
         format:"dd-mm-yyyy",
-        endDate: 'today'
+        // endDate: 'today'
       });//.datepicker("setDate", "0"); 
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {

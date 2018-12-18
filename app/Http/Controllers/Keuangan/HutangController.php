@@ -224,20 +224,51 @@ class HutangController extends Controller
         $d2 = substr($request->periode2, 0, 2);
         $tanggal2 = $y2 . '-' . $m2 . '-' . $d2;
     if ($request->cus == 'all') {
-      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa')
+      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa','s_jatuh_tempo')
         ->join('m_customer','m_customer.c_id','=','s_customer')
+        ->where('s_channel','GR')
         ->where('s_sisa','!=','0.00')
-        ->whereBetween('s_date', [$tanggal1, $tanggal2])
+        ->whereBetween('s_jatuh_tempo', [$tanggal1, $tanggal2])
         ->get();
     }else{
       $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa')
         ->join('m_customer','m_customer.c_id','=','s_customer')
+        ->where('s_channel','GR')
         ->where('s_sisa','!=','0.00')
         ->where('s_customer',$request->cus)
-        ->whereBetween('s_date', [$tanggal1, $tanggal2])
+        ->whereBetween('s_jatuh_tempo', [$tanggal1, $tanggal2])
         ->get();
     }
     return view('keuangan.l_hutangpiutang.laporan_hutang',compact('hutang'));
+  }
+
+  public function laporanPiutang(Request $request){
+        //dd($request->all());
+        $y = substr($request->periode1, -4);
+        $m = substr($request->periode1, -7, -5);
+        $d = substr($request->periode1, 0, 2);
+        $tanggal3 = $y . '-' . $m . '-' . $d;
+
+        $y2 = substr($request->periode2, -4);
+        $m2 = substr($request->periode2, -7, -5);
+        $d2 = substr($request->periode2, 0, 2);
+        $tanggal4 = $y2 . '-' . $m2 . '-' . $d2;
+        if ($request->cus == 'all') {
+          $piutang = d_purchasing::join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
+            ->where('d_pcs_sisapayment','!=','0.00')
+            ->whereBetween('d_pcs_duedate', [$tanggal3, $tanggal4])
+            ->get();
+        }else{
+          $piutang = d_purchasing::join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
+            ->where('d_pcs_sisapayment','!=','0.00')
+            ->where('d_purchasing.s_id',$request->cus)
+            ->whereBetween('d_pcs_duedate', [$tanggal3, $tanggal4])
+            ->get();
+        }
+
+
+
+    return view('keuangan.l_hutangpiutang.laporan_piutang',compact('piutang'));
   }
 
 }

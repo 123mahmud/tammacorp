@@ -32,6 +32,7 @@
               <select name="tampilData" id="tampil_data" class="form-control input-sm">
                 <option value="semua" class="form-control">Tampilkan : Semua</option>
                 <option value="draft" class="form-control">Tampilkan : Draft</option>
+                <option value="setuju" class="form-control">Tampilkan : Di Setujui</option>
                 <option value="progress" class="form-control">Tampilkan : On Progress</option>
                 <option value="finish" class="form-control">Tampilkan : Selesai</option>
               </select>
