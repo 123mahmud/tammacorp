@@ -201,7 +201,6 @@ class penerimaan_piutang_controller extends Controller
         $transaksi = DB::table('d_sales_receive')->where('sr_code', $request->id);
         $purchase = DB::table('d_sales')->where('s_note', $transaksi->first()->sr_note);
         $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $request->id);
-
         // return json_encode($jurnal->first());
 
         if(!$transaksi->first()){
@@ -211,9 +210,6 @@ class penerimaan_piutang_controller extends Controller
             ]);
         }
 
-        if($jurnal->first())
-            DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
-
         DB::table('d_sales_payment')->where('sp_ref', $request->id)->delete();
 
         $payment = DB::table('d_sales_payment')->where('sp_sales', $purchase->first()->s_id)->select(DB::raw('sum(sp_nominal) as payment'))->first();
@@ -222,7 +218,7 @@ class penerimaan_piutang_controller extends Controller
             's_sisa'     => $purchase->first()->s_net - $payment->payment,
         ]);
 
-        _delete_jurnal($transaksi->first()->sr_code);
+        // _delete_jurnal($transaksi->first()->sr_code);
         $transaksi->delete();
 
         return json_encode([

@@ -160,12 +160,12 @@
     labels: {!! $date !!},
     datasets: [{ 
         data: {!! $tot_pendapatan !!},
-        label: "Pendapatan",
+        label: "Net Profit",
         borderColor: "#FF8800",
         fill: false
       }, { 
         data: {!! $tot_ocf !!},
-        label: "Net Profit",
+        label: "OCF",
         borderColor: "#3E4551",
         fill: false
       }

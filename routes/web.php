@@ -1063,7 +1063,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/keuangan/analisahutangpiutang/analisa9', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@hutang_piutang');
 
             Route::get('/keuangan/analisaocf/analisa2', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@ocf_profit');
-            Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@cashflow');
+            Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@cashflow')->name('analisa.cashflow');
 
     // keuangan end
 
