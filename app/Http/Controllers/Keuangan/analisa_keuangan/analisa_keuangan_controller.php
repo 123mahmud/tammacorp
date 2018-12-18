@@ -177,92 +177,162 @@ class analisa_keuangan_controller extends Controller
         return view("keuangan.analisa_keuangan.analisa_ocf_profit.index", compact('date', 'tot_pendapatan', 'tot_ocf'));
     }
 
-    public function cashflow(){
-        $today = date('Y-m').'-01';
-        $date = [];
-        $tot_ocf = $tot_fcf = $tot_icf = [];
-
-        $periode = date('Y-m').'-01';
-        $periode_before = date('Y-m-d', strtotime('-1 months', strtotime($periode)));
-        $periode_next = date('Y-m-d', strtotime('+1 months', strtotime($periode)));
-
-        for ($i = 12; $i >= 1; $i--) {
-            $cek_date = date('Y-m-d', strtotime('-'.$i.' months', strtotime($today)));
-            $cek_date_next = date('Y-m-d', strtotime('+1 months', strtotime($cek_date)));
-            
-            $tot_cf = 0;
-            $cashflow = DB::table('d_jurnal_dt')
-                            ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                            ->where('d_jurnal.tanggal_jurnal', '>=', $cek_date)
-                            ->where('d_jurnal.tanggal_jurnal', '<', $cek_date_next)
-                            ->whereIn('jrdt_cashflow', function($query){
-                                $query->select('tc_id')
-                                      ->from('dk_transaksi_cashflow')
-                                      ->where('tc_cashflow', "OCF")->get();
-                            })->select('jrdt_value', 'jrdt_acc')->get();
+    public function cashflow(Request $request){
         
-            foreach($cashflow as $numeric => $cf){
-                $acc = DB::table('d_akun')->where('id_akun', $cf->jrdt_acc)->select('posisi_akun')->first();
-                $nilai = ($acc->posisi_akun == "K") ? $cf->jrdt_value : ($cf->jrdt_value * -1);
+        $data = [];
 
-                $tot_cf += $nilai;
+        if($request->jenis == 'bulanan'){
+            for ($i=0; $i < 12; $i++) { 
+
+                $durasi = date('Y').'-'.($i + 1).'-01';
+                $durasi_end    = date('Y-m-d', strtotime('+1 months', strtotime($durasi)));
+                $durasi_before    = date('Y-m-d', strtotime('-1 months', strtotime($durasi)));
+
+                $ocfIn = $ocfOut = $icfIn = $icfOut = $fcfIn = $fcfOut = 0;
+
+                $saldoAwal = DB::table('d_akun_saldo')
+                        ->whereIn('id_akun', function($query){
+                            $query->select('id_akun')
+                                    ->from('d_akun')
+                                    ->where('group_neraca', 'A-1')
+                                    ->where('type_akun', 'DETAIL')->get();
+                        })
+                        ->where('periode', $durasi_before)
+                        ->select(DB::raw('coalesce(sum(saldo_akhir), 0) as saldoAwal'))->first();
+
+                $detail = DB::table('d_jurnal_dt')
+                      ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                      ->join('d_akun', 'd_jurnal_dt.jrdt_acc', '=', 'd_akun.id_akun')
+                      ->join('dk_transaksi_cashflow', 'dk_transaksi_cashflow.tc_id', 'd_jurnal_dt.jrdt_cashflow')
+                      ->whereNotNull('jrdt_cashflow')
+                      ->where('d_jurnal.tanggal_jurnal', '>=', $durasi)
+                      ->where('d_jurnal.tanggal_jurnal', '<', $durasi_end)
+                      ->select('d_jurnal_dt.*', 'd_jurnal.tanggal_jurnal', 'd_akun.posisi_akun', 'dk_transaksi_cashflow.tc_cashflow')
+                      ->get();
+
+                foreach ($detail as $key => $dataDetail) {
+                    $numState = $dataDetail->jrdt_value;
+
+                    if($dataDetail->tc_cashflow == 'OCF'){
+                        if($dataDetail->posisi_akun == 'D'){
+                            $numState *= -1;
+                        }
+
+                        if($numState < 1)
+                            $ocfOut += $numState;
+                        else
+                            $ocfIn += $numState;
+                    }else if($dataDetail->tc_cashflow == 'ICF'){
+                        if($dataDetail->posisi_akun == 'D'){
+                            $numState *= -1;
+                        }
+
+                        if($numState < 1)
+                            $icfOut += $numState;
+                        else
+                            $icfIn += $numState;
+                    }else if($dataDetail->tc_cashflow == 'FCF'){
+                        if($dataDetail->posisi_akun == 'D'){
+                            $numState *= -1;
+                        }
+
+                        if($numState < 1)
+                            $fcfOut += $numState;
+                        else
+                            $fcfIn += $numState;
+                    }
+                }
+
+                $data[$i] = [
+                    "bulan"     => $durasi,
+                    "saldoAwal" => $saldoAwal->saldoAwal,
+                    "ocfIn"     => str_replace('-', '', $ocfIn),
+                    "ocfOut"    => str_replace('-', '', $ocfOut),
+                    'icfIn'     => str_replace('-', '', $icfIn),
+                    'icfOut'    => str_replace('-', '', $icfOut),
+                    'fcfIn'     => str_replace('-', '', $fcfIn),
+                    'fcfOut'    => str_replace('-', '', $fcfOut),
+                ];
             }
+        }else{
+            $ocfIn = $ocfOut = $icfIn = $icfOut = $fcfIn = $fcfOut = 0;
+            $durasi = date('Y').'-01-01';
 
-            array_push($tot_ocf, ($tot_cf / 1000000));
+            $saldoAwal = DB::table('d_akun_saldo')
+                        ->whereIn('id_akun', function($query){
+                            $query->select('id_akun')
+                                    ->from('d_akun')
+                                    ->where('group_neraca', 'A-1')
+                                    ->where('type_akun', 'DETAIL')->get();
+                        })
+                        ->where('periode', $durasi)
+                        ->select(DB::raw('coalesce(sum(saldo_akhir), 0) as saldoAwal'))->first();
 
-            $tot_cf = 0;
-            $cashflow = DB::table('d_jurnal_dt')
-                            ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                            ->where('d_jurnal.tanggal_jurnal', '>=', $cek_date)
-                            ->where('d_jurnal.tanggal_jurnal', '<', $cek_date_next)
-                            ->whereIn('jrdt_cashflow', function($query){
-                                $query->select('tc_id')
-                                      ->from('dk_transaksi_cashflow')
-                                      ->where('tc_cashflow', "FCF")->get();
-                            })->select('jrdt_value', 'jrdt_acc')->get();
-        
-            foreach($cashflow as $numeric => $cf){
-                $acc = DB::table('d_akun')->where('id_akun', $cf->jrdt_acc)->select('posisi_akun')->first();
-                $nilai = ($acc->posisi_akun == "K") ? $cf->jrdt_value : ($cf->jrdt_value * -1);
 
-                $tot_cf += $nilai;
+            for ($i=0; $i < 12; $i++) { 
+
+                $durasi = date('Y').'-'.($i + 1).'-01';
+                $durasi_end    = date('Y-m-d', strtotime('+1 months', strtotime($durasi)));
+                $durasi_before    = date('Y-m-d', strtotime('-1 months', strtotime($durasi)));
+
+                $detail = DB::table('d_jurnal_dt')
+                      ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
+                      ->join('d_akun', 'd_jurnal_dt.jrdt_acc', '=', 'd_akun.id_akun')
+                      ->join('dk_transaksi_cashflow', 'dk_transaksi_cashflow.tc_id', 'd_jurnal_dt.jrdt_cashflow')
+                      ->whereNotNull('jrdt_cashflow')
+                      ->where('d_jurnal.tanggal_jurnal', '>=', $durasi)
+                      ->where('d_jurnal.tanggal_jurnal', '<', $durasi_end)
+                      ->select('d_jurnal_dt.*', 'd_jurnal.tanggal_jurnal', 'd_akun.posisi_akun', 'dk_transaksi_cashflow.tc_cashflow')
+                      ->get();
+
+                foreach ($detail as $key => $dataDetail) {
+                    $numState = $dataDetail->jrdt_value;
+
+                    if($dataDetail->tc_cashflow == 'OCF'){
+                        if($dataDetail->posisi_akun == 'D'){
+                            $numState *= -1;
+                        }
+
+                        if($numState < 1)
+                            $ocfOut += $numState;
+                        else
+                            $ocfIn += $numState;
+                    }else if($dataDetail->tc_cashflow == 'ICF'){
+                        if($dataDetail->posisi_akun == 'D'){
+                            $numState *= -1;
+                        }
+
+                        if($numState < 1)
+                            $icfOut += $numState;
+                        else
+                            $icfIn += $numState;
+                    }else if($dataDetail->tc_cashflow == 'FCF'){
+                        if($dataDetail->posisi_akun == 'D'){
+                            $numState *= -1;
+                        }
+
+                        if($numState < 1)
+                            $fcfOut += $numState;
+                        else
+                            $fcfIn += $numState;
+                    }
+                }
+
+                $data[$i] = [
+                    "bulan"     => $durasi,
+                    "saldoAwal" => $saldoAwal->saldoAwal,
+                    "ocfIn"     => str_replace('-', '', $ocfIn),
+                    "ocfOut"    => str_replace('-', '', $ocfOut),
+                    'icfIn'     => str_replace('-', '', $icfIn),
+                    'icfOut'    => str_replace('-', '', $icfOut),
+                    'fcfIn'     => str_replace('-', '', $fcfIn),
+                    'fcfOut'    => str_replace('-', '', $fcfOut),
+                ];
             }
-
-            array_push($tot_fcf, ($tot_cf / 1000000));
-
-            $tot_cf = 0;
-            $cashflow = DB::table('d_jurnal_dt')
-                            ->join('d_jurnal', 'd_jurnal.jurnal_id', '=', 'd_jurnal_dt.jrdt_jurnal')
-                            ->where('d_jurnal.tanggal_jurnal', '>=', $cek_date)
-                            ->where('d_jurnal.tanggal_jurnal', '<', $cek_date_next)
-                            ->whereIn('jrdt_cashflow', function($query){
-                                $query->select('tc_id')
-                                      ->from('dk_transaksi_cashflow')
-                                      ->where('tc_cashflow', "ICF")->get();
-                            })->select('jrdt_value', 'jrdt_acc')->get();
-        
-            foreach($cashflow as $numeric => $cf){
-                $acc = DB::table('d_akun')->where('id_akun', $cf->jrdt_acc)->select('posisi_akun')->first();
-                $nilai = ($acc->posisi_akun == "K") ? $cf->jrdt_value : ($cf->jrdt_value * -1);
-
-                $tot_cf += $nilai;
-            }
-
-            array_push($tot_icf, ($tot_cf / 1000000));
-            array_push($date, date('m/y', strtotime('-'.$i.' months', strtotime($today))));
         }
 
-        $date = json_encode($date);
-        $tot_ocf = json_encode($tot_ocf);
-        $tot_fcf = json_encode($tot_fcf);
-        $tot_icf = json_encode($tot_icf);
+        // return json_encode($data);
 
-        // return json_encode($tot_ocf);
-
-        // $cashflow = DB::table('dk_transaksi_cashflow')->select('tc_id', 'tc_name', 'tc_cashflow')->where('tc_cashflow', "OCF")->get();
-
-        // return json_encode($tot_cf);
-
-        return view("keuangan.analisa_keuangan.analisa_cashflow.index", compact('date', 'tot_ocf', 'tot_fcf', 'tot_icf'));
+        return view("keuangan.analisa_keuangan.analisa_cashflow.index", compact('data', 'request'));
     }
 }

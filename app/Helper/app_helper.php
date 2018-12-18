@@ -240,10 +240,13 @@
 		if(!$jurnal->first())
 			return 'false';
 
-		dropSaldo($jurnal->first());
-		$jurnal->delete();
+		if(dropSaldo($jurnal->first())){
+			$jurnal->delete();
 
-		return 'true';
+			return true;
+		}
+
+		return false;
 	}
 
 	function count_neraca($array, $id_group, $status, $tanggal){
@@ -460,13 +463,17 @@
 					];
 				}
 
-				DB::table('d_akun_saldo')
+				// return json_encode($feeder);
+
+				 DB::table('d_akun_saldo')
 					->where('id_akun', $detail->jrdt_acc)
 					->where('periode', $period->periode)
 					->update($feeder);
 			}
 
 		}
+
+			return true;
 	}
 
 ?>
