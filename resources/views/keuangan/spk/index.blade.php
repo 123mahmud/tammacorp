@@ -139,15 +139,19 @@
     $('input.f_value:text').each(function(evt){
       var getIndex = a;
       var dataValue = $('input.f_value:text:eq('+getIndex+')').val();
-      var dataStok = $('input.d_stock:text:eq('+getIndex+')').val();
-      dataStok = parseFloat(dataStok);
-      dataValue = parseFloat(dataValue);
-      var hasil = dataStok - dataValue;
-      hasil = parseFloat(hasil);
+      var dataStok = $('input.d_stock:text:eq('+getIndex+')').val();      
+      dataStok = parseFloat(dataStok).toFixed(2);
+      dataValue = parseFloat(dataValue).toFixed(2);
+      var hasil = dataStok - dataValue;      
+      hasil = parseFloat(hasil).toFixed(2);
       if (hasil < 0.00) {
          $('.final').attr('disabled','disabled');
       }
-      var convHasil = convertToRupiah(hasil);
+
+      if(hasil<0){
+        $simbol='-';
+      }
+      var convHasil = ubahFormat(hasil);
       $('input.hasil:text:eq('+getIndex+')').val(convHasil);
     a++;
     })
@@ -402,6 +406,41 @@
       }
     });
   }
+
+  //SetFormRupiah
+    function ubahFormat(uang)
+    {        
+      
+        var pisah = new Array();
+        var chekArray;        
+        chekArray = uang.toString().split('.');
+        
+        if ($.isArray(chekArray)) {
+            var rev = parseInt(chekArray[0], 10).toString().split('').reverse().join('');
+            var rev2 = '';
+            for (var w = 0; w < rev.length; w++) {
+                rev2 += rev[w];
+                if ((w+ 1) % 3 === 0 && w !== (rev.length - 1)) {
+                    rev2 += '.';
+                }
+            }
+            
+            if(uang!='NaN'){                
+              if(chekArray[1]==undefined){
+                  return rev2.split('').reverse().join('') + ',' +'00';            
+              }else if(chekArray[1]!=undefined){
+                return rev2.split('').reverse().join('') + ',' +chekArray[1];            
+                }
+            }
+            else if(uang=='NaN'){
+               //return 'Rp. 0,00'
+            }
+           
+            else if(uang=='undefined'){
+               return 'Rp. 0,00'
+            }
+        } 
+    }
 
   function convertToRupiah(angka) {
             var rupiah = '';

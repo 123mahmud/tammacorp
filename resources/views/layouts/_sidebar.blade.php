@@ -1062,7 +1062,7 @@
                                 @endif
                                 @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisacashflow/analisa4') ? 'active' : '' || Request::is('keuangan/analisacashflow/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisacashflow/analisa4') }}"><span
+                                        <a href="#" data-toggle="modal" data-target="#modal_analisa_cashflow"><span
                                                     class="submenu-title">Analisa Cashflow</span><span class="hidden">Keuangan</span></a>
                                     </li>
                                 {{-- @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))

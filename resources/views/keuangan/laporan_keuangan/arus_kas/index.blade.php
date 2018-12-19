@@ -402,7 +402,7 @@
 	        	<td style="border-top: 1px solid #aaa;"></td>
 
 	        	<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #aaa">
-	        		{{ formatAccounting(0) }}
+	        		{{ formatAccounting($saldoAwal->saldoAwal) }}
 	        	</td>
 	        </tr>
 
@@ -414,7 +414,7 @@
 	        	<td style="border-top: 1px solid #aaa;"></td>
 
 	        	<td style="padding: 5px 20px 3px 5px; font-weight: 600; text-align: right; font-size: 9pt;border-top: 1px solid #555">
-	        		{{ formatAccounting($ocf+$icf+$fcf) }}
+	        		{{ formatAccounting($saldoAwal->saldoAwal+$ocf+$icf+$fcf) }}
 	        	</td>
 
 	        </tr>

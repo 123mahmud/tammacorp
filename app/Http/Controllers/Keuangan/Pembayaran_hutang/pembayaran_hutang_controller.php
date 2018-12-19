@@ -217,9 +217,6 @@ class pembayaran_hutang_controller extends Controller
 	    	]);
     	}
 
-    	if($jurnal->first())
-    		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
-
     	$purchase->update([
     		'd_pcs_payment'		=> $purchase->first()->d_pcs_payment - $transaksi->first()->payment_value,
     		'd_pcs_sisapayment'	=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_pcs_payment - $transaksi->first()->payment_value),
