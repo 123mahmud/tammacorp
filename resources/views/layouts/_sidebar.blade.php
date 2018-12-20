@@ -326,6 +326,14 @@
                                     </li>
                                 @endif
 
+                                @if(Auth::user()->punyaAkses('Master Formula','ma_read'))
+                                    <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('master/masterproduksi/index') }}"><span
+                                                    class="submenu-title">Group Harga Khusus</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
 
                             </ul>
                         </li>
