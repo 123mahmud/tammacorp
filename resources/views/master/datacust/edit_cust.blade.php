@@ -261,9 +261,9 @@
 
       });
 
-      $("#nama_cus").load("/master/datacust/tambah_cust", function(){
-      $("#nama_cus").focus();
-      });
+      // $("#nama_cus").load("/master/datacust/tambah_cust", function(){
+      // $("#nama_cus").focus();
+      // });
       $('.datepicker').datepicker({
         format: "mm",
         viewMode: "months",
