@@ -416,6 +416,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/grosir/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@print_laporan_penjualan');
     Route::get('/penjualan/grosir/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@pdf_laporan_penjualan');
     Route::get('/penjualan/semua/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@print_laporan_penjualan');
+    Route::get('/penjualan/semua/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@pdf_laporan_penjualan');
 
     Route::get('/penjualan/laporan_penjualan/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@get_data');
     Route::get('/penjualan/laporan_penjualan/laporan_penjualan', 'Penjualan\LaporanPenjualanController@laporan_penjualan');
