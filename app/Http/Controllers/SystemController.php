@@ -129,4 +129,12 @@ class SystemController extends Controller
     {
         return view('/system/hakakses/tambah_akses');
     }
+
+    public static function getLogo()
+    {
+        $data = DB::table('d_company_profile')
+            ->select('cp_image')
+            ->first();
+        return $data->cp_image;
+    }
 }
