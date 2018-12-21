@@ -129,4 +129,12 @@ class SystemController extends Controller
     {
         return view('/system/hakakses/tambah_akses');
     }
+
+    public static function getProfile()
+    {
+        $data = DB::table('d_company_profile')
+                    ->first();
+
+        return $data;
+    }
 }
