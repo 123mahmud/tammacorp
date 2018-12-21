@@ -412,8 +412,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/laporanGrosir/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@getDataLaporan');
 // Ari
     Route::get('/penjualan/retail/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanRetailController@print_laporan_penjualan');
+    Route::get('/penjualan/retail/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanRetailController@pdf_laporan_penjualan');
     Route::get('/penjualan/grosir/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@print_laporan_penjualan');
+    Route::get('/penjualan/grosir/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@pdf_laporan_penjualan');
     Route::get('/penjualan/semua/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@print_laporan_penjualan');
+    Route::get('/penjualan/semua/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@pdf_laporan_penjualan');
 
     Route::get('/penjualan/laporan_penjualan/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@get_data');
     Route::get('/penjualan/laporan_penjualan/laporan_penjualan', 'Penjualan\LaporanPenjualanController@laporan_penjualan');
@@ -1392,11 +1395,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/spk/print/{spk_id}', 'Produksi\spkProductionController@print')->name('spk_print');
 // irA
 
-//Company Profile
+    //company profile
     Route::get('profil-perusahaan', 'SystemController@profil');
     Route::post('profil-perusahaanu/update', 'SystemController@updateProfil');
 
-//Harga Khusus Mahmud
+    //Harga Khusus Mahmud
     Route::get('/master/grouphargakhusus/index', 'Master\hargaKhususController@index');
-//End
+    Route::get('/master/grouphargakhusus/tablegroup/{id}', 'Master\hargaKhususController@tableGroup');
+    Route::get('/master/grouphargakhusus/mastergroup', 'Master\hargaKhususController@tableMasterGroup');
+    //End
+
 }); // End Route Groub middleware auth
