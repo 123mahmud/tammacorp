@@ -176,8 +176,13 @@
   function lihatLaporanByTgl(){
     var tgl1 = $('#tanggal1').val();
     var tgl2 = $('#tanggal2').val();
-    $('#btn_print').html('<a class="btn btn-primary" href="'+ baseUrl +'/penjualan/retail/print_laporan_penjualan/'+ tgl1 +'/'+ tgl2 +'" '+ 
-      'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    $('#btn_print').html(
+      '<div class="btn-group">'+
+        '<a class="btn btn-primary" href="'+ baseUrl +'/penjualan/retail/print_laporan_penjualan/'+ tgl1 +'/'+ tgl2 +'" '+ 
+        'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+        '<a class="btn btn-warning" href="'+ baseUrl +'/penjualan/retail/pdf_laporan_penjualan/'+ tgl1 +'/'+ tgl2 +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
+      '</div>'
+      );
     $('#tbl-laporan').dataTable({
         "destroy": true,
         "processing" : true,
