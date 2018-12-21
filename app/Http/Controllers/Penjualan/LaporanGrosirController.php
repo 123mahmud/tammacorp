@@ -9,6 +9,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use DataTables;
 use URL;
+use PDF;
 
 // use App\mmember
 
@@ -288,7 +289,7 @@ class LaporanGrosirController extends Controller
     }
         $pdf = PDF::loadView('penjualan/laporanretail/pdf_laporan_penjualan', compact('data', 'tgl1', 'tgl2', 'penjualan', 'nama_array', 'data_sum', 'data_sum_all'));
     $pdf->setPaper('A4', 'landscape');
-    return $pdf->download('laporan_penjualan_retail '.$tgl1.' '.$tgl2.'.pdf');
+    return $pdf->download('laporan_penjualan_grosir_online '.$tgl1.' '.$tgl2.'.pdf');
     // return view('penjualan/laporanretail/print_laporan_penjualan', compact('data', 'tgl1', 'tgl2', 'penjualan', 'nama_array', 'data_sum', 'data_sum_all'));
   }
 
