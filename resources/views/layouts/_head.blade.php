@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <link rel="shortcut icon" href="{{ asset ('assets/img/logo.png') }}">
+    <link rel="shortcut icon" href="{{App\Http\Controllers\SystemController::getProfile()->cp_image}}">
     <link rel="apple-touch-icon" href="{{ asset ('assets/images/icons/favicon.png') }}">
     <link rel="apple-touch-icon" sizes="72x72" href="{{ asset ('assets/images/icons/favicon-72x72.png') }}">
     <link rel="apple-touch-icon" sizes="114x114" href="{{ asset ('assets/images/icons/favicon-114x114.png') }}">

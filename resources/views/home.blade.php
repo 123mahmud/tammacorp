@@ -129,10 +129,10 @@
             </div>
             <!--END CONTENT-->
             <!--BEGIN FOOTER-->
-            <div id="footer">
+{{--             <div id="footer">
                 <div class="copyright">
                     <a href="#">2017 © TammaFood</a></div>
-            </div>
+            </div> --}}
             <!--END FOOTER-->
         </div>
         <!--END PAGE WRAPPER-->
