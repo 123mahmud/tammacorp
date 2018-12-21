@@ -44,7 +44,7 @@ tr.details td.details-control {
 
             <ul id="generalTab" class="nav nav-tabs">
               <li class="active"><a href="#alert-tab" data-toggle="tab">Group Harga Khusus</a></li>
-              <li><a href="#note-tab" data-toggle="tab">Master Group</a></li>
+              <li><a href="#note-tab" data-toggle="tab" onclick="masterGroup()">Master Group</a></li>
               {{-- <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> --}}
             </ul>
 
@@ -59,9 +59,10 @@ tr.details td.details-control {
 
                     <div class="col-md-3 col-sm-8 col-xs-12">
                       <div class="form-group">
-                        <select class="form-control input-sm select2" id="fil" onchange="filter()" >
-                          <option value="A">Semua</option>
-                          <option value="O">Hanya Order</option>
+                        <select class="form-control input-sm select2" id="idGroup" onchange="pilihGroup()" >
+                          @foreach ($group as $grup)
+                            <option value="{{ $grup->pg_id }}">{{ $grup->pg_name }}</option>
+                          @endforeach
                         </select>
                       </div>
                     </div>
@@ -89,7 +90,7 @@ tr.details td.details-control {
                     </div>
                     <div class="panel-body">
                     <div class="table-responsive">
-                      <table class="table tabelan table-hover table-responsive table-bordered" width="100%" cellspacing="0" id="tbl_customer">
+                      <table class="table tabelan table-hover table-responsive table-bordered" width="100%" cellspacing="0" id="tbl_groupitem">
                         <thead>
                           <tr>
                             {{-- <th class="sorting_disabled"></th> --}}
@@ -124,9 +125,10 @@ tr.details td.details-control {
                                   </i>Tambah Data</button>
                               </a>
                                 <div id="dt_nota_jual">
-                                    <table class="table tabelan table-bordered table-hover dt-responsive" id="tb_posisi"
+                                    <table class="table tabelan table-bordered table-hover dt-responsive" id="tb_group"
                                            style="width: 100%;">
                                         <thead>
+                                          <th>No</th>
                                           <th>Nama Group</th>
                                           <th>Aksi</th>
                                         </thead>
@@ -161,114 +163,140 @@ tr.details td.details-control {
       $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
       $('.select2').select2();
+      pilihGroup();
 
-  // var tbl_customer = $('#tbl_customer').DataTable({
-  //           processing: true,
-  //           // responsive:true,
-  //           serverSide: true,
-  //           ajax: {
-  //               url:'{{ route('datatable_cust') }}',
-  //           },
-  //            columnDefs: [
-  //                 {
-  //                    targets: 0 ,
-  //                    className: 'center d_id'
-  //                 },
-  //               ],
-  //           "columns": [
-  //           { "data": "c_code" },
-  //           { "data": "c_name" },
-  //           { "data": "c_hp1", "className" : "left" },
-  //           { "data": "c_hp2", "className" : "left" },
-  //           { "data": "c_type", className: 'center' },
-  //           { "data": "c_class", className: 'center' },
-  //           { "data": "c_region", className: 'center' },
-  //           { "data": "action", className: 'center' },
-  //           ],
-  //           "responsive":true,
+      function pilihGroup(){
+        var x = document.getElementById("idGroup").value;
+        $('#tbl_groupitem').dataTable().fnDestroy();
+        $('#tbl_groupitem').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url: baseUrl + '/master/grouphargakhusus/tablegroup/'+x,
+            },
+            "columns": [
+            { "data": "i_name", width: '60%' },
+            { "data": "ip_price", width: '30%' },
+            { "data": "action", width: '10%' },
+            ],
+            "responsive":true,
 
-  //                 "pageLength": 10,
-  //               "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-  //               "language": {
-  //                   "searchPlaceholder": "Cari Data",
-  //                   "emptyTable": "Tidak ada data",
-  //                   "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-  //                   "sSearch": '<i class="fa fa-search"></i>',
-  //                   "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-  //                   "infoEmpty": "",
-  //                   "paginate": {
-  //                           "previous": "Sebelumnya",
-  //                           "next": "Selanjutnya",
-  //                        }
-  //                 }
-  //     });
+                  "pageLength": 10,
+                "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+                "language": {
+                    "searchPlaceholder": "Cari Data",
+                    "emptyTable": "Tidak ada data",
+                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                    "sSearch": '<i class="fa fa-search"></i>',
+                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                    "infoEmpty": "",
+                    "paginate": {
+                            "previous": "Sebelumnya",
+                            "next": "Selanjutnya",
+                         }
+                  }
+        });
+      }
 
+      function masterGroup(){
+        $('#tb_group').dataTable().fnDestroy();
+        $('#tb_group').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url: baseUrl + '/master/grouphargakhusus/mastergroup/',
+            },
+            "columns": [
+            {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+            { "data": "pg_name", width: '85%' },
+            { "data": "action", width: '10%' },
+            ],
+            "responsive":true,
 
-        function hapus(a) {
-          iziToast.show({
-            color: 'red',
-            title: 'Peringatan',
-            message: 'Apakah anda yakin!',
-            position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-            progressBarColor: 'rgb(0, 255, 184)',
-            buttons: [
-              [
-                '<button>Ok</button>',
-                function (instance, toast) {
-                  instance.hide({
-                    transitionOut: 'fadeOutUp'
-                  }, toast);
-                  var parent = $(a).parents('tr');
-                  var id = $(parent).find('.d_id').text();
-                  console.log(id);
-                  $.ajax({
-                       type: "get",
-                       url: '{{ route('hapus_cust') }}',
-                       data: {id},
-                       success: function(response){
-                            if (response.status=='sukses') {
-                              toastr.info('Data berhasil di hapus.');
-                              tbl_customer.ajax.reload();
-                            }else{
-                              toastr.error('Data gagal di simpan.');
-                            }
+                  "pageLength": 10,
+                "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+                "language": {
+                    "searchPlaceholder": "Cari Data",
+                    "emptyTable": "Tidak ada data",
+                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                    "sSearch": '<i class="fa fa-search"></i>',
+                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                    "infoEmpty": "",
+                    "paginate": {
+                            "previous": "Sebelumnya",
+                            "next": "Selanjutnya",
+                         }
+                  }
+        });
+      }
+
+      function hapus(a) {
+        iziToast.show({
+          color: 'red',
+          title: 'Peringatan',
+          message: 'Apakah anda yakin!',
+          position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+          progressBarColor: 'rgb(0, 255, 184)',
+          buttons: [
+            [
+              '<button>Ok</button>',
+              function (instance, toast) {
+                instance.hide({
+                  transitionOut: 'fadeOutUp'
+                }, toast);
+                var parent = $(a).parents('tr');
+                var id = $(parent).find('.d_id').text();
+                console.log(id);
+                $.ajax({
+                     type: "get",
+                     url: '{{ route('hapus_cust') }}',
+                     data: {id},
+                     success: function(response){
+                          if (response.status=='sukses') {
+                            toastr.info('Data berhasil di hapus.');
+                            tbl_customer.ajax.reload();
+                          }else{
+                            toastr.error('Data gagal di simpan.');
                           }
-                       })
-                }
-              ],
-              [
-                '<button>Close</button>',
-                 function (instance, toast) {
-                  instance.hide({
-                    transitionOut: 'fadeOutUp'
-                  }, toast);
-                }
-              ]
+                        }
+                     })
+              }
+            ],
+            [
+              '<button>Close</button>',
+               function (instance, toast) {
+                instance.hide({
+                  transitionOut: 'fadeOutUp'
+                }, toast);
+              }
             ]
-          });
+          ]
+        });
 
-        }
+      }
 
 
-         function edit(a) {
-          var parent = $(a).parents('tr');
-          var id = $(parent).find('.d_id').text();
-          console.log(id);
-          $.ajax({
-               type: "get",
-               url: '{{ route('edit_cust') }}',
-               data: {id},
-               success: function(data){
-               },
-               complete:function (argument) {
-                window.location=(this.url)
-               },
-               error: function(){
+       function edit(a) {
+        var parent = $(a).parents('tr');
+        var id = $(parent).find('.d_id').text();
+        console.log(id);
+        $.ajax({
+             type: "get",
+             url: '{{ route('edit_cust') }}',
+             data: {id},
+             success: function(data){
+             },
+             complete:function (argument) {
+              window.location=(this.url)
+             },
+             error: function(){
 
-               },
-               async: false
-             });
-        }
+             },
+             async: false
+           });
+      }
 
 
 

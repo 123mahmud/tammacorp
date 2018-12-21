@@ -1401,6 +1401,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     //Harga Khusus Mahmud
     Route::get('/master/grouphargakhusus/index', 'Master\hargaKhususController@index');
+    Route::get('/master/grouphargakhusus/tablegroup/{id}', 'Master\hargaKhususController@tableGroup');
+    Route::get('/master/grouphargakhusus/mastergroup', 'Master\hargaKhususController@tableMasterGroup');
     //End
 
 }); // End Route Groub middleware auth
