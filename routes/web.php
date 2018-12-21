@@ -412,7 +412,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/laporanGrosir/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@getDataLaporan');
 // Ari
     Route::get('/penjualan/retail/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanRetailController@print_laporan_penjualan');
+    Route::get('/penjualan/retail/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanRetailController@pdf_laporan_penjualan');
     Route::get('/penjualan/grosir/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@print_laporan_penjualan');
+    Route::get('/penjualan/grosir/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@pdf_laporan_penjualan');
     Route::get('/penjualan/semua/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@print_laporan_penjualan');
 
     Route::get('/penjualan/laporan_penjualan/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@get_data');
@@ -1390,9 +1392,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
     Route::get('/produksi/spk/print/{spk_id}', 'Produksi\spkProductionController@print')->name('spk_print');
-
 // irA
-//Company Profile
+
+    //company profile
     Route::get('profil-perusahaan', 'SystemController@profil');
     Route::post('profil-perusahaanu/update', 'SystemController@updateProfil');
+
+    //Harga Khusus Mahmud
+    Route::get('/master/grouphargakhusus/index', 'Master\hargaKhususController@index');
+    //End
+
 }); // End Route Groub middleware auth
