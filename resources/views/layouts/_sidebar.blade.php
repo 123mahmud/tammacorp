@@ -6,7 +6,7 @@
                         class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
                         class="icon-bar"></span><span class="icon-bar"></span></button>
             <a id="logo" href="{{ url('/home') }}" class="navbar-brand"><span class="fa fa-rocket"></span><span
-                        class="logo-text">TammaFood</span><span style="display: none;"
+                        class="logo-text">{{App\Http\Controllers\SystemController::getProfile()->cp_name}}</span><span style="display: none;"
                                                                 class="logo-text-icon">µ</span></a></div>
         <div class="topbar-main"><a id="menu-toggle" href="#" class="hidden-xs"><i class="fa fa-bars"></i></a>
 
