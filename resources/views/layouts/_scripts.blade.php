@@ -81,6 +81,9 @@
               autoclose:true
             });
 
+           $('.input-daterange').datepicker({
+            format:"dd-mm-yyyy"
+           });
 
             var extensions = {
                  "sFilterInput": "form-control input-sm",
