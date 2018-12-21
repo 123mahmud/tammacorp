@@ -202,6 +202,10 @@
                                         Master Formula
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Group Harga Khusus','ma_read'))
+                                        Group Harga Khusus
+                                    @endif
+
                             </span>
                                 <!-- End Filter Menu Submenu -->
                             </a>
@@ -326,9 +330,9 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Master Formula','ma_read'))
-                                    <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('master/masterproduksi/index') }}"><span
+                                @if(Auth::user()->punyaAkses('Group Harga Khusus','ma_read'))
+                                    <li class="{{ Request::is('master/grouphargakhusus/index') ? 'active' : '' || Request::is('master/grouphargakhusus/*') ? 'active' : '' }}">
+                                        <a href="{{ url('master/grouphargakhusus/index') }}"><span
                                                     class="submenu-title">Group Harga Khusus</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
@@ -1168,8 +1172,8 @@
                                     </li>
                                 @endif --}}
                                 @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
-                                    <li class="{{ Request::is('system/profilperusahaan/profil') ? 'active' : '' || Request::is('system/profilperusahaan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/system/profilperusahaan/profil') }}"><span
+                                    <li class="{{ Request::is('profil-perusahaan') ? 'active' : '' || Request::is('profil-perusahaan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/profil-perusahaan') }}"><span
                                                     class="submenu-title">Profil Perusahaan</span><span class="hidden">System</span></a>
                                     </li>
                                 @endif
