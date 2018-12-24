@@ -188,12 +188,12 @@
             message: 'Apakah anda yakin?',
             position: 'center',
             buttons: [
-                ['<button><b>YES</b></button>', function (instance, toast) {
+                ['<button><b>Ya</b></button>', function (instance, toast) {
          
                     window.location.href = $('.log-out-m8').attr('href');
          
                 }, true],
-                ['<button>NO</button>', function (instance, toast) {
+                ['<button>Tidak</button>', function (instance, toast) {
          
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
          
