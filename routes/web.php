@@ -1403,6 +1403,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/grouphargakhusus/index', 'Master\hargaKhususController@index');
     Route::get('/master/grouphargakhusus/tablegroup/{id}', 'Master\hargaKhususController@tableGroup');
     Route::get('/master/grouphargakhusus/mastergroup', 'Master\hargaKhususController@tableMasterGroup');
+    Route::get('/master/grouphargakhusus/tambahgroup', 'Master\hargaKhususController@tambahGroup');
+    Route::get('/master/grouphargakhusus/tambahgroup/baru', 'Master\hargaKhususController@insertGroup');
+    Route::get('/master/grouphargakhusus/ubahstatusgrup/{id}', 'Master\hargaKhususController@moveStatusGroup');
+    Route::get('/master/grouphargakhusus/editgroupharga/{id}', 'Master\hargaKhususController@editGroup');
+    Route::get('/master/grouphargakhusus/updategroup/{id}', 'Master\hargaKhususController@updateGroup');
+    Route::get('/master/grouphargakhusus/autocomplete', 'Master\hargaKhususController@autocomplete');
+    Route::get('/master/grouphargakhusus/tambahItemHarga', 'Master\hargaKhususController@saveHargaItem');
+    Route::get('/master/grouphargakhusus/itemharga/hapus/{id}', 'Master\hargaKhususController@deleteItemHarga');
+    
+    
     //End
 
 }); // End Route Groub middleware auth

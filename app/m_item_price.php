@@ -15,5 +15,5 @@ class m_item_price extends Model
 
     public $incrementing = false;
     public $remember_token = false;
-    //public $timestamps = false;
+    public $timestamps = false;
 }
