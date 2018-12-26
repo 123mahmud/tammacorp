@@ -962,7 +962,8 @@
                 return !this.has(n)
             }, new Set(idItem));
             //length : menghitung array
-            if (res.length != 0) {
+            if (res.length != 0) 
+            {
 
                 tableDetail.row.add([
                     nama + '<input type="hidden" name="kode_item[]" class="kode_item kode" value="' + kode + '"><input type="hidden" name="nama_item[]" class="nama_item" value="' + nama + '"> ',
