@@ -28,7 +28,8 @@ class groupController extends Controller
                    'm_gname',
                    'c.nama_akun as persediaan',
                    'd.nama_akun as penjualan',
-                   'e.nama_akun as beban')
+                   'e.nama_akun as beban',
+                   'm_isactive')
          ->leftjoin('d_akun as c', function($join) {
              $join->on('c.id_akun', '=', 'm_group.m_akun_persediaan')
                ->where('c.type_akun','DETAIL');
@@ -51,19 +52,35 @@ class groupController extends Controller
         return Datatables::of($list)
 
                 ->addColumn('aksi', function ($data) {
-                  return
-                  '<div class="text-center">
-                    <button id="edit" onclick="edit('.$data->m_gid.')"
+                  if ($data->m_isactive == 'TRUE') 
+                  {
+                    return  '<div class="text-center">
+                              <button id="edit" 
+                                      onclick="edit('.$data->m_gid.')"
                                       class="btn btn-warning btn-sm"
                                       title="Edit">
                                       <i class="glyphicon glyphicon-pencil"></i>
-                    </button>
-                    <button id="delete" onclick="hapus('.$data->m_gid.')"
-                                      class="btn btn-danger btn-sm"
-                                      title="Hapus">
-                                      <i class="glyphicon glyphicon-trash"></i>
-                    </button>
-                  </div>';
+                              </button>
+                              <button id="status'.$data->m_gid.'" 
+                                      onclick="ubahStatus('.$data->m_gid.')" 
+                                      class="btn btn-primary btn-sm" 
+                                      title="Aktif">
+                                      <i class="fa fa-check-square" aria-hidden="true"></i>
+                              </button>
+                          </div>';
+                  }
+                  else
+                  {
+                    return  '<div class="text-center">'.
+                                '<button id="status'.$data->m_gid.'" 
+                                    onclick="ubahStatus('.$data->m_gid.')" 
+                                    class="btn btn-danger btn-sm" 
+                                    title="Tidak Aktif">
+                                    <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                  }
+                  
                 })
                 ->addColumn('none', function ($data) {
                     return '-';

@@ -28,17 +28,43 @@ class satuanController extends Controller
         // return $data;
 
         return Datatables::of($data)
+                
+          ->addColumn('aksi', function ($data) {
+            if ($data->m_isactive == 'TRUE') 
+            {
+              return  '<div class="text-center">'.
+                          '<button id="edit" 
+                            onclick="edit('.$data->m_sid.')" 
+                            class="btn btn-warning btn-sm" 
+                            title="Edit">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                          </button>'.'
+                          <button id="status'.$data->m_sid.'" 
+                              onclick="ubahStatus('.$data->m_sid.')" 
+                              class="btn btn-primary btn-sm" 
+                              title="Aktif">
+                              <i class="fa fa-check-square" aria-hidden="true"></i>
+                          </button>'.
+                      '</div>';                                                                     
+            }
+            else
+            {
+              return '<div class="text-center">'.
+                        '<button id="status'.$data->m_sid.'" 
+                            onclick="ubahStatus('.$data->m_sid.')" 
+                            class="btn btn-danger btn-sm" 
+                            title="Tidak Aktif">
+                            <i class="fa fa-minus-square" aria-hidden="true"></i>
+                        </button>'.
+                    '</div>';
+            }
             
-                ->addColumn('aksi', function ($data) {
-              return  
-              '<button id="edit" onclick="edit('.$data->m_sid.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.
-              '<button id="delete" onclick="hapus('.$data->m_sid.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
-                })
-                ->addColumn('none', function ($data) {
-                    return '-';
-                })
-                ->rawColumns(['aksi','confirmed'])
-                ->make(true);
+          })
+          ->addColumn('none', function ($data) {
+              return '-';
+          })
+          ->rawColumns(['aksi','confirmed'])
+          ->make(true);
     }
     public function tambah_satuan(Request $request)
     {

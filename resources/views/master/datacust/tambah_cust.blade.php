@@ -46,17 +46,7 @@
 
                             <form method="get" id="form_cust" action="simpan_cust">
                               <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
-{{--                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
-                                      <label class="tebal">ID Customer</label>
-
-                                </div>
-                                <div class="col-md-4 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                      <input type="text" class="form-control input-sm" readonly="true" name="id_cus_ut" value="{{$id_cust}}">
-                                      <input type="hidden" name="id_cus_ut" value="{{$id_cust}}">
-                                  </div>
-                                </div> --}}
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
 
@@ -154,7 +144,25 @@
 
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
-                                      <label class="tebal">Wilayah</label>
+                                      <label class="tebal">Group Harga</label>
+
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+
+                                      <select name="c_group" id="c_group" class="form-control input-sm c_group">
+                                          <option value="">Tidak Ada Group</option>
+                                        @foreach ($groupPrice as $group)
+                                          <option value="{{ $group->pg_id }}">{{ $group->pg_name }}</option>
+                                        @endforeach
+                                      </select>
+
+                                  </div>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+
+                                      <label class="tebal">Wilayah<font color="red">*</font></label>
 
                                 </div>
                                 <div class="col-md-4 col-sm-9 col-xs-12">
@@ -205,6 +213,8 @@
 @endsection
 @section("extra_scripts")
 <script type="text/javascript">
+
+    $('.c_group').select2();
 
     function simpan (){
       $.ajaxSetup({

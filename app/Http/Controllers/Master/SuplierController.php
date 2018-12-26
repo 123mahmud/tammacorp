@@ -102,11 +102,17 @@ class SuplierController extends Controller
       ->addColumn('aksi', function ($xyzab) {
         if ($xyzab->s_active == 'TRUE') {
           return  '<div class="text-center">'.
-                   '<a href="suplier_edit/'.$xyzab->s_id.'" class="btn btn-warning btn-sm" title="edit">'.
-                   '<label class="fa fa-pencil"></label></a>'.
-
-                   '<a href="#" onclick=hapus("'.$xyzab->s_id.'") class="btn btn-primary btn-sm" title="Actif">'.
-                   '<label class="fa fa-check-square"></label></a>'.
+                    '<a href="suplier_edit/'.$xyzab->s_id.'" 
+                        class="btn btn-warning btn-sm" 
+                        title="edit">'.
+                        '<label class="fa fa-pencil"></label>
+                    </a>'.'
+                    <a href="#" 
+                        onclick=hapus("'.$xyzab->s_id.'") 
+                        class="btn btn-primary btn-sm" 
+                        title="Actif">'.
+                        '<label class="fa fa-check-square"></label>
+                    </a>'.
                   '</div>';
         }else{
           return  '<div class="text-center">'.
