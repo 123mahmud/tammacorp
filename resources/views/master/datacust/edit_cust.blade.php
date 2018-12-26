@@ -151,6 +151,28 @@
 
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
+                                      <label class="tebal">Group Harga</label>
+
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+
+                                      <select name="c_group" id="c_group" class="form-control input-sm c_group">
+                                          <option value="">Tidak Ada Group</option>
+                                        @foreach ($groupPrice as $group)
+                                          @if ($group->pg_id == $edit_cust->c_group)
+                                            <option value="{{ $group->pg_id }}" selected>{{ $group->pg_name }}</option>
+                                          @else
+                                            <option value="{{ $group->pg_id }}">{{ $group->pg_name }}</option>
+                                          @endif
+                                        @endforeach
+                                      </select>
+
+                                  </div>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+
                                       <label class="tebal">Wilayah</label>
 
                                 </div>
@@ -219,6 +241,8 @@
 @endsection
 @section("extra_scripts")
 <script type="text/javascript">
+
+  $('.c_group').select2();
 
   function update (){
       var a = $('#form_cust').serialize();

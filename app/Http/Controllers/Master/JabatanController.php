@@ -23,8 +23,34 @@ class JabatanController extends Controller
         $data = collect($list);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
-                         return  '<button id="edit" onclick="edit('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                <button id="delete" onclick="hapus('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                    if ($data->c_isactive == 'TRUE') {
+                        return  '<div class="text-center">'.
+                                    '<button id="edit" 
+                                        onclick="edit('.$data->c_id.')" 
+                                        class="btn btn-warning btn-sm" 
+                                        title="Edit">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                    </button>'.'
+                                    <button id="status'.$data->c_id.'" 
+                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        class="btn btn-primary btn-sm" 
+                                        title="Aktif">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                    </button>'.'
+                                </div>';
+                    }
+                    else
+                    {
+                        return  '<div class="text-center">'.
+                                    '<button id="status'.$data->c_id.'" 
+                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        class="btn btn-danger btn-sm" 
+                                        title="Tidak Aktif">
+                                        <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                    </button>'.
+                                '</div>';
+                    }
+                    
                 })
                 ->addColumn('kode', function ($data) {
                     return  str_pad($data->c_id, 3, '0', STR_PAD_LEFT);
@@ -126,17 +152,33 @@ class JabatanController extends Controller
         return Datatables::of($produksi) 
         ->addIndexColumn()
         ->addColumn('action', function ($data) {
-             return '<button id="edit" 
-                        onclick="editJPro('.$data->c_id.')" 
-                        class="btn btn-warning  btn-sm" 
-                        title="Edit"><i class="glyphicon glyphicon-pencil"></i>
-                    </button>'.'
-                    <button id="delete" 
-                        onclick="hapusJPro('.$data->c_id.')" 
-                        class="btn btn-danger btn-sm" 
-                        title="Hapus">
-                        <i class="glyphicon glyphicon-trash"></i>
-                    </button>';
+            if ($data->c_isactive == 'TRUE') 
+            {
+                return '<div class="text-center">'.
+                            '<button id="edit" 
+                                onclick="editJPro('.$data->c_id.')" 
+                                class="btn btn-warning  btn-sm" 
+                                title="Edit"><i class="glyphicon glyphicon-pencil"></i>
+                            </button>'.'
+                            <button id="status'.$data->c_id.'" 
+                                onclick="ubahStatus('.$data->c_id.')" 
+                                class="btn btn-primary btn-sm" 
+                                title="Aktif">
+                                <i class="fa fa-check-square" aria-hidden="true"></i>
+                            </button>'.'
+                        </div>';
+            }
+            else
+            {
+                return '<div class="text-center">'.
+                            '<button id="status'.$data->c_id.'" 
+                                onclick="ubahStatus('.$data->c_id.')" 
+                                class="btn btn-danger btn-sm" 
+                                title="Tidak Aktif">
+                                <i class="fa fa-minus-square" aria-hidden="true"></i>
+                            </button>'.'
+                        </div>';
+            }
         })
 
         ->rawColumns(['action'])

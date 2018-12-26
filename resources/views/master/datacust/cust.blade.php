@@ -68,14 +68,14 @@ tr.details td.details-control {
                         <thead>
                           <tr>
                             {{-- <th class="sorting_disabled"></th> --}}
-                            <th class="wd-15p">Kode</th>
-                            <th class="wd-15p">Nama Customer</th>
-                            <th class="wd-15p">No hp1</th>
-                            <th class="wd-15p">No hp2</th>
-                            <th class="wd-15p">Tipe Cust</th>
-                            <th class="wd-10p">Kelas</th>
-                            <th class="wd-10p">Wilayah</th>
-                            <th class="wd-15p">Aksi</th>
+                            <th>Kode</th>
+                            <th>Nama Customer</th>
+                            <th>No hp1 / hp2</th>
+                            <th>Tipe Cust</th>
+                            <th>Group Harga</th>
+                            <th>Kelas</th>
+                            <th>Wilayah</th>
+                            <th>Aksi</th>
                           </tr>
                         </thead>
 
@@ -113,7 +113,7 @@ tr.details td.details-control {
 
   var tbl_customer = $('#tbl_customer').DataTable({
             processing: true,
-            // responsive:true,
+            responsive:true,
             serverSide: true,
             ajax: {
                 url:'{{ route('datatable_cust') }}',
@@ -121,18 +121,18 @@ tr.details td.details-control {
              columnDefs: [
                   {
                      targets: 0 ,
-                     className: 'center d_id'
+                     className: 'left d_id'
                   },
                 ],
             "columns": [
-            { "data": "c_code" },
-            { "data": "c_name" },
-            { "data": "c_hp1", "className" : "left" },
-            { "data": "c_hp2", "className" : "left" },
-            { "data": "c_type", className: 'center' },
-            { "data": "c_class", className: 'center' },
-            { "data": "c_region", className: 'center' },
-            { "data": "action", className: 'center' },
+            { "data": "c_code", width: "15%" },
+            { "data": "c_name", width: "30%" },
+            { "data": "c_hp1", "className" : "left", width: "15%" },
+            { "data": "c_type", className: 'left', width: "5%" },
+            { "data": "c_group", className: 'left', width: "5%" },
+            { "data": "c_class", className: 'left', width: "5%" },
+            { "data": "c_region", className: 'left', width: "15%" },
+            { "data": "action", className: 'left', width: "10%" },
             ],
             "responsive":true,
 

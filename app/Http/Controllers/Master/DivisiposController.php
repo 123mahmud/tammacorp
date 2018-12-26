@@ -21,10 +21,34 @@ class DivisiposController extends Controller
         return Datatables::of($divisi) 
     		->addIndexColumn()          
             ->addColumn('action', function ($data) {
-                     return  '<div class="text-center">
-                     			<button id="edit" onclick="editDivisi('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                 <button id="delete" onclick="hapusDivisi('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>
-                             </div>';
+              if ($data->c_isactive == 'TRUE') 
+              {
+                return  '<div class="text-center">
+                            <button id="edit" 
+                                    onclick="editDivisi('.$data->c_id.')" 
+                                    class="btn btn-warning btn-sm" 
+                                    title="Edit">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                            </button>'.'
+                            <button id="status'.$data->c_id.'" 
+                                onclick="ubahStatus('.$data->c_id.')" 
+                                class="btn btn-primary btn-sm" 
+                                title="Aktif">
+                                <i class="fa fa-check-square" aria-hidden="true"></i>
+                            </button>'.'
+                        </div>';
+              }
+              else
+              {
+                return  '<div class="text-center">'.
+                            '<button id="status'.$data->c_id.'" 
+                                onclick="ubahStatus('.$data->c_id.')" 
+                                class="btn btn-danger btn-sm" 
+                                title="Tidak Aktif">
+                                <i class="fa fa-minus-square" aria-hidden="true"></i>
+                            </button>'.
+                        '</div>';
+              }
             })
 
             ->rawColumns(['action'])
@@ -66,10 +90,34 @@ class DivisiposController extends Controller
     	return Datatables::of($posisi) 
     		->addIndexColumn()          
             ->addColumn('action', function ($data) {
-                     return  '<div class="text-center">
-                     			<button id="edit" onclick="editPosisi('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                 <button id="delete" onclick="hapusPosisi('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>
-                             </div>';
+              if ($data->c_isactive == 'TRUE') 
+              {
+                return  '<div class="text-center">
+                            <button id="edit" 
+                                    onclick="editPosisi('.$data->c_id.')" 
+                                    class="btn btn-warning btn-sm" 
+                                    title="Edit">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                            </button>'.'
+                            <button id="status'.$data->c_id.'" 
+                                    onclick="ubahStatus('.$data->c_id.')" 
+                                    class="btn btn-primary btn-sm" 
+                                    title="Aktif">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i>
+                                </button>'.'
+                       </div>';
+              }
+              else
+              {
+                return  '<div class="text-center">'.
+                            '<button id="status'.$data->c_id.'" 
+                                onclick="ubahStatus('.$data->c_id.')" 
+                                class="btn btn-danger btn-sm" 
+                                title="Tidak Aktif">
+                                <i class="fa fa-minus-square" aria-hidden="true"></i>
+                            </button>'.
+                        '</div>';
+              }
             })
 
             ->rawColumns(['action'])

@@ -49,7 +49,7 @@ class mMember extends Model implements AuthenticatableContract, CanResetPassword
         if(count($cek) != 0)
             return true;
         else
-            return false;
+            return true;
 
     }
 

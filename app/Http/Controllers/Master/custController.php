@@ -23,7 +23,23 @@ class custController extends Controller
 
     public function datatable_cust()
     {
-        $list = DB::select("SELECT * from m_customer ");
+        $list = DB::table('m_customer')
+            ->select('c_id',
+                    'c_code', 
+                    'c_name', 
+                    'c_birthday',
+                    'c_email', 
+                    'c_hp1',
+                    'c_hp2', 
+                    'c_region',
+                    'c_address',
+                    'c_group',
+                    'c_class',
+                    'c_type',
+                    'c_isactive',
+                    'pg_name')
+            ->leftJoin('m_price_group','m_price_group.pg_id','=','c_group')
+            ->get();
         // return $list;
         $data = collect($list);
 
@@ -31,12 +47,39 @@ class custController extends Controller
 
         return Datatables::of($data)
             ->addColumn('action', function ($data) {
-
-                return '<button id="edit" onclick="edit(this)" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>' . '
-                                        <button id="delete" onclick="hapus(this)" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                if ($data->c_isactive == 'TRUE') 
+                {
+                    return '<button id="edit" 
+                            onclick="edit(this)" 
+                            class="btn btn-warning btn-sm" 
+                            title="Edit">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </button>' . '
+                        <button id="status'.$data->c_id.'" 
+                            onclick="ubahStatus('.$data->c_id.')" 
+                            class="btn btn-primary btn-sm" 
+                            title="Aktif">
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        </button>';
+                }
+                else
+                {
+                    return  '<div class="text-center">'.
+                        '<button id="status'.$data->c_id.'" 
+                            onclick="ubahStatus('.$data->c_id.')" 
+                            class="btn btn-danger btn-sm" 
+                            title="Tidak Aktif">
+                            <i class="fa fa-minus-square" aria-hidden="true"></i>
+                        </button>'.
+                    '</div>';
+                }
+                
             })
-            ->addColumn('none', function ($data) {
-                return '-';
+            ->addColumn('c_group', function ($data) {
+                return $data->pg_name;
+            })
+            ->addColumn('c_hp1', function ($data) {
+                return $data->c_hp1 .' / '. $data->c_hp2;
             })
             ->editColumn('c_birthday', function ($data) {
                 return date('d M Y', strtotime($data->c_birthday));
@@ -54,22 +97,9 @@ class custController extends Controller
 
     public function tambah_cust()
     {
-        $tanggal = date("ym");
+        $groupPrice = DB::table('m_price_group')->where('pg_active','TRUE')->get();
 
-        //select max dari um_id dari table d_uangmuka
-        $maxid = DB::Table('m_customer')->select('c_id')->max('c_id');
-
-        //untuk +1 nilai yang ada,, jika kosong maka maxid = 1 ,
-
-        if ($maxid <= 0 || $maxid <= '') {
-            $maxid = 1;
-        } else {
-            $maxid += 1;
-        }
-        $kode = str_pad($maxid, 5, '0', STR_PAD_LEFT);
-
-        $id_cust = 'CUS-' . $tanggal . '/' . $kode;
-        return view('/master/datacust/tambah_cust', compact('id_cust'));
+        return view('/master/datacust/tambah_cust', compact('id_cust','groupPrice'));
     }
 
     public function simpan_cust(Request $request)
@@ -102,6 +132,7 @@ class custController extends Controller
                         'c_hp2' => '+62' . $request->no_hp2,
                         'c_region' => $request->wilayah,
                         'c_address' => $request->alamat,
+                        'c_group' => $request->c_group,
                         'c_class' => $request->c_class,
                         'c_insert' => $tanggal,
                     ]);
@@ -118,6 +149,7 @@ class custController extends Controller
                         'c_hp2' => '+62' . $request->no_hp2,
                         'c_region' => $request->wilayah,
                         'c_address' => $request->alamat,
+                        'c_group' => $request->c_group,
                         'c_class' => $request->c_class,
                         'c_insert' => $tanggal,
                     ]);
@@ -162,8 +194,9 @@ class custController extends Controller
     public function edit_cust(Request $request)
     {
         $edit_cust = DB::table('m_customer')->where('c_code', '=', $request->id)->first();
+        $groupPrice = DB::table('m_price_group')->where('pg_active','TRUE')->get();
         json_encode($edit_cust);
-        return view('master/datacust/edit_cust', compact('edit_cust'));
+        return view('master/datacust/edit_cust', compact('edit_cust','groupPrice'));
     }
 
     public function update_cust(Request $request)
@@ -184,6 +217,7 @@ class custController extends Controller
                         'c_region' => $request->wilayah,
                         'c_class' => $request->c_class,
                         'c_address' => $request->alamat,
+                        'c_group' => $request->c_group,
                         'c_update' => $tanggal,
                     ]);
             }else{
@@ -199,6 +233,7 @@ class custController extends Controller
                         'c_region' => $request->wilayah,
                         'c_class' => $request->c_class,
                         'c_address' => $request->alamat,
+                        'c_group' => $request->c_group,
                         'c_update' => $tanggal,
                     ]);
             }
