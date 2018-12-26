@@ -393,6 +393,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSgrosir/ubahstatus', 'Penjualan\POSGrosirController@statusMove');
     Route::get('/penjualan/POSgrosir/showNote', 'Penjualan\POSGrosirController@showNote');
     Route::get('/pembayaran/POSgrosir/changestatus', 'Penjualan\POSGrosirController@changeStatus');
+    Route::get('penjualan/POSgrosir/grosir/autocompleteitem/group/{cus}/{item}', 'Penjualan\POSGrosirController@setGroupPrice');
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
 //mutasi Stok Mahmud

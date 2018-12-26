@@ -10,8 +10,10 @@ use Illuminate\Http\Request;
 use App\d_stock_mutation;
 use App\d_stock;
 use App\d_sales;
+use App\m_customer;
 use App\d_sales_payment;
 use App\d_sales_dt;
+use App\m_item_price;
 use DataTables;
 use App\lib\mutasi;
 use URL;
@@ -2072,5 +2074,32 @@ class POSGrosirController extends Controller
 
 
       return view('penjualan.POSgrosir.printDp', compact('data', 'dataTotal', 'sales'));
+  }
+
+  public function setGroupPrice($id, $item){
+    $cekGroup = m_customer::select('c_group')
+      ->where('c_id',$id)
+      ->first();
+    
+    if ($cekGroup->c_group == null) 
+    {
+      return Response::json('kosong');
+    }
+    else
+    {
+      $cekHarga = m_item_price::select('ip_price')
+        ->where('ip_group',$cekGroup->c_group)
+        ->where('ip_item',$item)
+        ->first();
+        if ($cekHarga == null) 
+        {
+          return Response::json('kosong');
+        }
+        else
+        {
+          return Response::json($cekHarga->ip_price);
+        }
+
+    }
   }
 }
