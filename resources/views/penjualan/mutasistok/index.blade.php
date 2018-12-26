@@ -37,6 +37,7 @@
                             <li class="active">
                                 <a href="#grosir-retail" data-toggle="tab">Grosir ke Retail</a>
                             </li>
+                            <li class=""><a href="#monitoringpenjualan" data-toggle="tab">Monitoring Penjualan</a></li>
                             {{--<li>--}}
                                 {{--<a href="#penjualan-retail" data-toggle="tab">Penjualan Retail</a>--}}
                             {{--</li>--}}
@@ -45,6 +46,52 @@
                             <!-- grosir-retail -->
                         @include('penjualan.mutasistok.grosir-retail')
                         <!-- end grosir-retail  -->
+
+                            <div id="monitoringpenjualan" class="tab-pane fade in">
+                                <div class="row" style="margin-top:-15px;">
+                                    <div class="row">
+                                        <div class="panel-body form-horizontal">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <div class="col-md-4">
+                                                        <div class="input-daterange input-group" id="range-tanggal">
+                                                            <input type="text" class="form-control start" name="start" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
+                                                            <span class="input-group-addon bg-custom">Sampai</span>
+                                                            <input type="text" class="form-control end" name="end" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <input type="text" class="form-control namacustomer" id="namacustomer" placeholder="Nama Customer">
+                                                        <input type="hidden" class="form-control idCustomer" id="idCustomer">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="text" autocomplete="off" class="ui-autocomplete-input form-control namabarang" id="namabarang" placeholder="Nama Barang">
+                                                        <input type="hidden" class="form-control idBarang" id="idBarang">
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <button class="btn btn-primary" onclick="cari()"><i class="fa fa-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data-monitor">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Nama Pembeli</th>
+                                                        <th>Tanggal</th>
+                                                        <th>Nomor Nota</th>
+                                                        <th>Nama Barang</th>
+                                                        <th>Qty</th>
+                                                        <th>Harga</th>
+                                                        <th>Aksi</th>
+                                                    </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- div label-badge-tab -->
                             <div id="label-badge-tab" class="tab-pane fade">
                                 <div class="row">
@@ -67,7 +114,71 @@
 @section("extra_scripts")
     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
     <script type="text/javascript">
+        var datamonitor;
+        var datepicker_today;
         $(document).ready(function() {
+            datepicker_today = $('#range-tanggal').datepicker({
+                autoclose: true,
+                toggleActive: true,
+                todayHighlight: true,
+                format: 'dd-mm-yyyy'
+            });
+
+            $('#namabarang').autocomplete({
+                source: baseUrl + '/penjualan/POSretail/retail/transfer-item',
+                minLength: 1,
+                select: function (event, ui) {
+                    $('.idBarang').val(ui.item.id);
+                }
+            });
+
+            $("#namacustomer").autocomplete({
+                source: baseUrl + '/penjualan/POSretail/retail/autocomplete',
+                minLength: 1,
+                select: function (event, ui) {
+                    $('.idCustomer').val(ui.item.id);
+                }
+            });
+
+            setTimeout(function(){
+                datamonitor = $('#data-monitor').dataTable({
+                    "responsive": true,
+                    "pageLength": 10,
+                    "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                    "language": {
+                        "searchPlaceholder": "Cari Data",
+                        "emptyTable": "Tidak ada data",
+                        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                        "infoFiltered": "",
+                        "sSearch": '<i class="fa fa-search"></i>',
+                        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                        "infoEmpty": "",
+                        "zeroRecords": "Data tidak ditemukan",
+                        "paginate": {
+                            "previous": "Sebelumnya",
+                            "next": "Selanjutnya",
+                        }
+                    },
+
+                    "ajax": {
+                        "url": '{{ url('penjualan/mutasi/monitoring-penjualan') }}',
+                        "data": {tanggal: 'sekarang'},
+                        "type": "GET",
+
+                    },
+                    "columns": [
+                        {"data": "c_name"},
+                        {"data": "s_date"},
+                        {"data": "s_note"},
+                        {"data": "i_name"},
+                        {"data": "sd_qty"},
+                        {"data": "sd_total"},
+                        {"data": "s_date"},
+                    ],
+
+                });
+            }, 1500);
+
             var extensions = {
                 "sFilterInput": "form-control input-sm",
                 "sLengthSelect": "form-control input-sm"
@@ -104,7 +215,66 @@
             getTanggal();
 
         });
+        
+        function cari() {
+            var start = $('.start').val();
+            var end = $('.end').val();
+            var customer = $('#idCustomer').val();
+            var item = $('#idBarang').val();
 
+            if (start == ''){
+                start = 'awal';
+            }
+            if (end == ''){
+                end = 'akhir';
+            }
+            if (customer == ''){
+                customer = 'semua';
+            }
+            if (item == ''){
+                item = 'semua';
+            }
+
+            $("#data-monitor").dataTable().fnDestroy();
+
+            datamonitor = $('#data-monitor').dataTable({
+                "responsive": true,
+                "pageLength": 10,
+                "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
+                "language": {
+                    "searchPlaceholder": "Cari Data",
+                    "emptyTable": "Tidak ada data",
+                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                    "infoFiltered": "",
+                    "sSearch": '<i class="fa fa-search"></i>',
+                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                    "infoEmpty": "",
+                    "zeroRecords": "Data tidak ditemukan",
+                    "paginate": {
+                        "previous": "Sebelumnya",
+                        "next": "Selanjutnya",
+                    }
+                },
+
+                "ajax": {
+                    "url": '{{ url('penjualan/mutasi/monitoring-penjualan') }}',
+                    "data": {start: start, end: end, customer: customer, barang: item},
+                    "type": "GET",
+
+                },
+                "columns": [
+                    {"data": "c_name"},
+                    {"data": "s_date"},
+                    {"data": "s_note"},
+                    {"data": "i_name"},
+                    {"data": "sd_qty"},
+                    {"data": "sd_total"},
+                    {"data": "s_date"},
+                ],
+
+            });
+        }
+        
         function getTanggal(){
           $('#GrosirRetail').dataTable().fnDestroy();
           var tgl1 = $('#tanggal1').val();

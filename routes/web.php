@@ -398,6 +398,11 @@ Route::group(['middleware' => 'auth'], function () {
 //mutasi Stok Mahmud
     Route::get('/penjualan/mutasi/stock/grosir-retail/{tgl1}/{tgl2}', 'Penjualan\mutasiStokController@tableGrosirRetail');
 //End Mutasi
+//Monitoring Ilham
+    Route::get('penjualan/mutasi/monitoring-penjualan', 'PenjualanController@dataMonitor');
+    Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
+    Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
+//end Monitoring
 //Monitoring Order Mahmud
     Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');
     Route::get('/penjualan/monitoringorder/nota/{id}', 'Penjualan\MonitoringOrderController@bukaNota');
