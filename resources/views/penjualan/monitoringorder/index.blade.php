@@ -26,7 +26,6 @@
                         </div>
                         <ul id="generalTab" class="nav nav-tabs">
                             <li class="active"><a href="#alert-tab" data-toggle="tab">Monitoring Order & Stock</a></li>
-                            <li class=""><a href="#monitoringpenjualan" data-toggle="tab">Monitoring Penjualan</a></li>
                         </ul>
                         <div id="generalTabContent" class="tab-content responsive">
                             <div id="alert-tab" class="tab-pane fade in active">
@@ -81,26 +80,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="monitoringpenjualan" class="tab-pane fade in active">
-                                <div class="row" style="margin-top:-15px;">
-                                    <div class="row">
-                                        <div class="panel-body">
-                                            <div class="col-md-4 col-sm-6 col-xs-12">
-                                                <div class="form-group">
-                                                    <label>Range Tanggal</label>
-                                                    <div>
-                                                        <div class="input-daterange input-group" id="range-tanggal">
-                                                            <input type="text" class="form-control start" name="start" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m/d/Y')  }}" />
-                                                            <span class="input-group-addon bg-custom text-white b-0">to</span>
-                                                            <input type="text" class="form-control end" name="end" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m/d/Y')  }}" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div id="note-tab" class="tab-pane fade">
 
                             </div><!--/div note-tab -->
@@ -123,15 +103,7 @@
 @section("extra_scripts")
     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
     <script type="text/javascript">
-        var datepicker_today;
         $(document).ready(function () {
-
-            datepicker_today = $('#range-tanggal').datepicker({
-                autoclose: true,
-                toggleActive: true,
-                todayHighlight: true,
-                format: 'dd/mm/yyyy'
-            });
 
             var extensions = {
                 "sFilterInput": "form-control input-sm",
