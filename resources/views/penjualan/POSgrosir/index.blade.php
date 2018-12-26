@@ -763,16 +763,42 @@
             $("#namaitem").val('');
         });
 
-                @if ($ket == 'create')
+        @if ($ket == 'create')
         var index = 0;
         var tamp = [];
 
-        function tambah() {
+        function tambah() 
+        {
+            var cus = $('#id_cus').val();
+            var kode = $('#kode').val();
+            var harga = 0;
+            $.ajax({
+              url : baseUrl + "/penjualan/POSgrosir/grosir/autocompleteitem/group/" + cus + "/" + kode,
+              type: 'GET',
+              success:function(response){
+                if (response == 'kosong') 
+                {
+                    var harga = SetFormRupiah($('#harga').val());
+                    lanjut();
+                }
+                else
+                {
+                    $('#harga').val(response);
+                    lanjut();
+
+                }
+              }
+            }); 
+            
+        }
+        function lanjut()
+        {
+            var cus = $('#id_cus').val();
             var kode = $('#kode').val();
             var nama = $('#detailnama').val();
             var type = $('#i-type').val();
-            var harga = SetFormRupiah($('#harga').val());
             var y = ($('#harga').val());
+            var harga = SetFormRupiah(y);
             var qty = parseInt($('#qty').val());
             var satuan = $('#satuan').val();
             var hasil = parseFloat(qty * y).toFixed(2);
@@ -784,7 +810,8 @@
             var Hapus = '<button type="button" class="btn btn-danger hapus" onclick="hapus(this)"><i class="fa fa-trash-o"></i></button>';
             var index = tamp.indexOf(kode);
 
-            if (index == -1) {
+            if (index == -1) 
+            {
                 tableDetail.row.add([
 
                     nama + '<input type="hidden" name="kode_item[]" class="kode_item kode" value="' + kode + '"><input type="hidden" name="nama_item[]" class="nama_item" value="' + nama + '"> ',
@@ -806,7 +833,10 @@
 
                 index++;
                 tamp.push(kode);
-            } else {
+                
+            } 
+            else 
+            {
                 var qtyLawas = parseInt($(".qty-" + kode).val());
                 $(".qty-" + kode).val(qtyLawas + qty);
                 var q = parseInt(qtyLawas + qty);
@@ -815,6 +845,7 @@
                 var k = SetFormRupiah(l);
                 $(".hasil-" + kode).val(k);
                 UpdateHarga(+kode)
+                // $("input[name='item']").focus();
             }
 
             $(function () {
@@ -827,6 +858,7 @@
             UpdateTotal();
             UpdateSubTotal();
             autoJumValPercent();
+            $("input[name='item']").focus();
         }
 
         $('#qty').keypress(function (e) {
@@ -857,10 +889,10 @@
                     var kode = $('#kode').val();
                     tambah();
                     qtyInput(stok, kode);
-                    $("input[name='item']").val('');
-                    $("input[name='s_qty']").val('');
-                    $("input[name='qty']").val('');
-                    $("input[name='item']").focus();
+                    // $("input[name='item']").val('');
+                    // $("input[name='s_qty']").val('');
+                    // $("input[name='qty']").val('');
+                    // $("input[name='item']").focus();
                     return false;
                 } else {
                     if (isi == '' || jumlah == '' || stok == '' || data1 == '' || data2 == '' || c) {
@@ -870,10 +902,10 @@
                     var kode = $('#kode').val();
                     tambah();
                     qtyInput(stok, kode);
-                    $("input[name='item']").val('');
-                    $("input[name='s_qty']").val('');
-                    $("input[name='qty']").val('');
-                    $("input[name='item']").focus();
+                    // $("input[name='item']").val('');
+                    // $("input[name='s_qty']").val('');
+                    // $("input[name='qty']").val('');
+                    // $("input[name='item']").focus();
                     return false;
                 }
             }
@@ -882,13 +914,37 @@
         @else
         $("input[name='item']").focus();
 
-        function tambahEdit() {
+        function tambahEdit() 
+        {
+            var cus = $('#id_cus').val();
+            var kode = $('#kode').val();
+            var harga = 0;
+            $.ajax({
+              url : baseUrl + "/penjualan/POSgrosir/grosir/autocompleteitem/group/" + cus + "/" + kode,
+              type: 'GET',
+              success:function(response){
+                if (response == 'kosong') 
+                {
+                    var harga = SetFormRupiah($('#harga').val());
+                    lanjut();
+                }
+                else
+                {
+                    $('#harga').val(response);
+                    lanjut();
+
+                }
+              }
+            }); 
+        }
+        function lanjut()
+        {
             var kode = [];
             kode [0] = $('#kode').val();
             var nama = $('#detailnama').val();
             var type = $('#i-type').val();
-            var harga = SetFormRupiah($('#harga').val());
             var y = ($('#harga').val());
+            var harga = SetFormRupiah(y);
             var qty = parseInt($('#qty').val());
             var satuan = $('#satuan').val();
             var hasil = parseFloat(qty * y).toFixed(2);
@@ -926,7 +982,9 @@
 
                 ]);
                 tableDetail.draw();
-            } else {
+            } 
+            else 
+            {
 
                 var qtyLawas = parseInt($(".qty-" + kode).val());
                 $(".qty-" + kode).val(qtyLawas + qty);
@@ -947,6 +1005,7 @@
             UpdateTotal();
             UpdateSubTotal();
             autoJumValPercent();
+            $("input[name='item']").focus();
         }
 
         $('#qty').keypress(function (e) {
@@ -974,10 +1033,10 @@
                     var kode = $('#kode').val();
                     tambahEdit();
                     qtyInput(stok, kode);
-                    $("input[name='item']").val('');
-                    $("input[name='s_qty']").val('');
-                    $("input[name='qty']").val('');
-                    $("input[name='item']").focus();
+                    // $("input[name='item']").val('');
+                    // $("input[name='s_qty']").val('');
+                    // $("input[name='qty']").val('');
+                    // $("input[name='item']").focus();
                     return false;
                 } else {
                     if (isi == '' || jumlah == '' || stok == '' || data1 == '' || data2 == '' || c) {
@@ -987,10 +1046,10 @@
                     var kode = $('#kode').val();
                     tambahEdit();
                     qtyInput(stok, kode);
-                    $("input[name='item']").val('');
-                    $("input[name='s_qty']").val('');
-                    $("input[name='qty']").val('');
-                    $("input[name='item']").focus();
+                    // $("input[name='item']").val('');
+                    // $("input[name='s_qty']").val('');
+                    // $("input[name='qty']").val('');
+                    // $("input[name='item']").focus();
                     return false;
                 }
             }
@@ -1206,7 +1265,21 @@
                 stok = parseInt(stok);
                 if (input > stok || input < 1) {
                     toastr.warning('Pembelian melebihi stok!');
-                    $('.qty-' + kode).val(0);
+                    $('.qty-' + kode).val(1);
+                }
+                UpdateHarga(kode);
+            }
+            else
+            {
+                input = $('.qty-' + kode).val();
+                if (input < 1) {
+                    toastr.warning('Pembelian tidak boleh kurang dari 1!');
+                    $('.qty-' + kode).val(1);
+                }
+                input = $('.qty-' + stok).val();
+                if (input < 1) {
+                    toastr.warning('Pembelian tidak boleh kurang dari 1!');
+                    $('.qty-' + stok).val(1);
                 }
                 UpdateHarga(kode);
             }
