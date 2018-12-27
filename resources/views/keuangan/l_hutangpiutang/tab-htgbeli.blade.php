@@ -23,7 +23,7 @@
       </div>
 
       <div class="col-md-12 text">
-        <a href="#" data-toggle="modal" data-target="#modal_buku_besar">Lihat Hutang Penjualan</a>
+        <a href="#" data-toggle="modal" data-target="#modal_buku_besar">Lihat Piutang Penjualan</a>
       </div>
     </div>
   {{--   </div> --}}
