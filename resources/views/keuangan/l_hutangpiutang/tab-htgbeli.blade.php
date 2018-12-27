@@ -10,7 +10,7 @@
         </div>
 
         <div class="col-md-12 text">
-          <a href="#" data-toggle="modal" data-target="#modal_buku_piutang">Lihat Piutang Pembelian</a>
+          <a href="#" data-toggle="modal" data-target="#modal_buku_piutang">Lihat Hutang Pembelian</a>
         </div>
       </div>
     {{--   </div> --}}
