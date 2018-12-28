@@ -140,7 +140,7 @@ Route::group(['middleware' => 'auth'], function () {
     //mahmud stock opname
     Route::get('/inventory/stockopname/opname', 'Inventory\stockOpnameController@index');
     Route::get('/inventory/namaitem/autocomplite/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
-    Route::get('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
+    Route::post('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
     Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}', 'Inventory\stockOpnameController@history');
     Route::get('/inventory/namaitem/detail', 'Inventory\stockOpnameController@getOPname');
     // Ari Print Stock OPname
