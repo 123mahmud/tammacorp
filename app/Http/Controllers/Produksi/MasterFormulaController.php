@@ -94,7 +94,7 @@ class MasterFormulaController extends Controller
       ->where('i_type','BB')
       ->where('i_isactive','TRUE')
       ->orderBy('i_name')
-      ->take(15)->get();
+      ->take(25)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -109,7 +109,7 @@ class MasterFormulaController extends Controller
                         'label' => $query->i_code .' - '.$query->i_name,
                         'name' => $query->i_name,
                         'id_satuan' => [$query->i_sat1, $query->i_sat2, $query->i_sat3],
-                        'satuan' => [$txtSat1->m_sname, $txtSat2->m_sname, $txtSat3->m_sname],
+                        'satuan' => [$txtSat1->m_sname],
                         'i_code' => $query->i_code ];
       }
     } 
@@ -126,7 +126,8 @@ class MasterFormulaController extends Controller
       ->join('m_satuan','m_sid','=','i_sat1')
       ->where('i_type','BP')
       ->where('i_isactive','TRUE')
-      ->take(15)->get();
+      ->orderBy('i_name')
+      ->take(25)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -141,7 +142,7 @@ class MasterFormulaController extends Controller
                         'label' => $query->i_code .' - '.$query->i_name,
                         'name' => $query->i_name,
                         'id_satuan' =>[$query->i_sat1, $query->i_sat2, $query->i_sat3],
-                        'satuan' =>[$txtSat1->m_sname, $txtSat2->m_sname, $txtSat3->m_sname] ];
+                        'satuan' =>[$txtSat1->m_sname] ];
       }
     } 
 
@@ -149,7 +150,6 @@ class MasterFormulaController extends Controller
   }
 
   public function saveFormula(Request $request){
-    // dd($request->all());
     DB::beginTransaction();
           try { 
     $i_id = $request->i_id;

@@ -91,7 +91,7 @@
                       <!--Modal view Edit formula-->
                       <div class="modal fade" id="myModalEdit" role="dialog">
                         <div class="modal-dialog modal-lg">
-                          <form id="myFormUpdate">
+                          
                             <!-- Modal content-->
                               <div class="modal-content">
                                 <div class="modal-header" style="background-color: #e77c38;">
@@ -106,7 +106,7 @@
                                   <button type="button" class="btn btn-primary" id="btn-simpan-edit" onclick="simpanResepUpdate()">Simpan Data</button>
                                 </div>
                               </div>
-                            </form>   
+                               
                           </div>
                       </div>
                       <!--End Modal-->
@@ -306,6 +306,7 @@
   function simpanResep(){
     $('#btn-simpan').attr('disabled','disabled');
     var a = $('#myForm').serialize();
+    var data = tableResep.$('input').serialize();
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -314,7 +315,7 @@
     $.ajax({
       url : baseUrl + "/produksi/namaitem/save/formula",
       type: 'POST',
-      data: a,
+      data: a + '&' + data,
       success:function(response){
         if (response.status=='sukses') {
           $('#i_id').val('');
@@ -419,6 +420,7 @@
   function simpanResepUpdate(){
     $('#btn-simpan-edit').attr('disabled','disabled');
     var b = $('#myFormUpdate').serialize();
+    var data = tableResepEdit.$('input').serialize();
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -427,7 +429,7 @@
     $.ajax({
       url : baseUrl + "/produksi/namaitem/update/formula",
       type: 'POST',
-      data: b,
+      data: b + '&' + data,
       success:function(response){
         if (response.status=='sukses') {
           $('#myModalEdit').modal('hide');
