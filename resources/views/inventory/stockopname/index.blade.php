@@ -132,6 +132,7 @@
                         $('#m_sname').val(ui.item.m_sname);
                         $('#s_qty').val(ui.item.s_qty);
                         $('#s_qtykw').val(ui.item.s_qtykw);
+                        $('#satuan').val(ui.item.m_sname);
                         $("input[name='qtyReal']").focus();
                     }
                 });
@@ -142,6 +143,7 @@
                 $("#m_sname").val('');
                 $("#s_qty").val('');
                 $("#s_qtykw").val('');
+                $('#satuan').val('');
                 $("#qtyReal").val('');
               });
             });
@@ -244,10 +246,10 @@
               }
           });
           var a = $('#opname :input').serialize();
-          var b = $('#tbOpname :input').serialize();
+          var b = tableOpname.$('input').serialize();
           $.ajax({
             url : baseUrl + '/inventory/namaitem/simpanopname',
-            type: 'GET',
+            type: 'POST',
             data: a + '&' + b,
             success: function (response, nota) {
               if (response.status == 'sukses') {

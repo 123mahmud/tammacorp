@@ -45,7 +45,8 @@ class stockOpnameController extends Controller
         ->where('i_isactive','TRUE')
         ->join('m_item','i_id','=','s_item')
         ->join('m_satuan','m_sid','=','i_sat1')
-        ->take(15)->get();
+        ->orderBy('i_name', 'asc')
+        ->take(25)->get();
 
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -206,7 +207,7 @@ class stockOpnameController extends Controller
 
       DB::commit();
       
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
       DB::rollback();
       return response()->json([
         'status' => 'gagal',
