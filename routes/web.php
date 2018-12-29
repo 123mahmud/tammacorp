@@ -400,7 +400,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/mutasi/stock/grosir-retail/{tgl1}/{tgl2}', 'Penjualan\mutasiStokController@tableGrosirRetail');
 //End Mutasi
 //Monitoring Ilham
-    Route::get('penjualan/mutasi/monitoring-penjualan', 'PenjualanController@dataMonitor');
+    Route::get('penjualan/mutasi/monitoring-penjualan/{tampil}', 'PenjualanController@dataMonitor');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
 //end Monitoring
@@ -583,9 +583,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-tunjangan-pegman/{id}', 'Hrd\GajiController@editPegManData');
     Route::post('/hrd/payroll/update-tunjangan-peg/{id}', 'Hrd\GajiController@updateTunjanganPeg');
     //payroll produksi Mahmud
-        Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
-        Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
-        Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
+    Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
+    Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
+     Route::get('/hrd/payroll/table/gaji/GR/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapanGr');
+    Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
+    Route::get('/hrd/payroll/lihat-gaji/GR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGajiGR');
+    Route::get('/hrd/payroll/pilih/absensi/{pilih}', 'Hrd\PayrollProduksiController@pilihAbsensi');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');

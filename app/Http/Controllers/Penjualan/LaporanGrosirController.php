@@ -98,6 +98,7 @@ class LaporanGrosirController extends Controller
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
                 ->where('s_status','!=','DR')
+                ->where('s_status', '!=', "PR")
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();

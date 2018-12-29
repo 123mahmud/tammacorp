@@ -37,7 +37,7 @@
                             <li class="active">
                                 <a href="#grosir-retail" data-toggle="tab">Grosir ke Retail</a>
                             </li>
-                            <li class=""><a href="#monitoringpenjualan" data-toggle="tab">Monitoring Penjualan</a></li>
+                            <li class=""><a href="#monitoringpenjualan" data-toggle="tab" onclick="cari()">Monitoring Penjualan</a></li>
                             {{--<li>--}}
                                 {{--<a href="#penjualan-retail" data-toggle="tab">Penjualan Retail</a>--}}
                             {{--</li>--}}
@@ -55,21 +55,28 @@
                                                 <div class="form-group">
                                                     <div class="col-md-4">
                                                         <div class="input-daterange input-group" id="range-tanggal">
-                                                            <input type="text" class="form-control start" name="start" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
-                                                            <span class="input-group-addon bg-custom">Sampai</span>
-                                                            <input type="text" class="form-control end" name="end" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
+                                                            <input type="text" class="form-control input-sm start" name="start" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
+                                                            <span class="input-group-addon bg-custom">-</span>
+                                                            <input type="text" class="form-control input-sm end" name="end" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="text" class="form-control namacustomer" id="namacustomer" placeholder="Nama Customer">
-                                                        <input type="hidden" class="form-control idCustomer" id="idCustomer">
+                                                        <input type="text" class="form-control input-sm namacustomer" id="namacustomer" placeholder="Nama Customer">
+                                                        <input type="hidden" class="form-control input-sm idCustomer" id="idCustomer">
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <input type="text" autocomplete="off" class="ui-autocomplete-input form-control namabarang" id="namabarang" placeholder="Nama Barang">
-                                                        <input type="hidden" class="form-control idBarang" id="idBarang">
+                                                    <div class="col-md-2">
+                                                        <input type="text" autocomplete="off" class="ui-autocomplete-input form-control input-sm namabarang" id="namabarang" placeholder="Nama Barang">
+                                                        <input type="hidden" class="form-control input-sm idBarang" id="idBarang">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select name="tampilData" id="tampil_data" onchange="tampilDataGrosir(this);" class="form-control input-sm">
+                                                            <option value="Semua" class="form-control">Semua</option>
+                                                            <option value="Retail" class="form-control">Retail</option>
+                                                            <option value="Grosir" class="form-control">Grosir</option>
+                                                        </select>
                                                     </div>
                                                     <div class="col-md-1">
-                                                        <button class="btn btn-primary" onclick="cari()"><i class="fa fa-search"></i></button>
+                                                        <button class="btn btn-primary btn-sm" onclick="cari()"><i class="fa fa-search"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -78,12 +85,16 @@
                                                     <thead>
                                                     <tr>
                                                         <th>Nama Pembeli</th>
+                                                        <th>Nota</th>
                                                         <th>Tanggal</th>
-                                                        <th>Nomor Nota</th>
                                                         <th>Nama Barang</th>
                                                         <th>Qty</th>
                                                         <th>Harga</th>
-                                                        <th>Aksi</th>
+                                                        <th>Disk Value</th>
+                                                        <th>Disk %</th>
+                                                        <th>DPP</th>
+                                                        <th>PPN</th>
+                                                        <th>Total</th>
                                                     </tr>
                                                     </thead>
                                                 </table>
@@ -140,45 +151,6 @@
                 }
             });
 
-            setTimeout(function(){
-                datamonitor = $('#data-monitor').dataTable({
-                    "responsive": true,
-                    "pageLength": 10,
-                    "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                    "language": {
-                        "searchPlaceholder": "Cari Data",
-                        "emptyTable": "Tidak ada data",
-                        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                        "infoFiltered": "",
-                        "sSearch": '<i class="fa fa-search"></i>',
-                        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                        "infoEmpty": "",
-                        "zeroRecords": "Data tidak ditemukan",
-                        "paginate": {
-                            "previous": "Sebelumnya",
-                            "next": "Selanjutnya",
-                        }
-                    },
-
-                    "ajax": {
-                        "url": '{{ url('penjualan/mutasi/monitoring-penjualan') }}',
-                        "data": {tanggal: 'sekarang'},
-                        "type": "GET",
-
-                    },
-                    "columns": [
-                        {"data": "c_name"},
-                        {"data": "s_date"},
-                        {"data": "s_note"},
-                        {"data": "i_name"},
-                        {"data": "sd_qty"},
-                        {"data": "sd_total"},
-                        {"data": "s_date"},
-                    ],
-
-                });
-            }, 1500);
-
             var extensions = {
                 "sFilterInput": "form-control input-sm",
                 "sLengthSelect": "form-control input-sm"
@@ -221,6 +193,7 @@
             var end = $('.end').val();
             var customer = $('#idCustomer').val();
             var item = $('#idBarang').val();
+            var tampil = $('#tampil_data').val();
 
             if (start == ''){
                 start = 'awal';
@@ -257,19 +230,23 @@
                 },
 
                 "ajax": {
-                    "url": '{{ url('penjualan/mutasi/monitoring-penjualan') }}',
+                    "url": baseUrl + '/penjualan/mutasi/monitoring-penjualan/' + tampil,
                     "data": {start: start, end: end, customer: customer, barang: item},
                     "type": "GET",
 
                 },
                 "columns": [
                     {"data": "c_name"},
-                    {"data": "s_date"},
                     {"data": "s_note"},
-                    {"data": "i_name"},
-                    {"data": "sd_qty"},
-                    {"data": "sd_total"},
                     {"data": "s_date"},
+                    {"data": "i_name"},
+                    {"data": "sd_qty", className: 'right'},
+                    {"data": "Harga"},
+                    {"data": "sd_disc_value"},
+                    {"data": "sd_disc_vpercent"},
+                    {"data": "Dpp"},
+                    {"data": "Ppn"},
+                    {"data": "sd_total"},
                 ],
 
             });
