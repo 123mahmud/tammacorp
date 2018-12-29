@@ -52,6 +52,17 @@
                        value="{{ $item->spk_code }}">
             </div>
         </div>
+        <div class="col-md-4 col-sm-3 col-xs-12">
+            <div class="">
+                <label class="tebal">Hpp  {{ $item->i_name }} :</label>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-3 col-xs-12">
+            <div class="form-group">
+                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spkD"
+                       value="{{ number_format( $item->spk_hpp / $item->pp_qty,2,',','.')}}">
+            </div>
+        </div>
     @endforeach
 </div>
 <div id="data-product-plan" class="col-md-12 col-sm-12 col-xs-12"
@@ -73,7 +84,7 @@
                    <tr>
                         <td>{{ $formula[$i]['i_code'] }}</td>
                         <td>{{ $formula[$i]['i_name'] }}</td>
-                        <td class="text-right">{{ number_format( $formula[$i]['fr_value'],0,',','.')}}</td>
+                        <td class="text-right">{{ number_format( $formula[$i]['fr_value'],2,',','.')}}</td>
                         <td>{{ $formula[$i]['m_sname'] }}</td>
                         <td>Rp.
                             <span class="pull-right">
