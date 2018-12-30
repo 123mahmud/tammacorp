@@ -407,10 +407,20 @@ class PayrollProduksiController extends Controller
         {     
           $cari[] = explode(",", $gaji[$i]->c_gaji_jabatan);
         }
-        for ($i=0; $i <count($cari[0]) ; $i++) 
+        $result = array();
+        foreach ($cari as $list) 
+        {
+          $result = array_merge($result, $list);
+        }
+        array_count_values($result);
+        foreach (array_unique($result) as $list) 
+        {
+          $listUniq[] = $list;
+        }
+        for ($i=0; $i <count($listUniq) ; $i++) 
         {    
           $jabatan[] = m_jabatan_pro::select('c_id','c_jabatan_pro')
-            ->where('c_id',$cari[$i][$i])->get()->toArray();
+            ->where('c_id',$listUniq[$i])->get()->toArray();
         }
       }
       else
@@ -420,10 +430,16 @@ class PayrollProduksiController extends Controller
         {     
           $cari[] = explode(",", $gaji[$i]->c_gaji_jabatan);
         }
-        for ($i=0; $i <count($cari[0]) ; $i++) 
-        {    
+
+        $result = array();
+        foreach ($cari as $list) 
+        {
+          $result = array_merge($result, $list);
+        }
+        $resultUniq = array_unique($result);
+        for ($i=0; $i <count($resultUniq) ; $i++) { 
           $jabatan[] = m_jabatan_pro::select('c_id','c_jabatan_pro')
-            ->where('c_id',$cari[$i][$i])->get()->toArray();
+            ->where('c_id',$resultUniq[$i])->get()->toArray();
         }
       }
       for ($i=0; $i <count($jabatan) ; $i++) { 
