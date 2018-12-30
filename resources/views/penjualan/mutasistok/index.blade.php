@@ -75,12 +75,22 @@
                                                             <option value="Grosir" class="form-control">Grosir</option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-1" align="right">
                                                         <button class="btn btn-primary btn-sm" onclick="cari()"><i class="fa fa-search"></i></button>
                                                     </div>
+
+                                                    <div class="col-md-12" style="margin-top:15px;" align="right">
+                                                        <div id="btn_print" class="col-md-12 col-sm-3 col-xs-12"> 
+            
+                                                        </div>
+                                                    </div>
+                                                    
                                                 </div>
                                             </div>
+                                           
+
                                             <div class="col-md-12">
+                                                <div class="table-responsive">
                                                 <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data-monitor">
                                                     <thead>
                                                     <tr>
@@ -98,6 +108,7 @@
                                                     </tr>
                                                     </thead>
                                                 </table>
+                                            </div>
                                             </div>
                                         </div>
                                     </div>
@@ -143,12 +154,36 @@
                 }
             });
 
+            $("#namabarang").focus(function () {
+                $('#namabarang').autocomplete({
+                    source: baseUrl + '/penjualan/POSretail/retail/transfer-item',
+                    minLength: 1,
+                    select: function (event, ui) {
+                        $('.idBarang').val(ui.item.id);
+                    }
+                });
+                $('#namabarang').val('');
+                $('.idBarang').val('');
+            });
+
             $("#namacustomer").autocomplete({
                 source: baseUrl + '/penjualan/POSretail/retail/autocomplete',
                 minLength: 1,
                 select: function (event, ui) {
                     $('.idCustomer').val(ui.item.id);
                 }
+            });
+
+            $("#namacustomer").focus(function () {
+                $("#namacustomer").autocomplete({
+                    source: baseUrl + '/penjualan/POSretail/retail/autocomplete',
+                    minLength: 1,
+                    select: function (event, ui) {
+                        $('.idCustomer').val(ui.item.id);
+                    }
+                });
+                $('#namacustomer').val('');
+                $('.idCustomer').val('');
             });
 
             var extensions = {
@@ -209,6 +244,13 @@
             }
 
             $("#data-monitor").dataTable().fnDestroy();
+            $('#btn_print').html(
+                '<div class="btn-group">'+
+                    '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/retail/print_laporan_penjualan/' +'" '+ 
+                    'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+                    '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/retail/pdf_laporan_penjualan/' +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
+                '</div>'
+            );
 
             datamonitor = $('#data-monitor').dataTable({
                 "responsive": true,
