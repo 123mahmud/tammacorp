@@ -198,58 +198,193 @@
         <table width="100%" border="0" style="border-bottom: 1px solid #333;" id="contentnya">
           <thead>
             <tr>
-              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Hutang Supplier</th>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Hutang Supplier <small>({{ ucfirst($request->type) }})</small></th>
             </tr>
 
             <tr>
               <th style="text-align: left; font-size: 12pt; font-weight: 500">Tamma Robbah Indonesia</th>
             </tr>
 
+            <tr>
+              <th style="text-align: left; font-size: 8pt; font-weight: 500; padding-bottom: 10px;">(Angka Disajikan Dalam Rupiah, Kecuali Dinyatakan Lain)</th>
+            </tr>
+
           </thead>
         </table>
 
-		     <table width="100%" border="0" class="table-saldo" style="margin-top: 10px;">
-			</table>
-
-			<table id="table-data" class="table_neraca tree" border="0" width="100%">
-				<thead>
-					<tr>
-						<th width="20%">Supplier</th>
-				        <th width="15%">No. Hp</th>
-				        <th width="35%">Alamat</th>
-				        <th width="10%">Jatuh Tempo</th>
-				        <th width="20%">Hutang</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach ($piutang as $sup)
-					<tr>
-						<td>{{ $sup->s_company }}</td>						
-						<td> {{ $sup->s_phone1 }} / {{ $sup->s_phone2 }} </td>
-						<td> {{ $sup->s_address }} </td>
-						<td> {{ date('d M Y', strtotime($sup->d_pcs_duedate)) }} </td>
-						<td class="text-right">  {{ number_format($sup->d_pcs_sisapayment, 2) }} </td>
-					</tr>
-					@endforeach
-				</tbody>
-			</table>
-
-			<table width="100%" border="0" class="table-info">
-				<thead>
-					<tr>
-						<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Hutang Supplier  &nbsp; &nbsp; </td>
-					</tr>
-				</thead>
-			</table>
-
-        <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
+        <table width="100%" border="0" style="font-size: 8pt;">
           <thead>
             <tr>
-              
+              <td style="text-align: left; padding-top: 5px;">
+                Laporan Per {{ date('d/m/Y', strtotime($date_1)) }} s/d {{ date('d/m/Y', strtotime($date_2)) }}
+              </td>
             </tr>
           </thead>
         </table>
 
+        @if($request->type == 'detail')
+
+			<table id="table-data" class="table_neraca tree" border="0" width="100%">
+				<tbody>
+
+					@foreach($supplier as $key => $supp)
+
+						<tr>
+							<td colspan="10" style="padding: 10px; border: 1px solid #555; font-size: 9pt; background: #2E2E2E; color: white; font-weight: bold;">{{ $supp->s_company }}</td>
+						</tr>
+
+						<tr>
+							<td width="5%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">No</td>
+							<td width="15%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Kode P.O</td>
+							<td width="10%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Tanggal P.O</td>
+							<td width="10%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Jatuh Tempo</td>
+							<td width="12%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Total Gross</td>
+							<td width="12%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Total Net</td>
+							<td width="12%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Sudah Dibayar</td>
+							<td width="12%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">Sisa Pelunasan</td>
+							<td width="3%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">#</td>
+							<td width="5%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">keterangan</td>
+						</tr>
+
+						<?php $empty = true; $no = 0; ?>
+
+						@foreach($data as $key => $purchase)
+							@if($purchase->s_id == $supp->s_id)
+
+								<?php $empty = false; $no++ ?>
+
+								<tr>
+									<td style="text-align: center; border: 1px solid #ccc;">{{ $no }}</td>
+									<td style="text-align: center; border: 1px solid #ccc;">{{ $purchase->d_pcs_code }}</td>
+									<td style="text-align: center; border: 1px solid #ccc;">{{ date('d/m/Y', strtotime($purchase->d_pcs_date_created)) }}</td>
+									<td style="text-align: center; border: 1px solid #ccc;">
+										{{ (!is_null($purchase->d_pcs_duedate)) ? date('d/m/Y', strtotime($purchase->d_pcs_duedate)) :  '-' }}
+									</td>
+									<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($purchase->d_pcs_total_gross) }}</td>
+									<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($purchase->d_pcs_total_net) }}</td>
+									<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($purchase->d_pcs_payment) }}</td>
+									<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($purchase->d_pcs_total_net - $purchase->d_pcs_payment) }}</td>
+
+									<?php
+										$date1 = (!is_null($purchase->d_pcs_duedate)) ? date_create(date('Y-m-d', strtotime($purchase->d_pcs_duedate))) : date_create(date('Y-m-d', strtotime($purchase->d_pcs_date_created)));
+										$date2 = date_create(date('Y-m-d'));
+										$diff=date_diff($date1,$date2);
+
+										$show = '#007E33'; $status = 'On Going';
+
+										if($diff->format("%a") == 0){
+											$show = '#FF8800';
+											$status = 'Warning';
+										}
+										else if($diff->format("%R") == '+'){
+											$show = '#CC0000';
+											$status = 'Overdue';
+										}else if($diff->format("%R") == '-'){
+											if($diff->format("%a") <= 3){
+												$show = '#FF8800';
+												$status = 'Warning';
+											}
+										}
+
+										if($purchase->d_pcs_total_net - $purchase->d_pcs_payment == 0){
+											$show = '#fff';
+											$status = 'Complete';
+										}
+									?>
+
+									<td style="text-align: center; border: 1px solid #ccc; padding-top: 8px;">
+										<div style="width: 50%; height: 10px; border-radius: 50%; background: {{ $show }}; margin: 0 auto; border: 1px solid #ccc;"></div>
+									</td>
+									<td style="text-align: center; border: 1px solid #ccc; color: {{ ($status != "Complete") ? $show : '#666' }};">{{ $status }}</td>
+								</tr>
+							@endif
+
+						@endforeach
+
+						@if($empty)
+							<tr>
+								<td colspan="10" style="background: white; text-align: center;">Tidak Ada P.O</td>
+							</tr>
+						@endif
+
+					@endforeach
+					
+				</tbody>
+			</table>
+
+		@else
+
+			<table id="table-data" class="table_neraca tree" border="0" width="100%">
+				<tbody>
+
+					<tr>
+						<td width="2%" style="text-align: center; color: #fff; background: #2E2E2E;">No</td>
+						<td width="20%" style="text-align: center; color: #fff; background: #2E2E2E;">Supplier</td>
+						<td width="10%" style="text-align: center; color: #fff; background: #2E2E2E;">Min. Tanggal P.O</td>
+						<td width="10%" style="text-align: center; color: #fff; background: #2E2E2E;">Maks. Jatuh Tempo</td>
+						<td width="12%" style="text-align: center; color: #fff; background: #2E2E2E;">Total Gross</td>
+						<td width="12%" style="text-align: center; color: #fff; background: #2E2E2E;">Total Net</td>
+						<td width="12%" style="text-align: center; color: #fff; background: #2E2E2E;">Total Sudah Dibayar</td>
+						<td width="12%" style="text-align: center; color: #fff; background: #2E2E2E;">Total Sisa Pelunasan</td>
+						<td width="3%" style="text-align: center; color: #fff; background: #2E2E2E;">#</td>
+						<td width="5%" style="text-align: center; color: #fff; background: #2E2E2E;">keterangan</td>
+					</tr>
+
+
+					<?php $no = 0 ?>
+					@foreach($data as $key => $dat)
+						<?php $no++ ?>
+						<tr>
+							<td style="text-align: center; border: 1px solid #ccc;">{{ $no }}</td>
+							<td style="text-align: left; border: 1px solid #ccc;">{{ $dat->s_company }} ({{ $dat->total_po }})</td>
+							<td style="text-align: center; border: 1px solid #ccc;">
+								{{ date('d/m/Y', strtotime($dat->min_tanggal)) }}
+							</td>
+							<td style="text-align: center; border: 1px solid #ccc;">
+								{{ (!is_null($dat->max_duedate)) ? date('d/m/Y', strtotime($dat->max_duedate)) :  '-' }}
+							</td>
+							<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($dat->total_gross) }}</td>
+							<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($dat->total_net) }}</td>
+							<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($dat->total_payment) }}</td>
+							<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($dat->total_net - $dat->total_payment) }}</td>
+							<?php
+								$date1 = (!is_null($dat->max_duedate)) ? date_create(date('Y-m-d', strtotime($dat->max_duedate))) : date_create(date('Y-m-d', strtotime($dat->min_tanggal)));
+								$date2 = date_create(date('Y-m-d'));
+								$diff=date_diff($date1,$date2);
+
+								$show = '#007E33'; $status = 'On Going';
+
+								if($diff->format("%a") == 0){
+									$show = '#FF8800';
+									$status = 'Warning';
+								}
+								else if($diff->format("%R") == '+'){
+									$show = '#CC0000';
+									$status = 'Overdue';
+								}else if($diff->format("%R") == '-'){
+									if($diff->format("%a") <= 3){
+										$show = '#FF8800';
+										$status = 'Warning';
+									}
+								}
+
+								if($dat->total_net - $dat->total_payment == 0){
+									$show = '#fff';
+									$status = 'Complete';
+								}
+							?>
+
+							<td style="text-align: center; border: 1px solid #ccc; padding-top: 8px;">
+								<div style="width: 45%; height: 10px; border-radius: 50%; background: {{ $show }}; margin: 0 auto; border: 1px solid #ccc;"></div>
+							</td>
+							<td style="text-align: center; border: 1px solid #ccc; color: {{ ($status != "Complete") ? $show : '#666' }};">{{ $status }}</td>
+						</tr>
+					@endforeach
+					
+				</tbody>
+			</table>
+
+		@endif
       </div>
 
              <!-- Modal -->
