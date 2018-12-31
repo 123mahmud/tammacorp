@@ -225,35 +225,20 @@ tr.details td.details-control {
             }
       });
 
-      function hapus(a) {
-        var parent = $(a).parents('tr');
-        var id = $(parent).find('.d_id').text();
-        var cfrm = confirm('Apakah Anda Yakin, Data yang Dihapus Tidak Bisa Dikembalikan ?');
+      function hapus(conteks, a) {
+        $(conteks).attr('disabled', 'disabled');
 
-        if(cfrm){
-          $.ajax({
-               type: "get",
-               url: '{{ route('hapus_akun') }}',
-               data: {id},
-               success: function(data){
-                  if(data.status == 1) {
-                    location.reload();
-                  }else if(data.status == 2){
-                    alert('Akun Yang Dipilih Tidak Bisa Dihapus Karena Digunakan Sebagai Data Jurnal...')
-                  }else if(data.status == 2){
-                    alert('Ups. Data Akun Yang Dipilih Tidak Bisa Kami Temukan...')
-                  }
-                  
-               },
-               error: function(){
-                iziToast.warning({
-                  icon: 'fa fa-times',
-                  message: 'Terjadi Kesalahan!',
-                });
-               },
-               async: false
-             });  
-        }
+        $.ajax({
+          type: "post",
+          url: '{{ route('hapus_akun') }}',
+          data: {id: a, _token: '{{ csrf_token() }}'},
+          success: function(response){
+            console.log(response);
+          },
+          error: function (e){
+            alert(e)
+          }
+        })
       }
 
 

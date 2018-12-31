@@ -9,6 +9,11 @@ use DB;
 
 class analisa_keuangan_controller extends Controller
 {
+
+    public function index(){
+        return view('keuangan.analisa_keuangan.index');
+    }
+
     public function hutang_piutang(){
         $today = date('Y-m').'-01';
         $date = [];
@@ -334,5 +339,44 @@ class analisa_keuangan_controller extends Controller
         // return json_encode($data);
 
         return view("keuangan.analisa_keuangan.analisa_cashflow.index", compact('data', 'request'));
+    }
+
+    public function aset(Request $request){
+
+        $data = [];
+        $bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        for ($i=0; $i < 12; $i++) {
+
+            $periode = $request->tahun.'-'.($i+1).'-01';
+            $valueable = 0;
+
+            $keyword = DB::table('d_akun')
+                        ->leftJoin('d_akun_saldo', 'd_akun.id_akun', '=', 'd_akun_saldo.id_akun')
+                        ->where(DB::raw('substring(group_neraca, 1, 1)'), 'A')
+                        ->where('type_akun', 'DETAIL')
+                        ->where('d_akun_saldo.periode', $periode)
+                        ->select('d_akun.id_akun', DB::raw('coalesce(d_akun_saldo.saldo_akhir, 0) as saldo_akhir'), 'd_akun.posisi_akun')
+                        ->get();
+
+            foreach ($keyword as $key => $neraca) {
+
+                $added = $neraca->saldo_akhir;
+
+                if($neraca->posisi_akun == 'K')
+                    $added = ($neraca->saldo_akhir * -1);
+
+                $valueable += $added;
+
+            }
+
+            $data[$i] = [
+                'periode'           => $periode,
+                'namaBulan'         => $bulan[$i],
+                'nilaiSaldo'        => $valueable
+            ];
+        }
+
+        return view("keuangan.analisa_keuangan.analisa_pertumbuhan_aset.index", compact('request', 'data'));
     }
 }

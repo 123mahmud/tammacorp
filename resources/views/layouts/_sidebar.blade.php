@@ -1036,30 +1036,25 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                {{-- @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
+
+                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
-                                        <a href="{{ url('/keuangan/analisaprogress/analisa') }}"><span
-                                                    class="submenu-title">Analisa PTP</span><span
+                                        <a href="{{ route('analisa_keuangan.index') }}"><span
+                                                    class="submenu-title">Analisa Keuangan</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif --}}
-                                @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
+                                @endif
+
+                                {{-- @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit / OCF">
                                         <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
                                                     class="submenu-title">Analisa Net Profit / OCF</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
-                                @endif
-                                {{-- @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2b') ? 'active' : '' || Request::is('keuangan/analisaocf/analisa2b/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisaocf/analisa2b') }}"><span
-                                                    class="submenu-title">Analisa OCF Terhadap Net Profit</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
                                 @endif --}}
                                 {{-- @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisaaset/analisa3a') }}"><span
+                                        <a href="#" data-toggle="modal" data-target="#modal_analisa_pertumbuhan_aset"><span
                                                     class="submenu-title">Analisa Pertumbuhan Aset</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
@@ -1071,12 +1066,11 @@
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif --}}
-                                @endif
-                                @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisacashflow/analisa4') ? 'active' : '' || Request::is('keuangan/analisacashflow/*') ? 'active' : '' }}">
                                         <a href="#" data-toggle="modal" data-target="#modal_analisa_cashflow"><span
                                                     class="submenu-title">Analisa Cashflow</span><span class="hidden">Keuangan</span></a>
-                                    </li>
+                                    </li> --}}
                                 {{-- @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa CSI">
                                         <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
