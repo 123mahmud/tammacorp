@@ -234,4 +234,9 @@ class LapPembelianController extends Controller
       $value = str_replace(['Rp', '\\', '.', ' '], '', $value);
       return (int)str_replace(',', '.', $value);
     }
+
+    public function getLapSupplier()
+    {
+      // $pemSupplier = 
+    }
 }

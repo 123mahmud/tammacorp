@@ -126,6 +126,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/lap-pembelian/print-lap-beli/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_beli');
     Route::get('/purchasing/lap-pembelian/get-bharian-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@get_bharian_by_tgl');
     Route::get('/purchasing/lap-pembelian/print-lap-bharian/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_bharian');
+    Route::get('/purchasing/lap-supplier/get-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@getLapSupplier');
 //end purchasing
     /*Inventory*/
     Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
