@@ -53,21 +53,21 @@ class HutangController extends Controller
                 ->select('d_purchasing.*', 'd_supplier.s_id', 'd_supplier.s_company')
                 ->where('d_pcs_status', '=', "CF")
                 ->where('d_pcs_sisapayment', '>', 0)
-                ->whereBetween('d_pcs_date_created', [$tanggal1, $tanggal2])
-                ->orderBy('d_pcs_date_created', 'DESC')
+                ->whereBetween('s_date', [$tanggal1, $tanggal2])
+                ->orderBy('s_date', 'DESC')
                 ->get();
 
       return DataTables::of($data)
       ->addIndexColumn()
       ->editColumn('tglPo', function ($data) 
       {
-          if ($data->d_pcs_date_created == null) 
+          if ($data->s_date == null) 
           {
               return '-';
           }
           else 
           {
-              return $data->d_pcs_date_created ? with(new Carbon($data->d_pcs_date_created))->format('d M Y') : '';
+              return $data->s_date ? with(new Carbon($data->s_date))->format('d M Y') : '';
           }
       })
       ->editColumn('tglSelesai', function ($data) 
@@ -211,64 +211,139 @@ class HutangController extends Controller
   }
 
   public function laporanHutang(Request $request){
-    // $durasi        = $request->durasi_1_arus_kas_bulan."-01";
-    // $durasi_before = date('Y-m-d', strtotime('-1 months', strtotime($durasi)));
-    // $durasi_end    = date('Y-m-d', strtotime('+1 months', strtotime($durasi)));
-        $y = substr($request->periode1, -4);
-        $m = substr($request->periode1, -7, -5);
-        $d = substr($request->periode1, 0, 2);
-        $tanggal1 = $y . '-' . $m . '-' . $d;
 
-        $y2 = substr($request->periode2, -4);
-        $m2 = substr($request->periode2, -7, -5);
-        $d2 = substr($request->periode2, 0, 2);
-        $tanggal2 = $y2 . '-' . $m2 . '-' . $d2;
-    if ($request->cus == 'all') {
-      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa','s_jatuh_tempo')
-        ->join('m_customer','m_customer.c_id','=','s_customer')
-        ->where('s_channel','GR')
-        ->where('s_sisa','!=','0.00')
-        ->whereBetween('s_jatuh_tempo', [$tanggal1, $tanggal2])
-        ->get();
+    // return json_encode($request->all());
+
+    $date_1 = explode('-', $request->periode1)[2].'-'.explode('-', $request->periode1)[1].'-'.explode('-', $request->periode1)[0];
+    $date_2 = explode('-', $request->periode2)[2].'-'.explode('-', $request->periode2)[1].'-'.explode('-', $request->periode2)[0];
+
+    if($request->type == 'detail'){
+
+      $supplier = DB::table('d_sales')
+                      ->join('m_customer', 'd_sales.s_customer', '=', 'm_customer.c_id')
+                      ->distinct('d_sales.s_customer')
+                      ->select('d_sales.s_customer', 'c_name')
+                      ->where('s_date', '>=', $date_1)
+                      ->where('s_date', '<', $date_2)
+                      ->where('s_channel', 'GR');
+
+      $data = DB::table('d_sales')
+                    ->where('s_date', '>=', $date_1)
+                    ->where('s_date', '<', $date_2)
+                    ->where('s_channel', 'GR');
+
+      if($request->cus != 'all'){
+        $supplier = $supplier->where('d_sales.s_customer', $request->supplier);
+        $data = $data->where('d_sales.s_customer', $request->supplier);
+      }
+
+      if($request->jenis != 'all'){
+        if($request->jenis == 'payed'){
+          $data = $data->where('d_sales.s_sisa', 0);
+          $supplier = $supplier->where('d_sales.s_sisa', 0);
+        }else{
+          $data = $data->where('d_sales.s_sisa', '!=', 0);
+          $supplier = $supplier->where('d_sales.s_sisa', '!=', 0);
+        }
+      }
+
+      $supplier = $supplier->get();
+      $data = $data->orderBy('d_sales.s_date')->get();
+
+      // return json_encode($supplier);
+
+      return view('keuangan.l_hutangpiutang.laporan_hutang', compact('supplier', 'data', 'request', 'date_1', 'date_2'));
+
     }else{
-      $hutang = d_sales::select('c_name','c_code','c_type','c_region','c_hp1','c_hp2','c_region','c_address','s_sisa')
-        ->join('m_customer','m_customer.c_id','=','s_customer')
-        ->where('s_channel','GR')
-        ->where('s_sisa','!=','0.00')
-        ->where('s_customer',$request->cus)
-        ->whereBetween('s_jatuh_tempo', [$tanggal1, $tanggal2])
-        ->get();
+
+      $data = DB::table('d_sales')
+                      ->join('m_customer', 'm_customer.c_id', '=', 'd_sales.s_customer')
+                      ->distinct('d_sales.s_customer')
+                      ->where('s_date', '>=', $date_1)
+                      ->where('s_date', '<', $date_2)
+                      ->where('s_channel', 'GR')
+                      ->select(
+                          'c_name', 
+                          DB::raw('sum(s_gross) as total_gross'),
+                          DB::raw('sum(s_net) as total_net'),
+                          DB::raw('sum(s_sisa) as total_sisa'),
+                          DB::raw('count(s_id) as total_po'),
+                          DB::raw('min(s_date) as min_tanggal'),
+                          DB::raw('max(s_jatuh_tempo) as max_duedate')
+                        )->groupBy('c_name');
+
+      $data = $data->get();
+      // return json_encode($data);
+      return view('keuangan.l_hutangpiutang.laporan_hutang', compact('data', 'request', 'date_1', 'date_2'));
+
     }
-    return view('keuangan.l_hutangpiutang.laporan_hutang',compact('hutang'));
+
   }
 
   public function laporanPiutang(Request $request){
-        //dd($request->all());
-        $y = substr($request->periode1, -4);
-        $m = substr($request->periode1, -7, -5);
-        $d = substr($request->periode1, 0, 2);
-        $tanggal3 = $y . '-' . $m . '-' . $d;
 
-        $y2 = substr($request->periode2, -4);
-        $m2 = substr($request->periode2, -7, -5);
-        $d2 = substr($request->periode2, 0, 2);
-        $tanggal4 = $y2 . '-' . $m2 . '-' . $d2;
-        if ($request->cus == 'all') {
-          $piutang = d_purchasing::join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
-            ->where('d_pcs_sisapayment','!=','0.00')
-            ->whereBetween('d_pcs_duedate', [$tanggal3, $tanggal4])
-            ->get();
+    // return json_encode($request->all());
+    
+    $date_1 = explode('-', $request->periode1)[2].'-'.explode('-', $request->periode1)[1].'-'.explode('-', $request->periode1)[0];
+    $date_2 = explode('-', $request->periode2)[2].'-'.explode('-', $request->periode2)[1].'-'.explode('-', $request->periode2)[0];
+
+    if($request->type == 'detail'){
+
+      $supplier = DB::table('d_purchasing')
+                      ->join('d_supplier', 'd_supplier.s_id', '=', 'd_purchasing.s_id')
+                      ->distinct('d_purchasing.s_id')
+                      ->select('d_purchasing.s_id', 's_company')
+                      ->where('s_date', '>=', $date_1)
+                      ->where('s_date', '<', $date_2);
+
+      $data = DB::table('d_purchasing')
+                    ->where('s_date', '>=', $date_1)
+                    ->where('s_date', '<', $date_2);
+
+      if($request->supplier != 'all'){
+        $supplier = $supplier->where('d_purchasing.s_id', $request->supplier);
+        $data = $data->where('d_purchasing.s_id', $request->supplier);
+      }
+
+      if($request->jenis != 'all'){
+        if($request->jenis == 'payed'){
+          $data = $data->where('d_purchasing.d_pcs_sisapayment', 0);
+          $supplier = $supplier->where('d_purchasing.d_pcs_sisapayment', 0);
         }else{
-          $piutang = d_purchasing::join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
-            ->where('d_pcs_sisapayment','!=','0.00')
-            ->where('d_purchasing.s_id',$request->cus)
-            ->whereBetween('d_pcs_duedate', [$tanggal3, $tanggal4])
-            ->get();
+          $data = $data->where('d_purchasing.d_pcs_sisapayment', '!=', 0);
+          $supplier = $supplier->where('d_purchasing.d_pcs_sisapayment', '!=', 0);
         }
+      }
 
+      $supplier = $supplier->get();
+      $data = $data->orderBy('d_purchasing.s_date')->get();
 
+      // return json_encode($supplier);
 
-    return view('keuangan.l_hutangpiutang.laporan_piutang',compact('piutang'));
+      return view('keuangan.l_hutangpiutang.laporan_piutang',compact('supplier', 'data', 'request', 'date_1', 'date_2'));
+
+    }else{
+
+      $data = DB::table('d_purchasing')
+                      ->join('d_supplier', 'd_supplier.s_id', '=', 'd_purchasing.s_id')
+                      ->distinct('d_purchasing.s_id')
+                      ->where('s_date', '>=', $date_1)
+                      ->where('s_date', '<', $date_2)
+                      ->select(
+                          's_company', 
+                          DB::raw('sum(d_pcs_total_gross) as total_gross'),
+                          DB::raw('sum(d_pcs_total_net) as total_net'),
+                          DB::raw('sum(d_pcs_payment) as total_payment'),
+                          DB::raw('count(d_pcs_id) as total_po'),
+                          DB::raw('min(s_date) as min_tanggal'),
+                          DB::raw('max(d_pcs_duedate) as max_duedate')
+                        )->groupBy('s_company');
+
+      $data = $data->get();
+      // return json_encode($data);
+      return view('keuangan.l_hutangpiutang.laporan_piutang',compact('data', 'request', 'date_1', 'date_2'));
+
+    }
   }
 
 }
