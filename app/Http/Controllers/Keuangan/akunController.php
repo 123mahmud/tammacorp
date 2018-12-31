@@ -11,7 +11,8 @@ use Session;
 
 class akunController extends Controller
 {
-    public function index(){	
+    public function index()
+    {	
     	return view('master.datakeuangan.datakeuangan.keuangan');
     }
 
@@ -57,7 +58,7 @@ class akunController extends Controller
                     ->addColumn('action', function ($data) {
 
                              return  '<button id="edit" onclick="edit(this)" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                            <button id="delete" onclick="hapus(this)" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                                            <button id="delete" onclick="hapus(this, \''.$data->id_akun.'\')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
                     })
                     ->addColumn('none', function ($data) {
                         return '-';
@@ -203,18 +204,11 @@ class akunController extends Controller
     }
 
     public function hapus_akun(Request $request){
+        // return json_encode($request->all());
 
-        $on_jurnal = DB::table('d_jurnal_dt')->where('jrdt_acc', $request->id)->first();
-        $akun = DB::table('d_akun')->where('id_akun', $request->id)->first();
+        $data = DB::table('d_akun')->where('id_akun', $request->id)->first();
 
-        if($on_jurnal)
-            return response()->json(['status'=>2]);
+        if($data)
 
-        if($akun)
-            return response()->json(['status'=>3]);
-
-    	DB::table("d_akun")->where("id_akun", $request->id)->delete();
-
-    	return response()->json(['status'=>1]);
     }
 }

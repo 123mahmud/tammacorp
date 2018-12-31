@@ -1060,10 +1060,15 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         // analisa keuangan start
+
+            Route::get('/keuangan/analisa-keuangan/', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@index')->name('analisa_keuangan.index');
+
             Route::get('/keuangan/analisahutangpiutang/analisa9', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@hutang_piutang');
 
             Route::get('/keuangan/analisaocf/analisa2', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@ocf_profit');
             Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@cashflow')->name('analisa.cashflow');
+
+            Route::get('/keuangan/analisaaset/analisa3a', 'Keuangan\analisa_keuangan\analisa_keuangan_controller@aset')->name('analisa.aset');
 
     // keuangan end
 
@@ -1074,8 +1079,6 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::get('/keuangan/analisaocf/analisa2', 'Keuangan\KeuanganController@analisa2');
     Route::get('/keuangan/analisaocf/analisa2a', 'Keuangan\KeuanganController@analisa2a');
     Route::get('/keuangan/analisaocf/analisa2b', 'Keuangan\KeuanganController@analisa2b');
-    // Route::get('/keuangan/analisaaset/analisa3', 'Keuangan\KeuanganController@analisa3');
-    Route::get('/keuangan/analisaaset/analisa3a', 'Keuangan\KeuanganController@analisa3a');
     Route::get('/keuangan/analisaaset/analisa3b', 'Keuangan\KeuanganController@analisa3b');
     Route::get('/keuangan/analisaindex/analisa5', 'Keuangan\KeuanganController@analisa5');
     Route::get('/keuangan/analisarasio/analisa6', 'Keuangan\KeuanganController@analisa6');
@@ -1268,7 +1271,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/master/datakeuangan/simpan', 'Keuangan\akunController@save_akun')->name('simpan_akun');
     Route::get('/master/datakeuangan/edit_akun', 'Keuangan\akunController@edit_akun')->name('edit_akun');
     Route::post('/master/datakeuangan/update', 'Keuangan\akunController@update_akun')->name('update_akun');
-    Route::get('/master/datakeuangan/hapus_akun', 'Keuangan\akunController@hapus_akun')->name('hapus_akun');
+    Route::post('/master/datakeuangan/hapus_akun', 'Keuangan\akunController@hapus_akun')->name('hapus_akun');
 // akun keuangan route end
 
 // transaksi keuangan
