@@ -30,8 +30,34 @@ class PegawaiController extends Controller
         $data = collect($list);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
-                         return  '<button id="edit" onclick="edit('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                        <button id="delete" onclick="hapus('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                    if ($data->c_isactive == 'TRUE') {
+                        return  '<div class="text-center">'.
+                                    '<button id="edit" 
+                                        onclick="edit('.$data->c_id.')" 
+                                        class="btn btn-warning btn-sm" 
+                                        title="Edit">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                    </button>'.'
+                                    <button id="status'.$data->c_id.'" 
+                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        class="btn btn-primary btn-sm" 
+                                        title="Aktif">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                    </button>'.
+                                '</div>';
+                    }
+                    else
+                    {
+                        return  '<div class="text-center">'.
+                                    '<button id="status'.$data->c_id.'" 
+                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        class="btn btn-danger btn-sm" 
+                                        title="Tidak Aktif">
+                                        <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                    </button>'.
+                                '</div>';
+                    }
+                    
                 })
                 ->addColumn('none', function ($data) {
                     return '-';
@@ -42,14 +68,40 @@ class PegawaiController extends Controller
 
     public function pegawaiPro(){
         $list = DB::table('m_pegawai_pro')
-                ->select('m_pegawai_pro.*', 'm_jabatan_pro.c_jabatan_pro')
+                ->select('m_pegawai_pro.*', 'm_jabatan_pro.c_jabatan_pro','c_isactive')
                 ->join('m_jabatan_pro', 'm_pegawai_pro.c_jabatan_pro_id', '=', 'm_jabatan_pro.c_id')
                 ->get();
         $data = collect($list);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
-                         return  '<button id="edit" onclick="editPro('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                        <button id="delete" onclick="hapusPro('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                    if ($data->c_isactive == 'TRUE') {
+                        return  '<div class="text-center">'.
+                                    '<button id="edit" 
+                                        onclick="editPro('.$data->c_id.')" 
+                                        class="btn btn-warning btn-sm" 
+                                        title="Edit">
+                                        <i class="glyphicon glyphicon-pencil"></i>
+                                    </button>'.'
+                                    <button id="status'.$data->c_id.'" 
+                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        class="btn btn-primary btn-sm" 
+                                        title="Aktif">
+                                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                                    </button>'.
+                                '</div>';
+                    }
+                    else
+                    {
+                        return  '<div class="text-center">'.
+                                    '<button id="status'.$data->c_id.'" 
+                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        class="btn btn-danger btn-sm" 
+                                        title="Tidak Aktif">
+                                        <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                    </button>'.
+                                '</div>';
+                    }
+                    
                 })
                 ->addColumn('none', function ($data) {
                     return '-';

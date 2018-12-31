@@ -1,7 +1,7 @@
 <div class="modal fade" id="myModal" role="dialog">
   <div class="modal-dialog modal-lg">
       
-    <form id="myForm" onsubmit="return false">
+    
       <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header" style="background-color: #e77c38;">
@@ -12,7 +12,7 @@
           <div class="modal-body">
 
             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 15px;padding-top: 15px; ">               
-
+              <form id="myForm" onsubmit="return false">
               <div class="col-md-4 col-sm-4 col-xs-12">
                 <label class="tebal">Nama Item<font color="red">*</font></label>
               </div>
@@ -43,7 +43,7 @@
                   </select>
                 </div>
               </div>
-
+            </form>
             </div>
 
             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:20px;padding-top:20px; ">
@@ -75,9 +75,9 @@
                      <thead align="right">
                       <tr>
                         <th width="10%">Kode</th>
-                        <th width="70%">Nama Item</th>
-                        <th width="5%">Jumlah</th>  
-                        <th width="10%">Satuan</th>                           
+                        <th width="55%">Nama Item</th>
+                        <th width="20%">Jumlah</th>  
+                        <th width="5%">Satuan</th>                           
                         <th width="10%"></th>
                       </tr>
                      </thead> 
@@ -97,7 +97,7 @@
            
         </div>
 
-      </form>   
+         
       
     </div>
 

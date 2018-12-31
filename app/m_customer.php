@@ -13,10 +13,14 @@ class m_customer extends Model
     						'c_name', 
     						'c_birthday',
                             'c_email', 
-    						'c_hp', 
+    						'c_hp1',
+    						'c_hp2', 
+    						'c_region',
                             'c_address',
+                            'c_group',
                             'c_class',
-                            'c_type'];
+                            'c_type',
+                        	'c_isactive'];
                             
     //public $timestamps = false;
     const CREATED_AT = 'c_insert';

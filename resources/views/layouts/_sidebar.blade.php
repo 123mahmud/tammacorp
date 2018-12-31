@@ -6,7 +6,7 @@
                         class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
                         class="icon-bar"></span><span class="icon-bar"></span></button>
             <a id="logo" href="{{ url('/home') }}" class="navbar-brand"><span class="fa fa-rocket"></span><span
-                        class="logo-text">TammaFood</span><span style="display: none;"
+                        class="logo-text">{{App\Http\Controllers\SystemController::getProfile()->cp_name}}</span><span style="display: none;"
                                                                 class="logo-text-icon">µ</span></a></div>
         <div class="topbar-main"><a id="menu-toggle" href="#" class="hidden-xs"><i class="fa fa-bars"></i></a>
 
@@ -202,6 +202,10 @@
                                         Master Formula
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Group Harga Khusus','ma_read'))
+                                        Group Harga Khusus
+                                    @endif
+
                             </span>
                                 <!-- End Filter Menu Submenu -->
                             </a>
@@ -326,9 +330,9 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Master Formula','ma_read'))
-                                    <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('master/masterproduksi/index') }}"><span
+                                @if(Auth::user()->punyaAkses('Group Harga Khusus','ma_read'))
+                                    <li class="{{ Request::is('master/grouphargakhusus/index') ? 'active' : '' || Request::is('master/grouphargakhusus/*') ? 'active' : '' }}">
+                                        <a href="{{ url('master/grouphargakhusus/index') }}"><span
                                                     class="submenu-title">Group Harga Khusus</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
@@ -1121,7 +1125,7 @@
                     @endif
                     @if(Auth::user()->punyaAkses('System','ma_read'))
                         <div class="clearfix"></div>
-                        <li class="{{Request::is('system') ? 'active' : '' || Request::is('system/*') ? 'active' : '' }}">
+                        <li class="{{Request::is('profil-perusahaan') ? 'active' : '' || Request::is('system') ? 'active' : '' || Request::is('system/*') ? 'active' : '' }}">
                             <a href="#"><i class="fa fa-cog fa-fw fa-spin">
                                     <div class="icon-bg bg-green"></div>
                                 </i><span class="menu-title">System</span><span class="fa arrow"></span>
@@ -1162,9 +1166,9 @@
                                     </li>
                                 @endif --}}
                                 @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
-                                    <li class="{{ Request::is('system/profilperusahaan/profil') ? 'active' : '' || Request::is('system/profilperusahaan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/system/profilperusahaan/profil') }}"><span
-                                                    class="submenu-title">Profil Perusahaan</span><span class="hidden">System</span></a>
+                                    <li class="{{ Request::is('profil-perusahaan') ? 'active' : '' || Request::is('profil-perusahaan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('profil-perusahaan') }}"><span class="submenu-title">Profil Perusahaan</span>
+                                            <span class="hidden">System</span></a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Tahun Finansial','ma_read'))

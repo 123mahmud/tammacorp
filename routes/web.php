@@ -140,7 +140,7 @@ Route::group(['middleware' => 'auth'], function () {
     //mahmud stock opname
     Route::get('/inventory/stockopname/opname', 'Inventory\stockOpnameController@index');
     Route::get('/inventory/namaitem/autocomplite/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
-    Route::get('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
+    Route::post('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
     Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}', 'Inventory\stockOpnameController@history');
     Route::get('/inventory/namaitem/detail', 'Inventory\stockOpnameController@getOPname');
     // Ari Print Stock OPname
@@ -393,11 +393,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSgrosir/ubahstatus', 'Penjualan\POSGrosirController@statusMove');
     Route::get('/penjualan/POSgrosir/showNote', 'Penjualan\POSGrosirController@showNote');
     Route::get('/pembayaran/POSgrosir/changestatus', 'Penjualan\POSGrosirController@changeStatus');
+    Route::get('penjualan/POSgrosir/grosir/autocompleteitem/group/{cus}/{item}', 'Penjualan\POSGrosirController@setGroupPrice');
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
 //mutasi Stok Mahmud
     Route::get('/penjualan/mutasi/stock/grosir-retail/{tgl1}/{tgl2}', 'Penjualan\mutasiStokController@tableGrosirRetail');
 //End Mutasi
+//Monitoring Ilham
+    Route::get('penjualan/mutasi/monitoring-penjualan/{tampil}', 'PenjualanController@dataMonitor');
+    Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
+    Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
+//end Monitoring
 //Monitoring Order Mahmud
     Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');
     Route::get('/penjualan/monitoringorder/nota/{id}', 'Penjualan\MonitoringOrderController@bukaNota');
@@ -412,8 +418,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/laporanGrosir/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@getDataLaporan');
 // Ari
     Route::get('/penjualan/retail/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanRetailController@print_laporan_penjualan');
+    Route::get('/penjualan/retail/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanRetailController@pdf_laporan_penjualan');
     Route::get('/penjualan/grosir/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@print_laporan_penjualan');
+    Route::get('/penjualan/grosir/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanGrosirController@pdf_laporan_penjualan');
     Route::get('/penjualan/semua/print_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@print_laporan_penjualan');
+    Route::get('/penjualan/semua/pdf_laporan_penjualan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@pdf_laporan_penjualan');
 
     Route::get('/penjualan/laporan_penjualan/get-data-laporan/{tgl1}/{tgl2}', 'Penjualan\LaporanPenjualanController@get_data');
     Route::get('/penjualan/laporan_penjualan/laporan_penjualan', 'Penjualan\LaporanPenjualanController@laporan_penjualan');
@@ -574,9 +583,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-tunjangan-pegman/{id}', 'Hrd\GajiController@editPegManData');
     Route::post('/hrd/payroll/update-tunjangan-peg/{id}', 'Hrd\GajiController@updateTunjanganPeg');
     //payroll produksi Mahmud
-        Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
-        Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
-        Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
+    Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
+    Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
+     Route::get('/hrd/payroll/table/gaji/GR/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapanGr');
+    Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
+    Route::get('/hrd/payroll/lihat-gaji/GR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGajiGR');
+    Route::get('/hrd/payroll/pilih/absensi/{pilih}', 'Hrd\PayrollProduksiController@pilihAbsensi');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');
@@ -1393,6 +1405,26 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
     Route::get('/produksi/spk/print/{spk_id}', 'Produksi\spkProductionController@print')->name('spk_print');
-
 // irA
+
+    //company profile
+    Route::get('profil-perusahaan', 'SystemController@profil');
+    Route::post('profil-perusahaanu/update', 'SystemController@updateProfil');
+
+    //Harga Khusus Mahmud
+    Route::get('/master/grouphargakhusus/index', 'Master\hargaKhususController@index');
+    Route::get('/master/grouphargakhusus/tablegroup/{id}', 'Master\hargaKhususController@tableGroup');
+    Route::get('/master/grouphargakhusus/mastergroup', 'Master\hargaKhususController@tableMasterGroup');
+    Route::get('/master/grouphargakhusus/tambahgroup', 'Master\hargaKhususController@tambahGroup');
+    Route::get('/master/grouphargakhusus/tambahgroup/baru', 'Master\hargaKhususController@insertGroup');
+    Route::get('/master/grouphargakhusus/ubahstatusgrup/{id}', 'Master\hargaKhususController@moveStatusGroup');
+    Route::get('/master/grouphargakhusus/editgroupharga/{id}', 'Master\hargaKhususController@editGroup');
+    Route::get('/master/grouphargakhusus/updategroup/{id}', 'Master\hargaKhususController@updateGroup');
+    Route::get('/master/grouphargakhusus/autocomplete', 'Master\hargaKhususController@autocomplete');
+    Route::get('/master/grouphargakhusus/tambahItemHarga', 'Master\hargaKhususController@saveHargaItem');
+    Route::get('/master/grouphargakhusus/itemharga/hapus/{id}', 'Master\hargaKhususController@deleteItemHarga');
+    
+    
+    //End
+
 }); // End Route Groub middleware auth

@@ -14,16 +14,24 @@
     </div>
 
     <div class="col-md-2 col-sm-12 col-xs-12">
+        <label class="tebal">Pilih Jenis :</label>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12">
+        <div class="form-group" align="pull-left">
+            <select class="form-control input-sm" id="pilihAbsensi" name="pilihAbsensi"
+            style="width: 100%;" onchange="pilihAbsensi()">
+                    <option class="form-control" value="GR">Garapan</option>
+                    <option class="form-control" value="HR">Garapan - Harian</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-md-2 col-sm-12 col-xs-12">
         <label class="tebal">Jabatan Pegawai :</label>
     </div>
     <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="form-group" align="pull-left">
-          <select class="form-control input-sm" id="jabatanGaji"
-          name="c_jabatan_pro_id" style="width: 100%;" onclick="cariGaji()">
-              @foreach ($c_jabatan_pro as $data)
-                  <option class="form-control pemilik-gudang" value="{{ $data->c_id }}">
-                      - {{ $data->c_jabatan_pro }}</option>
-              @endforeach
+          <select class="form-control input-sm" id="jabatanGaji" onchange="cariGaji()">
           </select>
         </div>
     </div>
@@ -31,7 +39,7 @@
     <div class="col-md-2 col-sm-12 col-xs-12">
         <label class="tebal">Tanggal :</label>
     </div>
-    <div class="col-md-4 col-sm-12 col-xs-12">
+    <div class="col-md-3 col-sm-12 col-xs-12">
         <div class="form-group" align="pull-left">
           <div class="input-daterange input-group">
              <input id="tanggal03" class="form-control input-sm datepicker1"
@@ -43,7 +51,7 @@
         </div>
     </div>
 
-    <div class="col-md-1 col-sm-12 col-xs-12" align="left">
+    <div class="col-md-1 col-sm-12 col-xs-12" align="right">
       <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"
       onclick="cariGaji()">
           <strong>

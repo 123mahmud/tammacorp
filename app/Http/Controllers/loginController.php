@@ -71,7 +71,7 @@ class loginController extends Controller {
                  ]);              
 
                     Auth::login($user);
-                     $dataInfo=['status'=>'sukses','nama'=>$user->m_name];            
+                     $dataInfo=['status'=>'sukses','nama'=>$user->m_name];
                       return json_encode($dataInfo);
             } else {
               

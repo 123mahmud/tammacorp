@@ -1,5 +1,6 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 15px;padding-top: 15px; ">
+            <form id="myFormUpdate">
             @foreach ($data as $item)
               <div class="col-md-4 col-sm-4 col-xs-12">
                 <label class="tebal">Nama Item<font color="red">*</font></label>
@@ -31,12 +32,11 @@
                 <div class="form-group">  
                   <select class="form-control" id="satuan-itemEdit" name="satuanItem[]">
                     <option value="{{ $item->i_sat1 }}">{{ $item->m_sname }}</option>
-                    <option value="{{ $item->i_sat2 }}">{{ $item->m_sname }}</option>
-                    <option value="{{ $item->i_sat3 }}">{{ $item->m_sname }}</option>
                   </select>
                 </div>
               </div>
               @endforeach 
+              </form>
             </div>
             
             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:20px;padding-top:20px; ">
@@ -208,4 +208,15 @@
     });
     tamp = names;
   }
+
+    $(".modal").on("hidden.bs.modal", function(){
+      //remove span class in modal detail
+      tableResepEdit.row().clear().draw(false);
+      var inputs = document.getElementsByClassName( 'i_id' ),
+      names  = [].map.call(inputs, function( input ) {
+          return input.value;
+      });
+      tamp = names;
+    });
+
 </script>

@@ -30,7 +30,7 @@
 
                         <ul id="generalTab" class="nav nav-tabs">
                             <li class="active"><a href="#alert-tab" data-toggle="tab" onclick="cariData()">Data Pegawai Produksi</a></li>
-                            <li><a href="#note-tab" data-toggle="tab" onclick="cariGaji()">Payroll Pegawai Produksi</a></li>
+                            <li><a href="#note-tab" data-toggle="tab" onclick="cariGaji();pilihAbsensi()">Payroll Pegawai Produksi</a></li>
                         </ul>
                         <div id="generalTabContent" class="tab-content responsive">
 
@@ -250,50 +250,126 @@
 
                         function cariGaji() {
                             $('#dataGaji').dataTable().fnDestroy();
-                            var Rumah = $('#rumahGaji').val();
-                            var Jabatan = $('#jabatanGaji').val();
-                            var tgl1 = $('#tanggal03').val();
-                            var tgl2 = $('#tanggal04').val();
-                            var tableActual = $('#dataGaji').DataTable({
-                              "scrollY": 500,
-                              "scrollX": true,
-                              "paging":  false,
-                              "autoWidth": false,
-                                "ajax": {
-                                    url: baseUrl + "/hrd/payroll/table/gaji/" + Rumah + "/" + Jabatan + "/" + tgl1 + "/" + tgl2,
-                                    type: 'GET'
-                                },
-                                "columns": [
-                                    {"data" : "DT_Row_Index", orderable: false, searchable: false, "width" : "5%"},
-                                    {"data": 'kode', name: 'kode', "width": "20%"},
-                                    {"data": 'pegawai', name: 'pegawai', "width": "55%"},
-                                    {"data": 'gaji', name: 'gaji', "width": "20%"},
-                                ],
-                                "language": {
-                                    "searchPlaceholder": "Cari Data",
-                                    "emptyTable": "Tidak ada data",
-                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                    "sSearch": '<i class="fa fa-search"></i>',
-                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                    "infoEmpty": "",
-                                    "paginate": {
-                                        "previous": "Sebelumnya",
-                                        "next": "Selanjutnya",
-                                    }
-                                }
-                            });
+                            var pilih = $('#pilihAbsensi').val()
+                            if (pilih == 'GR') 
+                            {
+                              var Rumah = $('#rumahGaji').val();
+                              var Jabatan = $('#jabatanGaji').val();
+                              var tgl1 = $('#tanggal03').val();
+                              var tgl2 = $('#tanggal04').val();
+                              var tableActual = $('#dataGaji').DataTable({
+                                "scrollY": 500,
+                                "scrollX": true,
+                                "paging":  false,
+                                "autoWidth": false,
+                                  "ajax": {
+                                      url: baseUrl + "/hrd/payroll/table/gaji/GR/" + Rumah + "/" + Jabatan + "/" + tgl1 + "/" + tgl2,
+                                      type: 'GET'
+                                  },
+                                  "columns": [
+                                      {"data" : "DT_Row_Index", orderable: false, searchable: false, "width" : "5%"},
+                                      {"data": 'kode', name: 'kode', "width": "20%"},
+                                      {"data": 'pegawai', name: 'pegawai', "width": "55%"},
+                                      {"data": 'gaji', name: 'gaji', "width": "20%"},
+                                  ],
+                                  "language": {
+                                      "searchPlaceholder": "Cari Data",
+                                      "emptyTable": "Tidak ada data",
+                                      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                                      "sSearch": '<i class="fa fa-search"></i>',
+                                      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                                      "infoEmpty": "",
+                                      "paginate": {
+                                          "previous": "Sebelumnya",
+                                          "next": "Selanjutnya",
+                                      }
+                                  }
+                              });
+                            }
+                            else
+                            {
+                              var Rumah = $('#rumahGaji').val();
+                              var Jabatan = $('#jabatanGaji').val();
+                              var tgl1 = $('#tanggal03').val();
+                              var tgl2 = $('#tanggal04').val();
+                              var tableActual = $('#dataGaji').DataTable({
+                                "scrollY": 500,
+                                "scrollX": true,
+                                "paging":  false,
+                                "autoWidth": false,
+                                  "ajax": {
+                                      url: baseUrl + "/hrd/payroll/table/gaji/" + Rumah + "/" + Jabatan + "/" + tgl1 + "/" + tgl2,
+                                      type: 'GET'
+                                  },
+                                  "columns": [
+                                      {"data" : "DT_Row_Index", orderable: false, searchable: false, "width" : "5%"},
+                                      {"data": 'kode', name: 'kode', "width": "20%"},
+                                      {"data": 'pegawai', name: 'pegawai', "width": "55%"},
+                                      {"data": 'gaji', name: 'gaji', "width": "20%"},
+                                  ],
+                                  "language": {
+                                      "searchPlaceholder": "Cari Data",
+                                      "emptyTable": "Tidak ada data",
+                                      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                                      "sSearch": '<i class="fa fa-search"></i>',
+                                      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                                      "infoEmpty": "",
+                                      "paginate": {
+                                          "previous": "Sebelumnya",
+                                          "next": "Selanjutnya",
+                                      }
+                                  }
+                              });
+                            }
                         }
+                            
 
                         function detailGaji(id, tgl1, tgl2){
                           var tgl1 = $('#tanggal03').val();
                           var tgl2 = $('#tanggal04').val();
+                          var pilih = $('#pilihAbsensi').val()
+                          if (pilih == 'GR') 
+                          {
+                            $.ajax({
+                              url : baseUrl + "/hrd/payroll/lihat-gaji/GR/"+ id + "/" + tgl1 + "/" + tgl2,
+                              type: "get",
+                              success: function(response){
+                                $('#view-payroll').html(response);
+                              }
+                            })
+                          }
+                          else
+                          {
+                            $.ajax({
+                              url : baseUrl + "/hrd/payroll/lihat-gaji/"+ id + "/" + tgl1 + "/" + tgl2,
+                              type: "get",
+                              success: function(response){
+                                $('#view-payroll').html(response);
+                              }
+                            })
+                          }
+                          
+                        }
+
+                        function pilihAbsensi(){
+                          var pilih = $('#pilihAbsensi').val()
                           $.ajax({
-                            url : baseUrl + "/hrd/payroll/lihat-gaji/"+ id + "/" + tgl1 + "/" + tgl2,
+                            url : baseUrl + "/hrd/payroll/pilih/absensi/" + pilih,
                             type: "get",
                             success: function(response){
-                              $('#view-payroll').html(response);
+                              var key = 1;
+                              Object.keys(response).forEach(function(){
+                                $('#jabatanGaji').append($('<option>', { 
+                                  value: response[key-1].c_id,
+                                  text : response[key-1].c_jabatan_pro
+                                  }));
+                                key++;
+                              });
+
                             }
                           })
+                          $("#jabatanGaji").empty();
+                          cariGaji();
                         }
 
                     </script>

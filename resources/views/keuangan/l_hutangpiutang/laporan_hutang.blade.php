@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Laporan Buku Besar</title>
+		<title>Laporan Piutang Customer</title>
 		<meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -198,7 +198,7 @@
         <table width="100%" border="0" style="border-bottom: 1px solid #333;" id="contentnya">
           <thead>
             <tr>
-              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Hutang Customer</th>
+              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Piutang Customer</th>
             </tr>
 
             <tr>
@@ -218,9 +218,9 @@
 				        <th width="5%">Type</th>
 				        <th width="15%">No. Hp</th>
 				        <th width="10%">Wilayah</th>
-				        <th width="30%">Alamat</th>
-				        <th width="30%">Jatuh Tempo</th>
-				        <th width="20%">Hutang</th>
+				        <th width="25%">Alamat</th>
+				        <th width="10%">Jatuh Tempo</th>
+				        <th width="15%">Piutang</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -246,7 +246,7 @@
 			<table width="100%" border="0" class="table-info">
 				<thead>
 					<tr>
-						<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Hutang Customer  &nbsp; &nbsp; </td>
+						<td style="text-align: right; font-weight: 400; padding: 0px 5px 0px 0px; border-top: 0px solid #efefef;">Laporan Piutang Customer  &nbsp; &nbsp; </td>
 					</tr>
 				</thead>
 			</table>

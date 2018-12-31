@@ -424,12 +424,13 @@ class spkProductionController extends Controller
             'pp_qty',
             'spk_code',
             'spk_id',
+            'spk_hpp',
             'spk_status')
             ->where('spk_id', $request->x)
             ->join('m_item', 'i_id', '=', 'spk_item')
             ->join('d_productplan', 'pp_id', '=', 'spk_ref')
             ->get();
-
+      
         $formula = spk_formula::select('i_code',
             'i_name',
             'fr_value',

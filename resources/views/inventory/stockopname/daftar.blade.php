@@ -55,7 +55,7 @@
         <div class="col-md-12">
             <div class="col-md-12 tamma-bg"  style="margin-top: 5px;margin-bottom: 5px;
             margin-bottom: 40px; padding-bottom:20px;padding-top:20px;">
-              <div class="col-md-6">
+              <div class="col-md-4">
                   <label class="control-label tebal" for="">Masukan Kode / Nama</label>
                   <div class="input-group input-group-sm" style="width: 100%;">
                       <input type="text" id="namaitem" name="item" class="form-control">
@@ -76,6 +76,12 @@
                   <div class="input-group input-group-sm" style="width: 100%;">
                       <input type="text" id="s_qtykw" name="s_qtykw" class="form-control" readonly>
                       <input type="hidden" id="s_qty" name="s_qty" class="form-control" readonly>
+                  </div>
+              </div>
+              <div class="col-md-2">
+                  <label class="control-label tebal" name="qty">Satuan</label>
+                  <div class="input-group input-group-sm" style="width: 100%;">
+                      <input type="text" id="satuan" name="satuan" class="form-control" readonly>
                   </div>
               </div>
             </div>

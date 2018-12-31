@@ -9,7 +9,8 @@ class m_jabatan_pro extends Model
   protected $table = 'm_jabatan_pro';
   protected $primaryKey = 'c_id';
   protected $fillable = [ 'c_id',
-                          'c_jabatan_pro'
+                          'c_jabatan_pro',
+                          'c_isactive'
                         ];
 
   public $incrementing = false;
