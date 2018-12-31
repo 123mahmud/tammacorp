@@ -293,12 +293,12 @@ class HutangController extends Controller
                       ->join('d_supplier', 'd_supplier.s_id', '=', 'd_purchasing.s_id')
                       ->distinct('d_purchasing.s_id')
                       ->select('d_purchasing.s_id', 's_company')
-                      ->where('s_date', '>=', $date_1)
-                      ->where('s_date', '<', $date_2);
+                      ->where('d_pcs_date_created', '>=', $date_1)
+                      ->where('d_pcs_date_created', '<', $date_2);
 
       $data = DB::table('d_purchasing')
-                    ->where('s_date', '>=', $date_1)
-                    ->where('s_date', '<', $date_2);
+                    ->where('d_pcs_date_created', '>=', $date_1)
+                    ->where('d_pcs_date_created', '<', $date_2);
 
       if($request->supplier != 'all'){
         $supplier = $supplier->where('d_purchasing.s_id', $request->supplier);
@@ -316,7 +316,7 @@ class HutangController extends Controller
       }
 
       $supplier = $supplier->get();
-      $data = $data->orderBy('d_purchasing.s_date')->get();
+      $data = $data->orderBy('d_purchasing.d_pcs_date_created')->get();
 
       // return json_encode($supplier);
 
@@ -327,15 +327,15 @@ class HutangController extends Controller
       $data = DB::table('d_purchasing')
                       ->join('d_supplier', 'd_supplier.s_id', '=', 'd_purchasing.s_id')
                       ->distinct('d_purchasing.s_id')
-                      ->where('s_date', '>=', $date_1)
-                      ->where('s_date', '<', $date_2)
+                      ->where('d_pcs_date_created', '>=', $date_1)
+                      ->where('d_pcs_date_created', '<', $date_2)
                       ->select(
                           's_company', 
                           DB::raw('sum(d_pcs_total_gross) as total_gross'),
                           DB::raw('sum(d_pcs_total_net) as total_net'),
                           DB::raw('sum(d_pcs_payment) as total_payment'),
                           DB::raw('count(d_pcs_id) as total_po'),
-                          DB::raw('min(s_date) as min_tanggal'),
+                          DB::raw('min(d_pcs_date_created) as min_tanggal'),
                           DB::raw('max(d_pcs_duedate) as max_duedate')
                         )->groupBy('s_company');
 
