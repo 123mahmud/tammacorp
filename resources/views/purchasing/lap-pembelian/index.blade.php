@@ -129,6 +129,12 @@
       $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
     });
 
+    $('#tanggal6').change(function(event) {
+      tanggal6 = $(this).val();
+      $('#btn_print_namasupp a').remove();
+      $('#btn_print_namasupp').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-pembelian/'+tanggal5+'/'+tanggal6+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    });
+
      // fungsi jika modal hidden
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_row');
@@ -136,6 +142,7 @@
     
     $('#btn_print').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-beli/'+tanggal1+'/'+tanggal2+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
     $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    $('#btn_print_namasupp').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-pembelian/'+tanggal5+'/'+tanggal6+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
 
     laporanByTanggal();
   });//end jquery
@@ -269,19 +276,16 @@
           targets: 0 ,
           className: 'center'
         }, 
-        {
-          targets: 6 ,
-          className: 'right format_money'
-        },
       ],
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
-        {"data" : "d_pcsh_code", "width" : "10%"},
-        {"data" : "m_name", "width" : "15%"},
-        {"data" : "d_pcsh_peminta", "width" : "20%"},
-        {"data" : "d_pcsh_keperluan", "width" : "20%"},
-        {"data" : "tglOrder", "width" : "10%"},
-        {"data" : "nett", "width" : "20%"}
+        {"data" : "s_company", "width" : "20%"},
+        {"data" : "d_pcs_date_created", "width" : "10%"},
+        {"data" : "i_name", "width" : "20%"},
+        {"data" : "d_pcsdt_price", "width" : "15%"},
+        {"data" : "d_pcsdt_qtyconfirm", "width" : "10%"},
+        {"data" : "m_sdetname", "width" : "10%"},
+        {"data" : "total-harga", "width" : "15%"}
       ],
       "responsive": true,
       "lengthMenu": [[-1], ["All"]],

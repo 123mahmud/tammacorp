@@ -29,7 +29,7 @@
         </button>
       </div>
 
-      <div id="btn_print_harian" class="col-md-3 col-sm-3 col-xs-12" align="right">
+      <div id="btn_print_namasupp" class="col-md-3 col-sm-3 col-xs-12" align="right">
       </div>
 
       <div class="col-md-12 col-sm-12 col-xs-12">
@@ -39,7 +39,6 @@
               <tr>
                 <th>No</th>
                 <th>Nama Supplier</th>
-                <th>Staff</th>
                 <th>Tanggal</th>
                 <th>Nama Item</th>
                 <th>Harga</th>

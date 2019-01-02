@@ -63,6 +63,8 @@
                         </tbody>
                     </table>
                 </div>
+                <label class="pull-left" style="color: red;">*jika total belanja melebihi sisa pagu maka<br> 
+                status penjualan menunggu persetujuan dari atasan (Pending).</label>
             </div>
 
             <div class="modal-footer">
