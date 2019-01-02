@@ -283,11 +283,24 @@
                                                             <input type="hidden" id="id_cus" name="id_cus"
                                                                    class="form-control">
                                                             <span class="input-group-btn">
-                              <button type="button" class="btn btn-info btn-sm btn_simpan" data-toggle="modal"
-                                      data-target="#myModal">
-                                  <i class="fa fa-plus"></i>
-                              </button>
-                            </span>
+                                                              <button type="button" class="btn btn-info btn-sm btn_simpan" data-toggle="modal"
+                                                                      data-target="#myModal">
+                                                                  <i class="fa fa-plus"></i>
+                                                              </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
+                                                        <label for="s_pagu" class="control-label tebal">Pagu
+                                                            </label>
+                                                        <div class="input-group input-group-sm" style="width: 100%;">
+                                                            <input id="s_pagu" type="hidden" name="s_pagu"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
+                                                            <input id="s_paguRp" type="text" name="s_paguRp"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
+                                                            
                                                         </div>
                                                     </div>
                                                     <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
@@ -299,12 +312,18 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
-                                                        <label for="tgl_faktur" class="control-label tebal">Tanggal
-                                                            Faktur</label>
+                                                        <label for="tgl_faktur" class="control-label tebal">Sisa Pagu
+                                                            </label>
                                                         <div class="input-group input-group-sm" style="width: 100%;">
-                                                            <input id="tgl_faktur" type="text" name="s_date"
+                                                            <input id="tgl_faktur" type="hidden" name="s_date"
                                                                    class="form-control" readonly="readonly"
                                                                    value="{{ date('d-m-Y') }}">
+                                                            <input id="s_sisa_pagu" type="hidden" name="s_sisa_pagu"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
+                                                            <input id="s_sisa_pagu_rp" type="text" name="s_sisa_pagu_rp"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
@@ -590,6 +609,16 @@
                 // endDate: 'today'
             }).datepicker("setDate", nd7);
 
+            $('#proses').on('shown.bs.modal', function () {
+                $('#bayar').focus();
+                autoStatusFinal();
+            }) 
+
+            $('#prosesProgres').on('shown.bs.modal', function () {
+                $('#bayarDP').focus();
+                autoStatusProgres();
+            }) 
+
             $("#nama-customer").autocomplete({
                 source: baseUrl + '/penjualan/POSretail/retail/autocomplete',
                 minLength: 1,
@@ -599,6 +628,8 @@
                     $('#nama-customer').val(ui.item.label);
                     $('#alamat2').val(ui.item.alamat);
                     $('#c-class').val(ui.item.c_class);
+                    var idCus = ui.item.id;
+                    cariPagu(idCus);
                     $("input[name='item']").focus();
                 }
             });
@@ -718,6 +749,9 @@
                     $('#nama-customer').val(ui.item.label);
                     $('#alamat2').val(ui.item.alamat);
                     $('#c-class').val(ui.item.c_class);
+                    $('#s_pagu').val();
+                    var idCus = ui.item.id;
+                    cariPagu(idCus);
                 }
             });
             $("#alamat2").val('');
@@ -726,6 +760,10 @@
             $("#s_qty").val('');
             $("#qty").val('');
             $("#namaitem").val('');
+            $('#s_pagu').val('');
+            $('#s_sisa_pagu').val('');
+            $('#s_paguRp').val('');
+            $('#s_sisa_pagu_rp').val('');
             tableDetail.row().clear().draw(false);
             var inputs = document.getElementById('kode'),
                 names = [].map.call(inputs, function (input) {
@@ -733,6 +771,58 @@
                 });
             tamp = names;
         });
+
+        function cariPagu(id)
+        {
+            $.ajax({
+              url : baseUrl + "/penjualan/POSgrosir/grosir/caripagu/" + id,
+              type: 'GET',
+              success:function(response)
+              {
+                $('#s_pagu').val(response[0]);
+                $('#s_sisa_pagu').val(response[1]);
+                var setRpPagu = SetFormRupiah($('#s_pagu').val());
+                $('#s_paguRp').val(setRpPagu);
+                var setRpSisa = SetFormRupiah($('#s_sisa_pagu').val());
+                $('#s_sisa_pagu_rp').val(setRpSisa);
+                
+              }
+            }); 
+        }
+
+        function autoStatusFinal()
+        {
+           var sisaPagu =  $('#s_sisa_pagu').val();
+           var totalBelanja = convertToAngka($('#totalPayment').val());
+           if (sisaPagu != '0') 
+            {
+                if (totalBelanja >= sisaPagu) 
+                {
+                    $('.simpanFinal').html('Pending');
+                }
+                else
+                {
+                    $('.simpanFinal').html('Proses');
+                }
+            }
+        }
+
+        function autoStatusProgres()
+        {
+            var sisaPagu =  $('#s_sisa_pagu').val();
+            var totalBelanja = convertToAngka($('#totalPayment').val());
+            if (sisaPagu != '0') 
+            {
+                if (totalBelanja >= sisaPagu) 
+                {
+                    $('.simpanProgres').html('Pending');
+                }
+                else
+                {
+                    $('.simpanProgres').html('Proses');
+                }
+            }
+        }
 
         //namaitem
         $("#namaitem").focus(function () {
@@ -747,17 +837,23 @@
                     $('#detailnama').val(ui.item.nama);
                     $('#namaitem').val(ui.item.label);
                     $('#satuan').val(ui.item.satuan);
-                    if (ui.item.s_qty == null) {
+                    if (ui.item.s_qty == null) 
+                    {
                         $('#s_qty').val('0');
-                    } else {
+                    } 
+                    else 
+                    {
                         $('#s_qty').val(ui.item.s_qty);
                     }
+                    $('#s_qtycon').val(ui.item.s_qtycon);
                     $('#qty').val(ui.item.qty);
                     $('#i-type').val(ui.item.i_type);
                     $('#qty').val('');
+                    $('#s_qtyConvert').val('');
                     $("input[name='qty']").focus();
                 }
             });
+            $('#s_qtycon').val('');
             $("#s_qty").val('');
             $("#qty").val('');
             $("#namaitem").val('');

@@ -127,6 +127,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/lap-pembelian/get-bharian-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@get_bharian_by_tgl');
     Route::get('/purchasing/lap-pembelian/print-lap-bharian/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_bharian');
     Route::get('/purchasing/lap-supplier/get-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@getLapSupplier');
+    Route::get('/purchasing/lap-pembelian/print-lap-pembelian/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_pembelian');
 //end purchasing
     /*Inventory*/
     Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
@@ -395,8 +396,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSgrosir/showNote', 'Penjualan\POSGrosirController@showNote');
     Route::get('/pembayaran/POSgrosir/changestatus', 'Penjualan\POSGrosirController@changeStatus');
     Route::get('penjualan/POSgrosir/grosir/autocompleteitem/group/{cus}/{item}', 'Penjualan\POSGrosirController@setGroupPrice');
+    Route::get('penjualan/POSgrosir/grosir/caripagu/{cus}', 'Penjualan\POSGrosirController@setPaguCus');
+    
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
+
 //mutasi Stok Mahmud
     Route::get('/penjualan/mutasi/stock/grosir-retail/{tgl1}/{tgl2}', 'Penjualan\mutasiStokController@tableGrosirRetail');
 //End Mutasi

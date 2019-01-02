@@ -235,8 +235,77 @@ class LapPembelianController extends Controller
       return (int)str_replace(',', '.', $value);
     }
 
-    public function getLapSupplier()
+    public function getLapSupplier($tgl1, $tgl2)
     {
-      // $pemSupplier = 
+      $tanggal1 = date('Y-m-d',strtotime($tgl1));
+      $tanggal2 = date('Y-m-d',strtotime($tgl2));
+      $pembelian = d_purchasing_dt::select('s_company',
+                                            'd_pcs_date_created',
+                                            'i_name',
+                                            'd_pcsdt_price',
+                                            'd_pcsdt_qtyconfirm',
+                                            'm_sdetname')
+        ->join('d_purchasing','d_purchasing.d_pcs_id','=','d_purchasing_dt.d_pcs_id')
+        ->join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
+        ->join('m_item','m_item.i_id','=','d_purchasing_dt.i_id')
+        ->join('m_satuan','m_satuan.m_sid','d_purchasing_dt.d_pcsdt_sat')
+        ->whereBetween('d_pcs_date_created', [$tanggal1, $tanggal2])
+        ->get();
+        
+        return DataTables::of($pembelian)
+        ->addIndexColumn()
+        ->editColumn('d_pcs_date_created', function ($data)
+        {
+            return date('d M Y', strtotime($data->d_pcs_date_created));
+        })
+        ->editColumn('d_pcsdt_qtyconfirm', function ($data)
+        {
+            return '<div>
+                      <span class="pull-right">
+                        '.number_format( $data->d_pcsdt_qtyconfirm ,0,',','.').'
+                      </span>
+                    </div>';
+        })
+        ->editColumn('d_pcsdt_price', function ($data)
+        {
+            return '<div>
+                      <span class="pull-right">
+                        '.number_format( $data->d_pcsdt_price ,2,',','.').'
+                      </span>
+                    </div>';
+        })
+        ->addColumn('total-harga', function ($data)
+        {
+            return '<div>
+                      <span class="pull-right">
+                        '.number_format( $data->d_pcsdt_price * $data->d_pcsdt_qtyconfirm ,2,',','.').'
+                      </span>
+                    </div>';
+        })
+
+        ->rawColumns(['d_pcs_date_created',
+                      'd_pcsdt_qtyconfirm',
+                      'd_pcsdt_price',
+                      'total-harga'])
+        ->make(true);
+    }
+
+    public function print_laporan_pembelian($tgl1, $tgl2)
+    {
+      $pembelian = d_purchasing_dt::select('s_company',
+                                            'd_pcs_date_created',
+                                            'i_name',
+                                            'd_pcsdt_price',
+                                            'd_pcsdt_qtyconfirm',
+                                            'm_sdetname')
+        ->join('d_purchasing','d_purchasing.d_pcs_id','=','d_purchasing_dt.d_pcs_id')
+        ->join('d_supplier','d_supplier.s_id','=','d_purchasing.s_id')
+        ->join('m_item','m_item.i_id','=','d_purchasing_dt.i_id')
+        ->join('m_satuan','m_satuan.m_sid','d_purchasing_dt.d_pcsdt_sat')
+        ->whereBetween('d_pcs_date_created', [$tanggal1, $tanggal2])
+        ->get();
+
+        return view('purchasing/lap-pembelian/print-lap-belanjasupplier', $pembelian);
+
     }
 }

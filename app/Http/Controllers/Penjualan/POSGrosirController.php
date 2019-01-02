@@ -334,6 +334,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
+                         's_qtyConvert'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -361,6 +362,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
+                         's_qtyConvert'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -388,6 +390,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -674,9 +677,37 @@ class POSGrosirController extends Controller
       }
 
       // return json_encode(array_merge($akun));
+      $pagu = $request->s_pagu + ($this->konvertRp($request->s_net));
+      $limitHutang = m_customer::select('c_pagu')
+        ->where('c_id',$request->id_cus)
+        ->first();
 
-    // end nota fatkur
-    $customer = DB::table('d_sales')
+      if ($pagu >= $limitHutang) 
+      {
+        $customer = DB::table('d_sales')
+        ->insert([
+          's_id' => $s_id,
+          's_channel' => 'GR',
+          's_date' => date('Y-m-d',strtotime($request->s_date)),
+          's_note' => $fatkur,
+          's_staff' => $request->s_staff,
+          's_customer' => $request->id_cus,
+          's_gross' => ($this->konvertRp($request->s_gross)),
+          's_disc_percent' => ($this->konvertRp($request->s_disc_percent)),
+          's_disc_value' => ($this->konvertRp($request->s_disc_value)),
+          's_tax' => $request->s_pajak,
+          's_net' => ($this->konvertRp($request->s_net)),
+          's_tax' => $request->s_pajak,
+          's_jatuh_tempo' => $tglJT,
+          's_sisa' => $sisa,
+          's_status' => 'PN',
+          's_insert' => Carbon::now(),
+          's_update' => $request->s_update
+        ]);
+      }
+      else
+      {
+        $customer = DB::table('d_sales')
         ->insert([
           's_id' => $s_id,
           's_channel' => 'GR',
@@ -696,6 +727,9 @@ class POSGrosirController extends Controller
           's_insert' => Carbon::now(),
           's_update' => $request->s_update
         ]);
+      }
+    // end nota fatkur
+    
 
     $s_id = DB::table('d_sales')->max('s_id');
 
@@ -736,24 +770,28 @@ class POSGrosirController extends Controller
         'data' => $e
         ]);
       }
+      if ($pagu <= $limitHutang) 
+      {
+        $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
+        $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
 
-      $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
-      $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
+        if($request->sp_method[0] == '1'){
+          $state = 'KM';
+          $sts = 'Cash';
+        }
+        else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
+          $state = 'BM';
+          $sts = 'Transfer';
+        }
 
-      if($request->sp_method[0] == '1'){
-        $state = 'KM';
-        $sts = 'Cash';
+        $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
+
+        if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
+          $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
+        }
       }
-      else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
-        $state = 'BM';
-        $sts = 'Transfer';
-      }
 
-      $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
-
-      if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
-        $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
-      }
+      
 
       // return $state_jurnal;
 
@@ -2101,5 +2139,30 @@ class POSGrosirController extends Controller
         }
 
     }
+  }
+
+  public function setPaguCus($idCus)
+  {
+    $pagu = m_customer::select('c_pagu')
+      ->where('c_id',$idCus)
+      ->first();
+
+    $cariSisa = d_sales::select('s_sisa')
+      ->where('s_customer',$idCus)
+      ->where('s_sisa','!=','0.00')
+      ->get();
+    $totalSisa = 0;
+    for ($i=0; $i <count($cariSisa) ; $i++) 
+    { 
+      
+      $totalSisa += $cariSisa[$i]->s_sisa;
+    }
+    $sisaPagu = $pagu->c_pagu - $totalSisa;
+    $gabung = [
+       $pagu->c_pagu,
+       $sisaPagu
+    ];
+
+      return Response::json($gabung);
   }
 }
