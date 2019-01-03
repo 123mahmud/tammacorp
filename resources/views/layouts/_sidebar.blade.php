@@ -706,6 +706,10 @@
                                         Mutasi Stock & Retail
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Konfirmasi Pagu','ma_read'))
+                                        Konfirmasi Pagu
+                                    @endif
+
 
                             </span>
 

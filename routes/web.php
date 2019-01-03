@@ -397,7 +397,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/pembayaran/POSgrosir/changestatus', 'Penjualan\POSGrosirController@changeStatus');
     Route::get('penjualan/POSgrosir/grosir/autocompleteitem/group/{cus}/{item}', 'Penjualan\POSGrosirController@setGroupPrice');
     Route::get('penjualan/POSgrosir/grosir/caripagu/{cus}', 'Penjualan\POSGrosirController@setPaguCus');
-    
+    Route::get('/penjualan/POSgrosir/get-tanggaljual/pagu/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getPagu');
+    Route::get('/penjualan/POSgrosir/getpagu/{id}', 'Penjualan\POSGrosirController@appPagu');
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
 

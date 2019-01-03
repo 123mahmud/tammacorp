@@ -94,6 +94,9 @@
                             <li><a href="#label-badge-tab" data-toggle="tab" onclick="cariTanggalJual()">Item
                                     Penjualan</a></li>
                             <li><a href="#nav-stock" data-toggle="tab">Stock Grosir</a></li>
+                            @if(Auth::user()->punyaAkses('Konfirmasi Pagu','ma_read'))
+                            <li><a href="#nav-pagu" data-toggle="tab" onclick="cariTanggalPagu()">Konfirmasi Pagu</a></li>
+                            @endif
                         </ul>
                         <div id="generalTabContent" class="tab-content responsive">
                             <!-- Trigger the modal with a button -->
@@ -548,6 +551,16 @@
                             <!--end div label-badge-tab -->
 
                             @include('penjualan.POSgrosir.StokGrosir.stock')
+                            <!-- div nav-pagu -->
+                            <div id="nav-pagu" class="tab-pane fade">
+                                <div class="row">
+                                    <div class="panel-body">
+
+                                        @include('/penjualan/POSgrosir/konfirmasi_pagu')
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end div nav-pagu -->
                         </div>
                     </div>
                     <!-- End div generalTab -->
@@ -2066,6 +2079,78 @@
                                 url: baseUrl + "/penjualan/POSretail/retail/distroy/" + id,
                                 success: function () {
                                     tableNota.ajax.reload();
+                                }
+                            });
+                        }
+                    ],
+                    [
+                        '<button>Close</button>',
+                        function (instance, toast) {
+                            instance.hide({
+                                transitionOut: 'fadeOutUp'
+                            }, toast);
+                        }
+                    ]
+                ]
+            });
+        }
+
+        function cariTanggalPagu()
+        {
+            var tgl1 = $('#tanggal5').val();
+            var tgl2 = $('#tanggal6').val();
+            tableKonfirmPagu = $('#tableKonfirmPagu').DataTable({
+                "responsive": true,
+                "destroy": true,
+                "processing": true,
+                "serverside": true,
+                "ajax": {
+                    url: baseUrl + "/penjualan/POSgrosir/get-tanggaljual/pagu/" + tgl1 + '/' + tgl2,
+                    type: 'GET'
+                },
+                "columns": [
+                    {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+                    {"data": "sDate", "width": "10%"},
+                    {"data": "s_note", "width": "15%"},
+                    {"data": "c_name", "width": "30%"},
+                    {"data": "sGross", "width": "20%"},
+                    {"data": "status", "width": "10%"},
+                    {"data": "action", orderable: false, searchable: false, "width": "10%"},
+                ],
+                "language": {
+                    "searchPlaceholder": "Cari Data",
+                    "emptyTable": "Tidak ada data",
+                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                    "sSearch": '<i class="fa fa-search"></i>',
+                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                    "infoEmpty": "",
+                    "paginate": {
+                        "previous": "Sebelumnya",
+                        "next": "Selanjutnya",
+                    }
+                }
+            });
+        }
+
+        function konfirmPagu(idCus){
+            iziToast.show({
+                color: 'red',
+                title: 'Peringatan',
+                message: 'Apakah anda yakin!',
+                position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                progressBarColor: 'rgb(0, 255, 184)',
+                buttons: [
+                    [
+                        '<button>Ok</button>',
+                        function (instance, toast) {
+                            instance.hide({
+                                transitionOut: 'fadeOutUp'
+                            }, toast);
+                            $.ajax({
+                                type: 'get',
+                                url: baseUrl + "/penjualan/POSgrosir/getpagu/" + idCus,
+                                success: function () {
+                                    tableKonfirmPagu.ajax.reload();
                                 }
                             });
                         }
