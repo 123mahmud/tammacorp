@@ -200,6 +200,7 @@
         event.preventDefault();
         var button_id = $(this).attr('id');
         $('#row'+button_id+'').remove();
+        hitungJumlah();
     });
 
     //event change, apabila status !fn = maka btn_remove disabled
@@ -225,6 +226,7 @@
     //event change, apabila status !fn = maka btn_remove disabled
     $('#status_order_confirm').change(function(event) {
       //alert($(this).val());
+      hitungJumlah();
       if($(this).val() != "CF")
       {
         $('.btn_remove_row_order').attr('disabled', true);
@@ -541,6 +543,10 @@
         $('#lblTglOrderConfirm').text(data.header[0].d_pcs_date_created);
         $('#lblStaffOrderConfirm').text(data.header[0].m_name);
         $('#lblSupplierOrderConfirm').text(data.header[0].s_company);
+        $('#plafonSupRp').text(data.plafonRp);
+        $('#BatasPlafonSupRp').text(data.batasPlafonRp);
+        $('#batas-plafon').val(data.batasPlafon);
+        $('#total-harga').val(data.header[0].d_pcs_total_net);
         if (data.header[0].d_pcs_method != "CASH") 
         {
           $('#append-modal-order div').remove();
@@ -584,12 +590,13 @@
                             +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                             +'<td align="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'</td>'
                             +'<td align="right" id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'</td>'
-                            +'<td align="right" id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'</td>'
+                            +'<td align="right" id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'<input type="hidden" value="'+formatAngka(data.data_isi[key-1].d_pcsdt_total)+'" name="fieldIdDtOrder[]" class="form-control input-sm hasil"/></td>'
                             +'<td align="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm" disabled>X</button></td>'
                             +'</tr>');
             i = randString(5);
             key++;
+            // hitungJumlah();
           });
           $(this).maskFunc();
         }
@@ -623,6 +630,49 @@
         alert('Error get data from ajax');
       }
     });
+  }
+
+  function hitungJumlah()
+  {
+    var inputs = document.getElementsByClassName('hasil'),
+        hasil = [].map.call(inputs, function (input) {
+            return input.value;
+        });
+    var total = 0;
+
+    for (var i = hasil.length - 1; i >= 0; i--) {
+        hasil[i] = convertToAngka(hasil[i]);
+        hasil[i] = parseInt(hasil[i]);
+        total = total + hasil[i];
+    }
+
+    // $('#total-harga').val(total);
+    $('#total-hargaKw').val(total);
+    total = convertToRupiah(total);
+    $('#total-harga').val(total);
+    konfirmasiStatus();
+  }
+
+  function konfirmasiStatus()
+  {
+      var totalHarga = parseInt($('#total-hargaKw').val());
+      var batasPlafon = parseInt($('#batas-plafon').val());
+
+      if (totalHarga > batasPlafon) 
+      {
+        iziToast.success({
+            timeout: 5000,
+            position: "topLeft",
+            icon: 'fa fa-chrome',
+            title: '',
+            message: 'Pembelian melebihi batas plafon.'
+        });
+        $('#button_confirm_order').attr('disabled', true);
+      }
+      else
+      {
+        $('#button_confirm_order').attr('disabled', false);
+      }
   }
 
   function konfirmasiReturn(id,type) 
