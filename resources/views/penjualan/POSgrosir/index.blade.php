@@ -1831,11 +1831,12 @@
             var status = $('#setStatus').val();
             var oldStatus = $('#oldStatus').val();
             var a = $('#resi').val();
+            var b = $('#ongkir').val();
             $.ajax({
                 url: baseUrl + '/pembayaran/POSgrosir/changestatus',
                 type: 'get',
                 timeout: 10000,
-                data: {id: id, status: status, oldStatus: oldStatus, resi : a},
+                data: {id: id, status: status, oldStatus: oldStatus, resi : a, ongkir : b},
                 success: function (response) {
                     if (response.status == 'sukses') {
                         cariTanggal();
