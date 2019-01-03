@@ -226,14 +226,16 @@
     //event change, apabila status !fn = maka btn_remove disabled
     $('#status_order_confirm').change(function(event) {
       //alert($(this).val());
-      hitungJumlah();
       if($(this).val() != "CF")
       {
         $('.btn_remove_row_order').attr('disabled', true);
+        $('#button_confirm_order').attr('disabled', false);
+        
       }
       else
       {
-        $('.btn_remove_row_order').attr('disabled', false); 
+        $('.btn_remove_row_order').attr('disabled', true); 
+        hitungJumlah();
       }
     });
 
@@ -546,7 +548,8 @@
         $('#plafonSupRp').text(data.plafonRp);
         $('#BatasPlafonSupRp').text(data.batasPlafonRp);
         $('#batas-plafon').val(data.batasPlafon);
-        $('#total-harga').val(data.header[0].d_pcs_total_net);
+        var d_pcs_total_net = convertDecimalToRupiah(data.header[0].d_pcs_total_net);
+        $('#total-harga').val(d_pcs_total_net);
         if (data.header[0].d_pcs_method != "CASH") 
         {
           $('#append-modal-order div').remove();
@@ -657,8 +660,17 @@
   {
       var totalHarga = parseInt($('#total-hargaKw').val());
       var batasPlafon = parseInt($('#batas-plafon').val());
-
-      if (totalHarga > batasPlafon) 
+      if (batasPlafon == '0') 
+      {
+        iziToast.success({
+            timeout: 5000,
+            position: "topLeft",
+            icon: 'fa fa-chrome',
+            title: '',
+            message: 'Tidak ada batas plafon.'
+        });
+      }
+      else if (totalHarga > batasPlafon) 
       {
         iziToast.success({
             timeout: 5000,
@@ -669,7 +681,7 @@
         });
         $('#button_confirm_order').attr('disabled', true);
       }
-      else
+      else 
       {
         $('#button_confirm_order').attr('disabled', false);
       }

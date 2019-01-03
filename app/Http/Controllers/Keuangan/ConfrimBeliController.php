@@ -449,24 +449,6 @@ class ConfrimBeliController extends Controller
         {
             $purchase->d_pcs_date_confirm = date('Y-m-d',strtotime(Carbon::now()));
             $purchase->d_pcs_status = $request->statusOrderConfirm;
-            $purchase->d_pcs_updated = Carbon::now();
-            $purchase->save();
-
-            //update table d_purchasing_dt
-            $hitung_field = count($request->fieldConfirmOrder);
-            for ($i=0; $i < $hitung_field; $i++) 
-            {
-                $purchasedt = d_purchasing_dt::find($request->fieldIdDtOrder[$i]);
-                $purchasedt->d_pcsdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmOrder[$i]);
-                $purchasedt->d_pcsdt_updated = Carbon::now();
-                $purchasedt->d_pcsdt_isconfirm = "TRUE";
-                $purchasedt->save();
-            }
-        }
-        else if ($request->statusOrderConfirm != "CF")
-        {
-            $purchase->d_pcs_date_confirm = null;
-            $purchase->d_pcs_status = $request->statusOrderConfirm;
             $purchase->d_pcs_sisapayment = $purchase->d_pcs_total_net;
             $purchase->d_pcs_updated = Carbon::now();
             $purchase->save();
@@ -478,7 +460,7 @@ class ConfrimBeliController extends Controller
                 $purchasedt = d_purchasing_dt::find($request->fieldIdDtOrder[$i]);
                 $purchasedt->d_pcsdt_qtyconfirm = str_replace('.', '', $request->fieldConfirmOrder[$i]);
                 $purchasedt->d_pcsdt_updated = Carbon::now();
-                $purchasedt->d_pcsdt_isconfirm = "FALSE";
+                $purchasedt->d_pcsdt_isconfirm = "TRUE";
                 $purchasedt->save();
             }
         }

@@ -1386,9 +1386,14 @@ class POSGrosirController extends Controller
                            <option value="RC">Received</option>
                     </select>
 
-                    <div class="input-group">
+                    <div class="input-group" style="width: 100%;margin-bottom:15px;">
                       <span class="input-group-addon">Resi</span>
                       <input type="text" name="resi" placeholder="Masukan Nomor Resi" style="width: 100%;" class="form-control input-sm" id="resi">
+                    </div>
+
+                    <div class="input-group">
+                      <span class="input-group-addon">Ongkos</span>
+                      <input type="number" name="ongkir" placeholder="Masukan Ongkos Resi" style="width: 100%;" class="form-control input-sm" id="ongkir">
                     </div>';
     }else{
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
@@ -1403,7 +1408,6 @@ class POSGrosirController extends Controller
   }
 
   public function changeStatus(Request $request){
-  // dd($request->all());
     DB::beginTransaction();
       try {
 
@@ -1520,7 +1524,8 @@ class POSGrosirController extends Controller
         ->where('s_id',$request->id)
         ->update([
           's_status' => $request->status,
-          's_resi' => $request->resi
+          's_resi' => $request->resi,
+          's_ongkir' => $request->ongkir
         ]);
 
       $nota = d_sales::select('s_note')
