@@ -108,15 +108,15 @@ class SuplierController extends Controller
                         '<label class="fa fa-pencil"></label>
                     </a>'.'
                     <a href="#" 
-                        onclick=hapus("'.$xyzab->s_id.'") 
+                        onclick=ubahStatus("'.$xyzab->s_id.'") 
                         class="btn btn-primary btn-sm" 
-                        title="Actif">'.
+                        title="Aktif">'.
                         '<label class="fa fa-check-square"></label>
                     </a>'.
                   '</div>';
         }else{
           return  '<div class="text-center">'.
-                   '<a href="#" onclick=hapus("'.$xyzab->s_id.'") class="btn btn-danger btn-sm" title="Tidak Aktif">'.
+                   '<a href="#" onclick=ubahStatus("'.$xyzab->s_id.'") class="btn btn-danger btn-sm" title="Tidak Aktif">'.
                    '<label class="fa fa-minus-square"></label></a>'.
                   '</div>';
         }
@@ -196,7 +196,7 @@ class SuplierController extends Controller
         }  
     }
 
-    public function suplier_hapus(Request $request)
+    public function ubahStatus(Request $request)
     {
       $type = DB::Table('d_supplier')->where('s_id','=',$request->id)
         ->first();

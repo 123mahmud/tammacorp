@@ -1393,7 +1393,7 @@ class POSGrosirController extends Controller
 
                     <div class="input-group">
                       <span class="input-group-addon">Ongkos</span>
-                      <input type="number" name="ongkir" placeholder="Masukan Ongkos Resi" style="width: 100%;" class="form-control input-sm" id="ongkir">
+                      <input type="text" name="ongkir" placeholder="Masukan Ongkos Resi" style="width: 100%;" class="form-control input-sm text-right" id="ongkir">
                     </div>';
     }else{
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
@@ -1525,7 +1525,8 @@ class POSGrosirController extends Controller
         ->update([
           's_status' => $request->status,
           's_resi' => $request->resi,
-          's_ongkir' => $request->ongkir
+          's_ongkir' => str_replace(',', '', $request->ongkir),
+          's_net' => DB::raw('s_net + '.str_replace(',', '', $request->ongkir))
         ]);
 
       $nota = d_sales::select('s_note')
@@ -2057,7 +2058,8 @@ class POSGrosirController extends Controller
     $sales = d_sales::select( 'c_name',
                               'c_address',
                               's_date',
-                              's_note')
+                              's_note',
+                              's_ongkir')
       ->join('m_customer','c_id','=','s_customer')
       ->where('s_id',$id)
       ->first();

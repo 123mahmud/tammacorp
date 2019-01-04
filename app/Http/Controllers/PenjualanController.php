@@ -8,6 +8,7 @@ use app\Customer;
 use Carbon\carbon;
 use DB;
 use Yajra\DataTables\DataTables;
+use App\d_sales_dt;
 
 class PenjualanController extends Controller
 {
@@ -437,5 +438,97 @@ class PenjualanController extends Controller
     public function getItem(Request $request)
     {
         dd($request);
+    }
+
+    public function getLapCustomer($tgl1, $tgl2)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+        $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+        $data = d_sales_dt::select('c_name',
+                                    's_note',
+                                    's_date',
+                                    'i_name',
+                                    'sd_qty',
+                                    'sd_price',
+                                    'sd_disc_value',
+                                    'sd_disc_percent',
+                                    'sd_disc_vpercent',
+                                    'sd_total',
+                                    's_customer')
+            ->join('d_sales','d_sales.s_id','=','d_sales_dt.sd_sales')
+            ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+            ->join('m_item','m_item.i_id','=','d_sales_dt.sd_item')
+            ->where('s_status','!=','DR')
+            ->where('s_status','!=',"PR")
+            ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
+            ->groupBy('m_item.i_id')
+            ->get();
+            // dd($data);
+        $data_sum = DB::table('d_sales_dt')
+                ->select( (DB::raw('SUM(d_sales_dt.sd_total) as total_penjualan')), 
+                          DB::raw('SUM(d_sales_dt.sd_qty) as total_qty'),
+                          DB::raw('SUM(d_sales_dt.sd_disc_vpercent) as sd_disc_vpercent'),
+                          DB::raw('SUM(d_sales_dt.sd_disc_value) as sd_disc_value') )
+                ->join('d_sales','d_sales.s_id','=','d_sales_dt.sd_sales')
+                ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+                ->join('m_item','m_item.i_id','=','d_sales_dt.sd_item')
+                ->where('s_status','!=','DR')
+                ->where('s_status','!=',"PR")
+                ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
+                ->groupBy('m_item.i_id')
+                ->get()->toArray();
+        // dd($data_sum);
+        $data_sum_all = DB::table('d_sales_dt')
+                    ->select( (DB::raw('SUM(d_sales_dt.sd_total) as total_semua_penjualan')),
+                              DB::raw('SUM(d_sales_dt.sd_disc_vpercent) as allsd_disc_vpercent'), 
+                              DB::raw('SUM(d_sales_dt.sd_disc_value) as allsd_disc_value') )
+                    ->join('d_sales','d_sales_dt.sd_sales','=','d_sales.s_id')
+                    ->join('m_item','d_sales_dt.sd_item','=','m_item.i_id')
+                    ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
+                    ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
+                    ->where('s_status','!=','DR')
+                    ->where('s_status','!=',"PR")
+                    ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
+                    ->orderBy('m_item.i_name' ,'DESC')
+                    ->get()->toArray();
+
+        $nama_array = [];
+
+        for ($i=0; $i < count($data); $i++) 
+        { 
+            $nama_array[$i] = $data[$i]->s_customer;
+        }
+       
+        $nama_array = array_unique($nama_array);
+       
+        $nama_array = array_values($nama_array);
+
+        $penjualan = [];
+
+        for($j=0; $j < count($nama_array);$j++)
+        {
+            $array = array();
+            $penjualan[$j] = $array;
+
+            for ($k=0; $k < count($data); $k++) 
+            {
+                if ($nama_array[$j]==$data[$k]->s_customer) 
+                {
+                    array_push($penjualan[$j], $data[$k]);
+                }
+
+            }
+
+        }
+        // dd($penjualan);
+        return view('penjualan.mutasistok.print_lap_customer',compact('tgl1', 'tgl2', 'data', 'penjualan', 'nama_array','data_sum_all','data_sum'));
     }
 }

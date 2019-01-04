@@ -10,6 +10,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use DataTables;
 use URL;
+use App\m_customer;
 
 // use App\mmember
 
@@ -250,6 +251,41 @@ class custController extends Controller
             ]);
         }
     }
+
+    public function ubahStatus(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = m_customer::select('c_isactive')
+            ->where('c_id',$request->id)
+            ->first();
+        
+        if ($cek->c_isactive == 'TRUE') 
+        {
+            m_customer::where('c_id',$request->id)
+                ->update([
+                    'c_isactive' => 'FALSE'                    
+                ]);
+        }
+        else
+        {
+            m_customer::where('c_id',$request->id)
+                ->update([
+                    'c_isactive' => 'TRUE'
+                ]);
+        }
+        DB::commit();
+            return response()->json([
+                'status' => 'sukses'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+    }    
 
 
 }

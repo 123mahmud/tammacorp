@@ -57,7 +57,7 @@ class LaporanGrosirController extends Controller
        return date('d M Y', strtotime($data->s_date));
     })
     ->addColumn('j_tempo', function($data){
-        return ''; 
+       return date('d M Y', strtotime($data->s_jatuh_tempo)); 
     })
     ->editColumn('kurs', function ($data){
        return '1';
