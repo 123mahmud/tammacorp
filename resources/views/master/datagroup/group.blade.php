@@ -126,53 +126,61 @@ tr.details td.details-control {
             ]
       });
 
-   function hapus(a) {
-     iziToast.show({
-       color: 'red',
-       title: 'Peringatan',
-       message: 'Apakah anda yakin!',
-       position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-       progressBarColor: 'rgb(0, 255, 184)',
-       buttons: [
-         [
-           '<button>Ok</button>',
-           function (instance, toast) {
-             instance.hide({
-               transitionOut: 'fadeOutUp'
-             }, toast);
-             var parent = $(a).parents('tr');
-             var id = $(parent).find('.d_id').text();
-             console.log(id);
-          $.ajax({
-               type: "get",
-               url: baseUrl + '/master/datagroup/hapus_group/'+a,
-               success: function(data){
-                  if (data.status == 1) {
-                      tableGroup.ajax.reload();
+      function ubahStatus(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/datagroup/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_customer').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                   }
-
-               },
-               error: function(){
-                iziToast.warning({
-                  icon: 'fa fa-times',
-                  message: 'Terjadi Kesalahan!',
-                });
-               },
-               async: false
-             });
-           }
-         ],
-         [
-           '<button>Close</button>',
-            function (instance, toast) {
-             instance.hide({
-               transitionOut: 'fadeOutUp'
-             }, toast);
-           }
-         ]
-       ]
-     });
-        }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_customer').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
 
 
          function edit(a) {

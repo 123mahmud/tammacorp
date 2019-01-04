@@ -10,16 +10,16 @@ use DataTables;
 class DivisiposController extends Controller
 {
     public function index(){
-    	
-    	return view('master.datadivisi_posisi.index');
+      
+      return view('master.datadivisi_posisi.index');
     }
 
     public function tableDivisi(){
 
-    	$divisi = DB::table('m_divisi')->get();
-    	// dd($divisi);
+      $divisi = DB::table('m_divisi')->get();
+      // dd($divisi);
         return Datatables::of($divisi) 
-    		->addIndexColumn()          
+        ->addIndexColumn()          
             ->addColumn('action', function ($data) {
               if ($data->c_isactive == 'TRUE') 
               {
@@ -31,7 +31,7 @@ class DivisiposController extends Controller
                                     <i class="glyphicon glyphicon-pencil"></i>
                             </button>'.'
                             <button id="status'.$data->c_id.'" 
-                                onclick="ubahStatus('.$data->c_id.')" 
+                                onclick="ubahStatusDiv('.$data->c_id.')" 
                                 class="btn btn-primary btn-sm" 
                                 title="Aktif">
                                 <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -42,7 +42,7 @@ class DivisiposController extends Controller
               {
                 return  '<div class="text-center">'.
                             '<button id="status'.$data->c_id.'" 
-                                onclick="ubahStatus('.$data->c_id.')" 
+                                onclick="ubahStatusDiv('.$data->c_id.')" 
                                 class="btn btn-danger btn-sm" 
                                 title="Tidak Aktif">
                                 <i class="fa fa-minus-square" aria-hidden="true"></i>
@@ -56,39 +56,39 @@ class DivisiposController extends Controller
     }
 
     public function editDivisi($id){
-    	$divisi = DB::table('m_divisi')->where('c_id',$id)->first();
+      $divisi = DB::table('m_divisi')->where('c_id',$id)->first();
 
-    	return view('master.datadivisi_posisi.edit_divisi',compact('divisi'));
+      return view('master.datadivisi_posisi.edit_divisi',compact('divisi'));
     }
 
     public function updateDivisi(Request $request, $id){
-    	DB::beginTransaction();
+      DB::beginTransaction();
             try {
-    	DB::table('m_divisi')->where('c_id',$id)
-    		->update([
-    			'c_divisi' => $request->c_divisi,
-    			'c_divisi_akronim' =>$request->c_divisi_akronim,
-    			'updated_at' => Carbon::now()
-    		]);
-    	DB::commit();
-	    return response()->json([
-	          'status' => 'sukses'
-	      ]);
-	    } catch (\Exception $e) {
-	    DB::rollback();
-	    return response()->json([
-	        'status' => 'gagal',
-	        'data' => $e
-	      ]);
-	    }
+      DB::table('m_divisi')->where('c_id',$id)
+        ->update([
+          'c_divisi' => $request->c_divisi,
+          'c_divisi_akronim' =>$request->c_divisi_akronim,
+          'updated_at' => Carbon::now()
+        ]);
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
 
     }
 
     public function tablePosisi(){
-    	$posisi = DB::table('m_sub_divisi')->get();
-    	// dd($posisi);
-    	return Datatables::of($posisi) 
-    		->addIndexColumn()          
+      $posisi = DB::table('m_sub_divisi')->get();
+      // dd($posisi);
+      return Datatables::of($posisi) 
+        ->addIndexColumn()          
             ->addColumn('action', function ($data) {
               if ($data->c_isactive == 'TRUE') 
               {
@@ -100,7 +100,7 @@ class DivisiposController extends Controller
                                     <i class="glyphicon glyphicon-pencil"></i>
                             </button>'.'
                             <button id="status'.$data->c_id.'" 
-                                    onclick="ubahStatus('.$data->c_id.')" 
+                                    onclick="ubahStatusPos('.$data->c_id.')" 
                                     class="btn btn-primary btn-sm" 
                                     title="Aktif">
                                     <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -111,7 +111,7 @@ class DivisiposController extends Controller
               {
                 return  '<div class="text-center">'.
                             '<button id="status'.$data->c_id.'" 
-                                onclick="ubahStatus('.$data->c_id.')" 
+                                onclick="ubahStatusPos('.$data->c_id.')" 
                                 class="btn btn-danger btn-sm" 
                                 title="Tidak Aktif">
                                 <i class="fa fa-minus-square" aria-hidden="true"></i>
@@ -124,121 +124,164 @@ class DivisiposController extends Controller
             ->make(true);
     }
 
-   	public function editPosisi($id){
-   		$posisi = DB::table('m_sub_divisi')->where('c_id',$id)->first();
+    public function editPosisi($id){
+      $posisi = DB::table('m_sub_divisi')->where('c_id',$id)->first();
 
-   		return view('master.datadivisi_posisi.edit_posisi',compact('posisi'));
-   	}
+      return view('master.datadivisi_posisi.edit_posisi',compact('posisi'));
+    }
 
-   	public function updatePosisi(Request $request, $id){
-   		DB::beginTransaction();
+    public function updatePosisi(Request $request, $id){
+      DB::beginTransaction();
             try {
-   		DB::table('m_sub_divisi')->where('c_id',$id)
-   			->update([
-   				'c_subdivisi' => $request->c_subdivisi,
-   				'updated_at' => Carbon::now()
-   			]);
-   		DB::commit();
-	    return response()->json([
-	          'status' => 'sukses'
-	      ]);
-	    } catch (\Exception $e) {
-	    DB::rollback();
-	    return response()->json([
-	        'status' => 'gagal',
-	        'data' => $e
-	      ]);
-	    }
-   	}
+      DB::table('m_sub_divisi')->where('c_id',$id)
+        ->update([
+          'c_subdivisi' => $request->c_subdivisi,
+          'updated_at' => Carbon::now()
+        ]);
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
+    }
 
-   	public function tambahPosisi(){
+    public function tambahPosisi(){
 
-   		return view('master.datadivisi_posisi.tambah-posisi');
-   	}
+      return view('master.datadivisi_posisi.tambah-posisi');
+    }
 
-   	public function savePosisi(Request $request){
-   		DB::beginTransaction();
+    public function savePosisi(Request $request){
+      DB::beginTransaction();
             try {
-   		$id = DB::table('m_sub_divisi')->select('c_id')->max('c_id')+1;
-   		DB::table('m_sub_divisi')->where('c_id',$id)
-			->insert([
-				'c_id' => $id,
-				'c_subdivisi' => $request->c_subdivisi,
-				'created_at' => Carbon::now()
-			]);
-		DB::commit();
-	    return response()->json([
-	          'status' => 'sukses'
-	      ]);
-	    } catch (\Exception $e) {
-	    DB::rollback();
-	    return response()->json([
-	        'status' => 'gagal',
-	        'data' => $e
-	      ]);
-	    }
-   	}
+      $id = DB::table('m_sub_divisi')->select('c_id')->max('c_id')+1;
+      DB::table('m_sub_divisi')->where('c_id',$id)
+      ->insert([
+        'c_id' => $id,
+        'c_subdivisi' => $request->c_subdivisi,
+        'created_at' => Carbon::now()
+      ]);
+    DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
+    }
 
-   	public function tambahDivisi(){
+    public function tambahDivisi(){
 
-   		return view('master.datadivisi_posisi.tambah-divisi');
-   	}
+      return view('master.datadivisi_posisi.tambah-divisi');
+    }
 
-   	public function simpanDivisi(Request $request){
-   		DB::beginTransaction();
+    public function simpanDivisi(Request $request){
+      DB::beginTransaction();
             try {
-   		$id = DB::table('m_divisi')->select('c_id')->max('c_id')+1;
-   		DB::table('m_divisi')->where('c_id',$id)
-			->insert([
-				'c_id' => $id,
-				'c_divisi' => $request->c_divisi,
-				'c_divisi_akronim' => $request->c_divisi_akronim,
-				'created_at' => Carbon::now()
-			]);
-		DB::commit();
-	    return response()->json([
-	          'status' => 'sukses'
-	      ]);
-	    } catch (\Exception $e) {
-	    DB::rollback();
-	    return response()->json([
-	        'status' => 'gagal',
-	        'data' => $e
-	      ]);
-	    }
-   	}
+      $id = DB::table('m_divisi')->select('c_id')->max('c_id')+1;
+      DB::table('m_divisi')->where('c_id',$id)
+      ->insert([
+        'c_id' => $id,
+        'c_divisi' => $request->c_divisi,
+        'c_divisi_akronim' => $request->c_divisi_akronim,
+        'created_at' => Carbon::now()
+      ]);
+    DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
+    }
 
-   	public function hapusDivisi($id){
-   		DB::beginTransaction();
+    public function ubahStatusDiv(Request $request)
+    {
+      DB::beginTransaction();
             try {
-   		$id = DB::table('m_divisi')->where('c_id',$id)->delete();
-		DB::commit();
-	    return response()->json([
-	          'status' => 'sukses'
-	      ]);
-	    } catch (\Exception $e) {
-	    DB::rollback();
-	    return response()->json([
-	        'status' => 'gagal',
-	        'data' => $e
-	      ]);
-	    }
-   	}
+      $cek = DB::table('m_divisi')->select('c_isactive')
+        ->where('c_id',$request->id)
+        ->first();
 
-   	public function hapusPosisi($id){
-   		DB::beginTransaction();
+      if ($cek->c_isactive == 'TRUE') 
+      {
+        DB::table('m_divisi')
+        ->where('c_id',$request->id)
+        ->update([
+          'c_isactive' => 'FALSE'
+        ]);
+      }
+      else
+      {
+        DB::table('m_divisi')
+        ->where('c_id',$request->id)
+        ->update([
+          'c_isactive' => 'TRUE'
+        ]);
+      }
+
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
+    }
+
+    public function ubahStatusPos(Request $request)
+    {
+
+      DB::beginTransaction();
             try {
-   		$id = DB::table('m_sub_divisi')->where('c_id',$id)->delete();
-		DB::commit();
-	    return response()->json([
-	          'status' => 'sukses'
-	      ]);
-	    } catch (\Exception $e) {
-	    DB::rollback();
-	    return response()->json([
-	        'status' => 'gagal',
-	        'data' => $e
-	      ]);
-	    }
-   	}
+      $cek = DB::table('m_sub_divisi')
+        ->select('c_isactive')
+        ->where('c_id',$request->id)
+        ->first();
+
+      if ($cek->c_isactive == 'TRUE') 
+      {
+        DB::table('m_sub_divisi')
+        ->where('c_id',$request->id)
+        ->update([
+          'c_isactive' => 'FALSE'
+        ]);
+      }
+      else
+      {
+        DB::table('m_sub_divisi')
+        ->where('c_id',$request->id)
+        ->update([
+          'c_isactive' => 'TRUE'
+        ]);
+      }
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
+    }
 }

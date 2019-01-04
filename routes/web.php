@@ -409,6 +409,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/mutasi/monitoring-penjualan/{tampil}', 'PenjualanController@dataMonitor');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
+    Route::get('penjualan/customer/print_laporan/{tgl1}/{tgl2}', 'PenjualanController@getLapCustomer');
 //end Monitoring
 //Monitoring Order Mahmud
     Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');
@@ -1220,7 +1221,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('master/datasuplier/datatable_suplier', 'Master\SuplierController@datatable_suplier')->name('datatable_suplier');
     Route::get('master/datasuplier/suplier_edit/{s_id}', 'Master\SuplierController@suplier_edit');
     Route::post('master/datasuplier/suplier_edit_proses/{s_id}', 'Master\SuplierController@suplier_edit_proses');
-    Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@suplier_hapus');
+    Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@ubahStatus');
 //-deny
 //customer
     Route::get('/master/datacust/cust', 'Master\custController@cust')->name('cust');
@@ -1230,6 +1231,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datacust/edit_cust', 'Master\custController@edit_cust')->name('edit_cust');
     Route::get('/master/datacust/update_cust', 'Master\custController@update_cust')->name('update_cust');
     Route::get('/master/datacust/datatable_cust', 'Master\custController@datatable_cust')->name('datatable_cust');
+    Route::get('/master/datacust/ubahstatus', 'Master\custController@ubahStatus');
 //barang
     Route::get('/master/databarang/barang', 'Master\barangController@barang')->name('barang');
     Route::get('/master/databarang/tambah_barang', 'Master\barangController@tambah_barang');
@@ -1272,6 +1274,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datasatuan/edit_satuan', 'Master\satuanController@edit_satuan')->name('edit_satuan');
     Route::get('/master/datasatuan/update_satuan', 'Master\satuanController@update_satuan')->name('update_satuan');
     Route::get('/master/datasatuan/datatable_satuan', 'Master\satuanController@datatable_satuan')->name('datatable_satuan');
+    Route::get('/master/datasatuan/ubahstatus', 'Master\satuanController@ubahStatus');
 //group
     Route::get('/master/datagroup/group', 'Master\groupController@group')->name('group');
     Route::get('/master/datagroup/tambah_group', 'Master\groupController@tambah_group')->name('tambah_group');
@@ -1280,6 +1283,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datagroup/edit_group/{id}', 'Master\groupController@edit_group')->name('edit_group');
     Route::get('/master/datagroup/update_group', 'Master\groupController@update_group')->name('update_group');
     Route::get('/master/datagroup/datatable_group', 'Master\groupController@datatable_group')->name('datatable_group');
+    Route::get('/master/datagroup/ubahstatus', 'Master\groupController@ubahStatus');
 //-[]-belum-[]-//
 // route Keuangan (Dirga)
 // akun keuangan route
@@ -1355,6 +1359,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('datajabatan/hapus-jabatanpro/{id}', 'Master\JabatanController@hapusJabatanPro');
     Route::get('/master/datajabatan/pro/edit/{id}', 'Master\JabatanController@editPro');
     Route::post('/master/datajabatan/pro/update-jabatan/{id}', 'Master\JabatanController@updatePro');
+    Route::get('/master/datajabatanman/ubahstatus', 'Master\JabatanController@ubahStatusMan');
+    Route::get('/master/datajabatanpro/ubahstatus', 'Master\JabatanController@ubahStatusPro');
 //pegawai
     Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
     Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
@@ -1374,6 +1380,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
     Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
     Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
+    Route::get('/master/datapegawai/ubahstatus', 'Master\PegawaiController@ubahStatusMan');
+    Route::get('/master/datapegawai/ubahstatuspro', 'Master\PegawaiController@ubahStatusPro');
 //mahmud master divisi dan posii
     Route::get('/master/divisi/pos/index', 'Master\DivisiposController@index');
     Route::get('/master/divisi/pos/table', 'Master\DivisiposController@tableDivisi');
@@ -1388,7 +1396,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
     Route::get('/master/divisi/pos/hapusdivisi/{id}', 'Master\DivisiposController@hapusDivisi');
     Route::get('/master/divisi/pos/hapusposisi/{id}', 'Master\DivisiposController@hapusPosisi');
-   
+    Route::get('/master/divisi/pos/ubahstatus', 'Master\DivisiposController@ubahStatusDiv');
+    Route::get('/master/divisi/posisi/ubahstatus', 'Master\DivisiposController@ubahStatusPos');
 //Master data Scoreboard
     Route::get('/master/datascore/index', 'Master\ScoreController@index');
     Route::get('/master/datascore/tambah-score', 'Master\ScoreController@tambah_score');

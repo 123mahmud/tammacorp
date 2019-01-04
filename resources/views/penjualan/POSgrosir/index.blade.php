@@ -574,6 +574,7 @@
 
     <script src="{{ asset ('assets/script/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+    <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
     @include('penjualan.POSgrosir.jquery_simpan_sales')
 
     <script type="text/javascript">
@@ -630,7 +631,22 @@
             $('#prosesProgres').on('shown.bs.modal', function () {
                 $('#bayarDP').focus();
                 autoStatusProgres();
-            }) 
+            })
+
+            $('#modalStatus').on('shown.bs.modal', function () {
+                $('#ongkir').inputmask("currency", {
+                    radixPoint: ".",
+                    groupSeparator: ",",
+                    digits: 2,
+                    allowMinus: false,
+                    autoGroup: true,
+                    prefix: '', //Space after $, this will not truncate the first character.
+                    rightAlign: false,
+                    oncleared: function () {  }
+                });
+            })  
+
+            
 
             $("#nama-customer").autocomplete({
                 source: baseUrl + '/penjualan/POSretail/retail/autocomplete',

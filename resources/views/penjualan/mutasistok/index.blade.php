@@ -246,7 +246,7 @@
             $("#data-monitor").dataTable().fnDestroy();
             $('#btn_print').html(
                 '<div class="btn-group">'+
-                    '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/retail/print_laporan_penjualan/' +'" '+ 
+                    '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/customer/print_laporan/' + start +'/' + end +'" '+ 
                     'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
                     '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/retail/pdf_laporan_penjualan/' +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
                 '</div>'

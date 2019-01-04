@@ -115,7 +115,7 @@
     });
   });
 
-  function hapus(id)
+  function ubahStatus(id)
   {
     iziToast.question({
       close: false,

@@ -15,7 +15,7 @@ class pembayaran_hutang_controller extends Controller
     }
 
     public function form_resource(){
-    	$data = DB::table('d_supplier')->select('s_company', 's_id')->orderBy('s_company', 'asc')->get();
+    	$data = DB::table('d_supplier')->select('s_company', 's_id')->where('s_active','TRUE')->orderBy('s_company', 'asc')->get();
         $akun_kas = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
         $akun_bank = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 

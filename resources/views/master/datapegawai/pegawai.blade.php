@@ -260,54 +260,119 @@
         }
       }
     });
-    function hapus(id) {
-      iziToast.question({
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        toastOnce: true,
-        id: 'question',
-        zindex: 999,
-        title: 'Hey',
-        message: 'Apakah anda yakin?',
-        position: 'center',
-        buttons: [
-          ['<button><b>YA</b></button>', function (instance, toast) {
-            $.ajax({
-              url: '{{ url("master/datapegawai/delete-pegawai") }}' + '/' + id,
-              async: false,
-              type: "DELETE",
-              data: {
-                "id": id,
-                "_method": 'DELETE',
-                "_token": '{{ csrf_token() }}',
-              },
-              dataType: "json",
-              success: function (data) { }
-            });
-            tablePeg.ajax.reload();
 
-            instance.hide({
-                  transitionOut: 'fadeOutUp'
-              }, toast);
+    function ubahStatusMan(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/datapegawai/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_pegawai').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_pegawai').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
 
-          }, true],
-          ['<button>TIDAK</button>', function (instance, toast) {
+    function ubahStatusPro(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/datapegawai/ubahstatuspro',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_pegawai_pro').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_pegawai_pro').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
 
-            instance.hide({
-                  transitionOut: 'fadeOutUp'
-              }, toast);
-
-          }]
-        ],
-        onClosing: function (instance, toast, closedBy) {
-          console.info('Closing | closedBy: ' + closedBy);
-        },
-        onClosed: function (instance, toast, closedBy) {
-          console.info('Closed | closedBy: ' + closedBy);
-        }
-      });
-    }
     function edit(a) {
       var parent = $(a).parents('tr');
       var id = $(parent).find('.d_id').text();

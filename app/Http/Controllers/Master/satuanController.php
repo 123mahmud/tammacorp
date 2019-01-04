@@ -9,6 +9,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use DataTables;
 use URL;
+use App\m_satuan;
 
 // use App\mmember
 
@@ -116,7 +117,40 @@ class satuanController extends Controller
       return response()->json(['status'=>1]);
     }
 
+  public function ubahStatus(Request $request)
+  {
+    DB::beginTransaction();
+        try {
+    $cek = m_satuan::select('m_isactive')
+      ->where('m_sid',$request->id)
+      ->first();
 
+    if ($cek->m_isactive == 'TRUE') 
+    {
+      m_satuan::where('m_sid',$request->id)
+        ->update([
+          'm_isactive' => 'FALSE'
+        ]);
+    }
+    else
+    {
+      m_satuan::where('m_sid',$request->id)
+        ->update([
+          'm_isactive' => 'TRUE'
+        ]);
+    }
+    DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'data' => $e
+        ]);
+    }
+  }
 }
 
 

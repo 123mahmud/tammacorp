@@ -232,5 +232,38 @@ class groupController extends Controller
       return response()->json(['status'=>1]);
     }
 
+  public function ubahStatus(Request $request)
+  {
+    DB::beginTransaction();
+        try {
+    $cek = m_group::select('m_isactive')
+      ->where('m_gid',$request->id)
+      ->first();
 
+    if ($cek->m_isactive == 'TRUE') 
+    {
+      m_group::where('m_gid',$request->id)
+        ->update([
+          'm_isactive' => 'FALSE'
+        ]);
+    }
+    else
+    {
+      m_group::where('m_gid',$request->id)
+        ->update([
+          'm_isactive' => 'TRUE'
+        ]);
+    }
+    DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'data' => $e
+        ]);
+    }
+  }
 }

@@ -278,9 +278,13 @@
                                 <td width="50%" class="text-right">{{ $totalDis }}</td>
                             </tr>
                             <tr>
+                                <td width="50%">Ongkir</td>
+                                <td width="50%" class="text-right">{{ number_format($sales->s_ongkir,2,'.',',')}}</td>
+                            </tr>
+                            <tr>
                                 <td width="50%">Sub Total</td>
                                 <td width="50%"
-                                    class="text-right">{{ number_format($dataTotal[0]->total,2,'.',',')}}</td>
+                                    class="text-right">{{ number_format($dataTotal[0]->total + $sales->s_ongkir,2,'.',',')}}</td>
                             </tr>
                             <tr>
                                 <td width="50%">PPN</td>
@@ -289,7 +293,7 @@
                             <tr>
                                 <td width="50%">Total</td>
                                 <td width="50%"
-                                    class="text-right">{{ number_format($dataTotal[0]->total,2,'.',',')}}</td>
+                                    class="text-right">{{ number_format($dataTotal[0]->total + $sales->s_ongkir,2,'.',',')}}</td>
                             </tr>
                         </table>
                     </div>
