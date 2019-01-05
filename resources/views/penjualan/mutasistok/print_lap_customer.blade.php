@@ -176,11 +176,11 @@
 							<tr>
 								<td class="text-right bold" colspan="3">Total</td>
 								<td class="text-center bold">{{$data_sum[$i]->total_qty}}</td>
-						{{-- 		<td class="text-right bold"></td>
+								<td class="text-right bold"></td>
 								<td class="text-right bold" colspan="2">{{number_format($data_sum[$i]->sd_disc_vpercent,2,',','.')}}</td>
 								<td class="text-right bold">{{number_format($data_sum[$i]->sd_disc_value,2,',','.')}}</td>
-								<td class="text-right bold">{{number_format($data_sum[$i]->total_penjualan,2,',','.')}}</td>
-								<td class="text-right bold">{{number_format($data_sum[$i]->total_penjualan,2,',','.')}}</td> --}}
+								{{-- <td class="text-right bold"></td> --}}
+								<td class="text-right bold" colspan="2">{{number_format($data_sum[$i]->total_penjualan,2,',','.')}}</td>
 							</tr>
 						@endif
 						

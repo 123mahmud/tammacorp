@@ -409,7 +409,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/mutasi/monitoring-penjualan/{tampil}', 'PenjualanController@dataMonitor');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
-    Route::get('penjualan/customer/print_laporan/{tgl1}/{tgl2}', 'PenjualanController@getLapCustomer');
+    Route::get('penjualan/customer/print_laporan/{tgl1}/{tgl2}/{cust}/{item}/{tampil}', 'PenjualanController@getLapCustomer');
 //end Monitoring
 //Monitoring Order Mahmud
     Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');
