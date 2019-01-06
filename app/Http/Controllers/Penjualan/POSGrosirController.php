@@ -831,7 +831,7 @@ class POSGrosirController extends Controller
       $nota = d_sales::where('s_id',$s_id)
         ->first();
     DB::commit();
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
     DB::rollback();
     return response()->json([
         'status' => 'gagal',
