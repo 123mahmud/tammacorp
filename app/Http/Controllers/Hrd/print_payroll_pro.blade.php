@@ -90,10 +90,8 @@
   <script type="text/javascript">
     //$('#detailFormula').dataTable();
     //$('#detailLembur').dataTable();
-     function printPayPro(id, tgl1, tgl2) 
+     function printPayPro(id) 
      {
-        var tgl1 = $('#tanggal03').val();
-        var tgl2 = $('#tanggal04').val();
-        window.open(baseUrl + "/hrd/payroll/print-gaji/GR/" + id + "/" + tgl1 + "/" + tgl2, "_blank");
+        window.open(baseUrl + "/hrd/payroll/print-gaji/GR/" + id, "_blank");
      }
   </script>

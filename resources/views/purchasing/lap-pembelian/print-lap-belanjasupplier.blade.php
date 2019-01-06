@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Laporan Belanja Supplier</title>
+	<title>Laporan Pembnelian Supplier</title>
 	<style type="text/css">
 		*{
 			font-size: 12px;
@@ -73,21 +73,20 @@
 					}
 		.tabel table, .tabel td{
 			border:1px solid black;
-		}
-		
-		@media print{
-			.btn-group{
-				display: none;
-			}
-		}
-		@page{
-			size: landscape;
-			margin: 0;
-		}
+			
 
-		@media print{
-			.btn-print{
+		}
+		.button-group{
+			position: fixed;
+		}
+		@media print {
+			.button-group{
 				display: none;
+				padding: 0;
+				margin: 0;
+			}
+			@page {
+				size: landscape
 			}
 		}
 		
@@ -108,15 +107,11 @@
 			page-break-inside:auto;
 		}
 
-		.btn-group{
-			right: 10px;
-			position: absolute;
-		}
 
 	</style>
 </head>
 <body>
-	<div class="button-group float-right">
+	<div class="button-group">
 		<button onclick="prints()">Print</button>
 	</div>
 	
@@ -130,7 +125,8 @@
 							Sidotopo Wetan - Surabaya 60123<br>
 						</div>
 						<div class="bold" style="margin-top: 15px;">
-							Laporan : Belanja Supplier <br>
+							Laporan : Penjualan Per Barang - Detail <br>
+							Pembayaran : Kredit &nbsp;&nbsp;&nbsp; PPn : Gabungan <br>
 							Periode : {{date('d M Y', strtotime($tgl1))}} s/d {{date('d M Y', strtotime($tgl2))}}
 						</div>
 		
@@ -138,7 +134,7 @@
 		<table width="100%" cellpadding="2px" class="tabel" border="1px" style="margin-bottom: 10px;">
 			<thead>
 				<tr>
-	                <th>Nama Supplier</th>
+					<th>Nama Supplier</th>
 	                <th>Tanggal</th>
 	                <th>Nama Item</th>
 	                <th>Harga</th>
@@ -148,40 +144,46 @@
 				</tr>
 			</thead>
 			<tbody>
-
-				@for($i=0;$i<count($pembelian);$i++)
-					@for($j=0;$j<count($pembelian[$i]);$j++)
-						<tr>
-							<td class="text-center">{{$pembelian[$i][$j]['d_pcsh_code']}}</td>
-							<td class="text-center">{{date("d M Y", strtotime($pembelian[$i][$j]['d_pcsh_date']))}}</td>
-							<td class="text-center">{{$pembelian[$i][$j]['m_name']}}</td>
-							<td class="text-center">{{$pembelian[$i][$j]['d_pcsh_peminta']}}</td>
-							<td class="text-center">{{$pembelian[$i][$j]['d_pcsh_keperluan']}}</td>
-							<td>
-								<div class="float-left">
-									Rp. 
-								</div>
-								<div class="float-right"> 
-									{{number_format($pembelian[$i][$j]['d_pcsh_totalprice'],2,',','.')}}
-								</div>
-							</td>
-						</tr>
-					@endfor
-				@endfor
-
+				@foreach ($pembelian as $jual)
+				<tr>
+					<td>{{ $jual->s_company }}</td>
+					<td>
+						{{ date('d M Y', strtotime($jual->d_pcs_date_created)) }}
+					</td>
+					<td>{{ $jual->i_name }}</td>
+					<td>
+						<div class="text-right">
+                          	{{ number_format($jual->d_pcsdt_price,2,",",".") }}
+                        </div>
+					</td>
+					<td>
+						<div class="text-right">
+                          	{{ number_format($jual->d_pcsdt_qtyconfirm,0,",",".") }}
+                        </div>
+					</td>
+					<td>{{ $jual->m_sname }}</td>
+					<td>
+						<div class="text-right">
+                          	{{ number_format($jual->d_pcsdt_total,2,",",".") }}
+                        </div>
+                    </td>
+				</tr>
+				@endforeach
+				
 			</tbody>
 
 		</table>
-		
+
 		<div class="float-left" style="width: 30vw;">
 			<table class="border-none" width="100%">
 				<tr>
-					<td>Total Biaya</td>
+					<td>Total Pembelian</td>
 					<td>:</td>
-					<td>{{number_format($data_sum_all[0]['tot_nett'],2,',','.')}}</td>
+					<td>{{number_format($totalPembelian[0]->total_pembelian,2,',','.')}}</td>
 				</tr>
 			</table>
 		</div>
+		
 		
 	</div>
 	<script type="text/javascript">

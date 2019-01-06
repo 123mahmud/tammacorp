@@ -596,6 +596,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
     Route::get('/hrd/payroll/lihat-gaji/GR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGajiGR');
     Route::get('/hrd/payroll/pilih/absensi/{pilih}', 'Hrd\PayrollProduksiController@pilihAbsensi');
+    Route::get('/hrd/payroll/print-gaji/GR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@printGajiGr');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');
@@ -1308,11 +1309,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/training/training', 'Hrd\TrainingContoller@training')->name('training');
     Route::get('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
     Route::get('/hrd/training/save/form', 'Hrd\TrainingContoller@savePengajuanForm');
-    Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}', 'Hrd\TrainingContoller@tablePengajuan');
+    Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}/{peg}', 'Hrd\TrainingContoller@tablePengajuan');
     Route::get('/hrd/training/acc-pelatihan/{id}', 'Hrd\TrainingContoller@accPelatihan');
     Route::get('/hrd/training/lihat-waktu/{id}', 'Hrd\TrainingContoller@lihatWaktu');
     Route::get('/hrd/training/wakti-pelatihan', 'Hrd\TrainingContoller@reqTimeTraining');
-
+    Route::get('/hrd/training/doc-pelatihan/{id}', 'Hrd\TrainingContoller@printDoc');
 //Master Data Lowongan
     Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
     Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');

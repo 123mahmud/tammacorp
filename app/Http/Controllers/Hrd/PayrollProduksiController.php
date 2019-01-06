@@ -364,7 +364,7 @@ class PayrollProduksiController extends Controller
         ->join('m_jabatan_pro','m_jabatan_pro.c_id','=','c_jabatan_pro_id')
         ->groupBy('m_gaji_pro.c_id')
         ->get();
- 
+
       $gaji = m_gaji_pro::select('c_id','c_status','c_gaji','c_lembur','c_gaji_jabatan')
         ->get();
 
@@ -396,7 +396,7 @@ class PayrollProduksiController extends Controller
       }
       $total = $d_gaji + $d_lembur;
 
-      return view('hrd.payroll-produksi.view-payroll-gr',compact('garapan','total','jmlHadir','uangHadir','jmlLembur','uangLembur','gajiHR','gajiLembur','totalHRL'));
+      return view('hrd.payroll-produksi.view-payroll-gr',compact('garapan','total','jmlHadir','uangHadir','jmlLembur','uangLembur','gajiHR','gajiLembur','totalHRL','id','tgl1','tgl2'));
     }
 
     public function pilihAbsensi($id){
@@ -447,5 +447,73 @@ class PayrollProduksiController extends Controller
       }
       // dd($dapat);
       return Response::json($dapat);
+    }
+
+    public function printGajiGr($id, $tgl1, $tgl2)
+    {
+      $d = substr($tgl1,0,2);
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+        $tgl1 = $y.'-'.$m.'-'.$d;
+
+      $d = substr($tgl2,0,2);
+      $y = substr($tgl2, -4);
+      $m = substr($tgl2, -7,-5);
+        $tgl2 = $y.'-'.$m.'-'.$d;
+      //hitung garapan
+      $garapan = d_hasil_garapan::select(
+        'c_nama',
+        'c_jabatan_pro',
+        'm_gaji_pro.c_id as item_id',
+        'nm_gaji',
+        'd_hg_pid',
+        'c_gaji',
+        'c_lembur',
+        DB::raw("SUM(d_hg_gaji) as dataGaji"),
+        DB::raw("SUM(d_hg_lembur) as dataLembur")
+        )
+        ->rightJoin('m_gaji_pro', function($join) use ($id, $tgl1, $tgl2) {
+            $join->on('m_gaji_pro.c_id', '=', 'd_hasil_garapan.d_hg_cid')
+                ->where('d_hg_pid',$id)
+                ->where('d_hg_tgl','>=',$tgl1)
+                ->where('d_hg_tgl','<=',$tgl2);
+        })
+        ->join('m_pegawai_pro','m_pegawai_pro.c_id','=','d_hg_pid')
+        ->join('m_jabatan_pro','m_jabatan_pro.c_id','=','c_jabatan_pro_id')
+        ->groupBy('m_gaji_pro.c_id')
+        ->get();
+
+      $gaji = m_gaji_pro::select('c_id','c_status','c_gaji','c_lembur','c_gaji_jabatan')
+        ->get();
+
+      // dd($gaji);
+      // for ($i=0; $i <count($gaji) ; $i++) {     
+      //   $cari[$i] = array_search($abs->j_id, explode(",", $gaji[$i]->c_gaji_jabatan));
+
+      // }
+
+      // for ($i=0; $i <count($cari) ; $i++) { 
+      //   if ($cari[$i] !== false) {
+      //     $a[] = $gaji[$i]->c_id;
+      //   }      
+      // }
+      // dd($a);
+      // for ($i=0; $i <count($a) ; $i++) { 
+      //    $GR[$i] = DB::table('m_gaji_pro')
+      //       ->select('c_id','c_status','c_gaji','c_lembur','c_gaji_jabatan')
+      //       ->where('c_id',$a[$i])
+      //       ->where('c_status','GR')
+      //       ->get();
+      // }
+
+      $d_gaji = 0;
+      $d_lembur = 0;
+      foreach ($garapan as $hasil) {
+        $d_gaji += ($hasil->dataGaji + $hasil->dataLembur) * $hasil->c_gaji;
+        $d_lembur += $hasil->dataLembur * $hasil->c_lembur;
+      }
+      $total = $d_gaji + $d_lembur;
+
+      return view('hrd.payroll-produksi.print_payroll_gr',compact('garapan','total','jmlHadir','uangHadir','jmlLembur','uangLembur','gajiHR','gajiLembur','totalHRL','id','tgl1','tgl2'));
     }
 }

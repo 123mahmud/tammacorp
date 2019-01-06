@@ -9,9 +9,9 @@
       <div class="col-md-4 col-sm-6 col-xs-12">
         <div class="form-group">
           <div class="input-daterange input-group">
-            <input id="tanggal5" class="form-control input-sm datepicker1" name="iTanggal5" type="text">
+            <input id="tanggal5" class="form-control input-sm datepicker5" name="iTanggal5" type="text">
             <span class="input-group-addon">-</span>
-            <input id="tanggal6" class="input-sm form-control datepicker2" name="iTanggal6" type="text" value="{{ date('d-m-Y') }}">
+            <input id="tanggal6" class="input-sm form-control datepicker6" name="iTanggal6" type="text" value="{{ date('d-m-Y') }}">
           </div>
         </div>
       </div>
