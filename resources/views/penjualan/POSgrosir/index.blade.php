@@ -821,11 +821,14 @@
 
         function autoStatusFinal()
         {
-           var sisaPagu =  $('#s_sisa_pagu').val();
-           var totalBelanja = convertToAngka($('#totalPayment').val());
-           if (sisaPagu != '0') 
+            var totalPayment = convertToAngka($('#totalPayment').val());
+            var jumBayar = convertToAngka($('#bayar').val());
+            var sisaPagu =  $('#s_sisa_pagu').val();
+            var hitung = totalPayment - jumBayar;
+            $('.simpanFinal').html('Proses');
+            if (sisaPagu != '0') 
             {
-                if (totalBelanja >= sisaPagu) 
+                if (hitung > sisaPagu) 
                 {
                     $('.simpanFinal').html('Pending');
                 }
@@ -834,23 +837,31 @@
                     $('.simpanFinal').html('Proses');
                 }
             }
+            updateKembalian();
         }
 
         function autoStatusProgres()
         {
+            var totalPayment = convertToAngka($('#totalPayment').val());
+            var jumBayar = convertToAngka($('#bayarDP').val());
             var sisaPagu =  $('#s_sisa_pagu').val();
-            var totalBelanja = convertToAngka($('#totalPayment').val());
+            if (jumBayar == '') 
+            {
+                jumBayar = 0;
+            }
+            var hitung = totalPayment - jumBayar;
             if (sisaPagu != '0') 
             {
-                if (totalBelanja >= sisaPagu) 
+                if (hitung > sisaPagu) 
                 {
-                    $('.simpanProgres').html('Pending');
+                    $('.simpanProgress').html('Pending');
                 }
                 else
                 {
-                    $('.simpanProgres').html('Proses');
+                    $('.simpanProgress').html('Proses');
                 }
             }
+            updateKembalianDP();
         }
 
         //namaitem

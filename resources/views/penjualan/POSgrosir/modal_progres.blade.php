@@ -36,7 +36,7 @@
                             <td>
                                 <input type="text" name="sp_nominal[]" id="bayarDP" value=""
                                        class="i_price-DP form-control totPaymentDP" autocomplete="off"
-                                       onkeyup="updateKembalianDP()" style="text-align: right;"
+                                       onkeyup="updateKembalianDP();autoStatusProgres()" style="text-align: right;"
                                        onkeyup="rege(event,'i_price-DP');" onblur="setRupiah(event,'i_price-DP')"
                                        onclick="setAwal('event','i_price-DP')">
                             </td>
@@ -69,7 +69,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                <button class="btn btn-primary simpanProgres" type="button" onclick="sal_save_onProgres()">Proses</button>
+                <button class="btn btn-primary simpanProgress" type="button" data-dismiss="modal" onclick="sal_save_onProgres()">Proses</button>
             </div>
         </div>
     </div>
