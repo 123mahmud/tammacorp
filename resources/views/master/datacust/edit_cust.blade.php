@@ -151,6 +151,20 @@
 
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
+                                      <label class="tebal">Pagu</label>
+
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+                                    <div class="input-icon right">
+                                      <input type="text" id="c_pagu" name="c_pagu" class="form-control input-sm text-right"  value="{{ $edit_cust->c_pagu }}">
+
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+
                                       <label class="tebal">Group Harga</label>
 
                                 </div>
@@ -240,9 +254,21 @@
 
 @endsection
 @section("extra_scripts")
+<script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
 <script type="text/javascript">
 
   $('.c_group').select2();
+
+  $('#c_pagu').inputmask("currency", {
+      radixPoint: ".",
+      groupSeparator: ",",
+      digits: 2,
+      allowMinus: false,
+      autoGroup: true,
+      prefix: '', //Space after $, this will not truncate the first character.
+      rightAlign: false,
+      oncleared: function () {  }
+  });
 
   function update (){
       var a = $('#form_cust').serialize();

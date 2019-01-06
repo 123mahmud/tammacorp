@@ -334,7 +334,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
-                         's_qtyConvert'=>number_format( $query->s_qty ,0,',','.'),
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -362,7 +362,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
-                         's_qtyConvert'=>number_format( $query->s_qty ,0,',','.'),
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
