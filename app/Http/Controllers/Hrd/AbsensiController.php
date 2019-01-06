@@ -50,6 +50,7 @@ class AbsensiController extends Controller
           'apm_terlambat',
           'apm_jml_jamkerja')
         ->join('m_pegawai_man','m_pegawai_man.c_id','=','apm_pm')
+        ->where('c_isactive','TRUE')
         ->where('apm_tanggal','>=',$tgl1)
         ->where('apm_tanggal','<=',$tgl2)
         ->where('c_divisi_id',$data)
@@ -141,6 +142,7 @@ class AbsensiController extends Controller
           'app_terlambat',
           'app_jml_jamkerja')
         ->join('m_pegawai_pro','m_pegawai_pro.c_id','=','app_pp')
+        ->where('cp_isactive','TRUE')
         ->where('app_tanggal','>=',$tgl1)
         ->where('app_tanggal','<=',$tgl2)
         ->where('c_rumah_produksi',$data)
@@ -148,7 +150,6 @@ class AbsensiController extends Controller
       // dd($pegawai);
     return DataTables::of($pegawai)
 
-    ->addIndexColumn()
     ->addIndexColumn()
 
       ->editColumn('tanggal', function ($data){

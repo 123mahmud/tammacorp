@@ -74,8 +74,8 @@ class itemProduksiController extends Controller
   }
 
   public function tambahItem(){
-  	$satuan  = m_satuan::get();
-    $group  = m_group::get();
+  	$satuan  = m_satuan::where('m_isactive','TRUE')->get();
+    $group  = m_group::where('m_isactive','TRUE')->get();
 
     return view('master.data_produksi.tambah_barang',compact('kode','group','satuan'));
   }
@@ -197,7 +197,7 @@ class itemProduksiController extends Controller
  	}
 
 	public function editBarang($id){
-	  $satuan  = DB::table('m_satuan')->get();
+	  $satuan  = DB::table('m_satuan')->where('m_isactive','TRUE')->get();
 	  $data_item = m_item::where('i_id',$id)->first();
 	  $min_stock = d_stock::where('s_item',$id)
 	  	->where('s_comp','2')
