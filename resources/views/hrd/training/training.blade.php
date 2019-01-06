@@ -53,6 +53,7 @@
                                            name="tanggal" type="text" value="{{ date('d-m-Y') }}">
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-md-2 col-sm-3 col-xs-12" align="center">
                             <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"
@@ -75,6 +76,7 @@
                                 <option value="{{$divisi->c_id}}" class="form-control input-sm">{{$divisi->c_divisi}}</option>
                               @endforeach
                             </select>
+                            <input type="hidden" class="form-control" name="idPeg" id="idPeg" value="{{ $idPeg }}">
                         </div>
                         <div class="panel-body">
                         <div class="table-responsive">
@@ -88,6 +90,7 @@
                                   <th>Jenis Pelatihan</th>
                                   <th>Status</th>
                                   <th>Aksi</th>
+                                  <th>Doc</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -178,9 +181,10 @@
         var tgl1 = $("#tanggal1").val();
         var tgl2 = $("#tanggal2").val();
         var tampil = $("#tampilDet").val();
+        var idPeg = $('#idPeg').val();
         $('#tablePengajuan').DataTable({
             "ajax": {
-                url: baseUrl + "/hrd/training/tablePengajuan/" + tgl1 + "/" +tgl2+ "/" + tampil,
+                url: baseUrl + "/hrd/training/tablePengajuan/" + tgl1 + "/" +tgl2+ "/" + tampil + "/" + idPeg,
                 type: 'GET'
             },
             "columns": [
@@ -188,9 +192,10 @@
               {"data" : 'pp_code', name: 'pp_code', width:"10%"},
               {"data" : 'pegawai', name: 'pegawai', orderable: false, width:"30%"},
               {"data" : 'atasan', name: 'atasan', orderable: false, width:"30%"},
-              {"data" : 'pelatihan', name: 'pelatihan', orderable: false, width:"30%"},
+              {"data" : 'pelatihan', name: 'pelatihan', orderable: false, width:"25%"},
               {"data" : 'status', name: 'status', orderable: false, width:"15%"},
               {"data" : 'aksi', name: 'aksi', orderable: false, width:"15%"},
+              {"data" : 'lihat', name: 'lihat', orderable: false, width:"5%"},
             ],
             "language": {
               "searchPlaceholder": "Cari Data",
@@ -221,6 +226,11 @@
             $('#view-formula').html(response);
           }
         })
+      }
+
+      function bukaDocPengajuan(id)
+      {
+        window.open(baseUrl + "/hrd/training/doc-pelatihan/" + id, "_blank");
       }
 
       </script>

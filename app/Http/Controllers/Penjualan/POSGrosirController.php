@@ -1161,11 +1161,27 @@ class POSGrosirController extends Controller
           ->where('s_date','>=',$tgll)
           ->where('s_date','<=',$tgl2)
           ->get();
-    }else{
+    }elseif ($tampil == 'received'){
         $detalis = DB::table('d_sales')
           ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
           ->where('s_channel','GR')
           ->where('s_status','RC')
+          ->where('s_date','>=',$tgll)
+          ->where('s_date','<=',$tgl2)
+          ->get();
+    }elseif ($tampil == 'FPN'){
+        $detalis = DB::table('d_sales')
+          ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+          ->where('s_channel','GR')
+          ->where('s_status','FPN')
+          ->where('s_date','>=',$tgll)
+          ->where('s_date','<=',$tgl2)
+          ->get();
+    }elseif ($tampil == 'PPN'){
+        $detalis = DB::table('d_sales')
+          ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+          ->where('s_channel','GR')
+          ->where('s_status','PPN')
           ->where('s_date','>=',$tgll)
           ->where('s_date','<=',$tgl2)
           ->get();
@@ -1224,7 +1240,7 @@ class POSGrosirController extends Controller
       {
         if ($data->s_status == 'FN') { $attr = 'disabled'; } else { $attr = ''; };
         $linkEdit = URL::to('/penjualan/POSgrosir/grosir/edit_sales/'.$data->s_id);
-        if ($data->s_status == 'FN' || $data->s_status == 'SN' || $data->s_status == 'PC' || $data->s_status == 'RC')
+        if ($data->s_status == 'FN' || $data->s_status == 'SN' || $data->s_status == 'PC' || $data->s_status == 'RC' || $data->s_status == 'FPN' || $data->s_status == 'PPN')
         {
           return '<div class="text-center">
                     <button type="button"

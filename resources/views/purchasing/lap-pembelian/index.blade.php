@@ -100,10 +100,24 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
+    $('.datepicker5').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    }).datepicker("setDate", nd);
+
+    $('.datepicker6').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    });
+
     tanggal1 = $('#tanggal1').val();
     tanggal2 = $('#tanggal2').val();
     tanggal3 = $('#tanggal3').val();
     tanggal4 = $('#tanggal4').val();
+    tanggal5 = $('#tanggal5').val();
+    tanggal6 = $('#tanggal6').val();
 
     $('#tanggal1').change(function(event) {
       tanggal1 = $(this).val();
@@ -284,7 +298,7 @@
         {"data" : "i_name", "width" : "20%"},
         {"data" : "d_pcsdt_price", "width" : "15%"},
         {"data" : "d_pcsdt_qtyconfirm", "width" : "10%"},
-        {"data" : "m_sdetname", "width" : "10%"},
+        {"data" : "m_sname", "width" : "10%"},
         {"data" : "total-harga", "width" : "15%"}
       ],
       "responsive": true,

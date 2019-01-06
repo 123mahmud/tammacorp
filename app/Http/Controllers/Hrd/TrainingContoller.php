@@ -22,7 +22,8 @@ class TrainingContoller extends Controller
 {
   public function training(){
     $devisi = m_divisi::all();
-    return view('hrd/training/training',compact('devisi'));
+    $idPeg = Auth::user()->m_pegawai_id;
+    return view('hrd/training/training',compact('devisi','idPeg'));
   }
 
   public function tambah_training(){
@@ -93,7 +94,8 @@ class TrainingContoller extends Controller
     }
   }
 
-  public function tablePengajuan($tgl1, $tgl2, $data){
+  public function tablePengajuan($tgl1, $tgl2, $data, $peg)
+  {
     $d = substr($tgl1,0,2);
     $y = substr($tgl1, -4);
     $m = substr($tgl1, -7,-5);
@@ -112,12 +114,18 @@ class TrainingContoller extends Controller
       'u2.c_code as code_atasan',
       'u2.c_nama as nama_atasan',
       'dp_name',
-      'pp_status')
+      'pp_status',
+      'pp_nama_atasan',
+      'pp_pm')
       ->join('m_pegawai_man as u1','u1.c_id','=','pp_pm')
       ->join('m_pegawai_man as u2','u2.c_id','=','pp_nama_atasan')
       ->join('m_jabatan','m_jabatan.c_id','=','u1.c_jabatan_id')
       ->join('d_pelatihan','d_pelatihan.dp_id','=','pp_jenis_pelatihan')
       ->where('u1.c_divisi_id',$data)
+      ->where(function($query) use ($peg){
+        $query->orWhere('pp_pm',$peg)
+              ->orWhere('pp_nama_atasan',$peg);
+      })
       ->whereDate('pp_created','>=',$tgl1)
       ->whereDate('pp_created','<=',$tgl2)
       ->get();
@@ -151,18 +159,23 @@ class TrainingContoller extends Controller
                 </div>';
       }
     })
-    ->editColumn('aksi', function ($data) {
-      if ($data->pp_status == 'PN') {
-        return '<div class="text-center">
+    ->editColumn('aksi', function ($data) use ($peg) {
+      if ($data->pp_nama_atasan == $peg) 
+      {
+        if ($data->pp_status == 'PN') 
+        {
+          return '<div class="text-center">
                   <a  onclick="openPengajuan('.$data->pp_id.')"
                       class="btn btn-warning btn-sm"
-                      title="Setujui">
+                      title="Doc Pengajuan">
                       <i class="fa fa-eye"></i>
-                      Pengajuan
+                      Isi Pengajuan
                   </a>
                 </div>';
-      }else{
-        return '<div class="text-center">
+        }
+        else if ($data->pp_status == 'AP')
+        {
+          return '<div class="text-center">
                     <button class="btn btn-sm btn-success"
                             title="Detail"
                             type="button"
@@ -170,18 +183,48 @@ class TrainingContoller extends Controller
                             data-toggle="modal"
                             data-target="#myModalView">
                             <i class="fa fa-eye"></i>
-                            Lihat
+                            Jadwal
+                    </button>
+                </div>';
+        }
+      }
+      else if ($data->pp_pm == $peg && $data->pp_status == 'AP')
+      {
+        return '<div class="text-center">
+                    <button class="btn btn-sm btn-info"
+                            title="Lihat"
+                            type="button"
+                            onclick=openWaktu("'.$data->pp_id.'")
+                            data-toggle="modal"
+                            data-target="#myModalView">
+                            <i class="fa fa-eye"></i>
+                            Jadwal
                     </button>
                 </div>';
       }
 
-
     })
+
+     ->editColumn('lihat', function ($data) use ($peg) {
+        if ($data->pp_nama_atasan == $peg)
+        {
+          return '<div class="text-center">
+                    <button class="btn btn-sm btn-success"
+                            title="Detail Prngajuan"
+                            type="button"
+                            onclick=bukaDocPengajuan("'.$data->pp_id.'")>
+                            <i class="fa fa-eye"></i>
+                            Lihat
+                    </button>
+                </div>';
+        }
+     })
     ->rawColumns(['pegawai',
                   'pelatihan',
                   'atasan',
                   'status',
-                  'aksi'
+                  'aksi',
+                  'lihat'
                 ])
     ->make(true);
 
@@ -276,5 +319,30 @@ class TrainingContoller extends Controller
       ->get();
     // dd($pengajuan);
     return view('hrd.training.view-waktu',compact('pengajuan'));
+  }
+
+  public function printDoc($id)
+  {
+    $pegawai = d_pengajuan_pelatihan::select('bawahan.c_nama as b_nama',
+      'c_posisi',
+      'dp_name',
+      'atasan.c_nama as a_nama',
+      'pp_id')
+      ->join('m_pegawai_man as bawahan','bawahan.c_id','=','pp_pm')
+      ->join('m_pegawai_man as atasan','atasan.c_id','=','pp_nama_atasan')
+      ->join('m_jabatan','m_jabatan.c_id','=','pp_jabatan')
+      ->join('d_pelatihan','d_pelatihan.dp_id','=','pp_jenis_pelatihan')
+      ->where('pp_id',$id)
+      ->first();
+      // dd($pegawai);
+    $soal = f_pelatihan::select('fp_id',
+      'fp_soal')
+      ->where('fp_status','Y')
+      ->get();
+
+    $jawab = d_pengajuan_pelatihandt::where('ppd_pp',$id)
+      ->get();
+      // dd($jawab);
+    return view('hrd/training/print_doc',compact('pegawai','soal','jawab'));
   }
 }

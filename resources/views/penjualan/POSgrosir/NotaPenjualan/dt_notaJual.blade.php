@@ -41,6 +41,8 @@
                     <option value="packing" class="form-control">Tampilkan Data : Packing</option>
                     <option value="sending" class="form-control">Tampilkan Data : Sending</option>
                     <option value="received" class="form-control">Tampilkan Data : Received</option>
+                    <option value="FPN" class="form-control">Tampilkan Data : Final Pending</option>
+                    <option value="PPN" class="form-control">Tampilkan Data : Progress Pending</option>
                 </select>
             </div>
 
