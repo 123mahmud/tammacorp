@@ -123,7 +123,8 @@ class PegawaiController extends Controller
         }
         $kode = str_pad($maxid, 2, '0', STR_PAD_LEFT);
         $id_pegawai = 'PG-' . $tanggal . '/' .  $kode;
-        $divisi = DB::table('m_divisi')->get(); 
+        $divisi = DB::table('m_divisi')->where('c_isactive','TRUE')->get(); 
+        // dd($divisi);
         $shift = DB::table('m_shift')->get();   
         return view('/master/datapegawai/tambah_pegawai', compact('id_pegawai','divisi','shift'));
     }
@@ -140,12 +141,12 @@ class PegawaiController extends Controller
         }
         $kode = str_pad($maxid, 2, '0', STR_PAD_LEFT);
         $id_pegawai = 'PG-' . $tanggal . '/' .  $kode;
-        $tugas = DB::table('m_jabatan_pro')->get(); 
+        $tugas = DB::table('m_jabatan_pro')->where('c_isactive','TRUE')->get(); 
         return view('/master/datapegawai/tambah_pegawai_pro', compact('id_pegawai','tugas'));
     }
 
     public function jabatanData($id){
-        $jabatan = DB::table('m_jabatan')->where('c_divisi_id', $id)->get();
+        $jabatan = DB::table('m_jabatan')->where('c_divisi_id', $id)->where('c_isactive','TRUE')->get();
         return json_encode($jabatan);
     }
 
@@ -208,7 +209,7 @@ class PegawaiController extends Controller
     }
 
     public function editPegawai($id){
-        $divisi = DB::table('m_divisi')->get(); 
+        $divisi = DB::table('m_divisi')->where('c_isactive','TRUE')->get(); 
         $shift = DB::table('m_shift')->get();  
         $data = DB::table('m_pegawai_man')->where('c_id', $id)->first();
         $hari = explode(" - ",$data->c_hari_kerja);
@@ -227,7 +228,7 @@ class PegawaiController extends Controller
     }
 
     public function editPegawaiPro($id){
-        $tugas = DB::table('m_jabatan_pro')->get(); 
+        $tugas = DB::table('m_jabatan_pro')->where('c_isactive','TRUE')->get(); 
         $data = DB::table('m_pegawai_pro')->where('c_id', $id)->first();
         return view('master.datapegawai.edit_pegawai_pro',['data' => $data, 'tugas'=> $tugas]);
     }

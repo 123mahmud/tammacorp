@@ -51,6 +51,7 @@ class GarapanPegawaiController extends Controller
               ->where('d_hg_cid',$item);
         })
       ->join('m_jabatan_pro','m_jabatan_pro.c_id','=','c_jabatan_pro_id')
+      ->where('cp_isactive','TRUE')
       ->where('c_jabatan_pro_id',$jabatan)
       ->where('c_rumah_produksi',$rumah)
       ->get();
@@ -210,6 +211,7 @@ class GarapanPegawaiController extends Controller
       })
 
     ->leftJoin('m_jabatan_pro','m_jabatan_pro.c_id','=','c_jabatan_pro_id')
+    ->where('cp_isactive','TRUE')
     ->where('c_jabatan_pro_id',$jabatan)
     ->where('c_rumah_produksi',$rumah)
     ->groupBy('m_pegawai_pro.c_id')

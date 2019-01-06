@@ -160,6 +160,7 @@ class POSRetailController extends Controller
     $term = $request->term;
     $results = array();
     $queries = m_customer::where('m_customer.c_name', 'LIKE', '%'.$term.'%')
+      ->where('c_isactive','TRUE')
       ->orderBy('c_name', 'asc')
       ->take(25)->get();
 

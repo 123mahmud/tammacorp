@@ -1533,16 +1533,18 @@ class POSGrosirController extends Controller
             ]);
         }
       }
-
+      $ongkir = $request->ongkir;
+      if ($ongkir == null) {
+        $ongkir = 0;
+      }
       // return json_encode(array_merge($akun));
-
       $update = DB::Table('d_sales')
         ->where('s_id',$request->id)
         ->update([
           's_status' => $request->status,
           's_resi' => $request->resi,
-          's_ongkir' => str_replace(',', '', $request->ongkir),
-          's_net' => DB::raw('s_net + '.str_replace(',', '', $request->ongkir))
+          's_ongkir' => str_replace(',', '',  $ongkir),
+          's_net' => DB::raw('s_net + '.str_replace(',', '',  $ongkir))
         ]);
 
       $nota = d_sales::select('s_note')
