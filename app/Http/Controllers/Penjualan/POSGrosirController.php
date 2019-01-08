@@ -471,8 +471,8 @@ class POSGrosirController extends Controller
 
   public function sal_save_onProgres(Request $request){
     // dd($request->all());
-    // DB::beginTransaction();
-    //       try {
+    DB::beginTransaction();
+          try {
         //sisa
     $s_kembalianP = $this->konvertRp($request->s_kembalianP);
     $sisa = 0;
@@ -605,14 +605,14 @@ class POSGrosirController extends Controller
 
     $nota = d_sales::where('s_id',$s_id)
         ->first();
-  // DB::commit();
-  //   } catch (\Exception $e) {
-  //     DB::rollback();
-  //     return response()->json([
-  //         'status' => 'gagal',
-  //         'data' => $e
-  //         ]);
-  //   }
+  DB::commit();
+    } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+          ]);
+    }
 
     if ($hitung > $sisaPagu) 
     {
