@@ -471,8 +471,8 @@ class POSGrosirController extends Controller
 
   public function sal_save_onProgres(Request $request){
     // dd($request->all());
-    DB::beginTransaction();
-          try {
+    // DB::beginTransaction();
+    //       try {
         //sisa
     $s_kembalianP = $this->konvertRp($request->s_kembalianP);
     $sisa = 0;
@@ -529,30 +529,11 @@ class POSGrosirController extends Controller
     //end nota fatkur
     $sisaPagu = $request->s_sisa_pagu;
     $sNet = ($this->konvertRp($request->s_net));
-    if ($sisaPagu == "0") 
+    $bayar = ($this->konvertRp($request->sp_nominal[1]));
+    $hitung = $sNet - $bayar;
+    if ($hitung > $sisaPagu) 
     {
-      $customer = DB::table('d_sales')
-          ->insert([
-            's_id' =>$s_id,
-            's_channel' =>'GR',
-            's_date' =>date('Y-m-d',strtotime($request->s_date)),
-            's_note' =>$fatkur,
-            's_staff' =>$request->s_staff,
-            's_customer' => $request->id_cus,
-            's_disc_percent' => $request->s_disc_percent,
-            's_disc_value' => $request->s_disc_value,
-            's_gross' => ($this->konvertRp($request->s_gross)),
-            's_tax' => $request->s_pajak,
-            's_net' => ($this->konvertRp($request->s_net)),
-            's_sisa' => $sisa,
-            's_status' => 'PR',
-            's_insert' => Carbon::now(),
-            's_update' => $request->s_update
-        ]);
-    }
-    else if ($sNet >= $sisaPagu)
-    {
-      $customer = DB::table('d_sales')
+       $customer = DB::table('d_sales')
           ->insert([
             's_id' =>$s_id,
             's_channel' =>'GR',
@@ -624,15 +605,21 @@ class POSGrosirController extends Controller
 
     $nota = d_sales::where('s_id',$s_id)
         ->first();
-  DB::commit();
-    } catch (\Exception $e) {
-      DB::rollback();
-      return response()->json([
-          'status' => 'gagal',
-          'data' => $e
-          ]);
-    }
+  // DB::commit();
+  //   } catch (\Exception $e) {
+  //     DB::rollback();
+  //     return response()->json([
+  //         'status' => 'gagal',
+  //         'data' => $e
+  //         ]);
+  //   }
 
+    if ($hitung > $sisaPagu) 
+    {
+
+    }
+    else
+    {
       $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
       $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
 
@@ -650,6 +637,7 @@ class POSGrosirController extends Controller
       if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
         $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
       }
+    }
 
       // return $state_jurnal;
 
@@ -726,31 +714,9 @@ class POSGrosirController extends Controller
       // return json_encode(array_merge($akun));
       $sisaPagu = $request->s_sisa_pagu;
       $sNet = ($this->konvertRp($request->s_net));
-      // dd($sisaPagu);
-      if ($sisaPagu == "0") 
-      {
-        $customer = DB::table('d_sales')
-          ->insert([
-            's_id' => $s_id,
-            's_channel' => 'GR',
-            's_date' => date('Y-m-d',strtotime($request->s_date)),
-            's_note' => $fatkur,
-            's_staff' => $request->s_staff,
-            's_customer' => $request->id_cus,
-            's_gross' => ($this->konvertRp($request->s_gross)),
-            's_disc_percent' => ($this->konvertRp($request->s_disc_percent)),
-            's_disc_value' => ($this->konvertRp($request->s_disc_value)),
-            's_tax' => $request->s_pajak,
-            's_net' => ($this->konvertRp($request->s_net)),
-            's_tax' => $request->s_pajak,
-            's_jatuh_tempo' => $tglJT,
-            's_sisa' => $sisa,
-            's_status' => 'FN',
-            's_insert' => Carbon::now(),
-            's_update' => $request->s_update
-          ]);
-      }
-      else if ($sNet >= $sisaPagu) 
+      $bayar = ($this->konvertRp($request->sp_nominal[0]));
+      $hitung = $sNet - $bayar;
+      if ($hitung > $sisaPagu) 
       {
         $customer = DB::table('d_sales')
         ->insert([
@@ -838,27 +804,7 @@ class POSGrosirController extends Controller
         'data' => $e
         ]);
       }
-      if ( $sisaPagu == "0" ) 
-      {
-        $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
-        $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
-
-        if($request->sp_method[0] == '1'){
-          $state = 'KM';
-          $sts = 'Cash';
-        }
-        else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
-          $state = 'BM';
-          $sts = 'Transfer';
-        }
-
-        $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
-
-        if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
-          $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
-        }
-      }
-      else if ($sNet >= $sisaPagu)
+      if ( $hitung > $sisaPagu ) 
       {
 
       }
@@ -882,9 +828,6 @@ class POSGrosirController extends Controller
           $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
         }
       }
-
-      
-
       // return $state_jurnal;
 
       return response()->json([
@@ -1252,7 +1195,26 @@ class POSGrosirController extends Controller
                     </button>
 
                   </div>';
-        }else{
+        }
+        else if ($data->s_status == 'PR') 
+        {
+           return '<div class="text-center">
+                    <button type="button"
+                      class="btn btn-success fa fa-eye btn-sm"
+                      title="detail"
+                      data-toggle="modal"
+                      onclick="lihatDetail('."'".$data->s_id."'".')"
+                      data-target="#myItem">
+                    </button>
+                    <a href="'.$linkEdit.'"
+                      class="btn btn-warning btn-sm"
+                      title="Edit" '.$attr.'>
+                      <i class="fa fa-pencil"></i>
+                    </a>
+                  </div>';
+        }
+        else
+        {
           return '<div class="text-center">
                     <button type="button"
                       class="btn btn-success fa fa-eye btn-sm"

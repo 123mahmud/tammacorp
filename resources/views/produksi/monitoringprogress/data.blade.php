@@ -1,4 +1,4 @@
-      @foreach($monitoring as $id => $mon)
+{{--       @foreach($monitoring as $id => $mon)
       <tr>
         <td>{{ date('d-m-Y', strtotime($mon->date)) }}</td>
         <td>{{ $mon->i_name }}</td>
@@ -22,4 +22,4 @@
           <a href="#" data-toggle="modal" data-target="#modal" class="btn btn-info btn-sm plan" data-id="{{ $mon->sd_item }}">Plan</a>
         </td>
       </tr>
-      @endforeach
+      @endforeach --}}

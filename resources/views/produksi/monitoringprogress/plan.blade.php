@@ -44,7 +44,7 @@
                       <tr>
                         <td> 
                           <span class="hide">{{$pn->pp_date}}</span>
-                          <input id="tanggal{{$x}}" class="form-control datepicker3" name="tanggal{{$x}}" type="text" value="{{ date('d-m-Y', strtotime($pn->pp_date)) }}">
+                          <input id="tanggal{{$x}}" class="form-control" readonly name="tanggal{{$x}}" type="text" value="{{ date('d-m-Y', strtotime($pn->pp_date)) }}">
                         </td>
                         <td>
                           <input name="pp_qty{{$x}}" type="number" class="form-control" style="text-align:right;"
@@ -58,7 +58,7 @@
                           <button type="button" class="btn btn-info pull-right"  onclick="tambahPlan()" style="margin-bottom: 5px; margin-right: 15px">
                             <i class="glyphicon glyphicon-plus"></i>
                           </button>
-                          <button type="button" class="btn btn-danger hapus" onclick="hapusPlan(this)">
+                          <button type="button" class="btn btn-danger hapus" onclick="hapusPlan(this)" disabled="true">
                             <i class="glyphicon glyphicon-minus"></i>
                           </button>
                         </td>
@@ -70,7 +70,7 @@
                       <tr>
                         <td> 
                           <span class="hide">{{$pn->pp_date}}</span>
-                          <input id="tanggal" class="form-control datepicker3" name="tanggal" type="text" value="{{ date('d-m-Y', strtotime($pn->pp_date)) }}" readonly="">
+                          <input id="tanggal" class="form-control" name="tanggal" type="text" value="{{ date('d-m-Y', strtotime($pn->pp_date)) }}" readonly="">
                         </td>
                         <td>
                           <input name="pp_qty" type="number" class="form-control" style="text-align:right;"
@@ -128,7 +128,7 @@
                       </td>
                       <td>
                         <button type="button" class="btn btn-info pull-right" onclick="tambahPlan()" style="margin-bottom: 5px; margin-right: 15px"><i class="glyphicon glyphicon-plus"></i></button>
-                        <button type="button" class="btn btn-danger hapus" onclick="hapusPlan(this)"><i class="glyphicon glyphicon-minus"></i></button>
+                        <button type="button" class="btn btn-danger hapus" onclick="hapusPlan(this)" disabled="true"><i class="glyphicon glyphicon-minus"></i></button>
                       </td>
                     </tr>
                   @endif
@@ -245,7 +245,7 @@
     var Hapus = '<button type="button" class="btn btn-info pull-right" onclick="tambahPlan()" style="margin-bottom: 5px; margin-right: 15px"><i class="glyphicon glyphicon-plus"></i></button><button type="button" class="btn btn-danger hapus" onclick="hapusPlan(this)"><i class="glyphicon glyphicon-minus"></i></button>';
     var rowPlan = parseInt($("#rowPlan").val());
       tablePlan.row.add([
-        '<span class="hide">{{date('Y-m-d')}}</span><input type="text" readonly name="tanggal'+rowPlan+'" class="form-control datepicker3" value="{{ date('d-m-Y') }}">',
+        '<span class="hide">{{date('Y-m-d')}}</span><input type="text" readonly name="tanggal'+rowPlan+'" class="form-control" readonly value="{{ date('d-m-Y') }}">',
         '<input name="pp_qty'+rowPlan+'" type="number" class="form-control input-sm" style="text-align:right;">',
         '<i class="fa fa-times"></i>  Rencana',
         Hapus

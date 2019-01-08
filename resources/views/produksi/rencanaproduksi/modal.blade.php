@@ -31,7 +31,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">  
-                  <input type="text" class="form-control input-sm" readonly="" name="pp_date" value="{{ date('d-m-Y') }}">
+                  <input type="text" class="form-control input-sm datepicker2" readonly="" name="pp_date" value="{{ date('d-m-Y') }}">
                 </div>
               </div>
 

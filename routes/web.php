@@ -280,11 +280,11 @@ Route::group(['middleware' => 'auth'], function () {
 // irA
     /* Monitoring */
     Route::get('/produksi/monitoringprogress/monitoring', 'Produksi\MonitoringProgressController@monitoring');
-    Route::get('/produksi/monitoringprogress/tabel', 'Produksi\MonitoringProgressController@tabel');
+    Route::get('/produksi/monitoringprogress/tabel/{tgl1}/{tgl2}', 'Produksi\MonitoringProgressController@tabel');
     Route::get('/produksi/monitoringprogress/plan/{id}', 'Produksi\MonitoringProgressController@plan');
     Route::get('/produksi/monitoringprogress/refresh', 'Produksi\MonitoringProgressController@refresh');
-    Route::get('/produksi/monitoringprogress/nota/{id}', 'Produksi\MonitoringProgressController@bukaNota');
-    Route::get('/produksi/monitoringprogress/nota/tabel/{id}', 'Produksi\MonitoringProgressController@nota');
+    Route::get('/produksi/monitoringprogres/nota/{id}/{tgl1}/{tgl2}', 'Produksi\MonitoringProgressController@bukaNota');
+    Route::get('/produksi/monitoringprogress/tabel/nota/{id}/{tgl1}/{tgl2}', 'Produksi\MonitoringProgressController@nota');
     Route::get('/produksi/monitoringprogress/save', 'Produksi\MonitoringProgressController@save');
     /* Rencana Produksi */
     Route::get('/produksi/rencanaproduksi/tabel', 'Produksi\RencanaProduksiController@tabel');
@@ -412,7 +412,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/customer/print_laporan/{tgl1}/{tgl2}/{cust}/{item}/{tampil}', 'PenjualanController@getLapCustomer');
 //end Monitoring
 //Monitoring Order Mahmud
-    Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');
+    Route::get('/penjualan/monitoringorder/tabel/{tgl1}/{tgl2}', 'Penjualan\MonitoringOrderController@tabel');
     Route::get('/penjualan/monitoringorder/nota/{id}', 'Penjualan\MonitoringOrderController@bukaNota');
     Route::get('/penjualan/monitoringorder/nota/tabel/{id}', 'Penjualan\MonitoringOrderController@nota');
 //Laporan Retail

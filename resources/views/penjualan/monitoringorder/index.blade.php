@@ -57,6 +57,36 @@
                                     <!-- End Modal -->
 
                                     <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-8 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
+                                        <div style="margin-left:-30px;">
+                                          <div class="col-md-3 col-sm-2 col-xs-12">
+                                            <label class="tebal">Tanggal Order</label>
+                                          </div>
+
+                                          <div class="col-md-6 col-sm-7 col-xs-12">
+                                            <div class="form-group" style="display: ">
+                                              <div class="input-daterange input-group">
+                                                <input id="tanggal1" class="form-control input-sm datepicker1 " name="tanggal" type="text">
+                                                <span class="input-group-addon">-</span>
+                                                <input id="tanggal2" class="input-sm form-control datepicker2" name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+                                          <button class="btn btn-primary btn-sm btn-flat fa fa-search" type="button" id="cariTanggal" onclick="cariOrder()">
+                                           
+                                          </button>
+                                          <button class="btn btn-info btn-sm btn-flat" type="button" id="refresh" onclick="cariOrder()">
+                                            <strong>
+                                              <i class="fa fa-undo" aria-hidden="true"></i>
+                                            </strong>
+                                          </button>
+                                        </div>
+                                        
+                                      </div>
+
                                         <div class="table-responsive" style="margin-top:10px;">
                                             <table class="table tabelan table-hover table-bordered" width="100%"
                                                    cellspacing="0" id="data">
@@ -66,7 +96,8 @@
                                                     <th width="25%">Nama Item</th>
                                                     <th>No Nota</th>
                                                     <th>Jumlah Order</th>
-                                                    <th>Jumlah Stok</th>
+                                                    <th>Stok Grosir</th>
+                                                    <th>Stok Produksi</th>
                                                     <th>Jumlah Kebutuhan</th>
                                                     <th>Jumlah Rencana Produksi</th>
                                                     <th>Jumlah Kekuarangan</th>
@@ -113,6 +144,53 @@
             $.extend($.fn.dataTableExt.oStdClasses, extensions);
 // Used when bJQueryUI is true
             $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+            var date = new Date();
+            var newdate = new Date(date);
+
+            newdate.setDate(newdate.getDate()-3);
+            var nd = new Date(newdate);
+
+            $('.datepicker').datepicker({
+              format: "mm",
+              viewMode: "months",
+              minViewMode: "months"
+            });
+            $('.datepicker1').datepicker({
+              autoclose: true,
+              format:"dd-mm-yyyy",
+              endDate: 'today'
+            }).datepicker("setDate", nd);
+            $('.datepicker2').datepicker({
+              autoclose: true,
+              format:"dd-mm-yyyy",
+              endDate: 'today'
+            });//.datepicker("setDate", "0"); 
+
+            cariOrder();
+
+            $(document).on('click','.nota',function(){
+                var id = $(this).data('id');
+                var tgl1 = $(this).data('tgl1');
+                var tgl2 = $(this).data('tgl2');
+                var i_name = $(this).data('name');
+                  $.ajax({
+                    url : baseUrl + "/produksi/monitoringprogres/nota/"+id+"/"+tgl1+"/"+tgl2,
+                    type: 'GET',     
+                      success:function(response)
+                      {
+                        $('#table-nota').html(response);
+                        $("#judul-item").text(i_name);
+                      }
+                  });
+                });
+
+            });
+
+        function cariOrder()
+        {   
+            $('#data').dataTable().fnDestroy();
+            var tgl1 = $('#tanggal1').val();
+            var tgl2 = $('#tanggal2').val();
             var table = $('#data').dataTable({
                 "responsive": true,
                 "pageLength": 10,
@@ -133,7 +211,7 @@
                 },
 
                 "ajax": {
-                    "url": baseUrl + "/penjualan/monitoringorder/tabel",
+                    "url": baseUrl + "/penjualan/monitoringorder/tabel/" + tgl1 + "/" + tgl2,
                     "type": "GET",
 
                 },
@@ -142,7 +220,8 @@
                     {"data": "i_name"},
                     {"data": "nota"},
                     {"data": "jumlah", "className": "dt-body-right"},
-                    {"data": "s_qty", "className": "dt-body-right"},
+                    { "data": "s_qtyGro" ,"className" : "dt-body-right" },
+                    { "data": "s_qtyPro" ,"className" : "dt-body-right" },
                     {"data": "j_butuh", "className": "dt-body-right"},
                     {"data": "pp_qty", "className": "dt-body-right"},
                     {"data": "j_kurang", "className": "dt-body-right"},
@@ -153,23 +232,10 @@
 
             $.fn.dataTable.ext.errMode = 'none';
 
-            $('#data')
-                .on('error.dt', function (e, settings, techNote, message) {
+            $('#data').on('error.dt', function (e, settings, techNote, message) {
                     location.reload();
-                })
-
-            $(document).on('click', '.nota', function () {
-                var a = $(this).data('id');
-                $.ajax({
-                    url: baseUrl + "/penjualan/monitoringorder/nota/" + a,
-                    type: 'get',
-                    success: function (response) {
-                        $('#table-nota').html(response);
-                    }
-                });
-            });
-
-        });
+            })
+        }
 
         $(".datepicker").datepicker({
             dateFormat: "yy-mm-dd",
