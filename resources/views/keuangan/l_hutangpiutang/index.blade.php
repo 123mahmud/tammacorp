@@ -58,7 +58,7 @@
 
             <ul id="generalTab" class="nav nav-tabs">
               <li class="active"><a href="#htgbeli-tab" data-toggle="tab">Laporan Hutang Piutang</a></li>
-              <li><a href="#htgjual-tab" data-toggle="tab">Laporan Pembayaran</a></li>
+              {{-- <li><a href="#htgjual-tab" data-toggle="tab">Laporan Pembayaran</a></li> --}}
             </ul>
 
             <div id="generalTabContent" class="tab-content responsive">
