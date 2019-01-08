@@ -103,7 +103,7 @@
 
       $('#tbl_jabatan').DataTable({
       processing: true,
-      // responsive:true,
+      responsive:true,
       serverSide: true,
       ajax: {
         url: '{{ url("master/datajabatan/data-jabatan") }}',
@@ -139,6 +139,62 @@
 
 
     });
+
+      function ubahStatusMan(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/datajabatanman/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_jabatan').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_jabatan').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
 
     
     function edit(a) {
@@ -244,6 +300,62 @@
                   }
               }
           });
+      }
+
+      function ubahStatusPro(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/datajabatanpro/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_jabatanpro').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_jabatanpro').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
       }
 
     function editJPro(id){

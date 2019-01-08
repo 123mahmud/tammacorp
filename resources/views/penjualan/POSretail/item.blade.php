@@ -19,7 +19,8 @@
     <div class="col-md-3">
         <label class="control-label tebal" name="qty">Kuantitas Stok</label>
         <div class="input-group input-group-sm" style="width: 100%;">
-            <input type="number" id="s_qty" name="s_qty" readonly class="form-control">
+            <input type="hidden" id="s_qty" name="s_qty" readonly class="form-control">
+            <input type="number" id="s_qtycon" name="s_qtycon" readonly class="form-control">
         </div>
     </div>
 </div>

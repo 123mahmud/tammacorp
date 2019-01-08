@@ -10,6 +10,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use DataTables;
 use URL;
+use App\m_customer;
 
 // use App\mmember
 
@@ -134,6 +135,7 @@ class custController extends Controller
                         'c_address' => $request->alamat,
                         'c_group' => $request->c_group,
                         'c_class' => $request->c_class,
+                        'c_pagu' => str_replace(',', '',  $request->c_pagu),
                         'c_insert' => $tanggal,
                     ]);
             } else {
@@ -151,6 +153,7 @@ class custController extends Controller
                         'c_address' => $request->alamat,
                         'c_group' => $request->c_group,
                         'c_class' => $request->c_class,
+                        'c_pagu' => str_replace(',', '',  $request->c_pagu),
                         'c_insert' => $tanggal,
                     ]);
             }
@@ -218,6 +221,7 @@ class custController extends Controller
                         'c_class' => $request->c_class,
                         'c_address' => $request->alamat,
                         'c_group' => $request->c_group,
+                        'c_pagu' => str_replace(',', '',  $request->c_pagu),
                         'c_update' => $tanggal,
                     ]);
             }else{
@@ -234,6 +238,7 @@ class custController extends Controller
                         'c_class' => $request->c_class,
                         'c_address' => $request->alamat,
                         'c_group' => $request->c_group,
+                        'c_pagu' => str_replace(',', '',  $request->c_pagu),
                         'c_update' => $tanggal,
                     ]);
             }
@@ -250,6 +255,41 @@ class custController extends Controller
             ]);
         }
     }
+
+    public function ubahStatus(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = m_customer::select('c_isactive')
+            ->where('c_id',$request->id)
+            ->first();
+        
+        if ($cek->c_isactive == 'TRUE') 
+        {
+            m_customer::where('c_id',$request->id)
+                ->update([
+                    'c_isactive' => 'FALSE'                    
+                ]);
+        }
+        else
+        {
+            m_customer::where('c_id',$request->id)
+                ->update([
+                    'c_isactive' => 'TRUE'
+                ]);
+        }
+        DB::commit();
+            return response()->json([
+                'status' => 'sukses'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+    }    
 
 
 }

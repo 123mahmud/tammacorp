@@ -126,6 +126,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/lap-pembelian/print-lap-beli/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_beli');
     Route::get('/purchasing/lap-pembelian/get-bharian-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@get_bharian_by_tgl');
     Route::get('/purchasing/lap-pembelian/print-lap-bharian/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_bharian');
+    Route::get('/purchasing/lap-supplier/get-bytgl/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@getLapSupplier');
+    Route::get('/purchasing/lap-pembelian/print-lap-pembelian/{tgl1}/{tgl2}', 'Pembelian\LapPembelianController@print_laporan_pembelian');
 //end purchasing
     /*Inventory*/
     Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
@@ -394,8 +396,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/POSgrosir/showNote', 'Penjualan\POSGrosirController@showNote');
     Route::get('/pembayaran/POSgrosir/changestatus', 'Penjualan\POSGrosirController@changeStatus');
     Route::get('penjualan/POSgrosir/grosir/autocompleteitem/group/{cus}/{item}', 'Penjualan\POSGrosirController@setGroupPrice');
+    Route::get('penjualan/POSgrosir/grosir/caripagu/{cus}', 'Penjualan\POSGrosirController@setPaguCus');
+    Route::get('/penjualan/POSgrosir/get-tanggaljual/pagu/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getPagu');
+    Route::get('/penjualan/POSgrosir/getpagu/{id}', 'Penjualan\POSGrosirController@appPagu');
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
+
 //mutasi Stok Mahmud
     Route::get('/penjualan/mutasi/stock/grosir-retail/{tgl1}/{tgl2}', 'Penjualan\mutasiStokController@tableGrosirRetail');
 //End Mutasi
@@ -403,6 +409,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/mutasi/monitoring-penjualan/{tampil}', 'PenjualanController@dataMonitor');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
+    Route::get('penjualan/customer/print_laporan/{tgl1}/{tgl2}/{cust}/{item}/{tampil}', 'PenjualanController@getLapCustomer');
 //end Monitoring
 //Monitoring Order Mahmud
     Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');
@@ -589,6 +596,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
     Route::get('/hrd/payroll/lihat-gaji/GR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGajiGR');
     Route::get('/hrd/payroll/pilih/absensi/{pilih}', 'Hrd\PayrollProduksiController@pilihAbsensi');
+    Route::get('/hrd/payroll/print-gaji/GR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@printGajiGr');
+    Route::get('/hrd/payroll/print-gaji/nonGR/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@printGajinonGr');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');
@@ -1214,7 +1223,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('master/datasuplier/datatable_suplier', 'Master\SuplierController@datatable_suplier')->name('datatable_suplier');
     Route::get('master/datasuplier/suplier_edit/{s_id}', 'Master\SuplierController@suplier_edit');
     Route::post('master/datasuplier/suplier_edit_proses/{s_id}', 'Master\SuplierController@suplier_edit_proses');
-    Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@suplier_hapus');
+    Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@ubahStatus');
 //-deny
 //customer
     Route::get('/master/datacust/cust', 'Master\custController@cust')->name('cust');
@@ -1224,6 +1233,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datacust/edit_cust', 'Master\custController@edit_cust')->name('edit_cust');
     Route::get('/master/datacust/update_cust', 'Master\custController@update_cust')->name('update_cust');
     Route::get('/master/datacust/datatable_cust', 'Master\custController@datatable_cust')->name('datatable_cust');
+    Route::get('/master/datacust/ubahstatus', 'Master\custController@ubahStatus');
 //barang
     Route::get('/master/databarang/barang', 'Master\barangController@barang')->name('barang');
     Route::get('/master/databarang/tambah_barang', 'Master\barangController@tambah_barang');
@@ -1266,6 +1276,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datasatuan/edit_satuan', 'Master\satuanController@edit_satuan')->name('edit_satuan');
     Route::get('/master/datasatuan/update_satuan', 'Master\satuanController@update_satuan')->name('update_satuan');
     Route::get('/master/datasatuan/datatable_satuan', 'Master\satuanController@datatable_satuan')->name('datatable_satuan');
+    Route::get('/master/datasatuan/ubahstatus', 'Master\satuanController@ubahStatus');
 //group
     Route::get('/master/datagroup/group', 'Master\groupController@group')->name('group');
     Route::get('/master/datagroup/tambah_group', 'Master\groupController@tambah_group')->name('tambah_group');
@@ -1274,6 +1285,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datagroup/edit_group/{id}', 'Master\groupController@edit_group')->name('edit_group');
     Route::get('/master/datagroup/update_group', 'Master\groupController@update_group')->name('update_group');
     Route::get('/master/datagroup/datatable_group', 'Master\groupController@datatable_group')->name('datatable_group');
+    Route::get('/master/datagroup/ubahstatus', 'Master\groupController@ubahStatus');
 //-[]-belum-[]-//
 // route Keuangan (Dirga)
 // akun keuangan route
@@ -1298,11 +1310,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/training/training', 'Hrd\TrainingContoller@training')->name('training');
     Route::get('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
     Route::get('/hrd/training/save/form', 'Hrd\TrainingContoller@savePengajuanForm');
-    Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}', 'Hrd\TrainingContoller@tablePengajuan');
+    Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}/{peg}', 'Hrd\TrainingContoller@tablePengajuan');
     Route::get('/hrd/training/acc-pelatihan/{id}', 'Hrd\TrainingContoller@accPelatihan');
     Route::get('/hrd/training/lihat-waktu/{id}', 'Hrd\TrainingContoller@lihatWaktu');
     Route::get('/hrd/training/wakti-pelatihan', 'Hrd\TrainingContoller@reqTimeTraining');
-
+    Route::get('/hrd/training/doc-pelatihan/{id}', 'Hrd\TrainingContoller@printDoc');
 //Master Data Lowongan
     Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
     Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
@@ -1349,6 +1361,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('datajabatan/hapus-jabatanpro/{id}', 'Master\JabatanController@hapusJabatanPro');
     Route::get('/master/datajabatan/pro/edit/{id}', 'Master\JabatanController@editPro');
     Route::post('/master/datajabatan/pro/update-jabatan/{id}', 'Master\JabatanController@updatePro');
+    Route::get('/master/datajabatanman/ubahstatus', 'Master\JabatanController@ubahStatusMan');
+    Route::get('/master/datajabatanpro/ubahstatus', 'Master\JabatanController@ubahStatusPro');
 //pegawai
     Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
     Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
@@ -1368,6 +1382,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
     Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
     Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
+    Route::get('/master/datapegawai/ubahstatus', 'Master\PegawaiController@ubahStatusMan');
+    Route::get('/master/datapegawai/ubahstatuspro', 'Master\PegawaiController@ubahStatusPro');
 //mahmud master divisi dan posii
     Route::get('/master/divisi/pos/index', 'Master\DivisiposController@index');
     Route::get('/master/divisi/pos/table', 'Master\DivisiposController@tableDivisi');
@@ -1382,7 +1398,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/master/divisi/pos/simpandivisi', 'Master\DivisiposController@simpanDivisi');
     Route::get('/master/divisi/pos/hapusdivisi/{id}', 'Master\DivisiposController@hapusDivisi');
     Route::get('/master/divisi/pos/hapusposisi/{id}', 'Master\DivisiposController@hapusPosisi');
-   
+    Route::get('/master/divisi/pos/ubahstatus', 'Master\DivisiposController@ubahStatusDiv');
+    Route::get('/master/divisi/posisi/ubahstatus', 'Master\DivisiposController@ubahStatusPos');
 //Master data Scoreboard
     Route::get('/master/datascore/index', 'Master\ScoreController@index');
     Route::get('/master/datascore/tambah-score', 'Master\ScoreController@tambah_score');

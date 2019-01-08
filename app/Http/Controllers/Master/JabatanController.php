@@ -9,6 +9,7 @@ use DB;
 use DataTables;
 use App\Jabatan;
 use App\m_jabatan_pro;
+use App\m_jabatan;
 
 class JabatanController extends Controller
 {
@@ -32,7 +33,7 @@ class JabatanController extends Controller
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </button>'.'
                                     <button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        onclick="ubahStatusMan('.$data->c_id.')" 
                                         class="btn btn-primary btn-sm" 
                                         title="Aktif">
                                         <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -43,7 +44,7 @@ class JabatanController extends Controller
                     {
                         return  '<div class="text-center">'.
                                     '<button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        onclick="ubahStatusMan('.$data->c_id.')" 
                                         class="btn btn-danger btn-sm" 
                                         title="Tidak Aktif">
                                         <i class="fa fa-minus-square" aria-hidden="true"></i>
@@ -102,8 +103,8 @@ class JabatanController extends Controller
                 ->make(true);
     }
     public function tambahJabatan(Request $request){
-        $divisi = DB::table('m_divisi')->get();
-        $subdivisi = DB::table('m_sub_divisi')->get();
+        $divisi = DB::table('m_divisi')->where('c_isactive','TRUE')->get();
+        $subdivisi = DB::table('m_sub_divisi')->where('c_isactive','TRUE')->get();
         return view('master/datajabatan/tambah_jabatan', ['divisi' => $divisi, 'subdivisi' => $subdivisi]);
     }
     public function simpanJabatan(Request $request){
@@ -161,7 +162,7 @@ class JabatanController extends Controller
                                 title="Edit"><i class="glyphicon glyphicon-pencil"></i>
                             </button>'.'
                             <button id="status'.$data->c_id.'" 
-                                onclick="ubahStatus('.$data->c_id.')" 
+                                onclick="ubahStatusPro('.$data->c_id.')" 
                                 class="btn btn-primary btn-sm" 
                                 title="Aktif">
                                 <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -172,7 +173,7 @@ class JabatanController extends Controller
             {
                 return '<div class="text-center">'.
                             '<button id="status'.$data->c_id.'" 
-                                onclick="ubahStatus('.$data->c_id.')" 
+                                onclick="ubahStatusPro('.$data->c_id.')" 
                                 class="btn btn-danger btn-sm" 
                                 title="Tidak Aktif">
                                 <i class="fa fa-minus-square" aria-hidden="true"></i>
@@ -244,5 +245,74 @@ class JabatanController extends Controller
             ]);
 
         return view('master/datajabatan/datajabatan');
+    }
+
+    public function ubahStatusMan(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = m_jabatan::select('c_isactive')
+            ->where('c_id',$request->id)
+            ->first();
+
+        if ($cek->c_isactive == 'TRUE') 
+        {
+            m_jabatan::where('c_id',$request->id)
+                ->update([
+                    'c_isactive' => 'FALSE'
+                ]);       
+        }
+        else
+        {
+            m_jabatan::where('c_id',$request->id)
+                ->update([
+                    'c_isactive' => 'TRUE'
+                ]);
+        }
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+    }
+
+    public function ubahStatusPro(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = m_jabatan_pro::select('c_isactive')
+            ->where('c_id',$request->id)
+            ->first();
+        if ($cek->c_isactive == 'TRUE') 
+        {
+            m_jabatan_pro::where('c_id',$request->id)
+            ->update([
+                'c_isactive' => 'FALSE'
+            ]);
+        }
+        else
+        {
+            m_jabatan_pro::where('c_id',$request->id)
+            ->update([
+                'c_isactive' => 'TRUE'
+            ]);
+        }
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
     }
 }

@@ -56,6 +56,26 @@
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
+              <label class="tebal">Plafon</label>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label id="plafonSupRp"></label>
+              </div>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <label class="tebal">Batas Plafon</label>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <div class="form-group">
+                <label id="BatasPlafonSupRp"></label>
+              </div>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
               <label class="tebal">Status</label>
             </div>
 
@@ -67,6 +87,18 @@
                   <option value="CF">Dikonfirmasi</option>
                   <option value="RV">Revisi</option>
                 </select>
+              </div>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <label class="tebal">Total Harga</label>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <div class="form-group">
+                <b><input id="total-harga" readonly class="form-control input-sm text-right" name=""></b>
+                <b><input id="total-hargaKw" readonly type="hidden" class="form-control input-sm text-right" name=""></b>
+                <b><input id="batas-plafon" readonly type="hidden" class="form-control input-sm text-right" name=""></b>
               </div>
             </div>
 

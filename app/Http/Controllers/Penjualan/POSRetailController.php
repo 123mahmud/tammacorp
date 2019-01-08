@@ -160,6 +160,7 @@ class POSRetailController extends Controller
     $term = $request->term;
     $results = array();
     $queries = m_customer::where('m_customer.c_name', 'LIKE', '%'.$term.'%')
+      ->where('c_isactive','TRUE')
       ->orderBy('c_name', 'asc')
       ->take(25)->get();
 
@@ -182,7 +183,7 @@ class POSRetailController extends Controller
     $results = array();
     if ($id == 'A') {
 
-      $queries = DB::select('select i_id, i_code,i_name,m_psell1,s_qty,m_sname
+      $queries = DB::select('select i_id, i_code,i_name,m_psell1,s_qty,m_sname,i_type
                             from m_item left join d_stock on i_id = s_item
                             join m_price on i_id = m_pitem
                             join m_satuan on m_sid = i_sat1
@@ -203,13 +204,15 @@ class POSRetailController extends Controller
                          'kode' => $query->i_id,
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
-                         's_qty'=>$query->s_qty
+                         's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
+                         'i_type'=>$query->i_type
                        ];
         }
       }
 
   }else if ($id == 'B') {
-    $queries = DB::select('select i_id, i_code,i_name,m_psell2,s_qty,m_sname
+    $queries = DB::select('select i_id, i_code,i_name,m_psell2,s_qty,m_sname,i_type
                           from m_item left join d_stock on i_id = s_item
                           join m_price on i_id = m_pitem
                           join m_satuan on m_sid = i_sat1
@@ -229,12 +232,14 @@ class POSRetailController extends Controller
                          'kode' => $query->i_id,
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
-                         's_qty'=>$query->s_qty
+                         's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
+                         'i_type'=>$query->i_type
                        ];
         }
       }
   }else{
-    $queries = DB::select('select i_id, i_code,i_name,m_psell3,s_qty,m_sname
+    $queries = DB::select('select i_id, i_code,i_name,m_psell3,s_qty,m_sname,i_type
                           from m_item left join d_stock on i_id = s_item
                           join m_price on i_id = m_pitem
                           join m_satuan on m_sid = i_sat1
@@ -254,7 +259,9 @@ class POSRetailController extends Controller
                          'kode' => $query->i_id,
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
-                         's_qty'=>$query->s_qty
+                         's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
+                         'i_type'=>$query->i_type
                        ];
         }
       }

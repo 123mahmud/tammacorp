@@ -92,13 +92,28 @@ class LowonganController extends Controller
         {  
             if ($data->l_isactive == "Y") 
             {
-                return  '<button id="edit" onclick=edit("'.$data->l_id.'") class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                      <button id="delete" onclick=gantiStatus("'.$data->l_id.'","aktif") class="btn btn-danger btn-sm" title="Nonaktifan"><i class="glyphicon glyphicon-remove"></i></button>';
+                return  '<button id="edit" 
+                            onclick=edit("'.$data->l_id.'") 
+                            class="btn btn-warning btn-sm" 
+                            title="Edit">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </button>'.'
+                        <button id="delete" 
+                            onclick=gantiStatus("'.$data->l_id.'","aktif") 
+                            class="btn btn-primary btn-sm" 
+                            title="Aktif">
+                            <i class="fa fa-check-square" aria-hidden="true"></i>
+                        </button>';
             }
             else
             {
-                return  '<button id="edit" onclick=edit("'.$data->l_id.'") class="btn btn-warning btn-sm disabled" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                      <button id="delete" onclick=gantiStatus("'.$data->l_id.'","nonaktif") class="btn btn-info btn-sm" title="Aktifkan"><i class="glyphicon glyphicon-ok"></i></button>';
+                return  '<div class="text-center">'.
+                            '<button id="delete" 
+                                    onclick=gantiStatus("'.$data->l_id.'","nonaktif") 
+                                    class="btn btn-danger btn-sm" title="Tidak Aktif">
+                                    <i class="fa fa-minus-square" aria-hidden="true">
+                            </button>'.
+                        '</div>';
             }
         })
         ->addColumn('status', function ($data) {

@@ -134,38 +134,31 @@
 		<table width="100%" cellpadding="2px" class="tabel" border="1px" style="margin-bottom: 10px;">
 			<thead>
 				<tr>
-					<th width="100px">Nama Barang</th>
-					<th>No Bukti</th>
+					<th width="100px">Nama Pembeli</th>
+					<th>Nota</th>
 					<th>Tanggal</th>
-					<th>Jatuh Tempo</th>
-					<th>Customer</th>
-					<th>Kurs</th>
-					<th>Sat</th>
+					<th>Nama Barang</th>
 					<th>Qty</th>
 					<th>Harga</th>
 					<th colspan="2">Diskon %</th>
 					<th>Diskon Value</th>
-					<th>DPP</th>
 					<th>PPN</th>
 					<th>Total</th>
-					
 				</tr>
 			</thead>
 			<tbody>
 
+			
 
 				@for($i=0;$i<count($penjualan);$i++)
 					@for($j=0;$j<count($penjualan[$i]);$j++)
 						<tr>
 							@if($j == 0)
-							<td class="border-none" rowspan="{{count($penjualan[$i]) + 1}}">{{$penjualan[$i][$j]->i_code}} - {{$penjualan[$i][$j]->i_name}}</td>
+							<td class="border-none" rowspan="{{count($penjualan[$i]) + 1}}">{{$penjualan[$i][$j]->c_name}}</td>
 							@endif
 							<td class="text-center">{{$penjualan[$i][$j]->s_note}}</td>
 							<td class="text-center">{{date('d M Y', strtotime($penjualan[$i][$j]->s_date))}}</td>
-							<td class="text-center">{{date('d M Y', strtotime($penjualan[$i][$j]->s_jatuh_tempo))}}</td>
-							<td>{{$penjualan[$i][$j]->c_name}}</td>
-							<td class="text-right">{{number_format(1,2,',','.')}}</td>
-							<td class="text-center">{{$penjualan[$i][$j]->m_sname}}</td>
+							<td>{{$penjualan[$i][$j]->i_name}}</td>
 							<td class="text-center">{{$penjualan[$i][$j]->sd_qty}}</td>
 							<td>
 								<div class="float-right"> 
@@ -175,21 +168,19 @@
 							<td class="text-right">{{$penjualan[$i][$j]->sd_disc_percent}} %</td>
 							<td class="text-right">{{number_format($penjualan[$i][$j]->sd_disc_vpercent,2,',','.')}} </td>
 							<td class="text-right">{{$penjualan[$i][$j]->sd_disc_value}}</td>
-							<td class="text-right">{{number_format($penjualan[$i][$j]->sd_total,2,',','.')}}</td>
 							<td class="text-right">{{number_format(0,2,',','.')}}</td>
 							<td class="text-right">{{number_format($penjualan[$i][$j]->sd_total,2,',','.')}}</td>
 						</tr>
 
 						@if($j == count($penjualan[$i]) - 1)
 							<tr>
-								<td class="text-right bold" colspan="6">Total</td>
+								<td class="text-right bold" colspan="3">Total</td>
 								<td class="text-center bold">{{$data_sum[$i]->total_qty}}</td>
 								<td class="text-right bold"></td>
 								<td class="text-right bold" colspan="2">{{number_format($data_sum[$i]->sd_disc_vpercent,2,',','.')}}</td>
 								<td class="text-right bold">{{number_format($data_sum[$i]->sd_disc_value,2,',','.')}}</td>
-								<td class="text-right bold">{{number_format($data_sum[$i]->total_penjualan,2,',','.')}}</td>
-								<td class="text-right bold">{{number_format(0,2,',','.')}}</td>
-								<td class="text-right bold">{{number_format($data_sum[$i]->total_penjualan,2,',','.')}}</td>
+								{{-- <td class="text-right bold"></td> --}}
+								<td class="text-right bold" colspan="2">{{number_format($data_sum[$i]->total_penjualan,2,',','.')}}</td>
 							</tr>
 						@endif
 						

@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="table-responsive">
-                    <table id="tbl_divisi" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
+                    <table id="tbl_divisi" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0">
                       <thead>
                         <tr>
                           <th class="wd-15p">No</th>
@@ -166,75 +166,118 @@
         });
         }
 
-        function hapusDivisi(id) {
-            iziToast.show({
-                color: 'red',
-                title: 'Peringatan',
-                message: 'Apakah anda yakin!',
-                position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-                progressBarColor: 'rgb(0, 255, 184)',
-                buttons: [
-                    [
-                        '<button>Ok</button>',
-                        function (instance, toast) {
-                            instance.hide({
-                                transitionOut: 'fadeOutUp'
-                            }, toast);
-                            $.ajax({
-                                type: 'get',
-                                url: baseUrl + "/master/divisi/pos/hapusdivisi/" + id,
-                                success: function () {
-                                    tblDivisi.ajax.reload();
-                                }
-                            });
-                        }
-                    ],
-                    [
-                        '<button>Close</button>',
-                        function (instance, toast) {
-                            instance.hide({
-                                transitionOut: 'fadeOutUp'
-                            }, toast);
-                        }
-                    ]
-                ]
-            });
-        }
+      function ubahStatusPos(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/divisi/posisi/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tb_posisi').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tb_posisi').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
 
-        function hapusPosisi(id) {
-            iziToast.show({
-                color: 'red',
-                title: 'Peringatan',
-                message: 'Apakah anda yakin!',
-                position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-                progressBarColor: 'rgb(0, 255, 184)',
-                buttons: [
-                    [
-                        '<button>Ok</button>',
-                        function (instance, toast) {
-                            instance.hide({
-                                transitionOut: 'fadeOutUp'
-                            }, toast);
-                            $.ajax({
-                                type: 'get',
-                                url: baseUrl + "/master/divisi/pos/hapusposisi/" + id,
-                                success: function () {
-                                    tbPosisi();
-                                }
-                            });
-                        }
-                    ],
-                    [
-                        '<button>Close</button>',
-                        function (instance, toast) {
-                            instance.hide({
-                                transitionOut: 'fadeOutUp'
-                            }, toast);
-                        }
-                    ]
-                ]
-            });
-        }
+      function ubahStatusDiv(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/divisi/pos/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_divisi').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_divisi').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
+
 
         function editDivisi(a) {
           var parent = $(a).parents('tr');

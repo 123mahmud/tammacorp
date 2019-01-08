@@ -113,49 +113,9 @@
             }
           }
         });
-        function hapus(id) {
-          iziToast.question({
-            timeout: 20000,
-            close: false,
-            overlay: true,
-            toastOnce: true,
-            id: 'question',
-            zindex: 999,
-            title: 'Hey',
-            message: 'Apakah anda yakin?',
-            position: 'center',
-            buttons: [
-              ['<button><b>YA</b></button>', function (instance, toast) {
-                $.ajax({
-                  url: '{{ url("master/datapegawai/delete-pegawai") }}' + '/' + id,
-                  async: false,
-                  type: "DELETE",
-                  data: {
-                    "id": id,
-                    "_method": 'DELETE',
-                    "_token": '{{ csrf_token() }}',
-                  },
-                  dataType: "json",
-                  success: function (data) { }
-                });
-                window.location.reload();
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
 
-              }, true],
-              ['<button>TIDAK</button>', function (instance, toast) {
 
-                instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
 
-              }]
-            ],
-            onClosing: function (instance, toast, closedBy) {
-              console.info('Closing | closedBy: ' + closedBy);
-            },
-            onClosed: function (instance, toast, closedBy) {
-              console.info('Closed | closedBy: ' + closedBy);
-            }
-          });
-        }
         function edit(a) {
           var parent = $(a).parents('tr');
           var id = $(parent).find('.d_id').text();

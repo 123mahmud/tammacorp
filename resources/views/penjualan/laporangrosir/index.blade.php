@@ -118,63 +118,63 @@
     return text;
   }
 
-  /*function lihatLaporanByTgl(){
-    var tgl1 = $('#tanggal1').val();
-    var tgl2 = $('#tanggal2').val();
-    $.ajax({
-      url: baseUrl + "/penjualan/laporanRetail/get-data-laporan/"+tgl1+"/"+tgl2,
-      type: "GET",
-      dataType: "JSON",
-      success: function(response)
-      {
-        var $tbody = $('#tbl-laporan tbody');
-        // clear table
-        $tbody.empty();
-        i = randString(5);
-        var last = "";
+  // function lihatLaporanByTgl(){
+  //   var tgl1 = $('#tanggal1').val();
+  //   var tgl2 = $('#tanggal2').val();
+  //   $.ajax({
+  //     url: baseUrl + "/penjualan/laporanRetail/get-data-laporan/"+tgl1+"/"+tgl2,
+  //     type: "GET",
+  //     dataType: "JSON",
+  //     success: function(response)
+  //     {
+  //       var $tbody = $('#tbl-laporan tbody');
+  //       // clear table
+  //       $tbody.empty();
+  //       i = randString(5);
+  //       var last = "";
 
-        $.each(response.data, function(key, value) {
-          // create new row
-          var $row  = $("<tr></tr>");
+  //       $.each(response.data, function(key, value) {
+  //         // create new row
+  //         var $row  = $("<tr></tr>");
 
-          // append the outlet td if appropriate
-          if(last != value.i_code)
-          {
-            // use array filter on the dataset to count rows for rowspan
-            var len = response.data.filter(function(i,n){ return n.i_code === value.i_code }).length;
-            // append the ted
-            console.log(len);
-            $row.append(  "<td align='left' rowspan='"+len+"'><font size='1'>"+ value.i_code +"</font></td>");
-            // set up for next time
-            last = value.i_code;
-            console.log(last);
-          }
+  //         // append the outlet td if appropriate
+  //         if(last != value.i_code)
+  //         {
+  //           // use array filter on the dataset to count rows for rowspan
+  //           var len = response.data.filter(function(i,n){ return n.i_code === value.i_code }).length;
+  //           // append the ted
+  //           console.log(len);
+  //           $row.append(  "<td align='left' rowspan='"+len+"'><font size='1'>"+ value.i_code +"</font></td>");
+  //           // set up for next time
+  //           last = value.i_code;
+  //           console.log(last);
+  //         }
 
-          // append the rest of the td
-          //$row.append("<td class='barang' style='text-align:left; vertical-align:middle'>"+ value.i_code +"</td>");
-          $row.append("<td class='barang' style='text-align:left; vertical-align:middle'>"+ value.s_note +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.s_date +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.s_date +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.c_name +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>1</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.m_sname +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ convertDecimalToRupiah(value.sd_price) +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ convertDecimalToRupiah(value.sd_disc_value) +"</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.sd_disc_percent +"%</td>");
-          $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.s_date +"</td>");
-          //$row.append("<td></td>");
-          $row.append("<td style='text-align:left; vertical-align:middle'>"+convertDecimalToRupiah(value.sd_total) +"</td>");
-          //$("<td></td>");
-          // append the row to the body
-          $tbody.append($row);
-        });
-      },
-      error: function (jqXHR, textStatus, errorThrown)
-      {
-          alert('Error get data from ajax');
-      }
-    });
-  }*/
+  //         // append the rest of the td
+  //         //$row.append("<td class='barang' style='text-align:left; vertical-align:middle'>"+ value.i_code +"</td>");
+  //         $row.append("<td class='barang' style='text-align:left; vertical-align:middle'>"+ value.s_note +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.s_date +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.s_date +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.c_name +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>1</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.m_sname +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ convertDecimalToRupiah(value.sd_price) +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ convertDecimalToRupiah(value.sd_disc_value) +"</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.sd_disc_percent +"%</td>");
+  //         $row.append("<td style='text-align:right; vertical-align:middle'>"+ value.s_date +"</td>");
+  //         //$row.append("<td></td>");
+  //         $row.append("<td style='text-align:left; vertical-align:middle'>"+convertDecimalToRupiah(value.sd_total) +"</td>");
+  //         //$("<td></td>");
+  //         // append the row to the body
+  //         $tbody.append($row);
+  //       });
+  //     },
+  //     error: function (jqXHR, textStatus, errorThrown)
+  //     {
+  //         alert('Error get data from ajax');
+  //     }
+  //   });
+  // }
 
   function lihatLaporanByTgl(){
     var tgl1 = $('#tanggal1').val();
@@ -197,8 +197,8 @@
         "columns" : [
           {"data" : "nama", "width" : "15%", name: 'first'},
           {"data" : "s_note", "width" : "10%"},
-          {"data" : "s_date", "width" : "10%"},
-          {"data" : "s_date", "width" : "5%"},
+          {"data" : "s_date", "width" : "8%"},
+          {"data" : "j_tempo", "width" : "7%"},
           {"data" : "c_name", "width" : "10%"},
           {"data" : "kurs", "width" : "5%"},
           {"data" : "m_sname", "width" : "10%"},

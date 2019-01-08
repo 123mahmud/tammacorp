@@ -55,9 +55,9 @@
                                                 <div class="form-group">
                                                     <div class="col-md-4">
                                                         <div class="input-daterange input-group" id="range-tanggal">
-                                                            <input type="text" class="form-control input-sm start" name="start" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
+                                                            <input type="text" class="form-control input-sm start datepicker3" name="start" value="" />
                                                             <span class="input-group-addon bg-custom">-</span>
-                                                            <input type="text" class="form-control input-sm end" name="end" value="{{ Carbon\Carbon::now('Asia/Jakarta')->format('m-d-Y')  }}" />
+                                                            <input type="text" class="form-control input-sm end datepicker4" name="end" value="{{ date('d-m-Y') }}" />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -102,7 +102,6 @@
                                                         <th>Harga</th>
                                                         <th>Disk Value</th>
                                                         <th>Disk %</th>
-                                                        <th>DPP</th>
                                                         <th>PPN</th>
                                                         <th>Total</th>
                                                     </tr>
@@ -136,15 +135,15 @@
 @section("extra_scripts")
     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
     <script type="text/javascript">
-        var datamonitor;
-        var datepicker_today;
+        //var datamonitor;
+        //var datepicker_today;
         $(document).ready(function() {
-            datepicker_today = $('#range-tanggal').datepicker({
-                autoclose: true,
-                toggleActive: true,
-                todayHighlight: true,
-                format: 'dd-mm-yyyy'
-            });
+            // datepicker_today = $('#range-tanggal').datepicker({
+            //     autoclose: true,
+            //     toggleActive: true,
+            //     todayHighlight: true,
+            //     format: 'dd-mm-yyyy'
+            // });
 
             $('#namabarang').autocomplete({
                 source: baseUrl + '/penjualan/POSretail/retail/transfer-item',
@@ -218,6 +217,17 @@
                 format: "dd-mm-yyyy",
                 endDate: 'today'
             });//datepicker("setDate", "0");
+            $('.datepicker3').datepicker({
+                autoclose: true,
+                format: "dd-mm-yyyy",
+                endDate: 'today'
+            }).datepicker("setDate", nd);
+
+            $('.datepicker4').datepicker({
+                autoclose: true,
+                format: "dd-mm-yyyy",
+                endDate: 'today'
+            });//datepicker("setDate", "0");
 
             getTanggal();
 
@@ -246,7 +256,7 @@
             $("#data-monitor").dataTable().fnDestroy();
             $('#btn_print').html(
                 '<div class="btn-group">'+
-                    '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/retail/print_laporan_penjualan/' +'" '+ 
+                    '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/customer/print_laporan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'" '+ 
                     'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
                     '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/retail/pdf_laporan_penjualan/' +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
                 '</div>'
@@ -286,7 +296,6 @@
                     {"data": "Harga"},
                     {"data": "sd_disc_value"},
                     {"data": "sd_disc_vpercent"},
-                    {"data": "Dpp"},
                     {"data": "Ppn"},
                     {"data": "sd_total"},
                 ],

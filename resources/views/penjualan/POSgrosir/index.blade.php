@@ -94,6 +94,9 @@
                             <li><a href="#label-badge-tab" data-toggle="tab" onclick="cariTanggalJual()">Item
                                     Penjualan</a></li>
                             <li><a href="#nav-stock" data-toggle="tab">Stock Grosir</a></li>
+                            @if(Auth::user()->punyaAkses('Konfirmasi Pagu','ma_read'))
+                            <li><a href="#nav-pagu" data-toggle="tab" onclick="cariTanggalPagu()">Konfirmasi Pagu</a></li>
+                            @endif
                         </ul>
                         <div id="generalTabContent" class="tab-content responsive">
                             <!-- Trigger the modal with a button -->
@@ -283,11 +286,24 @@
                                                             <input type="hidden" id="id_cus" name="id_cus"
                                                                    class="form-control">
                                                             <span class="input-group-btn">
-                              <button type="button" class="btn btn-info btn-sm btn_simpan" data-toggle="modal"
-                                      data-target="#myModal">
-                                  <i class="fa fa-plus"></i>
-                              </button>
-                            </span>
+                                                              <button type="button" class="btn btn-info btn-sm btn_simpan" data-toggle="modal"
+                                                                      data-target="#myModal">
+                                                                  <i class="fa fa-plus"></i>
+                                                              </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
+                                                        <label for="s_pagu" class="control-label tebal">Pagu
+                                                            </label>
+                                                        <div class="input-group input-group-sm" style="width: 100%;">
+                                                            <input id="s_pagu" type="hidden" name="s_pagu"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
+                                                            <input id="s_paguRp" type="text" name="s_paguRp"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
+                                                            
                                                         </div>
                                                     </div>
                                                     <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
@@ -299,12 +315,18 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
-                                                        <label for="tgl_faktur" class="control-label tebal">Tanggal
-                                                            Faktur</label>
+                                                        <label for="tgl_faktur" class="control-label tebal">Sisa Pagu
+                                                            </label>
                                                         <div class="input-group input-group-sm" style="width: 100%;">
-                                                            <input id="tgl_faktur" type="text" name="s_date"
+                                                            <input id="tgl_faktur" type="hidden" name="s_date"
                                                                    class="form-control" readonly="readonly"
                                                                    value="{{ date('d-m-Y') }}">
+                                                            <input id="s_sisa_pagu" type="hidden" name="s_sisa_pagu"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
+                                                            <input id="s_sisa_pagu_rp" type="text" name="s_sisa_pagu_rp"
+                                                                   class="form-control" readonly="readonly"
+                                                                   value="">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
@@ -529,6 +551,16 @@
                             <!--end div label-badge-tab -->
 
                             @include('penjualan.POSgrosir.StokGrosir.stock')
+                            <!-- div nav-pagu -->
+                            <div id="nav-pagu" class="tab-pane fade">
+                                <div class="row">
+                                    <div class="panel-body">
+
+                                        @include('/penjualan/POSgrosir/konfirmasi_pagu')
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end div nav-pagu -->
                         </div>
                     </div>
                     <!-- End div generalTab -->
@@ -542,6 +574,7 @@
 
     <script src="{{ asset ('assets/script/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+    <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
     @include('penjualan.POSgrosir.jquery_simpan_sales')
 
     <script type="text/javascript">
@@ -590,6 +623,31 @@
                 // endDate: 'today'
             }).datepicker("setDate", nd7);
 
+            $('#proses').on('shown.bs.modal', function () {
+                $('#bayar').focus();
+                autoStatusFinal();
+            }) 
+
+            $('#prosesProgres').on('shown.bs.modal', function () {
+                $('#bayarDP').focus();
+                autoStatusProgres();
+            })
+
+            $('#modalStatus').on('shown.bs.modal', function () {
+                $('#ongkir').inputmask("currency", {
+                    radixPoint: ".",
+                    groupSeparator: ",",
+                    digits: 2,
+                    allowMinus: false,
+                    autoGroup: true,
+                    prefix: '', //Space after $, this will not truncate the first character.
+                    rightAlign: false,
+                    oncleared: function () {  }
+                });
+            })  
+
+            
+
             $("#nama-customer").autocomplete({
                 source: baseUrl + '/penjualan/POSretail/retail/autocomplete',
                 minLength: 1,
@@ -599,6 +657,8 @@
                     $('#nama-customer').val(ui.item.label);
                     $('#alamat2').val(ui.item.alamat);
                     $('#c-class').val(ui.item.c_class);
+                    var idCus = ui.item.id;
+                    cariPagu(idCus);
                     $("input[name='item']").focus();
                 }
             });
@@ -718,6 +778,9 @@
                     $('#nama-customer').val(ui.item.label);
                     $('#alamat2').val(ui.item.alamat);
                     $('#c-class').val(ui.item.c_class);
+                    $('#s_pagu').val();
+                    var idCus = ui.item.id;
+                    cariPagu(idCus);
                 }
             });
             $("#alamat2").val('');
@@ -726,6 +789,10 @@
             $("#s_qty").val('');
             $("#qty").val('');
             $("#namaitem").val('');
+            $('#s_pagu').val('');
+            $('#s_sisa_pagu').val('');
+            $('#s_paguRp').val('');
+            $('#s_sisa_pagu_rp').val('');
             tableDetail.row().clear().draw(false);
             var inputs = document.getElementById('kode'),
                 names = [].map.call(inputs, function (input) {
@@ -733,6 +800,69 @@
                 });
             tamp = names;
         });
+
+        function cariPagu(id)
+        {
+            $.ajax({
+              url : baseUrl + "/penjualan/POSgrosir/grosir/caripagu/" + id,
+              type: 'GET',
+              success:function(response)
+              {
+                $('#s_pagu').val(response[0]);
+                $('#s_sisa_pagu').val(response[1]);
+                var setRpPagu = SetFormRupiah($('#s_pagu').val());
+                $('#s_paguRp').val(setRpPagu);
+                var setRpSisa = SetFormRupiah($('#s_sisa_pagu').val());
+                $('#s_sisa_pagu_rp').val(setRpSisa);
+                
+              }
+            }); 
+        }
+
+        function autoStatusFinal()
+        {
+            var totalPayment = convertToAngka($('#totalPayment').val());
+            var jumBayar = convertToAngka($('#bayar').val());
+            var sisaPagu =  $('#s_sisa_pagu').val();
+            var hitung = totalPayment - jumBayar;
+            $('.simpanFinal').html('Proses');
+            if (sisaPagu != '0') 
+            {
+                if (hitung > sisaPagu) 
+                {
+                    $('.simpanFinal').html('Pending');
+                }
+                else
+                {
+                    $('.simpanFinal').html('Proses');
+                }
+            }
+            updateKembalian();
+        }
+
+        function autoStatusProgres()
+        {
+            var totalPayment = convertToAngka($('#totalPayment').val());
+            var jumBayar = convertToAngka($('#bayarDP').val());
+            var sisaPagu =  $('#s_sisa_pagu').val();
+            if (jumBayar == '') 
+            {
+                jumBayar = 0;
+            }
+            var hitung = totalPayment - jumBayar;
+            if (sisaPagu != '0') 
+            {
+                if (hitung > sisaPagu) 
+                {
+                    $('.simpanProgress').html('Pending');
+                }
+                else
+                {
+                    $('.simpanProgress').html('Proses');
+                }
+            }
+            updateKembalianDP();
+        }
 
         //namaitem
         $("#namaitem").focus(function () {
@@ -747,17 +877,23 @@
                     $('#detailnama').val(ui.item.nama);
                     $('#namaitem').val(ui.item.label);
                     $('#satuan').val(ui.item.satuan);
-                    if (ui.item.s_qty == null) {
+                    if (ui.item.s_qty == null) 
+                    {
                         $('#s_qty').val('0');
-                    } else {
+                    } 
+                    else 
+                    {
                         $('#s_qty').val(ui.item.s_qty);
                     }
+                    $('#s_qtycon').val(ui.item.s_qtycon);
                     $('#qty').val(ui.item.qty);
                     $('#i-type').val(ui.item.i_type);
                     $('#qty').val('');
+                    $('#s_qtyConvert').val('');
                     $("input[name='qty']").focus();
                 }
             });
+            $('#s_qtycon').val('');
             $("#s_qty").val('');
             $("#qty").val('');
             $("#namaitem").val('');
@@ -1722,11 +1858,12 @@
             var status = $('#setStatus').val();
             var oldStatus = $('#oldStatus').val();
             var a = $('#resi').val();
+            var b = $('#ongkir').val();
             $.ajax({
                 url: baseUrl + '/pembayaran/POSgrosir/changestatus',
                 type: 'get',
                 timeout: 10000,
-                data: {id: id, status: status, oldStatus: oldStatus, resi : a},
+                data: {id: id, status: status, oldStatus: oldStatus, resi : a, ongkir : b},
                 success: function (response) {
                     if (response.status == 'sukses') {
                         cariTanggal();
@@ -1970,6 +2107,78 @@
                                 url: baseUrl + "/penjualan/POSretail/retail/distroy/" + id,
                                 success: function () {
                                     tableNota.ajax.reload();
+                                }
+                            });
+                        }
+                    ],
+                    [
+                        '<button>Close</button>',
+                        function (instance, toast) {
+                            instance.hide({
+                                transitionOut: 'fadeOutUp'
+                            }, toast);
+                        }
+                    ]
+                ]
+            });
+        }
+
+        function cariTanggalPagu()
+        {
+            var tgl1 = $('#tanggal5').val();
+            var tgl2 = $('#tanggal6').val();
+            tableKonfirmPagu = $('#tableKonfirmPagu').DataTable({
+                "responsive": true,
+                "destroy": true,
+                "processing": true,
+                "serverside": true,
+                "ajax": {
+                    url: baseUrl + "/penjualan/POSgrosir/get-tanggaljual/pagu/" + tgl1 + '/' + tgl2,
+                    type: 'GET'
+                },
+                "columns": [
+                    {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+                    {"data": "sDate", "width": "10%"},
+                    {"data": "s_note", "width": "15%"},
+                    {"data": "c_name", "width": "30%"},
+                    {"data": "sGross", "width": "20%"},
+                    {"data": "status", "width": "10%"},
+                    {"data": "action", orderable: false, searchable: false, "width": "10%"},
+                ],
+                "language": {
+                    "searchPlaceholder": "Cari Data",
+                    "emptyTable": "Tidak ada data",
+                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                    "sSearch": '<i class="fa fa-search"></i>',
+                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                    "infoEmpty": "",
+                    "paginate": {
+                        "previous": "Sebelumnya",
+                        "next": "Selanjutnya",
+                    }
+                }
+            });
+        }
+
+        function konfirmPagu(idCus){
+            iziToast.show({
+                color: 'red',
+                title: 'Peringatan',
+                message: 'Apakah anda yakin!',
+                position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                progressBarColor: 'rgb(0, 255, 184)',
+                buttons: [
+                    [
+                        '<button>Ok</button>',
+                        function (instance, toast) {
+                            instance.hide({
+                                transitionOut: 'fadeOutUp'
+                            }, toast);
+                            $.ajax({
+                                type: 'get',
+                                url: baseUrl + "/penjualan/POSgrosir/getpagu/" + idCus,
+                                success: function () {
+                                    tableKonfirmPagu.ajax.reload();
                                 }
                             });
                         }

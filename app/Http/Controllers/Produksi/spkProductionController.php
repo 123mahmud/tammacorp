@@ -235,17 +235,11 @@ class spkProductionController extends Controller
         // return json_encode($request->all());
         $status = d_spk::where('spk_id', $spk_id)
                 ->first();
-        // d_productplan::where('pp_id', $status->spk_ref)
-        //     ->update([
-        //         'pp_isspk' => 'C'
-        //     ]);
 
         $hpp = []; $err = true; $acc_temp = []; $acc_temp2 = []; $hpp_value = 0;
         $spk = d_spk::where('spk_id', $spk_id)
                         ->join('d_productplan', 'pp_id', '=', 'spk_ref')
                         ->select('d_spk.*', 'd_productplan.pp_qty')->first();
-
-        // return json_encode($spk);
 
         if(!$spk){
             return response()->json([
@@ -256,9 +250,6 @@ class spkProductionController extends Controller
 
         $spkDt = spk_formula::where('fr_spk', $spk->spk_id)
             ->get();
-
-
-        // return json_encode($spkDt);
 
         // cek jurnal
 
@@ -303,13 +294,8 @@ class spkProductionController extends Controller
                             }else{
                                 $hppTemp += ($cost->sm_qty_sisa * $cost->sm_hpp);
                                 $need -= $cost->sm_qty_sisa;
-                                // return $need;
-                                // return json_encode($hppTemp);
                             }
                         }
-
-                        // if($need > 0)
-                        //     return json_encode($idItem); 
 
                         // #### Ini Untuk Mengecek Jika Stock Tidak Mencukupi;
 
@@ -356,8 +342,7 @@ class spkProductionController extends Controller
                 'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada SPK Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan Atau Akun Beban.'
             ]);
         }
-
-        // return json_encode($hpp_value / $spk->pp_qty);
+        
         DB::table('m_price')->where('m_pitem', $spk->spk_item)->update([
             "m_hpp" => $hpp_value / $spk->pp_qty
         ]);
@@ -365,10 +350,6 @@ class spkProductionController extends Controller
          DB::table('d_spk')->where('spk_id', $spk_id)->update([
             "spk_hpp"   => $hpp_value / $spk->pp_qty
          ]);
-
-        // return "okee"
-        // return json_encode(array_merge($acc_temp, $acc_temp2));
-
         // cek jurnal end
 
         if ($spk->spk_status == "AP") {

@@ -38,8 +38,9 @@
           </div>
       
           <ul id="generalTab" class="nav nav-tabs">
-            <li class="active"><a href="#index-tab" data-toggle="tab" onclick="laporanByTanggal()">Laporan Pembelian</a></li>
+            <li class="active"><a href="#index-tab" data-toggle="tab" onclick="laporanByTanggal()">Laporan Pembelian PO</a></li>
             <li><a href="#harian-tab" data-toggle="tab" onclick="lapHarianByTgl()">Laporan Belanja Harian</a></li>
+            <li><a href="#supplier-tab" data-toggle="tab" onclick="lapPemSupp()">Laporan Pembelian Supplier</a></li>
           </ul>
           
           <div id="generalTabContent" class="tab-content responsive">
@@ -47,6 +48,8 @@
             @include('purchasing.lap-pembelian.tab-index')
             <!-- div lap2-tab -->
             @include('purchasing.lap-pembelian.tab-laporan-harian')
+
+            @include('purchasing.lap-pembelian.tab-laporan-pembelian')
           </div>
         </div>
       </div>
@@ -97,10 +100,24 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
+    $('.datepicker5').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    }).datepicker("setDate", nd);
+
+    $('.datepicker6').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    });
+
     tanggal1 = $('#tanggal1').val();
     tanggal2 = $('#tanggal2').val();
     tanggal3 = $('#tanggal3').val();
     tanggal4 = $('#tanggal4').val();
+    tanggal5 = $('#tanggal5').val();
+    tanggal6 = $('#tanggal6').val();
 
     $('#tanggal1').change(function(event) {
       tanggal1 = $(this).val();
@@ -126,6 +143,12 @@
       $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
     });
 
+    $('#tanggal6').change(function(event) {
+      tanggal6 = $(this).val();
+      $('#btn_print_namasupp a').remove();
+      $('#btn_print_namasupp').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-pembelian/'+tanggal5+'/'+tanggal6+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    });
+
      // fungsi jika modal hidden
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_row');
@@ -133,6 +156,7 @@
     
     $('#btn_print').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-beli/'+tanggal1+'/'+tanggal2+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
     $('#btn_print_harian').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-bharian/'+tanggal3+'/'+tanggal4+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
+    $('#btn_print_namasupp').html('<a href="'+ baseUrl +'/purchasing/lap-pembelian/print-lap-pembelian/'+tanggal5+'/'+tanggal6+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>');
 
     laporanByTanggal();
   });//end jquery
@@ -247,6 +271,51 @@
   function refreshTabel() 
   {
     $('#data').DataTable().ajax.reload();
+  }
+
+  function lapPemSupp()
+  {
+    var tgl5 = $('#tanggal5').val();
+    var tgl6 = $('#tanggal6').val();
+    $('#tbl-pemsupplier').dataTable({
+      destroy: true,
+      processing: true,
+      serverSide: true,
+      ajax : {
+        url: baseUrl + "/purchasing/lap-supplier/get-bytgl/"+tgl5+"/"+tgl6,
+        type: 'GET'
+      },
+      columnDefs: [
+        {
+          targets: 0 ,
+          className: 'center'
+        }, 
+      ],
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
+        {"data" : "s_company", "width" : "20%"},
+        {"data" : "d_pcs_date_created", "width" : "10%"},
+        {"data" : "i_name", "width" : "20%"},
+        {"data" : "d_pcsdt_price", "width" : "15%"},
+        {"data" : "d_pcsdt_qtyconfirm", "width" : "10%"},
+        {"data" : "m_sname", "width" : "10%"},
+        {"data" : "total-harga", "width" : "15%"}
+      ],
+      "responsive": true,
+      "lengthMenu": [[-1], ["All"]],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
+    });
   }
 
 </script>

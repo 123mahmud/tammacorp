@@ -36,7 +36,7 @@
                             <td>
                                 <input type="text" name="sp_nominal[]" id="bayar" value=""
                                        class="i_price form-control total bandingPayment totPayment" autocomplete="off"
-                                       onkeyup="updateKembalian()" style="text-align: right;"
+                                       onkeyup="updateKembalian();autoStatusFinal();" style="text-align: right;"
                                        onkeyup="rege(event,'i_price');" onblur="setRupiah(event,'i_price')"
                                        onclick="setAwal('event','i_price')">
                             </td>
@@ -69,6 +69,8 @@
                         </tbody>
                     </table>
                 </div>
+                <label class="pull-left" style="color: red;">*jika total belanja melebihi sisa pagu maka<br> 
+                status penjualan menunggu persetujuan dari atasan (Pending).</label>
             </div>
 
             <div class="modal-footer">

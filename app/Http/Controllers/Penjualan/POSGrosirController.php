@@ -334,6 +334,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -361,6 +362,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -388,6 +390,7 @@ class POSGrosirController extends Controller
                          'nama' => $query->i_name,
                          'satuan' => $query->m_sname,
                          's_qty'=>$query->s_qty,
+                         's_qtycon'=>number_format( $query->s_qty ,0,',','.'),
                          'i_type'=>$query->i_type
                        ];
         }
@@ -524,7 +527,11 @@ class POSGrosirController extends Controller
       // return json_encode(array_merge($akun));
 
     //end nota fatkur
-    $customer = DB::table('d_sales')
+    $sisaPagu = $request->s_sisa_pagu;
+    $sNet = ($this->konvertRp($request->s_net));
+    if ($sisaPagu == "0") 
+    {
+      $customer = DB::table('d_sales')
           ->insert([
             's_id' =>$s_id,
             's_channel' =>'GR',
@@ -541,8 +548,51 @@ class POSGrosirController extends Controller
             's_status' => 'PR',
             's_insert' => Carbon::now(),
             's_update' => $request->s_update
-
         ]);
+    }
+    else if ($sNet >= $sisaPagu)
+    {
+      $customer = DB::table('d_sales')
+          ->insert([
+            's_id' =>$s_id,
+            's_channel' =>'GR',
+            's_date' =>date('Y-m-d',strtotime($request->s_date)),
+            's_note' =>$fatkur,
+            's_staff' =>$request->s_staff,
+            's_customer' => $request->id_cus,
+            's_disc_percent' => $request->s_disc_percent,
+            's_disc_value' => $request->s_disc_value,
+            's_gross' => ($this->konvertRp($request->s_gross)),
+            's_tax' => $request->s_pajak,
+            's_net' => ($this->konvertRp($request->s_net)),
+            's_sisa' => $sisa,
+            's_status' => 'PPN',
+            's_insert' => Carbon::now(),
+            's_update' => $request->s_update
+        ]);
+    }
+    else
+    {
+      $customer = DB::table('d_sales')
+          ->insert([
+            's_id' =>$s_id,
+            's_channel' =>'GR',
+            's_date' =>date('Y-m-d',strtotime($request->s_date)),
+            's_note' =>$fatkur,
+            's_staff' =>$request->s_staff,
+            's_customer' => $request->id_cus,
+            's_disc_percent' => $request->s_disc_percent,
+            's_disc_value' => $request->s_disc_value,
+            's_gross' => ($this->konvertRp($request->s_gross)),
+            's_tax' => $request->s_pajak,
+            's_net' => ($this->konvertRp($request->s_net)),
+            's_sisa' => $sisa,
+            's_status' => 'PR',
+            's_insert' => Carbon::now(),
+            's_update' => $request->s_update
+        ]);
+    }
+    
 
     $s_id = DB::table('d_sales')->max('s_id');
 
@@ -674,9 +724,58 @@ class POSGrosirController extends Controller
       }
 
       // return json_encode(array_merge($akun));
-
-    // end nota fatkur
-    $customer = DB::table('d_sales')
+      $sisaPagu = $request->s_sisa_pagu;
+      $sNet = ($this->konvertRp($request->s_net));
+      // dd($sisaPagu);
+      if ($sisaPagu == "0") 
+      {
+        $customer = DB::table('d_sales')
+          ->insert([
+            's_id' => $s_id,
+            's_channel' => 'GR',
+            's_date' => date('Y-m-d',strtotime($request->s_date)),
+            's_note' => $fatkur,
+            's_staff' => $request->s_staff,
+            's_customer' => $request->id_cus,
+            's_gross' => ($this->konvertRp($request->s_gross)),
+            's_disc_percent' => ($this->konvertRp($request->s_disc_percent)),
+            's_disc_value' => ($this->konvertRp($request->s_disc_value)),
+            's_tax' => $request->s_pajak,
+            's_net' => ($this->konvertRp($request->s_net)),
+            's_tax' => $request->s_pajak,
+            's_jatuh_tempo' => $tglJT,
+            's_sisa' => $sisa,
+            's_status' => 'FN',
+            's_insert' => Carbon::now(),
+            's_update' => $request->s_update
+          ]);
+      }
+      else if ($sNet >= $sisaPagu) 
+      {
+        $customer = DB::table('d_sales')
+        ->insert([
+          's_id' => $s_id,
+          's_channel' => 'GR',
+          's_date' => date('Y-m-d',strtotime($request->s_date)),
+          's_note' => $fatkur,
+          's_staff' => $request->s_staff,
+          's_customer' => $request->id_cus,
+          's_gross' => ($this->konvertRp($request->s_gross)),
+          's_disc_percent' => ($this->konvertRp($request->s_disc_percent)),
+          's_disc_value' => ($this->konvertRp($request->s_disc_value)),
+          's_tax' => $request->s_pajak,
+          's_net' => ($this->konvertRp($request->s_net)),
+          's_tax' => $request->s_pajak,
+          's_jatuh_tempo' => $tglJT,
+          's_sisa' => $sisa,
+          's_status' => 'FPN',
+          's_insert' => Carbon::now(),
+          's_update' => $request->s_update
+        ]);
+      }
+      else
+      {
+        $customer = DB::table('d_sales')
         ->insert([
           's_id' => $s_id,
           's_channel' => 'GR',
@@ -696,6 +795,9 @@ class POSGrosirController extends Controller
           's_insert' => Carbon::now(),
           's_update' => $request->s_update
         ]);
+      }
+    // end nota fatkur
+    
 
     $s_id = DB::table('d_sales')->max('s_id');
 
@@ -729,31 +831,59 @@ class POSGrosirController extends Controller
       $nota = d_sales::where('s_id',$s_id)
         ->first();
     DB::commit();
-      } catch (Exception $e) {
+      } catch (\Exception $e) {
     DB::rollback();
     return response()->json([
         'status' => 'gagal',
         'data' => $e
         ]);
       }
+      if ( $sisaPagu == "0" ) 
+      {
+        $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
+        $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
 
-      $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
-      $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
+        if($request->sp_method[0] == '1'){
+          $state = 'KM';
+          $sts = 'Cash';
+        }
+        else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
+          $state = 'BM';
+          $sts = 'Transfer';
+        }
 
-      if($request->sp_method[0] == '1'){
-        $state = 'KM';
-        $sts = 'Cash';
+        $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
+
+        if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
+          $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
+        }
       }
-      else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
-        $state = 'BM';
-        $sts = 'Transfer';
+      else if ($sNet >= $sisaPagu)
+      {
+
+      }
+      else
+      {
+        $customer = DB::table('m_customer')->where('c_id', $request->id_cus)->first();
+        $cust = ($customer) ? $customer->c_name : 'Tidak Diketahui';
+
+        if($request->sp_method[0] == '1'){
+          $state = 'KM';
+          $sts = 'Cash';
+        }
+        else if($request->sp_method[0] > '1' && $request->sp_method[0] < '6'){
+          $state = 'BM';
+          $sts = 'Transfer';
+        }
+
+        $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
+
+        if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
+          $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
+        }
       }
 
-      $jurnal = DB::table('d_jurnal')->where('jurnal_ref', $fatkur)->where('keterangan', 'like', 'Uang Muka Penjualan%')->first();
-
-      if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
-        $state_jurnal = _initiateJournal_self_detail($fatkur, $state, date('Y-m-d',strtotime($request->s_date)), 'Uang Muka Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($request->s_date)), array_merge($akun));
-      }
+      
 
       // return $state_jurnal;
 
@@ -1031,11 +1161,27 @@ class POSGrosirController extends Controller
           ->where('s_date','>=',$tgll)
           ->where('s_date','<=',$tgl2)
           ->get();
-    }else{
+    }elseif ($tampil == 'received'){
         $detalis = DB::table('d_sales')
           ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
           ->where('s_channel','GR')
           ->where('s_status','RC')
+          ->where('s_date','>=',$tgll)
+          ->where('s_date','<=',$tgl2)
+          ->get();
+    }elseif ($tampil == 'FPN'){
+        $detalis = DB::table('d_sales')
+          ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+          ->where('s_channel','GR')
+          ->where('s_status','FPN')
+          ->where('s_date','>=',$tgll)
+          ->where('s_date','<=',$tgl2)
+          ->get();
+    }elseif ($tampil == 'PPN'){
+        $detalis = DB::table('d_sales')
+          ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+          ->where('s_channel','GR')
+          ->where('s_status','PPN')
           ->where('s_date','>=',$tgll)
           ->where('s_date','<=',$tgl2)
           ->get();
@@ -1065,6 +1211,8 @@ class POSGrosirController extends Controller
           elseif ($data->s_status == "PC") { return '<span class="label label-dark">Packing</span>'; }
           elseif ($data->s_status == "SN") { return '<span class="label label-danger">Sending</span>'; }
           elseif ($data->s_status == "RC") { return '<span class="label label-info">Received</span>'; }
+          elseif ($data->s_status == "FPN") { return '<span class="label label-default">Final Pending</span>'; }
+          elseif ($data->s_status == "PPN") { return '<span class="label label-default">Progress Pending</span>'; }
       })
       ->addColumn('action', function($data)
       {
@@ -1092,7 +1240,7 @@ class POSGrosirController extends Controller
       {
         if ($data->s_status == 'FN') { $attr = 'disabled'; } else { $attr = ''; };
         $linkEdit = URL::to('/penjualan/POSgrosir/grosir/edit_sales/'.$data->s_id);
-        if ($data->s_status == 'FN' || $data->s_status == 'SN' || $data->s_status == 'PC' || $data->s_status == 'RC')
+        if ($data->s_status == 'FN' || $data->s_status == 'SN' || $data->s_status == 'PC' || $data->s_status == 'RC' || $data->s_status == 'FPN' || $data->s_status == 'PPN')
         {
           return '<div class="text-center">
                     <button type="button"
@@ -1254,9 +1402,14 @@ class POSGrosirController extends Controller
                            <option value="RC">Received</option>
                     </select>
 
-                    <div class="input-group">
+                    <div class="input-group" style="width: 100%;margin-bottom:15px;">
                       <span class="input-group-addon">Resi</span>
                       <input type="text" name="resi" placeholder="Masukan Nomor Resi" style="width: 100%;" class="form-control input-sm" id="resi">
+                    </div>
+
+                    <div class="input-group">
+                      <span class="input-group-addon">Ongkos</span>
+                      <input type="text" name="ongkir" placeholder="Masukan Ongkos Resi" style="width: 100%;" class="form-control input-sm text-right" id="ongkir">
                     </div>';
     }else{
       $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
@@ -1271,7 +1424,6 @@ class POSGrosirController extends Controller
   }
 
   public function changeStatus(Request $request){
-  // dd($request->all());
     DB::beginTransaction();
       try {
 
@@ -1381,14 +1533,18 @@ class POSGrosirController extends Controller
             ]);
         }
       }
-
+      $ongkir = $request->ongkir;
+      if ($ongkir == null) {
+        $ongkir = 0;
+      }
       // return json_encode(array_merge($akun));
-
       $update = DB::Table('d_sales')
         ->where('s_id',$request->id)
         ->update([
           's_status' => $request->status,
-          's_resi' => $request->resi
+          's_resi' => $request->resi,
+          's_ongkir' => str_replace(',', '',  $ongkir),
+          's_net' => DB::raw('s_net + '.str_replace(',', '',  $ongkir))
         ]);
 
       $nota = d_sales::select('s_note')
@@ -1920,7 +2076,8 @@ class POSGrosirController extends Controller
     $sales = d_sales::select( 'c_name',
                               'c_address',
                               's_date',
-                              's_note')
+                              's_note',
+                              's_ongkir')
       ->join('m_customer','c_id','=','s_customer')
       ->where('s_id',$id)
       ->first();
@@ -2100,6 +2257,116 @@ class POSGrosirController extends Controller
           return Response::json($cekHarga->ip_price);
         }
 
+    }
+  }
+
+  public function setPaguCus($idCus)
+  {
+    $pagu = m_customer::select('c_pagu')
+      ->where('c_id',$idCus)
+      ->first();
+
+    $cariSisa = d_sales::select('s_sisa')
+      ->where('s_customer',$idCus)
+      ->where('s_sisa','!=','0.00')
+      ->get();
+    $totalSisa = 0;
+    for ($i=0; $i <count($cariSisa) ; $i++) 
+    { 
+      
+      $totalSisa += $cariSisa[$i]->s_sisa;
+    }
+    $sisaPagu = $pagu->c_pagu - $totalSisa;
+    $gabung = [
+       $pagu->c_pagu,
+       $sisaPagu
+    ];
+
+      return Response::json($gabung);
+  }
+
+  public function getPagu($tgl1, $tgl2)
+  {
+    $y = substr($tgl1, -4);
+    $m = substr($tgl1, -7,-5);
+    $d = substr($tgl1,0,2);
+    $tgll = $y.'-'.$m.'-'.$d;
+
+    $y2 = substr($tgl2, -4);
+    $m2 = substr($tgl2, -7,-5);
+    $d2 = substr($tgl2,0,2);
+    $tgl2 = $y2.'-'.$m2.'-'.$d2;
+      $detalis = DB::table('d_sales')
+        ->join('m_customer','m_customer.c_id','=','d_sales.s_customer')
+        ->where('s_channel','GR')
+        ->where(function ($query) {
+            $query->where('s_status','FPN')
+                  ->orWhere('s_status','PPN');
+        })
+        ->where('s_date','>=',$tgll)
+        ->where('s_date','<=',$tgl2)
+        ->get();
+
+    return DataTables::of($detalis)
+      ->addIndexColumn()
+      ->editColumn('sDate', function ($data)
+      {
+          return date('d M Y', strtotime($data->s_date));
+      })
+      ->editColumn('sGross', function ($data)
+        {
+            return '<div>Rp.
+                      <span class="pull-right">
+                        '.number_format( $data->s_net ,2,',','.').'
+                      </span>
+                    </div>';
+        })
+      ->editColumn('status', function ($data)
+      {
+          if ($data->s_status == "FPN") 
+          { 
+            return '<span class="label label-default">Final Pending</span>'; 
+          }
+          elseif ($data->s_status == "PPN") 
+          { 
+            return '<span class="label label-primary">Progress Pending</span>'; 
+          }
+      })
+      ->addColumn('action', function($data)
+      {
+          return '<div class="text-center">
+                    <button type="button"
+                      class="btn btn-success fa fa-check-square"
+                      title="Konfirmasi"
+                      onclick="konfirmPagu('."'".$data->s_id."'".')"
+                    </button>
+
+                  </div>';
+      })
+      //inisisai column status agar kode html digenerate ketika ditampilkan
+      ->rawColumns(['action','sGross','status'])
+      ->make(true);
+  }
+
+  public function appPagu($id)
+  {
+    $cek = d_sales::select('s_status')
+      ->where('s_id',$id)
+      ->first();
+
+    if ($cek->s_status == "FPN") 
+    {
+      d_sales::where('s_id',$id)
+        ->update([
+          's_status' => 'FN'
+        ]);
+    }
+    else
+    {
+      d_sales::where('s_id',$id)
+        ->update([
+          's_status' => 'PR'
+        ]);
     }
   }
 }

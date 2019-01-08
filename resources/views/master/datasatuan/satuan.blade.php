@@ -101,7 +101,7 @@ tr.details td.details-control {
 
   var tblSat = $('#tbl_customer').DataTable({
             processing: true,
-            // responsive:true,
+            responsive:true,
             serverSide: true,
             ajax: {
                 url:'{{ route('datatable_satuan') }}',
@@ -119,74 +119,63 @@ tr.details td.details-control {
             { "data": "aksi","width" : "20%" },
             ]
       });
-   // function hapus(a) {
-   //        var parent = $(a).parents('tr');
-   //        var id = $(parent).find('.d_id').text();
-   //        console.log(id);
-   //        $.ajax({
-   //             type: "get",
-   //             url: '{{ route('hapus_satuan') }}',
-   //             data: {id},
-   //             success: function(data){
-   //                if (data.status == 1) {
-   //                    location.reload();
-   //                }
-                  
-   //             },
-   //             error: function(){
-   //              iziToast.warning({
-   //                icon: 'fa fa-times',
-   //                message: 'Terjadi Kesalahan!',
-   //              });
-   //             },
-   //             async: false
-   //           });  
-   //      }
 
-        function hapus(a) {
-          iziToast.show({
-            color: 'red',
-            title: 'Peringatan',
-            message: 'Apakah anda yakin!',
-            position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
-            progressBarColor: 'rgb(0, 255, 184)',
-            buttons: [
-              [
-                '<button>Ok</button>',
-                function (instance, toast) {
-                  instance.hide({
-                    transitionOut: 'fadeOutUp'
-                  }, toast);
-                  var parent = $(a).parents('tr');
-                  var id = a;
-                  console.log(id);
-                  $.ajax({
-                       type: "get",
-                       url: '{{ route('hapus_satuan') }}',
-                       data: {id},
-                       success: function(response){
-                            if (response.status=='sukses') {
-                              toastr.info('Data berhasil di hapus.');
-                              tblSat.ajax.reload();
-                            }else{
-                              toastr.error('Data gagal di simpan.');
-                            }
-                          }
-                       })
-                }
-              ],
-              [
-                '<button>Close</button>',
-                 function (instance, toast) {
-                  instance.hide({
-                    transitionOut: 'fadeOutUp'
-                  }, toast);
-                }
-              ]
-            ]
-          });
 
-        }
+      function ubahStatus(id)
+      {
+        iziToast.question({
+          close: false,
+          overlay: true,
+          displayMode: 'once',
+          //zindex: 999,
+          title: 'Ubah Status',
+          message: 'Apakah anda yakin ?',
+          position: 'center',
+          buttons: [
+            ['<button><b>Ya</b></button>', function (instance, toast) {
+              $.ajax({
+                url: baseUrl +'/master/datasatuan/ubahstatus',
+                type: "get",
+                dataType: "JSON",
+                data: {id:id},
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    $('#tbl_customer').DataTable().ajax.reload();
+                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Status brhasil di ganti.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    $('#tbl_customer').DataTable().ajax.reload();
+                    iziToast.error({position: "topRight",
+                                      title: '',
+                                      message: 'Status gagal di ubah.'});
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }, true],
+            ['<button>Tidak</button>', function (instance, toast) {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            }],
+          ]
+        });
+      }
 
 
          function edit(a) {

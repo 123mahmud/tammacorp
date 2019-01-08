@@ -20,6 +20,7 @@ class m_customer extends Model
                             'c_group',
                             'c_class',
                             'c_type',
+                            'c_pagu',
                         	'c_isactive'];
                             
     //public $timestamps = false;

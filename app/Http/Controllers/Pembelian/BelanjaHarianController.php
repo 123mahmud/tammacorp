@@ -635,8 +635,8 @@ class BelanjaHarianController extends Controller
 
     public function getDataMasterBarang()
     {
-      $satuan  = DB::table('m_satuan')->get();
-      $group  = DB::table('m_group')->get();
+      $satuan  = DB::table('m_satuan')->where('m_isactive','TRUE')->get();
+      $group  = DB::table('m_group')->where('m_isactive','TRUE')->get();
 
       return response()->json([
         'status' => 'sukses',

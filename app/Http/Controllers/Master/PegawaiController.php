@@ -39,7 +39,7 @@ class PegawaiController extends Controller
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </button>'.'
                                     <button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        onclick="ubahStatusMan('.$data->c_id.')" 
                                         class="btn btn-primary btn-sm" 
                                         title="Aktif">
                                         <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -50,7 +50,7 @@ class PegawaiController extends Controller
                     {
                         return  '<div class="text-center">'.
                                     '<button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        onclick="ubahStatusMan('.$data->c_id.')" 
                                         class="btn btn-danger btn-sm" 
                                         title="Tidak Aktif">
                                         <i class="fa fa-minus-square" aria-hidden="true"></i>
@@ -68,13 +68,14 @@ class PegawaiController extends Controller
 
     public function pegawaiPro(){
         $list = DB::table('m_pegawai_pro')
-                ->select('m_pegawai_pro.*', 'm_jabatan_pro.c_jabatan_pro','c_isactive')
+                ->select('m_pegawai_pro.*', 'm_jabatan_pro.c_jabatan_pro','m_pegawai_pro.cp_isactive')
                 ->join('m_jabatan_pro', 'm_pegawai_pro.c_jabatan_pro_id', '=', 'm_jabatan_pro.c_id')
                 ->get();
+
         $data = collect($list);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
-                    if ($data->c_isactive == 'TRUE') {
+                    if ($data->cp_isactive == 'TRUE') {
                         return  '<div class="text-center">'.
                                     '<button id="edit" 
                                         onclick="editPro('.$data->c_id.')" 
@@ -83,7 +84,7 @@ class PegawaiController extends Controller
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </button>'.'
                                     <button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        onclick="ubahStatusPro('.$data->c_id.')" 
                                         class="btn btn-primary btn-sm" 
                                         title="Aktif">
                                         <i class="fa fa-check-square" aria-hidden="true"></i>
@@ -94,7 +95,7 @@ class PegawaiController extends Controller
                     {
                         return  '<div class="text-center">'.
                                     '<button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatus('.$data->c_id.')" 
+                                        onclick="ubahStatusPro('.$data->c_id.')" 
                                         class="btn btn-danger btn-sm" 
                                         title="Tidak Aktif">
                                         <i class="fa fa-minus-square" aria-hidden="true"></i>
@@ -122,7 +123,8 @@ class PegawaiController extends Controller
         }
         $kode = str_pad($maxid, 2, '0', STR_PAD_LEFT);
         $id_pegawai = 'PG-' . $tanggal . '/' .  $kode;
-        $divisi = DB::table('m_divisi')->get(); 
+        $divisi = DB::table('m_divisi')->where('c_isactive','TRUE')->get(); 
+        // dd($divisi);
         $shift = DB::table('m_shift')->get();   
         return view('/master/datapegawai/tambah_pegawai', compact('id_pegawai','divisi','shift'));
     }
@@ -139,12 +141,12 @@ class PegawaiController extends Controller
         }
         $kode = str_pad($maxid, 2, '0', STR_PAD_LEFT);
         $id_pegawai = 'PG-' . $tanggal . '/' .  $kode;
-        $tugas = DB::table('m_jabatan_pro')->get(); 
+        $tugas = DB::table('m_jabatan_pro')->where('c_isactive','TRUE')->get(); 
         return view('/master/datapegawai/tambah_pegawai_pro', compact('id_pegawai','tugas'));
     }
 
     public function jabatanData($id){
-        $jabatan = DB::table('m_jabatan')->where('c_divisi_id', $id)->get();
+        $jabatan = DB::table('m_jabatan')->where('c_divisi_id', $id)->where('c_isactive','TRUE')->get();
         return json_encode($jabatan);
     }
 
@@ -207,7 +209,7 @@ class PegawaiController extends Controller
     }
 
     public function editPegawai($id){
-        $divisi = DB::table('m_divisi')->get(); 
+        $divisi = DB::table('m_divisi')->where('c_isactive','TRUE')->get(); 
         $shift = DB::table('m_shift')->get();  
         $data = DB::table('m_pegawai_man')->where('c_id', $id)->first();
         $hari = explode(" - ",$data->c_hari_kerja);
@@ -226,7 +228,7 @@ class PegawaiController extends Controller
     }
 
     public function editPegawaiPro($id){
-        $tugas = DB::table('m_jabatan_pro')->get(); 
+        $tugas = DB::table('m_jabatan_pro')->where('c_isactive','TRUE')->get(); 
         $data = DB::table('m_pegawai_pro')->where('c_id', $id)->first();
         return view('master.datapegawai.edit_pegawai_pro',['data' => $data, 'tugas'=> $tugas]);
     }
@@ -359,5 +361,81 @@ class PegawaiController extends Controller
     public function getFilePro(){
         $file_path = storage_path('file/pegawai.xls');
         return Response::download($file_path);
+    }
+
+    public function ubahStatusMan(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = DB::table('m_pegawai_man')->select('c_isactive')
+            ->where('c_id',$request->id)
+            ->first();
+        if ($cek->c_isactive == 'TRUE') 
+        {
+            DB::table('m_pegawai_man')
+            ->where('c_id',$request->id)
+            ->update([
+                'c_isactive' => 'FALSE'
+            ]);
+        }
+        else
+        {
+            DB::table('m_pegawai_man')
+            ->where('c_id',$request->id)
+            ->update([
+                'c_isactive' => 'TRUE'
+            ]);
+        }
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+    }
+
+    public function ubahStatusPro(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = DB::table('m_pegawai_pro')
+            ->select('cp_isactive')
+            ->where('c_id',$request->id)
+            ->first();
+
+        if ($cek->cp_isactive == 'TRUE') 
+        {
+            DB::table('m_pegawai_pro')
+            ->where('c_id',$request->id)
+            ->update([
+                'cp_isactive' => 'FALSE'                
+            ]);
+
+        }
+        else
+        {
+            DB::table('m_pegawai_pro')
+            ->where('c_id',$request->id)
+            ->update([
+                'cp_isactive' => 'TRUE'
+            ]);
+
+        }
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
     }
 }

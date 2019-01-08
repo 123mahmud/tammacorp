@@ -59,8 +59,8 @@ class barangController extends Controller
 
     public function tambah_barang()
     {
-        $satuan  = DB::table('m_satuan')->get();
-        $group  = DB::table('m_group')->get();
+        $satuan  = DB::table('m_satuan')->where('m_isactive','TRUE')->get();
+        $group  = DB::table('m_group')->where('m_isactive','TRUE')->get();
         return view('master.databarang.tambah_barang',compact('kode','group','satuan'));
     }
 
@@ -283,7 +283,7 @@ class barangController extends Controller
 
     public function edit_barang(Request $request)
     {
-        $satuan  = DB::table('m_satuan')->get();
+        $satuan  = DB::table('m_satuan')->where('m_isactive','TRUE')->get();
         $data_item = DB::table('m_item')->where('i_id','=',$request->id)->first();
         $data_price = DB::table('m_price')->where('m_pitem','=',$request->id)->first();
 

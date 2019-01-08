@@ -771,11 +771,15 @@
                     } else {
                         $('#s_qty').val(ui.item.s_qty);
                     }
+                    $('#s_qtycon').val(ui.item.s_qtycon);
+                    $('#qty').val(ui.item.qty);
+                    $('#i-type').val(ui.item.i_type);
                     $('#qty').val(ui.item.qty);
                     $('#qty').val('');
                     $("input[name='qty']").focus();
                 }
             });
+            $('#s_qtycon').val('');
             $("#s_qty").val('');
             $("#qty").val('');
             $("#namaitem").val('');

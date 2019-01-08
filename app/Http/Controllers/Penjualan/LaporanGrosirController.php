@@ -57,7 +57,7 @@ class LaporanGrosirController extends Controller
        return date('d M Y', strtotime($data->s_date));
     })
     ->addColumn('j_tempo', function($data){
-        return ''; 
+       return date('d M Y', strtotime($data->s_jatuh_tempo)); 
     })
     ->editColumn('kurs', function ($data){
        return '1';
@@ -114,6 +114,7 @@ class LaporanGrosirController extends Controller
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
                 ->where('s_status','!=','DR')
+                ->where('s_status', '!=', "PR")
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->groupBy('m_item.i_name')
@@ -129,6 +130,7 @@ class LaporanGrosirController extends Controller
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
                 ->where('s_status','!=','DR')
+                ->where('s_status', '!=', "PR")
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();

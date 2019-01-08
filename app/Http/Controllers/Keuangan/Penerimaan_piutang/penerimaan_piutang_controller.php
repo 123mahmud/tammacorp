@@ -15,7 +15,7 @@ class penerimaan_piutang_controller extends Controller
     }
 
     public function form_resource(){
-    	$data = DB::table('m_customer')->select('c_id as value', 'c_name as nama')->orderBy('c_name', 'asc')->get();
+    	$data = DB::table('m_customer')->select('c_id as value', 'c_name as nama')->where('c_isactive','TRUE')->orderBy('c_name', 'asc')->get();
         $akun_kas = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
         $akun_bank = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
