@@ -24,7 +24,7 @@
                         <i class="fa fa-search" aria-hidden="true"></i>
                     </strong>
                 </button>
-                <button class="btn btn-info btn-sm btn-flat" type="button">
+                <button class="btn btn-info btn-sm btn-flat" type="button" onclick="cariTanggal()">
                     <strong>
                         <i class="fa fa-undo" aria-hidden="true"></i>
                     </strong>

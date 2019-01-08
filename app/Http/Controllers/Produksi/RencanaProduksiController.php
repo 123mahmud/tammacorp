@@ -31,17 +31,14 @@ class RencanaProduksiController extends Controller
   }
 
   public function save(Request $request){
+    // dd($request->all());
     $i_name = DB::Table('m_item')
             ->where('i_name',$request->namaitem)
             ->get();
 
-    $maxid = DB::Table('d_productplan')->select('pp_id')->max('pp_id');
-       if ($maxid <= 0 || $maxid <= '') {
-          $maxid  = 1;
-        }else{
-          $maxid += 1;
-        }
-    $date = carbon::now()->format('Y-m-d');
+    $maxid = DB::Table('d_productplan')->select('pp_id')->max('pp_id')+1;
+
+    $date = date("Y-m-d", strtotime($request->pp_date));
     $data = array(
               'pp_id'   => $maxid,
               'pp_date' => $date,
@@ -140,6 +137,11 @@ class RencanaProduksiController extends Controller
                                                   data-name="'.$key['i_name'].'"
                                                   data-id="'.$key['pp_id'].'"
                                                   data-qty="'.$key['pp_qty'].'">
+                                      </button>
+                                      <button class="btn btn-info btn-sm"
+                                              title="Buat SPK"
+                                              onclick=BuatSpk("'.$key['pp_id'].'","'.date('d-m-Y',strtotime($key['pp_date'])).'","'.$key['pp_qty'].'","'.$key['pp_item'].'")>
+                                              <i class="fa fa-plus"></i>
                                       </button>
                                       <button id="hapus"
                                                   data-name="'.$key['i_name'].'"
