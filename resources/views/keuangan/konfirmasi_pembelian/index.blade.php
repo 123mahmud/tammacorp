@@ -593,7 +593,7 @@
                             +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                             +'<td align="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'</td>'
                             +'<td align="right" id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'</td>'
-                            +'<td align="right" id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'<input type="hidden" value="'+formatAngka(data.data_isi[key-1].d_pcsdt_total)+'" name="fieldIdDtOrder[]" class="form-control input-sm hasil"/></td>'
+                            +'<td align="right" id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'<input type="hidden" value="'+formatAngka(data.data_isi[key-1].d_pcsdt_total)+'" name="" class="form-control input-sm hasil"/></td>'
                             +'<td align="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm" disabled>X</button></td>'
                             +'</tr>');

@@ -440,7 +440,7 @@ class ConfrimBeliController extends Controller
   }
 
   public function submitOrderPembelian(Request $request)
-  {
+  { 
     DB::beginTransaction();
     try {
         //update table d_purchasing
@@ -449,7 +449,6 @@ class ConfrimBeliController extends Controller
         {
             $purchase->d_pcs_date_confirm = date('Y-m-d',strtotime(Carbon::now()));
             $purchase->d_pcs_status = $request->statusOrderConfirm;
-            $purchase->d_pcs_sisapayment = $purchase->d_pcs_total_net;
             $purchase->d_pcs_updated = Carbon::now();
             $purchase->save();
 
@@ -468,6 +467,7 @@ class ConfrimBeliController extends Controller
         {
             $purchase->d_pcs_date_confirm = null;
             $purchase->d_pcs_status = $request->statusOrderConfirm;
+            $purchase->d_pcs_sisapayment = $purchase->d_pcs_total_net;
             $purchase->d_pcs_updated = Carbon::now();
             $purchase->save();
 
