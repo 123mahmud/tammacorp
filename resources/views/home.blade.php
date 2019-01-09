@@ -51,9 +51,9 @@
                                     </p>
                                     <h4 class="value">
                                         <span data-counter="" data-start="10" data-end="50" data-step="1" data-duration="0">
-                                        </span><span>$</span></h4>
+                                        {{ $data['total_sales']->total_sales/1000 }}</span><span>K</span></h4>
                                     <p class="description">
-                                        Profit description</p>
+                                        Total Penjualan</p>
                                     <div class="progress progress-sm mbn">
                                         <div role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"
                                             style="width: 80%;" class="progress-bar progress-bar-success">
@@ -69,9 +69,9 @@
                                         <i class="icon fa fa-money"></i>
                                     </p>
                                     <h4 class="value">
-                                        <span>215</span><span>$</span></h4>
+                                        <span>{{ $data['total_purchase']->total_pembelian/1000 }}</span><span>K</span></h4>
                                     <p class="description">
-                                        Income detail</p>
+                                        Total Pembelian</p>
                                     <div class="progress progress-sm mbn">
                                         <div role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
                                             style="width: 60%;" class="progress-bar progress-bar-info">
@@ -87,9 +87,9 @@
                                         <i class="icon fa fa-signal"></i>
                                     </p>
                                     <h4 class="value">
-                                        <span>215</span></h4>
+                                        <span>{{ $data['total_spk']->total_spk }}</span><span> SPK</span></h4>
                                     <p class="description">
-                                        Task completed</p>
+                                        Total SPk Bulan Ini</p>
                                     <div class="progress progress-sm mbn">
                                         <div role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
                                             style="width: 50%;" class="progress-bar progress-bar-danger">
@@ -105,9 +105,9 @@
                                         <i class="icon fa fa-group"></i>
                                     </p>
                                     <h4 class="value">
-                                        <span>128</span></h4>
+                                        <span>{{ $data['total_produksi']->total_produksi }}</span> pcs</h4>
                                     <p class="description">
-                                        Visitor description</p>
+                                        Total Produksi Bulan Ini/p>
                                     <div class="progress progress-sm mbn">
                                         <div role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"
                                             style="width: 70%;" class="progress-bar progress-bar-warning">
