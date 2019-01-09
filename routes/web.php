@@ -1375,7 +1375,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datapegawai/`import-pro', 'Master\PegawaiController@getFilePro');
     Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
     Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
-    Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
+    Route::post('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
     Route::get('/master/datapegawai/datatable-pegawai', 'Master\PegawaiController@pegawaiData');
     Route::get('/master/datapegawai/tambah-pegawai', 'Master\PegawaiController@tambahPegawai');
     Route::get('/master/datapegawai/data-jabatan/{id}', 'Master\PegawaiController@jabatanData');
