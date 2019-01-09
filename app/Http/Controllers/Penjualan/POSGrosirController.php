@@ -1499,7 +1499,23 @@ class POSGrosirController extends Controller
       if ($ongkir == null) {
         $ongkir = 0;
       }
-      // return json_encode(array_merge($akun));
+
+      $akunOngkir = [];
+
+      if((double) str_replace(',', '',  $ongkir) != 0){
+          $akunOngkir[0] = [
+            'td_acc'      => '100.05',
+            'td_posisi'   => 'K',
+            'value'       => str_replace(',', '',  $ongkir)
+          ];
+
+          $akunOngkir[1] = [
+            'td_acc'      => '110.01',
+            'td_posisi'   => 'D',
+            'value'       => str_replace(',', '',  $ongkir)
+          ];
+      }
+
       $update = DB::Table('d_sales')
         ->where('s_id',$request->id)
         ->update([
@@ -1507,7 +1523,7 @@ class POSGrosirController extends Controller
           's_resi' => $request->resi,
           's_ongkir' => str_replace(',', '',  $ongkir),
           's_net' => DB::raw('s_net + '.str_replace(',', '',  $ongkir))
-        ]);
+      ]);
 
       $nota = d_sales::select('s_note')
         ->where('s_id',$request->id)
@@ -2019,6 +2035,10 @@ class POSGrosirController extends Controller
                     ->where('jurnal_ref', $sales->s_note)
                     ->where('keterangan', 'like', 'Penjualan Tamma Atas%')->first();
 
+      $jurnal2 = DB::table('d_jurnal')
+                    ->where('jurnal_ref', 'ONGK-'.$sales->s_note)
+                    ->where('keterangan', 'like', 'Ongkos Kirim%')->first();
+
       // return json_encode($jurnal);
 
       if(!$jurnal && jurnal_setting()->allow_jurnal_to_execute){
@@ -2026,6 +2046,11 @@ class POSGrosirController extends Controller
         $state_jurnal = _initiateJournal_self_detail($sales->s_note, 'MM', date('Y-m-d'), 'Penjualan Tamma Atas '.$cust.' '.date('d/m/Y', strtotime($sales->s_date)), array_merge($akun));
 
         $state_jurnal = _initiateJournal_self_detail($sales->s_note, 'MM', date('Y-m-d'), 'Harga Pokok Penjualan Atas '.$cust.' '.date('d/m/Y', strtotime($sales->s_date)), array_merge($akun_beban, $akun_persediaan));
+
+      }if(!$jurnal2 && jurnal_setting()->allow_jurnal_to_execute){
+
+        $state_jurnal = _initiateJournal_self_detail('ONGK-'.$sales->s_note, 'KK', date('Y-m-d'), 'Ongkos Kirim Atas'.$cust.' '.date('d/m/Y', strtotime($sales->s_date)), array_merge($akunOngkir));
+
       }
 
       return response()->json([

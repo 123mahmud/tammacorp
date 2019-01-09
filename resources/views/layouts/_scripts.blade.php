@@ -153,10 +153,6 @@
     {{-- kotak2 an dashboard || index || home --}}
     <script type="text/javascript">
     //BEGIN COUNTER FOR SUMMARY BOX
-    counterNum($(".profit h4 span:first-child"), 189, 112, 1, 30);
-    counterNum($(".income h4 span:first-child"), 636, 812, 1, 50);
-    counterNum($(".task h4 span:first-child"), 103, 155 , 1, 100);
-    counterNum($(".visit h4 span:first-child"), 310, 376, 1, 500);
     function counterNum(obj, start, end, step, duration) {
         $(obj).html(start);
         setInterval(function(){
