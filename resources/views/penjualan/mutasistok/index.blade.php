@@ -258,7 +258,7 @@
                 '<div class="btn-group">'+
                     '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/customer/print_laporan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'" '+ 
                     'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
-                    '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/retail/pdf_laporan_penjualan/' +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
+                    '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/customer/pdf_laporan_penjualan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
                 '</div>'
             );
 
