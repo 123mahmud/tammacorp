@@ -398,6 +398,12 @@ class barangController extends Controller
           $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty_min FROM d_stock where s_item = '$id_item' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStokMin"));
           $stok = $query[0];
         }
+        elseif ($typeBrg->i_type == "BL") 
+        {
+          //$idGroupGdg = '2';
+          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty_min FROM d_stock where s_item = '$id_item' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStokMin"));
+          $stok = $query[0];
+        }
 
         return $stok;
     }

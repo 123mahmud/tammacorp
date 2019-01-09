@@ -221,7 +221,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-sm-3 col-xs-12">
-                                                        <label class="tebal">Wilayah</label>
+                                                        <label class="tebal">Wilayah<font color="red">*</font></label>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-12">
                                                         <div class="form-group">
@@ -533,7 +533,7 @@
                                                     <i class="fa fa-search" aria-hidden="true"></i>
                                                 </strong>
                                             </button>
-                                            <button class="btn btn-info btn-sm btn-flat" type="button">
+                                            <button class="btn btn-info btn-sm btn-flat" type="button" onclick="cariTanggalJual()">
                                                 <strong>
                                                     <i class="fa fa-undo" aria-hidden="true"></i>
                                                 </strong>
@@ -574,7 +574,7 @@
 
     <script src="{{ asset ('assets/script/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
-    <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
+    <script src="{{ asset("assets/script/inputmask.jquery.js") }}"></script>
     @include('penjualan.POSgrosir.jquery_simpan_sales')
 
     <script type="text/javascript">
@@ -626,11 +626,29 @@
             $('#proses').on('shown.bs.modal', function () {
                 $('#bayar').focus();
                 autoStatusFinal();
+                var sisaPagu =  $('#s_sisa_pagu').val();
+                if (sisaPagu <= 0) 
+                {
+                    $('.simpanFinal').html('Pending');
+                }
+                else
+                {
+                     $('.simpanFinal').html('Proses');
+                }
             }) 
 
             $('#prosesProgres').on('shown.bs.modal', function () {
                 $('#bayarDP').focus();
                 autoStatusProgres();
+                var sisaPagu =  $('#s_sisa_pagu').val();
+                if (sisaPagu <= 0) 
+                {
+                    $('.simpanProgress').html('Pending');
+                }
+                else
+                {
+                    $('.simpanProgress').html('Proses');
+                }
             })
 
             $('#modalStatus').on('shown.bs.modal', function () {
@@ -825,17 +843,13 @@
             var jumBayar = convertToAngka($('#bayar').val());
             var sisaPagu =  $('#s_sisa_pagu').val();
             var hitung = totalPayment - jumBayar;
-            $('.simpanFinal').html('Proses');
-            if (sisaPagu != '0') 
+            if (hitung > sisaPagu) 
             {
-                if (hitung > sisaPagu) 
-                {
-                    $('.simpanFinal').html('Pending');
-                }
-                else
-                {
-                    $('.simpanFinal').html('Proses');
-                }
+                $('.simpanFinal').html('Pending');
+            }
+            else
+            {
+                $('.simpanFinal').html('Proses');
             }
             updateKembalian();
         }
@@ -845,21 +859,14 @@
             var totalPayment = convertToAngka($('#totalPayment').val());
             var jumBayar = convertToAngka($('#bayarDP').val());
             var sisaPagu =  $('#s_sisa_pagu').val();
-            if (jumBayar == '') 
-            {
-                jumBayar = 0;
-            }
             var hitung = totalPayment - jumBayar;
-            if (sisaPagu != '0') 
+            if (hitung > sisaPagu) 
             {
-                if (hitung > sisaPagu) 
-                {
-                    $('.simpanProgress').html('Pending');
-                }
-                else
-                {
-                    $('.simpanProgress').html('Proses');
-                }
+                $('.simpanProgress').html('Pending');
+            }
+            else
+            {
+                $('.simpanProgress').html('Proses');
             }
             updateKembalianDP();
         }

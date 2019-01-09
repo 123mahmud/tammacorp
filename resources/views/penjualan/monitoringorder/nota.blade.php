@@ -17,7 +17,6 @@
 
 
 <script type="text/javascript">
-
 	var tableNotaPlan = $('#tableNotaPlan').DataTable({
 	      processing: true,
 	      serverSide: true,

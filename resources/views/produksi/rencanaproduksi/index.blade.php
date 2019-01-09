@@ -55,7 +55,7 @@
                                   </div>
                                 </div>
 
-                                <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+                                {{-- <div class="col-md-3 col-sm-3 col-xs-12" align="center">
                                   <button class="btn btn-primary btn-sm btn-flat fa fa-search" type="button" id="cariTanggal">
                                    
                                   </button>
@@ -64,7 +64,7 @@
                                       <i class="fa fa-undo" aria-hidden="true"></i>
                                     </strong>
                                   </button>
-                                </div>
+                                </div> --}}
                                 
                               </div>
 
@@ -97,7 +97,7 @@
                       @include('produksi.rencanaproduksi.modal')
                        <!--End Modal-->
                   
-                      
+                      @include('produksi.rencanaproduksi.create-spk')
                     </div>
 
                   </div>
@@ -206,6 +206,10 @@
   $(document).on('click','#refresh',function(){
     myTable.fnDraw();
   });
+
+  $('#create-data').on('shown.bs.modal', function () {
+      $('.final').attr('disabled','disabled');
+    })
 
 
   $(document).on('click','#btn-tambah',function(){
@@ -430,11 +434,153 @@
     }).datepicker("setDate", nd);
     $('.datepicker2').datepicker({
       autoclose: true,
-      format:"dd-mm-yyyy",
-      endDate: 'today'
+      format:"dd-mm-yyyy"
+      // endDate: 'today'
     });//.datepicker("setDate", "0"); 
 
 });
+
+  function BuatSpk(id,tgl,jumlah,iditem){
+    $.ajax({
+      url         : baseUrl+'/produksi/spk/create-id/'+iditem,
+      type        : 'get',
+      timeout     : 10000,
+      dataType    :'json',
+      success     : function(response){
+        if(response.status=='sukses'){
+          $('#id_spk').val(response.id_spk);
+          $('#create-data').modal('show');
+          $('#id_plan').val(id);
+          $('#tgl_plan').val(tgl);
+          $('#iditem').val(iditem);
+          $('#item').val(response.i_name.i_name);
+          $('#jumlah').val(jumlah);
+          tabelFormula(iditem, jumlah);
+        }
+      }
+    });
+  }
+
+  function tabelFormula(iditem, jumlah){
+    $('#tableFormula').dataTable().fnDestroy();
+    $('#tableFormula').DataTable({
+      responsive:true,
+      destroy: true,
+      processing: true,
+      serverSide: true,
+        ajax: {
+            url : baseUrl + "/produksi/lihatadonan/tabel/"+iditem+'/'+jumlah,
+             error: function (jqXHR, textStatus, errorThrown) {
+                $('#create-data').modal('hide');
+                iziToast.error({
+                    position: "topRight",
+                    title: '',
+                    message: 'Rumus Formula Belum di Buat!'
+                });
+
+            }
+        },
+        columns: [
+        {data: 'f_bb', name: 'f_bb'},
+        {data: 'f_value', name: 'f_value'},
+        {data: 'm_sname', name: 'm_sname'},
+        {data: 'd_stock', name: 'd_stock', orderable: false},
+        {data: 'purchesing', name: 'purchesing', orderable: false},
+        ],
+      });
+  }
+
+  function total(inField, e)
+  {
+    $('.final').removeAttr('disabled','disabled');
+    var a = 0;
+    $('input.f_value:text').each(function(evt){
+      var getIndex = a;
+      var dataValue = $('input.f_value:text:eq('+getIndex+')').val();
+      var dataStok = $('input.d_stock:text:eq('+getIndex+')').val();      
+      dataStok = parseFloat(dataStok).toFixed(2);
+      dataValue = parseFloat(dataValue).toFixed(2);
+      var hasil = dataStok - dataValue;      
+      hasil = parseFloat(hasil).toFixed(2);
+      if (hasil < 0.00) {
+         $('.final').attr('disabled','disabled');
+      }
+
+      if(hasil<0){
+        $simbol='-';
+      }
+      var convHasil = ubahFormat(hasil);
+      $('input.hasil:text:eq('+getIndex+')').val(convHasil);
+    a++;
+    })
+  }
+
+  //SetFormRupiah
+    function ubahFormat(uang)
+    {        
+      
+        var pisah = new Array();
+        var chekArray;        
+        chekArray = uang.toString().split('.');
+        
+        if ($.isArray(chekArray)) {
+            var rev = parseInt(chekArray[0], 10).toString().split('').reverse().join('');
+            var rev2 = '';
+            for (var w = 0; w < rev.length; w++) {
+                rev2 += rev[w];
+                if ((w+ 1) % 3 === 0 && w !== (rev.length - 1)) {
+                    rev2 += '.';
+                }
+            }
+            
+            if(uang!='NaN'){                
+              if(chekArray[1]==undefined){
+                  return rev2.split('').reverse().join('') + ',' +'00';            
+              }else if(chekArray[1]!=undefined){
+                return rev2.split('').reverse().join('') + ',' +chekArray[1];            
+                }
+            }
+            else if(uang=='NaN'){
+               //return 'Rp. 0,00'
+            }
+           
+            else if(uang=='undefined'){
+               return 'Rp. 0,00'
+            }
+        } 
+    }
+
+    function final(status){
+      $('.final').attr('disabled','disabled');
+      var dataPlan=$('#data-product-plan :input').serialize(); //spk.create-spk
+      var dataSpk=$('#data-spk :input').serialize(); //spk.create-spk
+      var idformula=$('#formula :input').serialize();
+      $.ajax({
+        url         : baseUrl+'/produksi/spk/final/simpan-spk',
+        type        : 'get',
+        timeout     : 10000,
+        dataType    :'json',
+        data        :dataPlan+'&'+dataSpk+'&status='+status+'&'+idformula,
+        success     : function(response) {
+          if(response.status=='sukses'){
+            iziToast.success({timeout: 5000,
+                          position: "topRight",
+                          icon: 'fa fa-chrome',
+                          title: '',
+                          message: 'SPK berhasil di setujui.'});
+            $('#create-data').modal('hide');
+            var table = $('#data').DataTable();
+            table.ajax.reload( null, false );
+            $('.final').removeAttr('disabled','disabled');
+          }else{
+            iziToast.error({position: "topRight",
+                          title: '',
+                          message: 'SPK gagal di setujui.'});
+            $('.final').removeAttr('disabled','disabled');
+          }
+        }
+      });
+    }
   
 
 

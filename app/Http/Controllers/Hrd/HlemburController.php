@@ -27,7 +27,7 @@ class HlemburController extends Controller
         if (empty($term)) 
         {
             if ($jenis_peg == 'man') {
-                $jabatan = DB::table('m_divisi')->orderBy('c_divisi', 'ASC')->limit(10)->get();
+                $jabatan = DB::table('m_divisi')->where('c_isactive','TRUE')->orderBy('c_divisi', 'ASC')->limit(10)->get();
                 foreach ($jabatan as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_divisi];
                 }
@@ -43,7 +43,7 @@ class HlemburController extends Controller
         else
         {
             if ($jenis_peg == 'man') {
-                $jabatan = DB::table('m_divisi')->where('c_divisi', 'LIKE', '%'.$term.'%')->orderBy('c_divisi', 'ASC')->limit(10)->get();
+                $jabatan = DB::table('m_divisi')->where('c_divisi', 'LIKE', '%'.$term.'%')->where('c_isactive','TRUE')->orderBy('c_divisi', 'ASC')->limit(10)->get();
                 foreach ($jabatan as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_divisi];
                 }
@@ -67,12 +67,12 @@ class HlemburController extends Controller
         if (empty($term)) 
         {
             if ($jenis_peg == 'man') {
-                $jabatan = DB::table('m_jabatan')->where('c_divisi_id', $divisi)->orderBy('c_posisi', 'ASC')->limit(10)->get();
+                $jabatan = DB::table('m_jabatan')->where('c_isactive','TRUE')->where('c_divisi_id', $divisi)->orderBy('c_posisi', 'ASC')->limit(10)->get();
                 foreach ($jabatan as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_posisi];
                 }
             } elseif ($jenis_peg == 'pro') {
-                $jabatan = DB::table('m_jabatan_pro')->orderBy('c_jabatan_pro', 'ASC')->limit(10)->get();
+                $jabatan = DB::table('m_jabatan_pro')->where('c_isactive','TRUE')->orderBy('c_jabatan_pro', 'ASC')->limit(10)->get();
                 foreach ($jabatan as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_jabatan_pro];
                 }
@@ -82,12 +82,12 @@ class HlemburController extends Controller
         else
         {
             if ($jenis_peg == 'man') {
-                $jabatan = DB::table('m_jabatan')->where('c_divisi_id', $divisi)->where('c_posisi', 'LIKE', '%'.$term.'%')->orderBy('c_posisi', 'ASC')->limit(10)->get();
+                $jabatan = DB::table('m_jabatan')->where('c_isactive','TRUE')->where('c_divisi_id', $divisi)->where('c_posisi', 'LIKE', '%'.$term.'%')->orderBy('c_posisi', 'ASC')->limit(10)->get();
                 foreach ($jabatan as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_posisi];
                 }
             } elseif ($jenis_peg == 'pro') {
-                $jabatan = DB::table('m_jabatan_pro')->where('c_jabatan_pro', 'LIKE', '%'.$term.'%')->orderBy('c_jabatan_pro', 'ASC')->limit(10)->get();
+                $jabatan = DB::table('m_jabatan_pro')->where('c_isactive','TRUE')->where('c_jabatan_pro', 'LIKE', '%'.$term.'%')->orderBy('c_jabatan_pro', 'ASC')->limit(10)->get();
                 foreach ($jabatan as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_jabatan_pro];
                 }
@@ -107,12 +107,12 @@ class HlemburController extends Controller
         if (empty($term)) 
         {
             if ($jenis_peg == 'man') {
-                $pegawai = DB::table('m_pegawai_man')->where('c_divisi_id', $divisi)->where('c_jabatan_id', $jabatan)->orderBy('c_nama', 'ASC')->limit(10)->get();
+                $pegawai = DB::table('m_pegawai_man')->where('c_isactive','TRUE')->where('c_divisi_id', $divisi)->where('c_jabatan_id', $jabatan)->orderBy('c_nama', 'ASC')->limit(10)->get();
                 foreach ($pegawai as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_nama];
                 }
             } elseif ($jenis_peg == 'pro') {
-                $pegawai = DB::table('m_pegawai_pro')->where('c_jabatan_pro_id', $jabatan)->orderBy('c_nama', 'ASC')->limit(10)->get();
+                $pegawai = DB::table('m_pegawai_pro')->where('c_isactive','TRUE')->where('c_jabatan_pro_id', $jabatan)->orderBy('c_nama', 'ASC')->limit(10)->get();
                 foreach ($pegawai as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_nama];
                 }
@@ -122,12 +122,12 @@ class HlemburController extends Controller
         else
         {
             if ($jenis_peg == 'man') {
-                $pegawai = DB::table('m_pegawai_man')->where('c_divisi_id', $divisi)->where('c_jabatan_id', $jabatan)->where('c_nama', 'LIKE', '%'.$term.'%')->orderBy('c_nama', 'ASC')->limit(10)->get();
+                $pegawai = DB::table('m_pegawai_man')->where('c_isactive','TRUE')->where('c_divisi_id', $divisi)->where('c_jabatan_id', $jabatan)->where('c_nama', 'LIKE', '%'.$term.'%')->orderBy('c_nama', 'ASC')->limit(10)->get();
                 foreach ($pegawai as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_nama];
                 }
             } elseif ($jenis_peg == 'pro') {
-                $pegawai = DB::table('m_pegawai_pro')->where('c_jabatan_pro_id', $jabatan)->where('c_nama', 'LIKE', '%'.$term.'%')->orderBy('c_nama', 'ASC')->limit(10)->get();
+                $pegawai = DB::table('m_pegawai_pro')->where('c_isactive','TRUE')->where('c_jabatan_pro_id', $jabatan)->where('c_nama', 'LIKE', '%'.$term.'%')->orderBy('c_nama', 'ASC')->limit(10)->get();
                 foreach ($pegawai as $val) {
                     $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_nama];
                 }
