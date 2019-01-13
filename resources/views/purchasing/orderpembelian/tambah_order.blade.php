@@ -89,7 +89,7 @@
 
                         <div class="col-md-3 col-sm-12 col-xs-12">
                           <div class="form-group">
-                            <input id="tanggalPo" class="form-control input-sm datepicker2 " name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                            <input id="tanggalPo" class="form-control input-sm datepicker2" readonly name="tanggalOrder" type="text" value="{{ date('d-m-Y') }}">
                           </div> 
                         </div>
 
@@ -105,6 +105,26 @@
                                   <option value="CREDIT">Tempo</option>
                               </select>
                           </div>  
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <label class="tebal">Plafon</label>
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <div class="form-group">
+                            <input id="plafon" class="form-control input-sm text-right" name="tanggal" type="text" readonly value="">
+                          </div> 
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <label class="tebal">Batas Plafon</label>
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <div class="form-group">
+                            <input id="batasPlafon" class="form-control input-sm text-right" name="tanggal" type="text" readonly value="">
+                          </div> 
                         </div>
 
                         <div class="col-md-3 col-sm-12 col-xs-12">
@@ -129,6 +149,16 @@
                               <option value=""> - Pilih Supplier</option>
                             </select>
                           </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <label class="tebal">Jatuh Tempo</label>
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <div class="form-group">
+                            <input id="jatuhTempo" class="form-control input-sm" name="jatuhTempo" type="text" readonly value="">
+                          </div> 
                         </div>
 
                         <div id="appending"></div>
@@ -275,7 +305,7 @@
     $( "#cari_sup" ).select2({
       placeholder: "Pilih Supplier...",
       ajax: {
-          url: baseUrl + '/purchasing/rencanapembelian/get-supplier',
+          url: baseUrl + '/purchasing/rencanapembelian/get-supplierorder',
           dataType: 'json',
           data: function (params) {
             return {
@@ -382,6 +412,10 @@
             // Append it to the select
             $('#cari_sup').append(newOption).trigger('change');
           } 
+
+          $('#plafon').val(data.plafonRp);
+          $('#batasPlafon').val(data.batasPlafonRp);
+          $('#jatuhTempo').val(data.jatuhTempo);
 
           var totalHarga = 0;
           var key = 1;
@@ -550,6 +584,21 @@
       }
     });
   //end jquery  
+
+    $('#cari_sup').change(function(event){
+      var a = $('#cari_sup').val();
+      $.ajax({
+        url : baseUrl + "/purchasing/orderpembelian/carisup/"+a,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          $('#plafon').val(data.plafonRp);
+          $('#batasPlafon').val(data.batasPlafonRp);
+          $('#jatuhTempo').val(data.jatuhTempo);
+        }
+      });
+    });
   });
   
   function convertDecimalToRupiah(decimal) 
@@ -643,78 +692,94 @@
 
   function simpanPo()
   {
-    var IsValid = $("form[name='formCreatePo']").valid();
-    if(IsValid)
+    var batasPlafon = convertToAngka($('#batasPlafon').val());
+    var totalNett = convertToAngka($('#total_nett').val());
+    if (totalNett > batasPlafon) 
     {
-      var countRow = $('#tabel-form-po tr').length;
-      if(countRow > 1)
+      iziToast.error({
+                    position: 'center',
+                    title: 'Pemberitahuan',
+                    message: "Pembelian Melebihi Batas Plafon!",
+                    onClosing: function(instance, toast, closedBy){
+                      $('#button_save').attr('disabled',false);
+                    }
+                  });
+    }
+    else
+    {
+      var IsValid = $("form[name='formCreatePo']").valid();
+      if(IsValid)
       {
-        $('#divSelectSup').removeClass('has-error');
-        $('#divSelectPlan').removeClass('has-error');
-        $('#button_save').text('Menyimpan...');
-        $('#button_save').attr('disabled',true); 
-        $.ajax({
-            url : baseUrl + "/purchasing/orderpembelian/simpan-po",
-            type: "POST",
-            dataType: "JSON",
-            data: $('#form_create_po').serialize(),
-            success: function(response)
-            {
-              if(response.status == "sukses")
+        var countRow = $('#tabel-form-po tr').length;
+        if(countRow > 1)
+        {
+          $('#divSelectSup').removeClass('has-error');
+          $('#divSelectPlan').removeClass('has-error');
+          $('#button_save').text('Menyimpan...');
+          $('#button_save').attr('disabled',true); 
+          $.ajax({
+              url : baseUrl + "/purchasing/orderpembelian/simpan-po",
+              type: "POST",
+              dataType: "JSON",
+              data: $('#form_create_po').serialize(),
+              success: function(response)
               {
-                iziToast.success({
-                  position: 'center',
-                  title: 'Pemberitahuan',
-                  message: response.pesan,
-                  onClosing: function(instance, toast, closedBy){
-                    $('#button_save').text('Simpan Data');
-                    $('#button_save').attr('disabled',false); 
-                    window.location.href = baseUrl+"/purchasing/orderpembelian/order";
-                  }
-                });
-              }
-              else
+                if(response.status == "sukses")
+                {
+                  iziToast.success({
+                    position: 'center',
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#button_save').text('Simpan Data');
+                      $('#button_save').attr('disabled',false); 
+                      window.location.href = baseUrl+"/purchasing/orderpembelian/order";
+                    }
+                  });
+                }
+                else
+                {
+                  iziToast.error({
+                    position: 'center',
+                    title: 'Pemberitahuan',
+                    message: "Data Gagal disimpan !",
+                    onClosing: function(instance, toast, closedBy){
+                      $('#button_save').text('Simpan Data');
+                      $('#button_save').attr('disabled',false);
+                      window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
+                    }
+                  });
+                }
+              },
+              error: function (jqXHR, textStatus, errorThrown)
               {
                 iziToast.error({
-                  position: 'center',
+                  position: 'topRight',
                   title: 'Pemberitahuan',
-                  message: "Data Gagal disimpan !",
-                  onClosing: function(instance, toast, closedBy){
-                    $('#button_save').text('Simpan Data');
-                    $('#button_save').attr('disabled',false);
-                    window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
-                  }
+                  message: "Data gagal disimpan !"
                 });
               }
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-              iziToast.error({
-                position: 'topRight',
-                title: 'Pemberitahuan',
-                message: "Data gagal disimpan !"
-              });
-            }
-        });
+          });
+        }
+        else
+        {
+          iziToast.warning({
+            position: 'center',
+            message: "Mohon isi data pada tabel form !"
+          });
+        }
       }
-      else
+      else //else validation
       {
         iziToast.warning({
           position: 'center',
-          message: "Mohon isi data pada tabel form !"
+          message: "Mohon Lengkapi data form !",
+          onClosing: function(instance, toast, closedBy){
+            $('#divSelectSup').addClass('has-error');
+            $('#divSelectPlan').addClass('has-error');
+          }
         });
       }
-    }
-    else //else validation
-    {
-      iziToast.warning({
-        position: 'center',
-        message: "Mohon Lengkapi data form !",
-        onClosing: function(instance, toast, closedBy){
-          $('#divSelectSup').addClass('has-error');
-          $('#divSelectPlan').addClass('has-error');
-        }
-      });
     }
   }
 

@@ -94,8 +94,8 @@
         {"data" : "s_company", "width" : "15%"},
         {"data" : "s_address", "width" : "15%"},
         {"data" : "telp", "width" : "10%"},
-        {"data" : "s_fax", "width" : "5%"},
-        {"data" : "tglTop", "width" : "10%"},
+        {"data" : "s_fax", "width" : "10%"},
+        {"data" : "tglTop", "width" : "5%"},
         {"data" : "hutang", "width" : "10%"},
         {"data" : "limit", "width" : "10%"},
         {"data" : "aksi", orderable: false, searchable: false, "width" : "10%"}

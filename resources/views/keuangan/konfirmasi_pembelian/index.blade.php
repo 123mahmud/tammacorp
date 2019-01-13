@@ -545,9 +545,6 @@
         $('#lblTglOrderConfirm').text(data.header[0].d_pcs_date_created);
         $('#lblStaffOrderConfirm').text(data.header[0].m_name);
         $('#lblSupplierOrderConfirm').text(data.header[0].s_company);
-        $('#plafonSupRp').text(data.plafonRp);
-        $('#BatasPlafonSupRp').text(data.batasPlafonRp);
-        $('#batas-plafon').val(data.batasPlafon);
         var d_pcs_total_net = convertDecimalToRupiah(data.header[0].d_pcs_total_net);
         $('#total-harga').val(d_pcs_total_net);
         if (data.header[0].d_pcs_method != "CASH") 

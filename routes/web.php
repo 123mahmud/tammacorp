@@ -56,6 +56,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
     Route::get('/purchasing/orderpembelian/get-order-by-tgl/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTgl');
     Route::get('/purchasing/orderpembelian/get-order-by-tgl-span/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTglspan');
+    Route::get('/purchasing/rencanapembelian/get-supplierorder', 'Pembelian\OrderPembelianController@getDataSupplier');
+    Route::get('/purchasing/orderpembelian/carisup/{id}', 'Pembelian\OrderPembelianController@cariSupPlafon');
+    
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
 // irA
@@ -399,6 +402,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/POSgrosir/grosir/caripagu/{cus}', 'Penjualan\POSGrosirController@setPaguCus');
     Route::get('/penjualan/POSgrosir/get-tanggaljual/pagu/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getPagu');
     Route::get('/penjualan/POSgrosir/getpagu/{id}', 'Penjualan\POSGrosirController@appPagu');
+    Route::get('/penjualan/POSgrosir/grosir/jatuhTempo/{id}', 'Penjualan\POSGrosirController@jatuhTempo');
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
 

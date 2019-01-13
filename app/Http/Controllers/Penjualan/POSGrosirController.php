@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Penjualan;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use CarbonImmutable;
 use DB;
 use Response;
 use App\Http\Requests;
@@ -217,6 +218,7 @@ class POSGrosirController extends Controller
                               'c_hp1',
                               'c_hp2',
                               'c_class',
+                              's_jatuh_tempo',
                               's_note',
                               'd_sales.s_id as sales_id',
                               's_gross',
@@ -421,6 +423,13 @@ class POSGrosirController extends Controller
     }
 
     $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
+
+    $tglJT = $request->s_jatuh_tempo;
+    $y2 = substr($tglJT, -4);
+    $m2 = substr($tglJT, -7,-5);
+    $d2 = substr($tglJT,0,2);
+    $tglJT = $y2.'-'.$m2.'-'.$d2;
+
     //end nota fatkur
     d_sales::insert([
             's_id' =>$s_id,
@@ -433,6 +442,7 @@ class POSGrosirController extends Controller
             's_disc_value' => ($this->konvertRp($request->totalDiscount)),
             's_gross' => ($this->konvertRp($request->s_gross)),
             's_tax' => $request->s_pajak,
+            's_jatuh_tempo' => $tglJT,
             's_net' => ($this->konvertRp($request->s_net)),
             's_status' => 'DR',
             's_insert' => Carbon::now()
@@ -496,6 +506,11 @@ class POSGrosirController extends Controller
 
     $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
 
+    $tglJT = $request->s_jatuh_tempo;
+    $y2 = substr($tglJT, -4);
+    $m2 = substr($tglJT, -7,-5);
+    $d2 = substr($tglJT,0,2);
+    $tglJT = $y2.'-'.$m2.'-'.$d2;
     $err = true;
     $akun_beban = []; $akun_persediaan = [];
 
@@ -531,7 +546,7 @@ class POSGrosirController extends Controller
     $sNet = ($this->konvertRp($request->s_net));
     $bayar = ($this->konvertRp($request->sp_nominal[1]));
     $hitung = $sNet - $bayar;
-    if ($hitung > $sisaPagu) 
+    if ($sisaPagu < 0) 
     {
        $customer = DB::table('d_sales')
           ->insert([
@@ -545,6 +560,7 @@ class POSGrosirController extends Controller
             's_disc_value' => $request->s_disc_value,
             's_gross' => ($this->konvertRp($request->s_gross)),
             's_tax' => $request->s_pajak,
+            's_jatuh_tempo' => $tglJT,
             's_net' => ($this->konvertRp($request->s_net)),
             's_sisa' => $sisa,
             's_status' => 'PPN',
@@ -566,6 +582,7 @@ class POSGrosirController extends Controller
             's_disc_value' => $request->s_disc_value,
             's_gross' => ($this->konvertRp($request->s_gross)),
             's_tax' => $request->s_pajak,
+            's_jatuh_tempo' => $tglJT,
             's_net' => ($this->konvertRp($request->s_net)),
             's_sisa' => $sisa,
             's_status' => 'PR',
@@ -614,7 +631,7 @@ class POSGrosirController extends Controller
           ]);
     }
 
-    if ($hitung > $sisaPagu) 
+    if ($sisaPagu < 0) 
     {
 
     }
@@ -716,7 +733,7 @@ class POSGrosirController extends Controller
       $sNet = ($this->konvertRp($request->s_net));
       $bayar = ($this->konvertRp($request->sp_nominal[0]));
       $hitung = $sNet - $bayar;
-      if ($hitung > $sisaPagu) 
+      if ($sisaPagu < 0) 
       {
         $customer = DB::table('d_sales')
         ->insert([
@@ -731,7 +748,6 @@ class POSGrosirController extends Controller
           's_disc_value' => ($this->konvertRp($request->s_disc_value)),
           's_tax' => $request->s_pajak,
           's_net' => ($this->konvertRp($request->s_net)),
-          's_tax' => $request->s_pajak,
           's_jatuh_tempo' => $tglJT,
           's_sisa' => $sisa,
           's_status' => 'FPN',
@@ -752,7 +768,6 @@ class POSGrosirController extends Controller
           's_gross' => ($this->konvertRp($request->s_gross)),
           's_disc_percent' => ($this->konvertRp($request->s_disc_percent)),
           's_disc_value' => ($this->konvertRp($request->s_disc_value)),
-          's_tax' => $request->s_pajak,
           's_net' => ($this->konvertRp($request->s_net)),
           's_tax' => $request->s_pajak,
           's_jatuh_tempo' => $tglJT,
@@ -804,7 +819,7 @@ class POSGrosirController extends Controller
         'data' => $e
         ]);
       }
-      if ( $hitung > $sisaPagu ) 
+      if ( $sisaPagu < 0 ) 
       {
 
       }
@@ -2355,5 +2370,20 @@ class POSGrosirController extends Controller
           's_status' => 'PR'
         ]);
     }
+  }
+
+  public function jatuhTempo($idCus)
+  {
+    $cariJT = m_customer::select('c_jatuh_tempo')
+      ->where('c_id',$idCus)
+			->first();
+
+		$oke = $cariJT->c_jatuh_tempo.' '. 'days';
+		$date = Carbon::now()->toDateString();
+		$date=date_create($date);
+		date_add($date,date_interval_create_from_date_string($oke));
+		$jatuhTempo = date_format($date,"d-m-Y");
+		
+      return Response::json($jatuhTempo);
   }
 }

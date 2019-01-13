@@ -29,10 +29,7 @@ class SuplierController extends Controller
         DB::beginTransaction();
         try 
         {   
-          $y = substr($request->tglTop, -4);
-          $m = substr($request->tglTop, -7, -5);
-          $d = substr($request->tglTop, 0, 2);
-          $tglTop = $y.'-'.$m.'-'.$d;
+          $tglTop = $request->tglTop;
 
           $m1 = DB::table('d_supplier')->max('s_id');
           $index = $m1+=1;
@@ -96,7 +93,7 @@ class SuplierController extends Controller
         }
         else 
         {
-          return date("d-m-Y", strtotime($xyzab->s_top));
+          return $xyzab->s_top;
         }
       })
       ->addColumn('aksi', function ($xyzab) {
@@ -153,13 +150,6 @@ class SuplierController extends Controller
         DB::beginTransaction();
         try 
         { 
-          if ($request->tglTop != "") {
-            $tglTop = date('Y-m-d',strtotime($request->tglTop));
-          }else{
-            $tglTop = null;
-          }
-          
-
           $tanggal = date("Y-m-d h:i:s");
 
           DB::table('d_supplier')
@@ -175,7 +165,7 @@ class SuplierController extends Controller
                 's_bank'=> $request->methodBayar,
                 's_fax'=>$request->email,
                 's_note'=> strtoupper($request->keterangan),
-                's_top'=> $tglTop,
+                's_top'=> $request->tglTop,
                 's_limit'=>str_replace(',', '', $request->limit),
                 's_update'=>$tanggal
             ]);

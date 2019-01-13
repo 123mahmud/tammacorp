@@ -189,6 +189,21 @@
                                     <input type="text" id="no_hp" name="no_hp2" class="form-control input-sm"  value="{{ old('no_hp') }}">
                                   </div>
                                 </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+
+                                      <label class="tebal">Jatuh Tempo</label>
+
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+                                    <div class="input-icon right">
+                                      <input type="number" id="c_jatuh_tempo" name="c_jatuh_tempo" class="form-control input-sm"  value="">
+
+                                    </div>
+                                  </div>
+                                </div>
+
                                 
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
