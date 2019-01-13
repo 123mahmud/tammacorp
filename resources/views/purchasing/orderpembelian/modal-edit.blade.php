@@ -74,6 +74,16 @@
               </div>
             </div>
 
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <label class="tebal">Batas Plafon</label>
+            </div>
+
+            <div class="col-md-3 col-sm-12 col-xs-12">
+              <div class="form-group">
+                <input type="text" class="form-control input-sm text-right" id="batasPlafon" readonly>
+              </div>
+            </div>
+
             <div id="append-modal-edit"></div>
           </div>
 
