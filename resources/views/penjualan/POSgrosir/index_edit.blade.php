@@ -24,8 +24,8 @@
                         <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
                             <label class="control-label tebal" for="no_faktur">Jatuh Tempo</label>
                             <div class="input-group input-group-sm" style="width: 100%;">
-                                <input type="text" id="no_faktur" name="s_jatuh_tempo" class="form-control datepicker4"
-                                       autocomplete="off" readonly value="">
+                                <input type="text" id="no_faktur" name="s_jatuh_tempo" class="form-control"
+                                       autocomplete="off" readonly value="{{$edit[0]->s_jatuh_tempo}}">
                             </div>
                         </div>
                         <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">

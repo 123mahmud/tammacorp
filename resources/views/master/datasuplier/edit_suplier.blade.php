@@ -184,7 +184,7 @@
                             <div class="form-group">
                               <div class="input-icon right">
                                 <i class="fa fa-calendar"></i>
-                                <input type="text" id="tgl_top" name="tglTop" class="form-control input-sm datepicker1" value="{{$edit_suplier->s_top}}">
+                                <input type="number" id="tgl_top" name="tglTop" class="form-control input-sm " value="{{$edit_suplier->s_top}}">
                               </div>
                             </div>
                           </div>

@@ -193,16 +193,12 @@
                                 <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
                                     <div class="input-icon right">
-                                      <i class="glyphicon glyphicon-envelope"></i>
                                       <input type="text" id="wilayah" name="wilayah" class="form-control input-sm"  value="{{ $edit_cust->c_region }}">
 
                                     </div>
                                   </div>
                                 </div>
-                                {{--
-                                <div class="col-md-6 col-sm-0 col-xs-0" style="height: 45px;">
-                                  <!-- empty -->
-                                </div> --}}
+                               
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
 
@@ -218,6 +214,21 @@
                                     <input type="text" id="no_hp" name="no_hp2" class="form-control input-sm"  value="{{str_replace('+62', '', $edit_cust->c_hp2) }}">
                                   </div>
                                 </div>
+
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+
+                                      <label class="tebal">Jatuh Tempo</label>
+
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+                                    <div class="input-icon right">
+                                      <input type="number" id="c_jatuh_tempo" name="c_jatuh_tempo" class="form-control input-sm"  value="{{ $edit_cust->c_jatuh_tempo }}">
+
+                                    </div>
+                                  </div>
+                                </div>
+
                                 <div class="col-md-2 col-sm-3 col-xs-12">
 
 
