@@ -60,7 +60,7 @@
         <div class="col-md-8 col-sm-3 col-xs-12">
             <div class="form-group">
                 <input class="form-control" readonly="" type="text" name="id_spk" id="id_spkD"
-                       value="{{ number_format( $item->spk_hpp / $item->pp_qty,2,',','.')}}">
+                       value="{{ number_format( $item->spk_hpp,2,',','.')}}">
             </div>
         </div>
     @endforeach
@@ -80,21 +80,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                @for ($i = 0; $i < count($formula); $i++)
+                @foreach ($formula as $form)
                    <tr>
-                        <td>{{ $formula[$i]['i_code'] }}</td>
-                        <td>{{ $formula[$i]['i_name'] }}</td>
-                        <td class="text-right">{{ number_format( $formula[$i]['fr_value'],2,',','.')}}</td>
-                        <td>{{ $formula[$i]['m_sname'] }}</td>
-                        <td>Rp.
+                        <td>{{ $form->i_code }}</td>
+                        <td>{{ $form->i_name }}</td>
+                        <td class="text-right">{{ number_format( $form->fr_value,2,',','.')}}</td>
+                        <td>{{ $form->m_sname }}</td>
+                        <td>
                             <span class="pull-right">
                                
-                                {{ number_format($bambang[$i],2,',','.')}}
+                                {{ number_format( $form->fr_hpp,2,',','.')}}
                           {{--    {{ $bambang[$i] }} --}}
                             </span>
                         </td>
                     </tr>
-                @endfor
+                @endforeach
                 </tbody>
             </table>
         </form>

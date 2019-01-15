@@ -11,5 +11,7 @@ class spk_formula extends Model
     						'fr_detailid', 
     						'fr_formula', 
     						'fr_value',
-    						'fr_scale'];
+    						'fr_scale',
+    						'fr_hpp'];
+    public $timestamps = false;
 }
