@@ -255,7 +255,8 @@ class spkProductionController extends Controller
 
         if(jurnal_setting()->allow_jurnal_to_execute){
             $akun_1;
-            for ($i=0; $i <count($spkDt) ; $i++) { 
+            for ($i=0; $i <count($spkDt) ; $i++) 
+            { 
 
                 $item = m_item::where('i_id', $spkDt[$i]->fr_formula)
                             ->join('m_group', 'm_item.i_code_group', '=', 'm_group.m_gcode')
@@ -267,9 +268,12 @@ class spkProductionController extends Controller
                 $cek2 = DB::table('d_akun')->where('id_akun', $item->m_akun_persediaan)->first();
                 $cek3 = DB::table('d_akun')->where('id_akun', $item->m_akun_beban)->first();
 
-                if(!$item || !$item->m_akun_persediaan || !$item->m_akun_beban || !$cek2 || !$cek3){
+                if(!$item || !$item->m_akun_persediaan || !$item->m_akun_beban || !$cek2 || !$cek3)
+                {
                     $err = false;
-                }else{
+                }
+                else
+                {
                     
                     $prevCost = DB::table('d_stock_mutation')
                                     ->select('sm_item', 'sm_qty', 'sm_qty_sisa', 'sm_hpp' )
@@ -279,28 +283,43 @@ class spkProductionController extends Controller
                                     ->orderBy('sm_date', 'asc')
                                     ->get();
 
-                    if(count($prevCost) == 0){
+                    if(count($prevCost) == 0)
+                    {
                         $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $item->i_id)->first();
                         $hargaLalu = $default_cost->m_pbuy1;
                         $hppTemp = $hargaLalu;
-                    }else{
+                    }
+                    else
+                    {
                         $hppTemp = 0;
 
-                        foreach ($prevCost as $key => $cost) {
-                            if($cost->sm_qty_sisa > $need){
+                        foreach ($prevCost as $key => $cost) 
+                        {
+                            if($cost->sm_qty_sisa > $need)
+                            {
                                 $hppTemp += ($need * $cost->sm_hpp);
                                 $need = 0;
                                 break;
-                            }else{
+                            }
+                            else
+                            {
                                 $hppTemp += ($cost->sm_qty_sisa * $cost->sm_hpp);
                                 $need -= $cost->sm_qty_sisa;
                             }
+
                         }
 
                         // #### Ini Untuk Mengecek Jika Stock Tidak Mencukupi;
 
                         $hargaLalu = $hppTemp;
-                    }
+                    }   
+
+                    spk_formula::where('fr_spk',$spk_id)
+                        ->where('fr_formula',$item->i_id)
+                        ->update([
+                            'fr_hpp' => $hargaLalu
+                        ]);
+
 
                     if(array_key_exists($item->m_akun_persediaan, $acc_temp)){
                             $acc_temp[$item->m_akun_persediaan] = [
@@ -417,85 +436,16 @@ class spkProductionController extends Controller
             'fr_value',
             'i_id',
             'i_type',
-            'm_sname')
+            'm_sname',
+            'fr_hpp')
             ->where('fr_spk', $request->x)
             ->join('m_item', 'i_id', '=', 'fr_formula')
             ->join('m_satuan', 'm_sid', '=', 'fr_scale')
             ->get();
 
-        foreach ($formula as $val) {
-            //cek type barang
-            if ($val->i_type == "BJ") //brg jual
-            {
-                //ambil stok berdasarkan type barang
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock
-                  where s_item = '$val->i_id'
-                  AND s_comp = '2'
-                  AND s_position = '2' limit 1) ,'0') as qtyStok"));
-                $stok = $query[0]->qtyStok;
-            } elseif ($val->i_type == "BB") //bahan baku
-            {
-                //ambil stok berdasarkan type barang
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock
-                  where s_item = '$val->i_id'
-                  AND s_comp = '3'
-                  AND s_position = '3' limit 1) ,'0') as qtyStok"));
-                $stok = $query[0]->qtyStok;
-            }
-
-            //get prev cost
-            $idItem = $val->i_id;
-            $need = (int) $val->fr_value;
-
-            // return json_encode($need);
-
-            $prevCost = DB::table('d_stock_mutation')
-                // ->select(DB::raw('MAX(sm_hpp) as hargaPrev'))
-                ->select('sm_item', 'sm_qty', 'sm_qty_sisa', 'sm_hpp' )
-                ->where('sm_item', '=', $idItem)
-                ->where('sm_mutcat', '=', "14")
-                ->where('sm_qty_sisa', '>', 0)
-                ->orderBy('sm_date', 'asc')
-                ->get();
-
-            if(count($prevCost) == 0){
-                $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', $idItem)->first();
-                $hargaLalu[] = $default_cost->m_pbuy1;
-                // $qty[] = 0;
-                // $sm_item[] = $idItem;
-            }else{
-                $hppTemp = 0;
-
-                foreach ($prevCost as $key => $cost) {
-                    if($cost->sm_qty_sisa > $need){
-                        $hppTemp += ($need * $cost->sm_hpp);
-                        $need = 0;
-                        break;
-                    }else{
-                        $hppTemp += ($cost->sm_qty_sisa * $cost->sm_hpp);
-                        $need -= $cost->sm_qty_sisa;
-                        // return $need;
-                        // return json_encode($hppTemp);
-                    }
-                }
-
-                // if($need > 0)
-                //     return json_encode($idItem); 
-
-                // #### Ini Untuk Mengecek Jika Stock Tidak Mencukupi;
-
-                $hargaLalu[] = $hppTemp;
-            }
-
-        }
-
-        for ($i = 0; $i < count($hargaLalu); $i++) {
-            $cabangPurnama = $hargaLalu[$i];
-            $bambang[] = $cabangPurnama;
-        }
-
         $ket = $spk[0]->spk_status;
         $id = $spk[0]->spk_id;
+
 
         // return json_encode(count($bambang));
         return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang','ket','id'));
