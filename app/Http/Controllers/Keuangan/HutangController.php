@@ -298,7 +298,8 @@ class HutangController extends Controller
 
       $data = DB::table('d_purchasing')
                     ->where('d_pcs_date_created', '>=', $date_1)
-                    ->where('d_pcs_date_created', '<', $date_2);
+                    ->where('d_pcs_date_created', '<', $date_2)
+                    ->where('d_pcs_status','!=','WT');
 
       if($request->supplier != 'all'){
         $supplier = $supplier->where('d_purchasing.s_id', $request->supplier);
@@ -318,7 +319,7 @@ class HutangController extends Controller
       $supplier = $supplier->get();
       $data = $data->orderBy('d_purchasing.d_pcs_date_created')->get();
 
-      // return json_encode($supplier);
+      // return json_encode($data);
 
       return view('keuangan.l_hutangpiutang.laporan_piutang',compact('supplier', 'data', 'request', 'date_1', 'date_2'));
 
@@ -329,6 +330,8 @@ class HutangController extends Controller
                       ->distinct('d_purchasing.s_id')
                       ->where('d_pcs_date_created', '>=', $date_1)
                       ->where('d_pcs_date_created', '<', $date_2)
+                      ->where('d_pcs_status','!=','WT')
+                      ->where('d_purchasing.s_id', $request->supplier)
                       ->select(
                           's_company', 
                           DB::raw('sum(d_pcs_total_gross) as total_gross'),
