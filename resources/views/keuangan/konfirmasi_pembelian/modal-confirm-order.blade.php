@@ -65,7 +65,7 @@
                   <option value="WT">Waiting</option>
                   <!-- <option value="DE">Dapat diedit</option> -->
                   <option value="CF">Dikonfirmasi</option>
-                  <option value="RV">Revisi</option>
+              {{--     <option value="RV">Revisi</option> --}}
                 </select>
               </div>
             </div>
