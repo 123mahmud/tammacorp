@@ -23,7 +23,8 @@ class transaksi_kas_controller extends Controller
 
     	$akun_perkiraan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
-    	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '!=', '100')->where(DB::raw('substring(id_akun,1,3)'), '!=', '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+    	// $akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '!=', '100')->where(DB::raw('substring(id_akun,1,3)'), '!=', '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+        $akun_lawan = DB::table('d_akun')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
         $cashflow = DB::table('dk_transaksi_cashflow')->select('tc_id as id_akun', 'tc_name as nama_akun')->get();
 
