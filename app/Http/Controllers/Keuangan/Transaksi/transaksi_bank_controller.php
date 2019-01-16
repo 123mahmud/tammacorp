@@ -23,7 +23,8 @@ class transaksi_bank_controller extends Controller
 
     	$akun_perkiraan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '101')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
-    	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '!=', '101')->where(DB::raw('substring(id_akun,1,3)'), '!=', '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+    	// $akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,3)'), '!=', '101')->where(DB::raw('substring(id_akun,1,3)'), '!=', '100')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+        $akun_lawan = DB::table('d_akun')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
     	// return json_encode($list_transaksi);
 
