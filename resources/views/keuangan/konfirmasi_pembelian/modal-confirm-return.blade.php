@@ -63,9 +63,9 @@
               <div class="form-group">
                 <select name="statusReturnConfirm" id="status_return_penjualan" class="form-control input-sm">
                   <option value="WT">Waiting</option>
-                  <option value="DE">Dapat diedit</option>
+                {{--   <option value="DE">Dapat diedit</option> --}}
                   <option value="CF">Dikonfirmasi</option>
-                  <option value="RC">Diterima</option>
+                  {{-- <option value="RC">Diterima</option> --}}
                 </select>
               </div>
             </div>
