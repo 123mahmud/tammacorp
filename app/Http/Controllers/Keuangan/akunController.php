@@ -19,9 +19,9 @@ class akunController extends Controller
     public function datatable_akun(Request $request)
     {   
         if($request->list == 'general')
-            $list = DB::table("d_akun")->where("type_akun", "GENERAL")->whereNotNull("kelompok_akun")->where("kelompok_akun", "!=", "-")->select("*")->orderBy("id_akun", "asc")->get();
+            $list = DB::table("d_akun")->where("type_akun", "GENERAL")->where('is_active', '1')->whereNotNull("kelompok_akun")->where("kelompok_akun", "!=", "-")->select("*")->orderBy("id_akun", "asc")->get();
         else
-            $list = DB::table("d_akun")->where("type_akun", "DETAIL")->select("*")->orderBy("id_akun", "asc")->get();
+            $list = DB::table("d_akun")->where("type_akun", "DETAIL")->where('is_active', '1')->select("*")->orderBy("id_akun", "asc")->get();
 
         // return $list;
         $data = collect($list);
@@ -206,9 +206,17 @@ class akunController extends Controller
     public function hapus_akun(Request $request){
         // return json_encode($request->all());
 
-        $data = DB::table('d_akun')->where('id_akun', $request->id)->first();
+        $data = DB::table('d_akun')->where('id_akun', $request->id);
 
-        if($data)
+        if(!$data->first()){
+            return json_encode('error');
+        }
+
+        $data->update([
+            "is_active" => '0'
+        ]);
+
+        return json_encode('sukses');
 
     }
 }

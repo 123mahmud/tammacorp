@@ -232,8 +232,17 @@ tr.details td.details-control {
           type: "post",
           url: '{{ route('hapus_akun') }}',
           data: {id: a, _token: '{{ csrf_token() }}'},
+          dataType: 'json',
           success: function(response){
-            console.log(response);
+
+            if(response == "error")
+              alert('Data Akun Gagal Dihapus');
+
+            if(response == "sukses"){
+              alert('Data Akun Berhasil Dihapus');
+
+              $(conteks).closest('tr').remove();
+            }
           },
           error: function (e){
             alert(e)
