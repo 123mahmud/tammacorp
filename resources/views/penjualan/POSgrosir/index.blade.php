@@ -343,7 +343,7 @@
                                                             Tempo</label>
                                                         <div class="input-group input-group-sm" style="width: 100%;">
                                                             <input type="text" id="no_faktur" name="s_jatuh_tempo"
-                                                                   class="form-control datepicker4" readonly autocomplete="off">
+                                                                   class="form-control" readonly autocomplete="off">
                                                         </div>
                                                     </div>
                                                 </form>
@@ -677,6 +677,7 @@
                     $('#c-class').val(ui.item.c_class);
                     var idCus = ui.item.id;
                     cariPagu(idCus);
+                    jatuhTempo(idCus);
                     $("input[name='item']").focus();
                 }
             });
@@ -799,6 +800,7 @@
                     $('#s_pagu').val();
                     var idCus = ui.item.id;
                     cariPagu(idCus);
+                    jatuhTempo(idCus);
                 }
             });
             $("#alamat2").val('');
@@ -811,6 +813,7 @@
             $('#s_sisa_pagu').val('');
             $('#s_paguRp').val('');
             $('#s_sisa_pagu_rp').val('');
+            $('#no_faktur').val('');
             tableDetail.row().clear().draw(false);
             var inputs = document.getElementById('kode'),
                 names = [].map.call(inputs, function (input) {
@@ -837,19 +840,27 @@
             }); 
         }
 
+        function jatuhTempo(id)
+        {
+            $.ajax({
+              url : baseUrl + "/penjualan/POSgrosir/grosir/jatuhTempo/" + id,
+              type: 'GET',
+              success:function(response)
+              {
+                  $('#no_faktur').val(response);
+              }
+            });
+        }
+
         function autoStatusFinal()
         {
             var totalPayment = convertToAngka($('#totalPayment').val());
             var jumBayar = convertToAngka($('#bayar').val());
             var sisaPagu =  $('#s_sisa_pagu').val();
             var hitung = totalPayment - jumBayar;
-            if (hitung > sisaPagu) 
+            if (sisaPagu < 0) 
             {
                 $('.simpanFinal').html('Pending');
-            }
-            else
-            {
-                $('.simpanFinal').html('Proses');
             }
             updateKembalian();
         }
@@ -860,13 +871,9 @@
             var jumBayar = convertToAngka($('#bayarDP').val());
             var sisaPagu =  $('#s_sisa_pagu').val();
             var hitung = totalPayment - jumBayar;
-            if (hitung > sisaPagu) 
+            if (sisaPagu < 0) 
             {
                 $('.simpanProgress').html('Pending');
-            }
-            else
-            {
-                $('.simpanProgress').html('Proses');
             }
             updateKembalianDP();
         }

@@ -54,27 +54,7 @@
                 <label id="lblSupplierOrderConfirm"></label>
               </div>
             </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Plafon</label>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <label id="plafonSupRp"></label>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Batas Plafon</label>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <label id="BatasPlafonSupRp"></label>
-              </div>
-            </div>
-
+            
             <div class="col-md-3 col-sm-12 col-xs-12">
               <label class="tebal">Status</label>
             </div>
@@ -83,9 +63,9 @@
               <div class="form-group">
                 <select name="statusOrderConfirm" id="status_order_confirm" class="form-control input-sm">
                   <option value="WT">Waiting</option>
-                  <option value="DE">Dapat diedit</option>
+                  <!-- <option value="DE">Dapat diedit</option> -->
                   <option value="CF">Dikonfirmasi</option>
-                  <option value="RV">Revisi</option>
+              {{--     <option value="RV">Revisi</option> --}}
                 </select>
               </div>
             </div>

@@ -351,29 +351,6 @@ class ConfrimBeliController extends Controller
                 ->orderBy('d_pcs_date_created', 'DESC')
                 ->get();
 
-    //Hitung Hutang
-    $hitHutang = d_purchasing::select('d_pcs_sisapayment')
-      ->where('d_pcs_sisapayment','!=','0')
-      ->where('s_id',$dataHeader[0]->supp_id)
-      ->get();
-
-    $totHutang = 0;
-    for ($i=0; $i < count($hitHutang) ; $i++) { 
-      $totHutang += $hitHutang[$i]->d_pcs_sisapayment;
-    }
-    //end Hitung Hutang
-    //Hitung Plafon
-    $plafon = DB::table('d_supplier')
-      ->select('s_limit')
-      ->where('s_id',$dataHeader[0]->supp_id)
-      ->first();
-
-    $batasPlafon = $plafon->s_limit - $totHutang;
-    if ($plafon->s_limit == '0') {
-      $batasPlafon = '0';
-    }
-    //End Plafon
-    // dd($batasPlafon);
     $statusLabel =  $dataHeader[0]->d_pcs_status;
     if ($statusLabel == "WT") 
     {
@@ -430,17 +407,13 @@ class ConfrimBeliController extends Controller
         'data_stok' => $dataStok['val_stok'],
         'data_satuan' => $dataStok['txt_satuan'],
         'spanTxt' => $spanTxt,
-        'spanClass' => $spanClass,
-        'plafon' => $plafon->s_limit,
-        'batasPlafon' => $batasPlafon,
-        'plafonRp' => number_format($plafon->s_limit,2,",","."),
-        'batasPlafonRp' => number_format( $batasPlafon,2,",",".")
+        'spanClass' => $spanClass
 
     ]);
   }
 
   public function submitOrderPembelian(Request $request)
-  {
+  { 
     DB::beginTransaction();
     try {
         //update table d_purchasing
@@ -465,7 +438,7 @@ class ConfrimBeliController extends Controller
             }
         }
         else
-        {
+        {   
             $purchase->d_pcs_date_confirm = null;
             $purchase->d_pcs_status = $request->statusOrderConfirm;
             $purchase->d_pcs_updated = Carbon::now();

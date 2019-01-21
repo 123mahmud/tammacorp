@@ -56,6 +56,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
     Route::get('/purchasing/orderpembelian/get-order-by-tgl/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTgl');
     Route::get('/purchasing/orderpembelian/get-order-by-tgl-span/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTglspan');
+    Route::get('/purchasing/rencanapembelian/get-supplierorder', 'Pembelian\OrderPembelianController@getDataSupplier');
+    Route::get('/purchasing/orderpembelian/carisup/{id}', 'Pembelian\OrderPembelianController@cariSupPlafon');
+    
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
 // irA
@@ -399,6 +402,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/POSgrosir/grosir/caripagu/{cus}', 'Penjualan\POSGrosirController@setPaguCus');
     Route::get('/penjualan/POSgrosir/get-tanggaljual/pagu/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getPagu');
     Route::get('/penjualan/POSgrosir/getpagu/{id}', 'Penjualan\POSGrosirController@appPagu');
+    Route::get('/penjualan/POSgrosir/grosir/jatuhTempo/{id}', 'Penjualan\POSGrosirController@jatuhTempo');
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
 
@@ -409,6 +413,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('penjualan/mutasi/monitoring-penjualan/{tampil}', 'PenjualanController@dataMonitor');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-customer', 'PenjualanController@getCustomer');
     Route::get('penjualan/mutasi/monitoring-penjualan/get-item', 'PenjualanController@getItem');
+    Route::get('penjualan/customer/pdf_laporan_penjualan/{tgl1}/{tgl2}/{cust}/{item}/{tampil}', 'PenjualanController@getLapPdfCustomer');
     Route::get('penjualan/customer/print_laporan/{tgl1}/{tgl2}/{cust}/{item}/{tampil}', 'PenjualanController@getLapCustomer');
 //end Monitoring
 //Monitoring Order Mahmud
@@ -1374,7 +1379,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datapegawai/`import-pro', 'Master\PegawaiController@getFilePro');
     Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
     Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
-    Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
+    Route::post('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
     Route::get('/master/datapegawai/datatable-pegawai', 'Master\PegawaiController@pegawaiData');
     Route::get('/master/datapegawai/tambah-pegawai', 'Master\PegawaiController@tambahPegawai');
     Route::get('/master/datapegawai/data-jabatan/{id}', 'Master\PegawaiController@jabatanData');

@@ -525,6 +525,7 @@
         $('#diskon_harga').val(data.header[0].d_pcs_disc_percent+'%')
         $('#ppn_harga').val(data.header[0].d_pcs_tax_percent+'%')
         $('#total_nett').val(convertDecimalToRupiah(data.header[0].d_pcs_total_net))
+        $('#batasPlafon').val(data.batasPlafonRp)
         if (data.header[0].d_pcs_method != "CASH") 
         {
           $('#append-modal-edit div').remove();
@@ -604,68 +605,85 @@
 
   function submitEdit()
   {
-    iziToast.question({
-      timeout: 20000,
-      close: false,
-      overlay: true,
-      displayMode: 'once',
-      title: 'Ubah Status',
-      message: 'Apakah anda yakin ?',
-      position: 'center',
-      buttons: [
-        ['<button><b>Ya</b></button>', function (instance, toast) {
-          $.ajax({
-            url : baseUrl + "/purchasing/orderpembelian/update-data-order",
-            type: "post",
-            dataType: "JSON",
-            data: $('#form-edit-order').serialize(),
-            success: function(response)
-            {
-              if(response.status == "sukses")
+    var batasPlafon = convertToAngka($('#batasPlafon').val());
+    var totalNet = convertToAngka($('#total_nett').val());
+    if (totalNet > batasPlafon) 
+    {
+      iziToast.error({
+                    position: 'center',
+                    title: 'Pemberitahuan',
+                    message: "Pembelian Melebihi Batas Plafon!",
+                    onClosing: function(instance, toast, closedBy){
+                      $('#button_save').attr('disabled',false);
+                    }
+                  });
+    }
+    else
+    {
+      iziToast.question({
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        title: 'Ubah Status',
+        message: 'Apakah anda yakin ?',
+        position: 'center',
+        buttons: [
+          ['<button><b>Ya</b></button>', function (instance, toast) {
+            $.ajax({
+              url : baseUrl + "/purchasing/orderpembelian/update-data-order",
+              type: "post",
+              dataType: "JSON",
+              data: $('#form-edit-order').serialize(),
+              success: function(response)
               {
-                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                iziToast.success({
-                  position: 'center',
-                  title: 'Pemberitahuan',
-                  message: response.pesan,
-                  onClosing: function(instance, toast, closedBy){
-                    $('#btn_update').text('Update'); 
-                    $('#btn_update').attr('disabled',false);
-                    $('#modal-edit').modal('hide');
-                    $('#tbl-index').DataTable().ajax.reload();
-                  }
+                if(response.status == "sukses")
+                {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.success({
+                    position: 'center',
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#btn_update').text('Update'); 
+                      $('#btn_update').attr('disabled',false);
+                      $('#modal-edit').modal('hide');
+                      $('#tbl-index').DataTable().ajax.reload();
+                    }
+                  });
+                }
+                else
+                {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.error({
+                    position: 'center', 
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#btn_update').text('Update');
+                      $('#btn_update').attr('disabled',false);
+                      $('#modal-edit').modal('hide');
+                      $('#tbl-index').DataTable().ajax.reload();
+                    }
+                  }); 
+                }
+              },
+              error: function(){
+                iziToast.warning({
+                  icon: 'fa fa-times',
+                  message: 'Terjadi Kesalahan!'
                 });
-              }
-              else
-              {
-                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                iziToast.error({
-                  position: 'center', 
-                  title: 'Pemberitahuan',
-                  message: response.pesan,
-                  onClosing: function(instance, toast, closedBy){
-                    $('#btn_update').text('Update');
-                    $('#btn_update').attr('disabled',false);
-                    $('#modal-edit').modal('hide');
-                    $('#tbl-index').DataTable().ajax.reload();
-                  }
-                }); 
-              }
-            },
-            error: function(){
-              iziToast.warning({
-                icon: 'fa fa-times',
-                message: 'Terjadi Kesalahan!'
-              });
-            },
-            async: false
-          });
-        }, true],
-        ['<button>Tidak</button>', function (instance, toast) {
-          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        }],
-      ]
-    });
+              },
+              async: false
+            });
+          }, true],
+          ['<button>Tidak</button>', function (instance, toast) {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          }],
+        ]
+      });
+    }
+    
   }
 
   function deleteOrder(idPo, idPlan)  {

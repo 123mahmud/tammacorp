@@ -164,7 +164,7 @@
                         <div class="form-group">
                           <div class="input-icon right">
                             <i class="fa fa-calendar"></i>
-                            <input type="text" id="tgl_top" name="tglTop" class="form-control input-sm datepicker1">
+                            <input type="number" id="tgl_top" name="tglTop" class="form-control input-sm">
                           </div>
                         </div>
                       </div>

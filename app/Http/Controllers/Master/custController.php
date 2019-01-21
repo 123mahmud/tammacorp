@@ -136,6 +136,7 @@ class custController extends Controller
                         'c_group' => $request->c_group,
                         'c_class' => $request->c_class,
                         'c_pagu' => str_replace(',', '',  $request->c_pagu),
+                        'c_jatuh_tempo' => $request->c_jatuh_tempo,
                         'c_insert' => $tanggal,
                     ]);
             } else {
@@ -154,6 +155,7 @@ class custController extends Controller
                         'c_group' => $request->c_group,
                         'c_class' => $request->c_class,
                         'c_pagu' => str_replace(',', '',  $request->c_pagu),
+                        'c_jatuh_tempo' => $request->c_jatuh_tempo,
                         'c_insert' => $tanggal,
                     ]);
             }
@@ -222,6 +224,7 @@ class custController extends Controller
                         'c_address' => $request->alamat,
                         'c_group' => $request->c_group,
                         'c_pagu' => str_replace(',', '',  $request->c_pagu),
+                        'c_jatuh_tempo' => $request->c_jatuh_tempo,
                         'c_update' => $tanggal,
                     ]);
             }else{
@@ -239,6 +242,7 @@ class custController extends Controller
                         'c_address' => $request->alamat,
                         'c_group' => $request->c_group,
                         'c_pagu' => str_replace(',', '',  $request->c_pagu),
+                        'c_jatuh_tempo' => $request->c_jatuh_tempo,
                         'c_update' => $tanggal,
                     ]);
             }

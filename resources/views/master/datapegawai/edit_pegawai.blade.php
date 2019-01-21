@@ -58,7 +58,7 @@
                 <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-top:15px;">
                   <form method="POST" id="updatePeg">
                     {{ csrf_field() }}
-                    {{ method_field('PUT') }}
+                    {{--{{ method_field('POST') }}--}}
                     <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
                     <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">ID Pegawai<font color="red">*</font></label>

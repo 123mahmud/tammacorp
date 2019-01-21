@@ -594,6 +594,38 @@ class OrderPembelianController extends Controller
                 ->orderBy('d_pcs_date_created', 'DESC')
                 ->get();
 
+      $hitHutang = d_purchasing::select('d_pcs_sisapayment')
+      ->where('d_pcs_sisapayment','!=','0')
+      ->where('s_id',$dataHeader[0]->s_id)
+      ->get();
+      
+      $totHutang = 0;
+      for ($i=0; $i < count($hitHutang) ; $i++) { 
+        $totHutang += $hitHutang[$i]->d_pcs_sisapayment;
+      }
+      //end Hitung Hutang
+      //Hitung Plafon
+      $plafon = DB::table('d_supplier')
+        ->select('s_limit','s_top')
+        ->where('s_id',$dataHeader[0]->s_id)
+        ->first();
+
+      $batasPlafon = $plafon->s_limit - $totHutang;
+      if ($plafon->s_limit == '0') {
+        $batasPlafon = '0';
+      }
+      $cariSisa = d_purchasing::select('d_pcs_sisapayment')
+      ->where('s_id',$dataHeader[0]->s_id)
+      ->where('d_pcs_sisapayment','!=','0.00')
+      ->get();
+      $totalSisa = 0;
+      for ($i=0; $i <count($cariSisa) ; $i++) 
+      { 
+        
+        $totalSisa += $cariSisa[$i]->d_pcs_sisapayment;
+      }
+      $batasPlafon = $plafon->s_limit - $totalSisa;
+
       $statusLabel = $dataHeader[0]->d_pcs_status;
       if ($statusLabel == "WT") 
       {
@@ -643,18 +675,61 @@ class OrderPembelianController extends Controller
         'data_stok' => $dataStok['val_stok'],
         'data_satuan' => $dataStok['txt_satuan'],
         'spanTxt' => $spanTxt,
-        'spanClass' => $spanClass
+        'spanClass' => $spanClass,
+        'plafon' => $plafon->s_limit,
+        'batasPlafon' => $batasPlafon,
+        'plafonRp' => number_format($plafon->s_limit,2,",","."),
+        'batasPlafonRp' => number_format( $batasPlafon,2,",",".")
       ]);
     }
 
     public function getDataForm($id)
     {
       $dataHeader = DB::table('d_purchasingplan')
-                    ->select('d_supplier.s_id', 'd_supplier.s_company')
+                    ->select('d_supplier.s_id', 'd_supplier.s_company','d_pcsp_sup')
                     ->join('d_supplier', 'd_purchasingplan.d_pcsp_sup', '=', 'd_supplier.s_id')
                     ->where('d_purchasingplan.d_pcsp_id', '=', $id)
                     ->get();
+      //Hitung Hutang
+      $hitHutang = d_purchasing::select('d_pcs_sisapayment')
+      ->where('d_pcs_sisapayment','!=','0')
+      ->where('s_id',$dataHeader[0]->d_pcsp_sup)
+      ->get();
+      
+      $totHutang = 0;
+      for ($i=0; $i < count($hitHutang) ; $i++) { 
+        $totHutang += $hitHutang[$i]->d_pcs_sisapayment;
+      }
+      //end Hitung Hutang
+      //Hitung Plafon
+      $plafon = DB::table('d_supplier')
+        ->select('s_limit','s_top')
+        ->where('s_id',$dataHeader[0]->d_pcsp_sup)
+        ->first();
 
+      $batasPlafon = $plafon->s_limit - $totHutang;
+      if ($plafon->s_limit == '0') {
+        $batasPlafon = '0';
+      }
+      $cariSisa = d_purchasing::select('d_pcs_sisapayment')
+      ->where('s_id',$dataHeader[0]->d_pcsp_sup)
+      ->where('d_pcs_sisapayment','!=','0.00')
+      ->get();
+      $totalSisa = 0;
+      for ($i=0; $i <count($cariSisa) ; $i++) 
+      { 
+        
+        $totalSisa += $cariSisa[$i]->d_pcs_sisapayment;
+      }
+      $batasPlafon = $plafon->s_limit - $totalSisa;
+      //End Plafon
+      //cari jatuh tempo
+      $oke = $plafon->s_top.' '. 'days';
+      $date = Carbon::now()->toDateString();
+      $date=date_create($date);
+      date_add($date,date_interval_create_from_date_string($oke));
+      $jatuhTempo = date_format($date,"d-m-Y");
+      //end
       $dataIsi = DB::table('d_purchasingplan_dt')
             ->select('d_purchasingplan_dt.*', 'm_item.i_name', 'm_item.i_code', 'm_item.i_sat1', 'm_item.i_id', 'm_satuan.m_sname', 'm_satuan.m_sid')
             ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
@@ -683,12 +758,16 @@ class OrderPembelianController extends Controller
             'data_isi' => $dataIsi,
             'data_stok' => $dataStok['val_stok'],
             'data_satuan' => $dataStok['txt_satuan'],
+            'plafon' => $plafon->s_limit,
+            'batasPlafon' => $batasPlafon,
+            'plafonRp' => number_format($plafon->s_limit,2,",","."),
+            'batasPlafonRp' => number_format( $batasPlafon,2,",","."),
+            'jatuhTempo' =>  $jatuhTempo,
         ]);
     }
 
     public function simpanPo(Request $request)
     {
-      //dd($request->all());
       $totalGross = $this->konvertRp($request->totalGross);
       $replaceCharDisc = (int)str_replace("%","",$request->diskonHarga);
       $replaceCharPPN = (int)str_replace("%","",$request->ppnHarga);
@@ -709,13 +788,11 @@ class OrderPembelianController extends Controller
           $dataHeader->d_pcs_disc_percent = $replaceCharDisc;
           $dataHeader->d_pcs_disc_value = $discValue;
           $dataHeader->d_pcs_tax_percent = $replaceCharPPN;
-          if (isset($request->apdTgl)) {
-            $dataHeader->d_pcs_duedate = date('Y-m-d',strtotime($request->apdTgl));
-          }
+          $dataHeader->d_pcs_duedate = date('Y-m-d',strtotime($request->jatuhTempo));
           $dataHeader->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
           $dataHeader->d_pcs_total_net = $this->konvertRp($request->totalNett);
           // $dataHeader->d_pcs_sisapayment = $this->konvertRp($request->totalNett);
-          $dataHeader->d_pcs_date_created = date('Y-m-d',strtotime($request->tanggal));
+          $dataHeader->d_pcs_date_created = date('Y-m-d',strtotime($request->tanggalOrder));
           $dataHeader->save(); 
         
         //get last lastId then insert id to d_purchasing_dt
@@ -955,5 +1032,80 @@ class OrderPembelianController extends Controller
       // return $dataStok;
 
       return view('purchasing/orderpembelian/print', compact('dataHeader', 'dataIsi', 'dataStokQty', 'dataStokTxt'));
+    }
+
+    public function getDataSupplier(Request $request)
+    {
+      $formatted_tags = array();
+      $term = trim($request->q);
+      if (empty($term)) {
+          $sup = DB::table('d_supplier')
+            ->where('s_active','TRUE')
+            ->take(10)->get();
+          foreach ($sup as $val) {
+              $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
+          }
+          return Response::json($formatted_tags);
+      }
+      else
+      {
+          $sup = DB::table('d_supplier')
+            ->where('s_active','TRUE')
+            ->where('s_company', 'LIKE', '%'.$term.'%')->take(10)->get();
+          foreach ($sup as $val) {
+              $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
+          }
+
+          return Response::json($formatted_tags);  
+      }
+    }
+
+    public function cariSupPlafon($id)
+    {
+      //Hitung Hutang
+      $hitHutang = d_purchasing::select('d_pcs_sisapayment')
+      ->where('d_pcs_sisapayment','!=','0')
+      ->where('s_id',$id)
+      ->get();
+      
+      $totHutang = 0;
+      for ($i=0; $i < count($hitHutang) ; $i++) { 
+        $totHutang += $hitHutang[$i]->d_pcs_sisapayment;
+      }
+      //end Hitung Hutang
+      //Hitung Plafon
+      $plafon = DB::table('d_supplier')
+        ->select('s_limit','s_top')
+        ->where('s_id',$id)
+        ->first();
+
+      $batasPlafon = $plafon->s_limit - $totHutang;
+      if ($plafon->s_limit == '0') {
+        $batasPlafon = '0';
+      }
+      $cariSisa = d_purchasing::select('d_pcs_sisapayment')
+      ->where('s_id',$id)
+      ->where('d_pcs_sisapayment','!=','0.00')
+      ->get();
+      $totalSisa = 0;
+      for ($i=0; $i <count($cariSisa) ; $i++) 
+      { 
+        
+        $totalSisa += $cariSisa[$i]->d_pcs_sisapayment;
+      }
+      $batasPlafon = $plafon->s_limit - $totalSisa;
+      //cari jatuh tempo
+      $oke = $plafon->s_top.' '. 'days';
+      $date = Carbon::now()->toDateString();
+      $date=date_create($date);
+      date_add($date,date_interval_create_from_date_string($oke));
+      $jatuhTempo = date_format($date,"d-m-Y");
+      //end
+      return response()->json([
+        'batasPlafon' => $batasPlafon,
+        'plafonRp' => number_format($plafon->s_limit,2,",","."),
+        'batasPlafonRp' => number_format( $batasPlafon,2,",","."),
+        'jatuhTempo' =>  $jatuhTempo,
+    ]);
     }
 }

@@ -79,7 +79,7 @@ class BarangRusakController extends Controller
             ->where('i_name', 'LIKE', '%'.$term.'%')
             ->where('d_stock.s_comp', '=', $id_gdg)
             ->where('d_stock.s_position', '=', $id_gdg)
-            ->take(10)->get();
+            ->take(25)->get();
       
         if ($queries == null) 
         {

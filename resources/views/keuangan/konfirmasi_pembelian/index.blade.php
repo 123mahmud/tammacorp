@@ -176,6 +176,14 @@
         }
     });
 
+    $('#modal-confirm-order').on('hidden.bs.modal', function(e) {
+      $(this).find('#form-confirm-order')[0].reset();
+    });
+
+    $('#modal-confirm-return').on('hidden.bs.modal', function(e) {
+      $(this).find('#form-confirm-return')[0].reset();
+    });
+
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -541,13 +549,34 @@
         $("#txt_span_status_order_confirm").addClass('label'+' '+data.spanClass);
         $("#id_order").val(data.header[0].d_pcs_id);
         $("#status_order_confirm").val(data.header[0].d_pcs_status);
+        var orserStatus = data.header[0].d_pcs_status;
+        if (orserStatus == 'WT') 
+        { 
+          $("#status_order_confirm option[value=WT]").show();
+          $("#status_order_confirm option[value=CF]").show();
+          $("#button_confirm_order").show();
+        }
+        else if (orserStatus == 'CF') 
+        {
+          $("#status_order_confirm option[value=WT]").hide();
+          $("#button_confirm_order").hide();
+        }
+        else if (orserStatus == 'RC') 
+        {
+          $("#status_order_confirm option[value=WT]").hide();
+          $("#status_order_confirm option[value=CF]").hide();
+          $("#button_confirm_order").hide();
+        }
+        else if (orserStatus == 'RV')
+        {
+          $("#status_order_confirm option[value=WT]").hide();
+          $("#status_order_confirm option[value=CF]").hide();
+          $("#button_confirm_order").hide();
+        }
         $('#lblCodeOrderConfirm').text(data.header[0].d_pcs_code);
         $('#lblTglOrderConfirm').text(data.header[0].d_pcs_date_created);
         $('#lblStaffOrderConfirm').text(data.header[0].m_name);
         $('#lblSupplierOrderConfirm').text(data.header[0].s_company);
-        $('#plafonSupRp').text(data.plafonRp);
-        $('#BatasPlafonSupRp').text(data.batasPlafonRp);
-        $('#batas-plafon').val(data.batasPlafon);
         var d_pcs_total_net = convertDecimalToRupiah(data.header[0].d_pcs_total_net);
         $('#total-harga').val(d_pcs_total_net);
         if (data.header[0].d_pcs_method != "CASH") 
@@ -593,7 +622,7 @@
                             +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                             +'<td align="right">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'</td>'
                             +'<td align="right" id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'</td>'
-                            +'<td align="right" id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'<input type="hidden" value="'+formatAngka(data.data_isi[key-1].d_pcsdt_total)+'" name="fieldIdDtOrder[]" class="form-control input-sm hasil"/></td>'
+                            +'<td align="right" id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'<input type="hidden" value="'+formatAngka(data.data_isi[key-1].d_pcsdt_total)+'" name="" class="form-control input-sm hasil"/></td>'
                             +'<td align="right">'+formatAngka(data.data_stok[key-1].qtyStok)+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm" disabled>X</button></td>'
                             +'</tr>');
@@ -701,6 +730,34 @@
         $("#txt_span_status_return_confirm").addClass('label'+' '+data.spanClass);
         $("#id_return").val(data.header[0].d_pcsr_id);
         $("#status_return_confirm").val(data.header[0].d_pcsr_status);
+        var orserStatusRt = data.header[0].d_pcsr_status;
+        if (orserStatusRt == 'WT') 
+        { 
+          $('#status_return_penjualan').show();
+          $("#status_return_penjualan option[value=WT]").show();
+          $("#status_return_penjualan option[value=CF]").show();
+          $("#submit_return_confirm").show();
+        }
+        else if (orserStatusRt == 'CF') 
+        {
+          $('#status_return_penjualan').hide();
+          $("#status_return_penjualan option[value=WT]").hide();
+          $("#status_return_penjualan option[value=CF]").hide();
+          $("#submit_return_confirm").hide();
+        }
+        else if (orserStatusRt == 'RC') 
+        {
+          $('#status_return_penjualan').hide();
+          $("#status_return_penjualan option[value=CF]").hide();
+          $("#status_return_penjualan option[value=WT]").hide();
+          $("#submit_return_confirm").hide();
+        }
+        else if (orserStatusRt == 'RV')
+        {
+          $('#status_return_penjualan').hide();
+          $("#status_return_penjualan option[value=WT]").hide();
+          $("#status_return_penjualan option[value=CF]").hide();
+        }
         $('#lblCodeReturnConfirm').text(data.header[0].d_pcsr_code);
         $('#lblTglReturnConfirm').text(data.header2.tanggalReturn);
         $('#lblStaffReturnConfirm').text(data.header[0].m_name);
