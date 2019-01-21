@@ -798,14 +798,14 @@
               bulan_jalan = (bulan - 1);
             }
 
-              if(this.single_data.metode_penyusutan == "Garis Lurus"){
-                nilai_penyusutan = ((np * persentase) / 12) * bulan_jalan;
-              }else{
-                if(i != (loop-1))
-                  nilai_penyusutan = (((np - nilai_akumulasi) * persentase) / 12) * bulan_jalan;
-                else
-                  nilai_penyusutan = nilai_sisa;
-              }
+            if(this.single_data.metode_penyusutan == "Garis Lurus"){
+              nilai_penyusutan = ((np * persentase) / 12) * bulan_jalan;
+            }else{
+              if(i != (loop-1))
+                nilai_penyusutan = (((np - nilai_akumulasi) * persentase) / 12) * bulan_jalan;
+              else
+                nilai_penyusutan = nilai_sisa;
+            }
 
               nilai_akumulasi += nilai_penyusutan;
               nilai_sisa -= nilai_penyusutan;
