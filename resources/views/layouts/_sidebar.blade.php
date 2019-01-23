@@ -959,44 +959,8 @@
                                         Laporan Keuangan
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
-                                        Analisa PTP
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
-                                        Analisa Net Profit / OCF
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa OCF Terhadap Net Profit','ma_read'))
-                                        Analisa OCF Terhadap Net Profit
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
-                                        Analisa Pertumbuhan Aset
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa Aset Terhadap Ekuitas','ma_read'))
-                                        Analisa Aset Terhadap Ekuitas
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
-                                        Analisa Cashflow
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
-                                        Analisa CSI
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa Rasio Keuangan','ma_read'))
-                                        Analisa Rasio Keuangan
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa Three Bottom Line','ma_read'))
-                                        Analisa Three Bottom Line
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
-                                        Analisa ROE
+                                    @if(Auth::user()->punyaAkses('Analisa Keuangan','ma_read'))
+                                        Analisa Keuangan
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
@@ -1041,67 +1005,13 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Analisa PTP','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa PTP">
+                                @if(Auth::user()->punyaAkses('Analisa Keuangan','ma_read'))
+                                    <li class="{{ Request::is('keuangan/analisaprogress/analisa') ? 'active' : '' || Request::is('keuangan/analisaprogress/*') ? 'active' : '' }}" title="Analisa Keuangan">
                                         <a href="{{ route('analisa_keuangan.index') }}"><span
                                                     class="submenu-title">Analisa Keuangan</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-
-                                {{-- @if(Auth::user()->punyaAkses('Analisa Net Profit / OCF','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaocf/analisa2') ? 'active' : '' || Request::is('keuangan/analisaocf/*') ? 'active' : '' }}" title="Analisa Net Profit / OCF">
-                                        <a href="{{ url('/keuangan/analisaocf/analisa2') }}"><span
-                                                    class="submenu-title">Analisa Net Profit / OCF</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif --}}
-                                {{-- @if(Auth::user()->punyaAkses('Analisa Pertumbuhan Aset','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaaset/analisa3a') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3a/*') ? 'active' : '' }}">
-                                        <a href="#" data-toggle="modal" data-target="#modal_analisa_pertumbuhan_aset"><span
-                                                    class="submenu-title">Analisa Pertumbuhan Aset</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Analisa Aset Terhadap Ekuitas','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaaset/analisa3b') ? 'active' : '' || Request::is('keuangan/analisaaset/analisa3b/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisaaset/analisa3b') }}"><span
-                                                    class="submenu-title">Analisa Aset Terhadap Ekuitas</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif --}}
-                                {{-- @if(Auth::user()->punyaAkses('Analisa Cashflow','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisacashflow/analisa4') ? 'active' : '' || Request::is('keuangan/analisacashflow/*') ? 'active' : '' }}">
-                                        <a href="#" data-toggle="modal" data-target="#modal_analisa_cashflow"><span
-                                                    class="submenu-title">Analisa Cashflow</span><span class="hidden">Keuangan</span></a>
-                                    </li> --}}
-                                {{-- @if(Auth::user()->punyaAkses('Analisa CSI','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaindex/analisa5') ? 'active' : '' || Request::is('keuangan/analisaindex/*') ? 'active' : '' }}" title="Analisa CSI">
-                                        <a href="{{ url('/keuangan/analisaindex/analisa5') }}"><span
-                                                    class="submenu-title">Analisa CSI</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif --}}
-                                {{-- @if(Auth::user()->punyaAkses('Analisa Rasio Keuangan','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisarasio/analisa6') ? 'active' : '' || Request::is('keuangan/analisarasio/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisarasio/analisa6') }}"><span
-                                                    class="submenu-title">Analisa Rasio Keuangan</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif --}}
-                               {{--  @if(Auth::user()->punyaAkses('Analisa Three Bottom Line','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisabottom/analisa7') ? 'active' : '' || Request::is('keuangan/analisabottom/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisabottom/analisa7') }}"><span
-                                                    class="submenu-title">Analisa Three Bottom Line</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif --}}
-                                {{-- @if(Auth::user()->punyaAkses('Analisa ROE','ma_read'))
-                                    <li class="{{ Request::is('keuangan/analisaroe/analisa8') ? 'active' : '' || Request::is('keuangan/analisaroe/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/analisaroe/analisa8') }}"><span
-                                                    class="submenu-title">Analisa ROE</span><span class="hidden">Keuangan</span></a>
-                                    </li>
-                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Analisa Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/analisahutangpiutang/analisa9') ? 'active' : '' || Request::is('keuangan/analisahutangpiutang/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/analisahutangpiutang/analisa9') }}"><span
@@ -1117,7 +1027,8 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Penerimaan Barang Hasil Produksi','ma_read'))
-                                    <li class="{{ Request::is('keuangan/p_hasilproduksi/pembatalanPenerimaan') ? 'active' : '' || Request::is('keuangan/p_hasilproduksi/*') ? 'active' : '' }}">
+                                    <li class="{{ Request::is('keuangan/p_hasilproduksi/pembatalanPenerimaan') ? 'active' : '' || Request::is('keuangan/p_hasilproduksi/*') ? 'active' : '' 
+                                        }}">
                                         <a href="{{ url('/keuangan/p_hasilproduksi/pembatalanPenerimaan') }}"><span
                                                     class="submenu-title">Penerimaan Barang Hasil Produksi</span><span
                                                     class="hidden">Keuangan</span></a>
@@ -1139,10 +1050,6 @@
                                         Manajemen User
                                     @endif
 
-                              {{--       @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
-                                        Manajemen Hak Akses
-                                    @endif --}}
-
                                     @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
                                         Profil Perusahaan
                                     @endif
@@ -1163,12 +1070,6 @@
                                                     class="hidden">System</span></a>
                                     </li>
                                 @endif
-                           {{--      @if(Auth::user()->punyaAkses('Manajemen Hak Akses','ma_read'))
-                                    <li class="{{ Request::is('system/hakakses/akses') ? 'active' : '' || Request::is('system/hakakses/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/system/hakakses/akses') }}"><span class="submenu-title">Manajemen Hak Akses</span><span
-                                                    class="hidden">System</span></a>
-                                    </li>
-                                @endif --}}
                                 @if(Auth::user()->punyaAkses('Profil Perusahaan','ma_read'))
                                     <li class="{{ Request::is('profil-perusahaan') ? 'active' : '' || Request::is('profil-perusahaan/*') ? 'active' : '' }}">
                                         <a href="{{ url('profil-perusahaan') }}"><span class="submenu-title">Profil Perusahaan</span>
