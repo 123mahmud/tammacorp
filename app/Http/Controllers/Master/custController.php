@@ -24,7 +24,7 @@ class custController extends Controller
 
     public function datatable_cust()
     {
-        $list = DB::table('m_customer')
+        $data = DB::table('m_customer')
             ->select('c_id',
                     'c_code', 
                     'c_name', 
@@ -39,10 +39,9 @@ class custController extends Controller
                     'c_type',
                     'c_isactive',
                     'pg_name')
-            ->leftJoin('m_price_group','m_price_group.pg_id','=','c_group')
-            ->get();
+            ->leftJoin('m_price_group','m_price_group.pg_id','=','c_group');
         // return $list;
-        $data = collect($list);
+        
 
         // return $data;
 
