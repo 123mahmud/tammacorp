@@ -259,7 +259,10 @@
                     '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/customer/print_laporan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'" '+ 
                     'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
                     '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/customer/pdf_laporan_penjualan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
-                '</div>'
+
+                   
+                '</div>'+
+                 '<button class="btn btn-success" title="Excel" type="button" onclick="print_excel()"><i class="fa fa-file" title="Excel"></i></button>'
             );
 
             datamonitor = $('#data-monitor').dataTable({
@@ -326,6 +329,28 @@
                   {data: 'sm_reff', name: 'sm_reff', orderable: false, searchable: false},
               ],
           });
+        }
+
+        function print_excel(){ 
+            var start = $('.start').val();
+            var end = $('.end').val();
+            var customer = $('#idCustomer').val();
+            var item = $('#idBarang').val();
+            var tampil = $('#tampil_data').val();
+
+            if (start == ''){
+                start = 'awal';
+            }
+            if (end == ''){
+                end = 'akhir';
+            }
+            if (customer == ''){
+                customer = 'semua';
+            }
+            if (item == ''){
+                item = 'semua';
+            }    
+            window.open(baseUrl + "/penjualan/print_laporan_excel/"+start+'/'+ end+'/'+customer+'/'+item+'/'+tampil);
         }
 
 

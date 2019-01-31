@@ -338,6 +338,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/monitoringorder/monitoring', 'PenjualanController@monitoringorder');
     Route::get('/penjualan/mutasistok/mutasi', 'PenjualanController@mutasi');
     Route::get('/penjualan/broadcastpromosi/tambah_promosi2', 'PenjualanController@tambah_promosi2');
+    Route::get('/penjualan/print_laporan_excel/{tgl1}/{tgl2}/{cust}/{item}/{tampil}', 'PenjualanController@print_laporan_excel');
 //POSRetail
     Route::get('/penjualan/POSretail/index', 'Penjualan\POSRetailController@retail');
     Route::post('/penjualan/POSretail/retail/store', 'Penjualan\POSRetailController@store');
