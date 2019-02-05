@@ -1182,14 +1182,6 @@ class PenjualanController extends Controller
 
         }
 
-        // return view('penjualan.mutasistok.laporan_excelcustomer')
-        //         /*->mergeCells('A2:B3')*/
-        //         ->with('data',$data)
-        //         ->with('penjualan',$penjualan)
-        //         ->with('nama_array',$nama_array)
-        //         ->with('data_sum_all',$data_sum_all)
-        //         ->with('data_sum',$data_sum);
-
         Excel::create('Laporan Penjualan Customer '.date('d-m-y'), function($excel) use ($data,$penjualan,$nama_array,$data_sum_all,$data_sum){        
             $excel->sheet('New sheet', function($sheet) use ($data,$penjualan,$nama_array,$data_sum_all,$data_sum) {
                 $sheet->loadView('penjualan.mutasistok.laporan_excelcustomer')

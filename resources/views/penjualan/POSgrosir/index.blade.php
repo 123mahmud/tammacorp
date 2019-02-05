@@ -856,11 +856,16 @@
         {
             var totalPayment = convertToAngka($('#totalPayment').val());
             var jumBayar = convertToAngka($('#bayar').val());
+            if (isNaN(jumBayar) || jumBayar == '') {
+                jumBayar = 0;
+            }
             var sisaPagu =  $('#s_sisa_pagu').val();
             var hitung = totalPayment - jumBayar;
-            if (sisaPagu < 0) 
+            if (hitung > sisaPagu) 
             {
                 $('.simpanFinal').html('Pending');
+            } else {
+                $('.simpanFinal').html('Proses');
             }
             updateKembalian();
         }
@@ -869,11 +874,16 @@
         {
             var totalPayment = convertToAngka($('#totalPayment').val());
             var jumBayar = convertToAngka($('#bayarDP').val());
+            if (isNaN(jumBayar) || jumBayar == '') {
+                jumBayar = 0;
+            }
             var sisaPagu =  $('#s_sisa_pagu').val();
             var hitung = totalPayment - jumBayar;
-            if (sisaPagu < 0) 
+            if (hitung > sisaPagu) 
             {
                 $('.simpanProgress').html('Pending');
+            } else {
+                $('.simpanProgress').html('Proses');
             }
             updateKembalianDP();
         }
@@ -1268,7 +1278,6 @@
                 diskon = 0;
                 $('input.discvalue:text:eq(' + getIndex + ')').val(0);
             }
-            console.log(diskon * qty);
             $('input.totaldiscvalue:text:eq(' + getIndex + ')').val(diskon * qty);
             hasil = hasil - diskon * qty;
 
@@ -1597,7 +1606,6 @@
             var sum = angkaDesimal($('#totalPaymentDp').val());
             var bayar = angkaDesimal($('.totPaymentDP').val());
             var hasil = parseInt(bayar - sum).toFixed(2);
-            console.log(hasil);
             if (hasil <= 0) {
                 diskon = 0;
             }
@@ -1616,7 +1624,6 @@
                 hasil = [].map.call(inputs, function (input) {
                     return input.value;
                 });
-            // console.log(hasil);
             var total = 0;
 
             for (var i = hasil.length - 1; i >= 0; i--) {
@@ -1627,7 +1634,6 @@
                     total = 0;
                 }
             }
-            // console.log(total);
             total = convertToRupiah(total);
             $('#totPembayaran').val(total);
         }

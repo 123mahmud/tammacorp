@@ -19,9 +19,9 @@
 				@for($i=0;$i<count($penjualan);$i++)
 					@for($j=0;$j<count($penjualan[$i]);$j++)
 						<tr>
-							@if($j == 0)
-							<td class="border-none" rowspan="{{count($penjualan[$i]) + 1}}">{{$penjualan[$i][$j]->c_name}}</td>
-							@endif
+							{{-- @if($j == 0) --}}
+							<td class="border-none">{{$penjualan[$i][$j]->c_name}}</td>
+							{{-- @endif --}}
 							<td class="text-center">{{$penjualan[$i][$j]->s_note}}</td>
 							<td class="text-center">{{date('d M Y', strtotime($penjualan[$i][$j]->s_date))}}</td>
 							<td>{{$penjualan[$i][$j]->i_name}}</td>
@@ -41,6 +41,7 @@
 						@if($j == count($penjualan[$i]) - 1)
 							<tr>
 								<td class="text-right bold" colspan="3">Total</td>
+								<td></td>
 								<td class="text-center bold">{{$data_sum[$i]->total_qty}}</td>
 								<td class="text-right bold"></td>
 								<td class="text-right bold" colspan="2">{{number_format($data_sum[$i]->sd_disc_vpercent,2,',','.')}}</td>

@@ -44,10 +44,14 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
-                ->orderBy('d_sales_dt.sd_item', 'DESC')
-                ->get();
+                ->orderBy('d_sales_dt.sd_item', 'DESC');
 
     return DataTables::of($data)
     ->editColumn('nama', function ($data){
@@ -97,8 +101,12 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
-                ->where('s_status', '!=', "PR")
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();
@@ -113,8 +121,12 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
-                ->where('s_status', '!=', "PR")
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->groupBy('m_item.i_name')
@@ -129,8 +141,12 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
-                ->where('s_status', '!=', "PR")
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();
@@ -191,8 +207,7 @@ class LaporanGrosirController extends Controller
                 ->where('d_sales.s_channel', '=', "GR")
                 ->where('d_sales.s_status', '=', 'DR')
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
-                ->orderBy('d_sales_dt.sd_item', 'DESC')
-                ->get();
+                ->orderBy('d_sales_dt.sd_item', 'DESC');
 
     return DataTables::of($data)
     ->editColumn('nama', function ($data)
@@ -229,7 +244,12 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();
@@ -244,7 +264,12 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->groupBy('m_item.i_name')
@@ -259,7 +284,12 @@ class LaporanGrosirController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "GR")
-                ->where('s_status','!=','DR')
+                ->where(function ($query) {
+                    $query->where('s_status','!=','DR')
+                          ->where('s_status','!=','FPN')
+                          ->where('s_status','!=','PPN')
+                          ->where('s_status','!=','PR');
+                })
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();
