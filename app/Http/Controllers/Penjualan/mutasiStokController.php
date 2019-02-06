@@ -42,7 +42,7 @@ class mutasiStokController extends Controller
             ->where('sm_insert','>=',$tgll)
             ->where('sm_insert','<=',$tgl2)
             ->where('sm_comp', '2');
-            dd($data);
+            // dd($data);
         return DataTables::of($data)
             ->editColumn('sm_date', function ($data) {
                 return date('d M Y H:i', strtotime($data->sm_date));
