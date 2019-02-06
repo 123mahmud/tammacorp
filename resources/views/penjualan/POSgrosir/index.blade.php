@@ -861,6 +861,7 @@
             }
             var sisaPagu =  $('#s_sisa_pagu').val();
             var hitung = totalPayment - jumBayar;
+            console.log(sisaPagu);
             if (hitung > sisaPagu) 
             {
                 $('.simpanFinal').html('Pending');
