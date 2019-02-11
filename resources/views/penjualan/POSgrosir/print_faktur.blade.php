@@ -99,13 +99,11 @@
                 display: none;
             }
 
-            @page {
-                size: landscape;
-            }
+           
         }
 
         @page {
-            margin: 0;
+            size: portrait;
         }
     </style>
 </head>
