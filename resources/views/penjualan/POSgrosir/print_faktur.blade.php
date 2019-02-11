@@ -100,7 +100,7 @@
             }
 
             @page {
-                size: portrait;
+                size: landscape;
             }
         }
 

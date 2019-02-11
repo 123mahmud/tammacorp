@@ -886,8 +886,7 @@ class PemakaianBrgGdgController extends Controller
             ->whereBetween('d_pakai_barang.d_pb_date', [$tanggal1, $tanggal2])
             ->groupBy('d_pakai_barangdt.d_pbdt_pbid')
             ->groupBy('d_pakai_barangdt.d_pbdt_item')
-            ->orderBy('d_pakai_barang.d_pb_created', 'DESC')
-            ->get();
+            ->orderBy('d_pakai_barang.d_pb_created', 'DESC');
 
         return DataTables::of($data)
         ->addIndexColumn()
