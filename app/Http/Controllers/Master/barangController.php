@@ -29,7 +29,7 @@ class barangController extends Controller
                 ->join('m_satuan','m_satuan.m_sid','=','m_item.i_sat1')
                 ->select('m_item.i_id', 'm_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'm_group.m_gname', 'm_price.m_pbuy1', 'm_item.i_isactive','m_item.i_type')
                 ->where('m_item.i_type', '!=', 'BP')
-                ;
+                ->get();
         return Datatables::of($data)
         ->addColumn('aksi', function ($data) 
         {  

@@ -33,7 +33,8 @@ class itemProduksiController extends Controller
   													'i_id')
       ->join('m_group','m_item.i_code_group','=','m_group.m_gcode')
       ->join('m_satuan','m_satuan.m_sid','=','m_item.i_sat1')
-      ->where('i_type','BP');
+      ->where('i_type','BP')
+      ->get();
       // dd($data);
 	  return Datatables::of($data)
       ->addIndexColumn()
