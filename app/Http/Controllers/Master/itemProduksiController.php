@@ -25,22 +25,16 @@ class itemProduksiController extends Controller
   }
 
   public function tableProduksi(){
-  	$list = m_item::select(	'i_code',
+  	$data = m_item::select(	'i_code',
   													'i_name',
   													'm_sname',
   													'm_gname',
   													'i_isactive',
   													'i_id')
       ->join('m_group','m_item.i_code_group','=','m_group.m_gcode')
-      ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
-      ->where('i_type','BP')
-      ->orderBy('m_item.i_id', 'DESC')
-      ->get();
-			// return $list;
-    $data = collect($list);
-        
-        // return $data;
-
+      ->join('m_satuan','m_satuan.m_sid','=','m_item.i_sat1')
+      ->where('i_type','BP');
+      // dd($data);
 	  return Datatables::of($data)
       ->addIndexColumn()
       ->addColumn('aksi', function ($data) {
