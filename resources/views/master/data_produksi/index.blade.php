@@ -54,7 +54,6 @@
                           <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                             <thead>
                                 <tr>
-                                  <th class="wd-15p" width="5%">No</th>
                                   <th class="wd-15p" width="5%">Kode Barang</th>
                                   <th class="wd-15p">Nama Barang</th>
                                   <th class="wd-15p">Satuan</th>
@@ -100,18 +99,8 @@
                 url : baseUrl + "/master/tableproduksi/table",
             },
              columnDefs: [
-
-                  {
-                     targets: 0 ,
-                     className: 'd_id center'
-                  },
-                  {
-                     targets: 1 ,
-                     className: 'right format_money'
-                  },
                 ],
             "columns": [
-            {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
             { "data": "i_code" },
             { "data": "i_name" },
             { "data": "m_sname" },

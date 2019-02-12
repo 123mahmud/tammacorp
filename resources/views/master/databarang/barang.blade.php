@@ -54,16 +54,18 @@
                     <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                       <thead>
                         <tr>
-                          <th class="wd-15p" width="5%">NO</th>
-                          <th class="wd-15p" width="5%">Kode Barang</th>
+                          <th class="wd-15p" width="5%">Kode</th>
                           <th class="wd-15p">Nama Barang</th>
+                          <th class="wd-15p">Type</th>
                           <th class="wd-15p">Satuan</th>
                           <th class="wd-15p">Kelompok Barang</th>
                           <th class="wd-15p">Harga Beli</th>
                           <th class="wd-15p" width="10%">Aksi</th>
                         </tr>
                       </thead>
-                      <tbody></tbody>
+                      <tbody>
+                        
+                      </tbody>
                     </table> 
                   </div>                                       
                 </div>
@@ -103,15 +105,12 @@
         url:'{{ route('datatable_barang') }}',
       },
       columnDefs: [
-        {
-          targets: 0 ,
-          className: 'd_id center'
-        }, 
+         
       ],
         "columns": [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
           { "data": "i_code" },
           { "data": "i_name" },
+          { "data": "i_type" },
           { "data": "m_sname" },
           { "data": "m_gname" },
           { "data": "m_pbuy1" ,render: $.fn.dataTable.render.number( '.', '.', 2, '' )},

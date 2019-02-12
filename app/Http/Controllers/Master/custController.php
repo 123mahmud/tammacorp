@@ -40,10 +40,6 @@ class custController extends Controller
                     'c_isactive',
                     'pg_name')
             ->leftJoin('m_price_group','m_price_group.pg_id','=','c_group');
-        // return $list;
-        
-
-        // return $data;
 
         return Datatables::of($data)
             ->addColumn('action', function ($data) {
