@@ -314,7 +314,7 @@
                                 <!-- FIlter Menu SUbmenu -->
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Rencana Bahan Baku Produksi','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Rencana Bahan Baku Produksi','ma_read'))
                                         Rencana Bahan Produksi
                                     @endif
 
