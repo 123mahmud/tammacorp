@@ -437,10 +437,17 @@ class spkProductionController extends Controller
             'i_id',
             'i_type',
             'm_sname',
+            's_qty',
             'fr_hpp')
             ->where('fr_spk', $request->x)
             ->join('m_item', 'i_id', '=', 'fr_formula')
             ->join('m_satuan', 'm_sid', '=', 'fr_scale')
+            ->leftJoin('d_stock', function($q){
+                $q->on('s_item', '=', 'i_id');
+                $q->on('s_item', '=', 'fr_formula');
+                $q->on('s_comp', '=', DB::raw('3'));
+                $q->on('s_position', '=', DB::raw('3'));
+            })
             ->get();
 
         $ket = $spk[0]->spk_status;

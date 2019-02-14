@@ -72,9 +72,9 @@
             <table class="table tabelan table-hover table-bordered" id="detailFormula" width="100%">
                 <thead>
                 <tr>
-                    <th width="5%">Kode Item</th>
-                    <th>Nama Item</th>
-                    <th width="5%">Kebutuhan</th>
+                    <th>Kode - Nama Item</th>
+                    <th width="15%">Kebutuhan</th>
+                    <th width="15%">Stok</th>
                     <th width="5%">Satuan</th>
                     <th width="20%">hpp</th>
                 </tr>
@@ -82,15 +82,16 @@
                 <tbody>
                 @foreach ($formula as $form)
                    <tr>
-                        <td>{{ $form->i_code }}</td>
-                        <td>{{ $form->i_name }}</td>
+                        <td>{{ $form->i_code }} -  {{ $form->i_name }}</td>
                         <td class="text-right">{{ number_format( $form->fr_value,2,',','.')}}</td>
+                        <td class="text-right">
+                            {{ number_format( $form->s_qty,2,',','.')}}
+                            <input type="text" style="display:none" class="form-control cekSisa" value="{{ number_format( $form->s_qty - $form->fr_value,2,',','.')}}">
+                        </td>
                         <td>{{ $form->m_sname }}</td>
                         <td>
-                            <span class="pull-right">
-                               
+                            <span class="pull-right">   
                                 {{ number_format( $form->fr_hpp,2,',','.')}}
-                          {{--    {{ $bambang[$i] }} --}}
                             </span>
                         </td>
                     </tr>
@@ -106,7 +107,7 @@
                 class="fa fa-print"></i>&nbsp;Print</a>
     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
     @if ($ket == 'AP')
-            <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="ubahStatus({{ $id }})">Proses</button>
+            <button type="button" class="btn btn-danger siapProses" onclick="ubahStatus({{ $id }})">Proses</button>
     @endif
 </div>
 

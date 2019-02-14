@@ -69,6 +69,10 @@
                         $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
                         cariTanggal();
+
+                        $('#myModalView').on('shown.bs.modal', function () {
+                            total();
+                        }) 
                     });
 
 
@@ -192,6 +196,7 @@
                                 type: "get",
                                 dataType: "JSON",
                                 success: function (response) {
+                                    $('#myModalView').modal('hide');
                                     if (response.status == "sukses") {
                                         refreshTabel();
                                     }else if(response.status == 'gagal'){
@@ -271,6 +276,24 @@
                             }
                         })
                     }
+
+                    function total(inField, e)
+                    {
+                        $('.siapProses').removeAttr('disabled','disabled');
+                        var a = 0;
+                        $('input.cekSisa:text').each(function(evt){
+                            var getIndex = a;
+                            var dataValue = $('input.cekSisa:text:eq('+getIndex+')').val();
+                            dataValue = parseFloat(dataValue).toFixed(2);
+                            var hasil = dataValue;      
+                            hasil = parseFloat(hasil).toFixed(2);
+                            if (hasil < 0.00) {
+                                $('.siapProses').attr('disabled','disabled');
+                            }
+                            a++;
+                        })
+                    }
+                    
 
                 </script>
 @endsection()
