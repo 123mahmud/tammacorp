@@ -157,13 +157,12 @@
                       </div>
 
                       <div class="col-md-2 col-sm-3 col-xs-12"> 
-                        <label class="tebal">Tanggal TOP</label>
+                        <label class="tebal">Batas TOP</label>
                       </div>
 
                       <div class="col-md-4 col-sm-9 col-xs-12">
                         <div class="form-group">
                           <div class="input-icon right">
-                            <i class="fa fa-calendar"></i>
                             <input type="number" id="tgl_top" name="tglTop" class="form-control input-sm">
                           </div>
                         </div>
