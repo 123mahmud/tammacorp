@@ -259,7 +259,10 @@
                     '<a class="btn btn-primary btn-sm" href="'+ baseUrl +'/penjualan/customer/print_laporan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'" '+ 
                     'target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
                     '<a class="btn btn-warning btn-sm" href="'+ baseUrl +'/penjualan/customer/pdf_laporan_penjualan/' + start +'/' + end + '/' + customer + '/' + item + '/'+ tampil +'"><i class="fa fa-file-pdf-o"> PDF</i></a>'+
-                '</div>'
+
+                   
+                '</div>'+
+                 '<button class="btn btn-success" title="Excel" type="button" onclick="print_excel()"><i class="fa fa-file" title="Excel"></i></button>'
             );
 
             datamonitor = $('#data-monitor').dataTable({
@@ -314,18 +317,40 @@
                   url: baseUrl + "/penjualan/mutasi/stock/grosir-retail/"+tgl1+'/'+tgl2,
               },
               columns: [
-                  {data: 'sm_date', name: 'sm_date', orderable: false, searchable: false},
-                  {data: 'i_name', name: 'i_name', orderable: false},
-                  {data: 'comp', name: 'comp', orderable: false},
-                  {data: 'position', name: 'position', orderable: false},
-                  {data: 'smc_note', name: 'smc_note', orderable: false},
-                  {data: 'sm_qty', name: 'sm_qty', orderable: false, className: 'right'},
-                  {data: 'sm_qty_used', name: 'sm_qty_used', orderable: false, className: 'right'},
-                  {data: 'sm_qty_sisa', name: 'sm_qty_sisa', orderable: false, className: 'right'},
-                  {data: 'sm_detail', name: 'sm_detail', orderable: false},
-                  {data: 'sm_reff', name: 'sm_reff', orderable: false, searchable: false},
+                  {data: 'sm_date', name: 'sm_date'},
+                  {data: 'i_name', name: 'i_name'},
+                  {data: 'comp', name: 'comp'},
+                  {data: 'position', name: 'position'},
+                  {data: 'smc_note', name: 'smc_note'},
+                  {data: 'sm_qty', name: 'sm_qty', className: 'right'},
+                  {data: 'sm_qty_used', name: 'sm_qty_used', className: 'right'},
+                  {data: 'sm_qty_sisa', name: 'sm_qty_sisa', className: 'right'},
+                  {data: 'sm_detail', name: 'sm_detail'},
+                  {data: 'sm_reff', name: 'sm_reff', searchable: false},
               ],
           });
+        }
+
+        function print_excel(){ 
+            var start = $('.start').val();
+            var end = $('.end').val();
+            var customer = $('#idCustomer').val();
+            var item = $('#idBarang').val();
+            var tampil = $('#tampil_data').val();
+
+            if (start == ''){
+                start = 'awal';
+            }
+            if (end == ''){
+                end = 'akhir';
+            }
+            if (customer == ''){
+                customer = 'semua';
+            }
+            if (item == ''){
+                item = 'semua';
+            }    
+            window.open(baseUrl + "/penjualan/print_laporan_excel/"+start+'/'+ end+'/'+customer+'/'+item+'/'+tampil);
         }
 
 

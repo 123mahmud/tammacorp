@@ -33,7 +33,7 @@
 
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#alert-tab" data-toggle="tab">Data Posisi</a>
+              <a href="#alert-tab" data-toggle="tab">Data Group</a>
             </li>
             <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                             <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->

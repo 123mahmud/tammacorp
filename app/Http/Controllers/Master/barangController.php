@@ -26,14 +26,11 @@ class barangController extends Controller
         $data = DB::table('m_item')
                 ->join('m_price','m_item.i_id','=','m_price.m_pitem')
                 ->join('m_group','m_item.i_code_group','=','m_group.m_gcode')
-                ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
-                ->select('m_item.i_id', 'm_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'm_group.m_gname', 'm_price.m_pbuy1', 'm_item.i_isactive')
+                ->join('m_satuan','m_satuan.m_sid','=','m_item.i_sat1')
+                ->select('m_item.i_id', 'm_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'm_group.m_gname', 'm_price.m_pbuy1', 'm_item.i_isactive','m_item.i_type')
                 ->where('m_item.i_type', '!=', 'BP')
-                //->where('m_item.i_isactive', '=', 'TRUE')
-                ->orderBy('m_item.i_id', 'DESC')
                 ->get();
         return Datatables::of($data)
-        ->addIndexColumn()
         ->addColumn('aksi', function ($data) 
         {  
             if ($data->i_isactive == "TRUE") 

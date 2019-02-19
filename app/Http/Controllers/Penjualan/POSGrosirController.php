@@ -546,7 +546,7 @@ class POSGrosirController extends Controller
     $sNet = ($this->konvertRp($request->s_net));
     $bayar = ($this->konvertRp($request->sp_nominal[1]));
     $hitung = $sNet - $bayar;
-    if ($sisaPagu < 0) 
+    if ($hitung > $sisaPagu) 
     {
        $customer = DB::table('d_sales')
           ->insert([
@@ -631,7 +631,7 @@ class POSGrosirController extends Controller
           ]);
     }
 
-    if ($sisaPagu < 0) 
+    if ($hitung > $sisaPagu) 
     {
 
     }
@@ -733,7 +733,7 @@ class POSGrosirController extends Controller
       $sNet = ($this->konvertRp($request->s_net));
       $bayar = ($this->konvertRp($request->sp_nominal[0]));
       $hitung = $sNet - $bayar;
-      if ($sisaPagu < 0) 
+      if ($hitung > $sisaPagu) 
       {
         $customer = DB::table('d_sales')
         ->insert([
@@ -819,7 +819,7 @@ class POSGrosirController extends Controller
         'data' => $e
         ]);
       }
-      if ( $sisaPagu < 0 ) 
+      if ($hitung > $sisaPagu) 
       {
 
       }
