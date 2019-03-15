@@ -72,15 +72,15 @@ class GarapanPegawaiController extends Controller
       ->editColumn('item', function ($data) {
         if ($data->d_hg_gaji == null || $data->d_hg_lembur == null ) {
           return '<div class="input-group">
-                    <div class="input-daterange input-group">
+                    <div class=" input-group">
                       <input id="tanggal1"
-                        class="form-control input-sm text-right"
+                        class="form-control input-sm text-right currenc"
                         name="d_hg_gaji[]"
                         placeholder="Regular"
                         type="number">
                       <span class="input-group-addon">|</span>
                       <input id="tanggal2"
-                        class="input-sm form-control text-right"
+                        class="input-sm form-control text-right currenc"
                         name="d_hg_lembur[]"
                         type="number"
                         placeholder="Lembur"
@@ -89,18 +89,18 @@ class GarapanPegawaiController extends Controller
                   </div>' ;
         }else{
           return '<div class="input-group">
-                    <div class="input-daterange input-group">
+                    <div class=" input-group">
                       <input id="tanggal1"
-                        class="form-control input-sm"
+                        class="form-control input-sm currenc"
                         name="d_hg_gaji[]"
                         placeholder="Regular"
-                        type="text"
+                        type="number"
                         value="'.$data->d_hg_gaji.'">
                       <span class="input-group-addon">|</span>
                       <input id="tanggal2"
-                        class="input-sm form-control"
+                        class="input-sm currenc form-control"
                         name="d_hg_lembur[]"
-                        type="text"
+                        type="number"
                         placeholder="Lembur"
                         value="'.$data->d_hg_lembur.'">
                     </div>

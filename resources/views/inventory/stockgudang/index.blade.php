@@ -75,11 +75,13 @@
 
             $('#tabelGudang').DataTable();
 
+            $('#posisi').select2();
+
         });
 
         function pilihGudang()
         {
-            var x = document.getElementById("pemilik").value;
+            var x = document.getElementById("posisi").value;
             var y = document.getElementById("posisi").value;
             $.ajax({
                 url: baseUrl + '/inventory/namaitem/tablegudang/'+x+'/'+y,

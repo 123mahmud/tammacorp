@@ -528,7 +528,7 @@
                                 </i><span class="menu-title">Produksi</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Monitoring Order & Stock','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Monitoring Order & Stock','ma_read'))
                                         Monitoring Order & Stock
                                     @endif
 

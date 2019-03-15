@@ -72,7 +72,10 @@
               <select id="dob_cv_awal1" class="form-control" style="margin-right: 5px;" name="dob_cv_awal1"></select>
             </div>
             <div class="col-sm-5">
-              <select id="dob_cv_akhir1" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir1"></select>
+              <select id="dob_cv_akhir1" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir1">
+                <option value="">Tahun Keluar</option>
+                <option value="Masih Bekerja">Masih Bekerja</option>
+              </select>
             </div>
           </div>
         </div>
@@ -104,7 +107,10 @@
               <select id="dob_cv_awal2" class="form-control" style="margin-right: 5px;" name="dob_cv_awal2"></select>
             </div>
             <div class="col-sm-5">
-              <select id="dob_cv_akhir2" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir2"></select>
+              <select id="dob_cv_akhir2" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir2">
+                <option value="">Tahun Keluar</option>
+                <option value="Masih Bekerja">Masih Bekerja</option>
+              </select>
             </div>                                      
           </div>
         </div>

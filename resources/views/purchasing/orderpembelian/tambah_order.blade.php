@@ -746,7 +746,7 @@
                     onClosing: function(instance, toast, closedBy){
                       $('#button_save').text('Simpan Data');
                       $('#button_save').attr('disabled',false);
-                      window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
+                      // window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
                     }
                   });
                 }

@@ -18,7 +18,13 @@ class stockGudangController extends Controller
 {
 
   public function index(){
-    $data = d_gudangcabang::all();
+    $data = d_gudangcabang::
+          where(function($q) {
+              $q->where('cg_gudang', '!=','GC')
+                ->where('cg_gudang', '!=','GS')
+                ->where('cg_gudang', '!=','GJ');
+          })
+          ->get();
 
     return view('inventory.stockgudang.index',compact('data'));
   }

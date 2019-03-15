@@ -198,6 +198,11 @@
               left: 35%;
           }
       }
+      .loading:after {
+          content: "Process...";
+          text-align : right;
+          padding-left : 25px;
+      }
     </style>
 
     <style type="text/css">
@@ -304,7 +309,8 @@
                 <h1 class="text-md-center">Apakah anda yakin?</h1>
                 <div class="row"></div>
                 <ul class="list-inline text-md-center">
-                    <li><button type="submit" class="btn btn-lg btn-primary next-button" id="btn_apply_finish">Simpan</button></li>
+                    <li><button type="submit" class="btn btn-lg btn-primary next-button saveButton" onclick="disableSimpan()" id="btn_apply_finish">Simpan</button></li>
+                    <li class="load"></li>
                     <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Kembali</a></li>
                 </ul>
               </div>
@@ -443,21 +449,21 @@
 
         $.dobPicker({
           yearSelector: '#dob_cv_awal2',
-          yearDefault: 'Tahun Keluar',
+          yearDefault: 'Tahun Masuk',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_cv_akhir1',
-          yearDefault: 'Tahun masuk',
+          yearDefault: '',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_cv_akhir2',
-          yearDefault: 'Tahun Keluar',
+          yearDefault: '',
           minimumAge: 0,
           maximumAge: 20
         });
@@ -598,6 +604,28 @@
            $($activeli).prev().find('a[data-toggle="tab"]').click();
 
        });
+
+      function disableSimpan()
+      {
+         $('.saveButton').hide();
+         $('.load').addClass('loading');
+      }
+
+      function lanjut()
+      {
+         $('#saveButton').show();
+         $('.load').removeClass('loading');
+      }
+
+      // $('#myButton1').click(function(){
+      //    $('#myButton1').hide();
+      //    $('.load').addClass('loading');
+      //      setTimeout(function () { 
+      //      $('.load').removeClass('loading');
+      //      $('#myButton1').show();
+
+      //    }, 2000);
+      //  });
 
     </script>
 
