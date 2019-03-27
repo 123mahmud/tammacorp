@@ -34,8 +34,10 @@
                <li class="active"><a href="#alert-tab" data-toggle="tab">Stock Opname</a></li>
                <li><a href="#note-tab" data-toggle="tab" onclick="getTanggal()">Daftar Stock Opname</a>
             </li>
+            @if(Auth::user()->punyaAkses('Konfirmasi Opname','ma_read'))
             <li><a href="#label-badge-tab" data-toggle="tab" onclick="getConfirm()">Konfirmasi Opname</a>
          </li>
+         @endif
       </ul>
       <div id="generalTabContent" class="tab-content responsive">
          <!-- Div #alert-tab -->

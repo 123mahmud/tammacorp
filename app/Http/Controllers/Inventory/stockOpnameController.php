@@ -263,17 +263,19 @@ class stockOpnameController extends Controller
       $data = d_opnamedt::select( 'i_code',
                             'i_type',
                             'i_name',
+                            'od_system',
+                            'od_real',
                             'od_opname',
                             'm_sname',
                             'o_nota',
                             'u1.cg_cabang as comp',
-                            'u2.cg_cabang as position')
+                            'm_name')
         ->where('od_ido',$id)
         ->join('d_opname','d_opname.o_id','=','od_ido')
         ->join('d_gudangcabang as u1', 'd_opname.o_comp', '=', 'u1.cg_id')
-        ->join('d_gudangcabang as u2', 'd_opname.o_position', '=', 'u2.cg_id')
         ->join('m_item','i_id','=','od_item')
         ->join('m_satuan','m_sid','=','i_sat1')
+        ->join('d_mem','d_mem.m_id','=','o_staff')
         ->get();
         // dd($data);
       return view('inventory.stockopname.print_stockopname',compact('data'));
