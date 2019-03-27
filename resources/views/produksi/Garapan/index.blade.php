@@ -192,11 +192,30 @@
                                 endDate: 'today'
                             });
 
-                            cariTanggal();
+                            $('.currenc').inputmask("currency", {
+                               radixPoint: ".",
+                               groupSeparator: ".",
+                               digits: 2,
+                               autoGroup: true,
+                               prefix: '', //Space after $, this will not truncate the first character.
+                               rightAlign: false,
+                               oncleared: function () { self.Value(''); }
+                            });
+
+                            cariTanggal();                           
 
                         });
 
                         function cariTanggal() {
+                           $('.currenc').inputmask("currency", {
+                               radixPoint: ".",
+                               groupSeparator: ".",
+                               digits: 2,
+                               autoGroup: true,
+                               prefix: '', //Space after $, this will not truncate the first character.
+                               rightAlign: false,
+                               oncleared: function () { self.Value(''); }
+                            });
                             $('#tableGarapan').dataTable().fnDestroy();
                             var Rumah = $('#Rumah').val();
                             var Item = $('#Item').val();

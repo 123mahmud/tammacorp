@@ -244,11 +244,11 @@
 						{{ $data[0]->comp }}
 					</td>
 					<td>
-						<label class="bold">Posisi</label>
+						<label class="bold">Staff</label>
 					</td>
 					<td width="1%">:</td>
 					<td>
-						{{ $data[0]->position }}
+						{{ $data[0]->m_name }}
 					</td>
 				</tr>
 			</table>
@@ -257,6 +257,8 @@
 					<td width="1%"><span class="names">No</span></td>
 					<td><span class="names">Kode - Nama Item</span></td>
 					<td><span class="names">i_type</span></td>
+					<td><span class="names">Stock System</span></td>
+					<td><span class="names">Stock Real</span></td>
 					<td><span class="names">Opname</span></td>
 					<td><span class="names">Satuan</span></td>
 				</tr>
@@ -265,7 +267,9 @@
 					<td align="center">{{ $index+1 }}</td>
 					<td>{{ $opname->i_code }} - {{ $opname->i_name }}</td>
 					<td>{{ $opname->i_type }}</td>
-					<td align="right">{{ (int)$opname->od_opname }}</td>
+					<td align="right">{{ number_format($opname->od_system,0,'.',',') }}</td>
+					<td align="right">{{ number_format($opname->od_real,0,'.',',') }}</td>
+					<td align="right">{{ number_format($opname->od_opname,0,'.',',') }}</td>
 					<td>{{ $opname->m_sname }}</td>
 				</tr>
 				@endforeach

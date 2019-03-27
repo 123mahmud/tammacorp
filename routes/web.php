@@ -136,7 +136,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
     Route::get('/inventory/POSgrosir/transfer', 'transferItemGrosirController@indexGrosir');
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
-    Route::get('/inventory/stockopname/opname', 'Inventory\OpnameGdgController@opname');
     Route::get('/inventory/stockopname/tambah_opname', 'Inventory\OpnameGdgController@tambah_opname');
     Route::get('/inventory/p_returncustomer/cust', 'Inventory\InventoryController@cust');
     Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryController@cari_nota_produksi');
@@ -145,9 +144,18 @@ Route::group(['middleware' => 'auth'], function () {
     //mahmud stock opname
     Route::get('/inventory/stockopname/opname', 'Inventory\stockOpnameController@index');
     Route::get('/inventory/namaitem/autocomplite/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
-    Route::post('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
-    Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}', 'Inventory\stockOpnameController@history');
+    Route::get('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
+    Route::get('/inventory/namaitem/simpanopname/laporan', 'Inventory\stockOpnameController@saveOpnameLaporan');
+    Route::get('/inventory/namaitem/updateLap/{id}', 'Inventory\stockOpnameController@updateOpname');
+    Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}/{jenis}/{gudang}', 'Inventory\stockOpnameController@history');
     Route::get('/inventory/namaitem/detail', 'Inventory\stockOpnameController@getOPname');
+    Route::get('/inventory/stockopname/hapusLaporan/{id}', 'Inventory\stockOpnameController@hapusLapOpname');
+    Route::get('/inventory/stockopname/editopname/{id}', 'Inventory\stockOpnameController@editLaporan');
+    Route::get('/inventory/namaitem/simpanopname/pengajuan', 'Inventory\stockOpnameController@simpanPengajuan');
+    Route::get('/inventory/namaitem/confirm/{tgl1}/{tgl2}/{gudang}', 'Inventory\stockOpnameController@tableConfirm');
+    Route::get('/inventory/namaitem/detail/confirm', 'Inventory\stockOpnameController@getConfirm');
+    Route::get('/inventory/simpanopname/update/status/{id}', 'Inventory\stockOpnameController@updateStatusConfirm');  
+    Route::get('/inventory/namaitem/ubahstok/{id}', 'Inventory\stockOpnameController@updateStock');  
     // Ari Print Stock OPname
     Route::get('/inventory/stockopname/print_stockopname/{id}', 'Inventory\stockOpnameController@print_stockopname');    
     //mahmud stock gudang
@@ -1370,7 +1378,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datajabatanman/ubahstatus', 'Master\JabatanController@ubahStatusMan');
     Route::get('/master/datajabatanpro/ubahstatus', 'Master\JabatanController@ubahStatusPro');
 //pegawai
-    Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
+    Route::get('/master/datapegawai/datatable-pegawaipro/{id}', 'Master\PegawaiController@pegawaiPro');
     Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
     Route::post('/master/datapegawai/simpan-pegawai-pro', 'Master\PegawaiController@simpanPegawaiPro');
     Route::get('/master/datapegawai/edit-pegawai-pro/{id}', 'Master\PegawaiController@editPegawaiPro');
@@ -1390,6 +1398,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
     Route::get('/master/datapegawai/ubahstatus', 'Master\PegawaiController@ubahStatusMan');
     Route::get('/master/datapegawai/ubahstatuspro', 'Master\PegawaiController@ubahStatusPro');
+    Route::get('/master/datapegawai/datatable-rumahpro', 'Master\PegawaiController@rumahPro');
+    Route::get('/master/datapegawai/ubahstatusrumah', 'Master\PegawaiController@ubahStatusRumah');
+    Route::get('/master/datapegawai/tambah-rumah-pro', 'Master\PegawaiController@tambahRumah');
+    Route::get('/master/datapegawai/simpan-rumah', 'Master\PegawaiController@simpanRumah');
+    Route::get('/master/datapegawai/edit-rumah-pro/{id}', 'Master\PegawaiController@editRumahPro');
+    Route::get('/master/datapegawai/update-rumah/{id}', 'Master\PegawaiController@updateRumahPro');
+    
 //mahmud master divisi dan posii
     Route::get('/master/divisi/pos/index', 'Master\DivisiposController@index');
     Route::get('/master/divisi/pos/table', 'Master\DivisiposController@tableDivisi');

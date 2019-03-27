@@ -29,6 +29,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/timepicker.min.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/css/ladda-themeless.min.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/awesome-bootstrap-checkbox.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/jquery-confirm/jquery-confirm.css')}}">
 <link href="{{ asset('css/iziToast.css') }}" rel="stylesheet">
     <style type="text/css">
 

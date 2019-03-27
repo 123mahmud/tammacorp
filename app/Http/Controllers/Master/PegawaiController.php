@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use DB;
 use App\Pegawai;
+use App\m_produksi;
 use App\PegawaiProduksi;
 use Response;
 use App\Http\Requests;
@@ -19,96 +20,107 @@ use Illuminate\Support\Facades\File;
 class PegawaiController extends Controller
 {
     public function pegawai(){
-        return view('master.datapegawai.pegawai');
+
+        $rumah = m_produksi::all();
+
+        return view('master.datapegawai.pegawai', compact('rumah'));
     }
 
     public function pegawaiData(){
-        $list = DB::table('m_pegawai_man')
+        $data = DB::table('m_pegawai_man')
                 ->select('m_pegawai_man.*', 'm_jabatan.c_posisi')
                 ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
                 ->get();
-        $data = collect($list);
-        return Datatables::of($data)           
-                ->addColumn('action', function ($data) {
-                    if ($data->c_isactive == 'TRUE') {
-                        return  '<div class="text-center">'.
-                                    '<button id="edit" 
-                                        onclick="edit('.$data->c_id.')" 
-                                        class="btn btn-warning btn-sm" 
-                                        title="Edit">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </button>'.'
-                                    <button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatusMan('.$data->c_id.')" 
-                                        class="btn btn-primary btn-sm" 
-                                        title="Aktif">
-                                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                                    </button>'.
-                                '</div>';
-                    }
-                    else
-                    {
-                        return  '<div class="text-center">'.
-                                    '<button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatusMan('.$data->c_id.')" 
-                                        class="btn btn-danger btn-sm" 
-                                        title="Tidak Aktif">
-                                        <i class="fa fa-minus-square" aria-hidden="true"></i>
-                                    </button>'.
-                                '</div>';
-                    }
-                    
-                })
-                ->addColumn('none', function ($data) {
-                    return '-';
-                })
-                ->rawColumns(['action','confirmed'])
-                ->make(true);
+
+        return Datatables::of($data)         
+            ->editColumn('c_tahun_masuk', function ($data)
+            {
+                return date('d M Y', strtotime($data->c_tahun_masuk));
+            })   
+            ->addColumn('action', function ($data) {
+                if ($data->c_isactive == 'TRUE') {
+                    return  '<div class="text-center">'.
+                                '<button id="edit" 
+                                    onclick="edit('.$data->c_id.')" 
+                                    class="btn btn-warning btn-sm" 
+                                    title="Edit">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </button>'.'
+                                <button id="status'.$data->c_id.'" 
+                                    onclick="ubahStatusMan('.$data->c_id.')" 
+                                    class="btn btn-primary btn-sm" 
+                                    title="Aktif">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                }
+                else
+                {
+                    return  '<div class="text-center">'.
+                                '<button id="status'.$data->c_id.'" 
+                                    onclick="ubahStatusMan('.$data->c_id.')" 
+                                    class="btn btn-danger btn-sm" 
+                                    title="Tidak Aktif">
+                                    <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                }
+                
+            })
+            ->addColumn('none', function ($data) {
+                return '-';
+            })
+            ->rawColumns(['action','confirmed'])
+            ->make(true);
     }
 
-    public function pegawaiPro(){
-        $list = DB::table('m_pegawai_pro')
+    public function pegawaiPro($id){
+        $data = DB::table('m_pegawai_pro')
                 ->select('m_pegawai_pro.*', 'm_jabatan_pro.c_jabatan_pro','m_pegawai_pro.cp_isactive')
                 ->join('m_jabatan_pro', 'm_pegawai_pro.c_jabatan_pro_id', '=', 'm_jabatan_pro.c_id')
+                ->where('c_rumah_produksi',$id)
                 ->get();
-
-        $data = collect($list);
-        return Datatables::of($data)           
-                ->addColumn('action', function ($data) {
-                    if ($data->cp_isactive == 'TRUE') {
-                        return  '<div class="text-center">'.
-                                    '<button id="edit" 
-                                        onclick="editPro('.$data->c_id.')" 
-                                        class="btn btn-warning btn-sm" 
-                                        title="Edit">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </button>'.'
-                                    <button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatusPro('.$data->c_id.')" 
-                                        class="btn btn-primary btn-sm" 
-                                        title="Aktif">
-                                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                                    </button>'.
-                                '</div>';
-                    }
-                    else
-                    {
-                        return  '<div class="text-center">'.
-                                    '<button id="status'.$data->c_id.'" 
-                                        onclick="ubahStatusPro('.$data->c_id.')" 
-                                        class="btn btn-danger btn-sm" 
-                                        title="Tidak Aktif">
-                                        <i class="fa fa-minus-square" aria-hidden="true"></i>
-                                    </button>'.
-                                '</div>';
-                    }
-                    
-                })
-                ->addColumn('none', function ($data) {
-                    return '-';
-                })
-                ->rawColumns(['action','confirmed'])
-                ->make(true);
+                
+        return Datatables::of($data)       
+            ->editColumn('c_tahun_masuk', function ($data)
+            {
+                return date('d M Y', strtotime($data->c_tahun_masuk));
+            })       
+            ->addColumn('action', function ($data) {
+                if ($data->cp_isactive == 'TRUE') {
+                    return  '<div class="text-center">'.
+                                '<button id="edit" 
+                                    onclick="editPro('.$data->c_id.')" 
+                                    class="btn btn-warning btn-sm" 
+                                    title="Edit">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </button>'.'
+                                <button id="status'.$data->c_id.'" 
+                                    onclick="ubahStatusPro('.$data->c_id.')" 
+                                    class="btn btn-primary btn-sm" 
+                                    title="Aktif">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                }
+                else
+                {
+                    return  '<div class="text-center">'.
+                                '<button id="status'.$data->c_id.'" 
+                                    onclick="ubahStatusPro('.$data->c_id.')" 
+                                    class="btn btn-danger btn-sm" 
+                                    title="Tidak Aktif">
+                                    <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                }
+                
+            })
+            ->addColumn('none', function ($data) {
+                return '-';
+            })
+            ->rawColumns(['action','confirmed'])
+            ->make(true);
     }
 
     public function tambahPegawai(){
@@ -426,6 +438,150 @@ class PegawaiController extends Controller
             ]);
 
         }
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+    }
+
+    public function rumahPro()
+    {
+        $rumah = DB::table('m_produksi')->get();
+
+        return Datatables::of($rumah)       
+
+            ->addColumn('action', function ($data) {
+                if ($data->mp_isactive == 'TRUE') {
+                    return  '<div class="text-center">'.
+                                '<button id="edit" 
+                                    onclick="editRumahPro('.$data->mp_id.')" 
+                                    class="btn btn-warning btn-sm" 
+                                    title="Edit">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                </button>'.'
+                                <button id="status'.$data->mp_id.'" 
+                                    onclick="ubahStatusRumah('.$data->mp_id.')" 
+                                    class="btn btn-primary btn-sm" 
+                                    title="Aktif">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                }
+                else
+                {
+                    return  '<div class="text-center">'.
+                                '<button id="status'.$data->mp_id.'" 
+                                    onclick="ubahStatusRumah('.$data->mp_id.')" 
+                                    class="btn btn-danger btn-sm" 
+                                    title="Tidak Aktif">
+                                    <i class="fa fa-minus-square" aria-hidden="true"></i>
+                                </button>'.
+                            '</div>';
+                }
+                
+            })
+            ->rawColumns(['action'])
+            ->make(true); 
+    }
+
+    public function ubahStatusRumah(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $cek = DB::table('m_produksi')
+            ->select('mp_isactive')
+            ->where('mp_id',$request->id)
+            ->first();
+
+        if ($cek->mp_isactive == 'TRUE') 
+        {
+            DB::table('m_produksi')
+            ->where('mp_id',$request->id)
+            ->update([
+                'mp_isactive' => 'FALSE'                
+            ]);
+
+        }
+        else
+        {
+            DB::table('m_produksi')
+            ->where('mp_id',$request->id)
+            ->update([
+                'mp_isactive' => 'TRUE'
+            ]);
+
+        }
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+    }
+
+    public function tambahRumah()
+    {
+
+        return view('master.datapegawai.tambah_rumah');
+    }
+
+    public function simpanRumah(Request $request)
+    {
+        // dd($request->all());
+        DB::beginTransaction();
+        try {
+        $mp_id = DB::table('m_produksi')->select('mp_id')->max('mp_id')+1;
+        DB::table('m_produksi')
+            ->insert([
+                'mp_id' => $mp_id,
+                'mp_name' => $request->mp_name,
+                'mp_alamat' => $request->mp_alamat,
+                'mp_created' => Carbon::now()
+            ]);
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses'
+        ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
+
+    }
+
+    public function editRumahPro($id)
+    {
+        $rumah = DB::table('m_produksi')->where('mp_id', $id)->first();
+
+        return view('master.datapegawai.edit-rumah-pro', compact('rumah'));
+    }
+
+    public function updateRumahPro(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+
+        DB::table('m_produksi')->where('mp_id',$id)
+            ->update([
+                'mp_name' => $request->mp_name,
+                'mp_alamat' => $request->mp_alamat,
+                'mp_updated' => Carbon::now()
+            ]);
         DB::commit();
         return response()->json([
             'status' => 'sukses'
