@@ -176,7 +176,7 @@
                         <div class="form-group">
                           <div class="input-icon right">
                             <i class="fa fa-usd"></i>
-                            <input type="text" id="limit" name="limit" class="form-control input-sm currency">
+                            <input type="text" id="limit" name="limit" class="form-control input-sm currency text-right">
                           </div>
                         </div>
                       </div>

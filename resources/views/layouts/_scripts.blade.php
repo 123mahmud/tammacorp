@@ -43,6 +43,8 @@
     <script src="{{asset('assets/script/accounting.min.js')}}"></script>
     <script src="{{ asset('js/iziToast.min.js') }}"></script>
     <script src="{{asset('js/jquery-validation.min.js')}}"></script>
+    <script src="{{asset('assets/jquery-confirm/jquery-confirm.js')}}"></script>
+    <script src="{{ asset('assets/inputmask/inputmask.jquery.js') }}"></script>
     <script type="text/javascript">
         var baseUrl = '{{url('/')}}';
 

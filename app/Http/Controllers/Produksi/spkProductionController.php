@@ -468,7 +468,19 @@ class spkProductionController extends Controller
         $actual = spk_actual::where('ac_spk', $request->x)
             ->first();
 
-        return view('produksi.spk.table-inputactual', compact('spk', 'actual'));
+        $dataFormula = spk_formula::select('i_id',
+                                             'i_code',
+                                             'i_name',
+                                             'm_sname',
+                                             'fr_value'
+                                             )
+            ->join('m_item','m_item.i_id','=','fr_formula')
+            ->join('m_satuan','m_satuan.m_sid','=','fr_scale')
+            ->where('fr_spk', $request->x)
+            ->get();
+        // dd($dataFormula);
+
+        return view('produksi.spk.table-inputactual', compact('spk', 'actual', 'dataFormula'));
     }
 
     public function print($spk_id)

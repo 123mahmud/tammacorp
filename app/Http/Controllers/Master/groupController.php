@@ -172,15 +172,15 @@ class groupController extends Controller
                  'd.nama_akun as penjualan_nama',
                  'e.nama_akun as beban_nama')
         ->leftjoin('d_akun as c', function($join) {
-            $join->on('c.id_akun', '=', 'm_group.m_akun_persediaan')
+            $join->on('c.id_akun', '=', 'm_group.g_akun_persediaan')
               ->where('c.type_akun','DETAIL');
           })
         ->leftjoin('d_akun as d', function($join) {
-            $join->on('d.id_akun', '=', 'm_group.m_akun_penjualan')
+            $join->on('d.id_akun', '=', 'm_group.g_akun_penjualan')
               ->where('d.type_akun','DETAIL');
           })
         ->leftjoin('d_akun as e', function($join) {
-            $join->on('e.id_akun', '=', 'm_group.m_akun_beban')
+            $join->on('e.id_akun', '=', 'm_group.g_akun_beban')
               ->where('e.type_akun','DETAIL');
           })
         ->where('m_gid','=',$id)

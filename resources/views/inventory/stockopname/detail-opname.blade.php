@@ -7,22 +7,40 @@
             <table class="table tabelan table-hover table-bordered" id="detailFormula" width="100%">
                 <thead>
                 <tr>
-                    <th width="5%">No.</th>
-                    <th>Kode - Nama Item</th>
-                    <th>i_type</th>
-                    <th>Opname</th>
-                    <th>Satuan</th>
+                    <th width="25%">Kode - Nama Item</th>
+                    <th width="10%">Type Item</th>
+                    <th width="20%">Stock System</th>
+                    <th width="20%">Stock Real</th>
+                    <th width="20%">Opname</th>
+                    <th width="5%">Satuan</th>
                 </tr>
                 </thead>
                 <tbody>
                   @foreach ($data as $index => $opname)
                     <tr>
-                         <td>{{$index + 1}}</td>
                          <td>{{$opname->i_code}} - {{$opname->i_name}}</td>
-                         <td>{{$opname->i_type}}</td>
+                         <td>
+                            @if ($opname->i_type == 'BB')
+                                Bahan baku
+                            @elseif ($opname->i_type == 'BJ')
+                                Barang jual
+                            @else
+                                Barang Produksi
+                            @endif
+                         </td>
                          <td>
                              <span class="pull-right">
-                                 {{ number_format($opname->od_opname,0,',','.')}}
+                                 {{ number_format($opname->od_system,2,',','.')}}
+                             </span>
+                         </td>
+                         <td>
+                             <span class="pull-right">
+                                 {{ number_format($opname->od_real,2,',','.')}}
+                             </span>
+                         </td>
+                         <td>
+                             <span class="pull-right">
+                                 {{ number_format($opname->od_opname,2,',','.')}}
                              </span>
                          </td>
                          <td>{{$opname->m_sname}}</td>

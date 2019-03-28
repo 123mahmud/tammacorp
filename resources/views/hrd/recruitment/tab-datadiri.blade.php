@@ -209,6 +209,6 @@
     </div>
   </div>
   <ul class="list-inline text-md-center">
-    <li><a class="btn btn-lg btn-primary next-step next-button js-scroll-trigger" href="#form_wizard"> Next Step </a></li>
+    <li><a class="btn btn-lg btn-primary next-step next-button js-scroll-trigger" href="#form_wizard" onclick="lanjut()"> Next Step </a></li>
   </ul>
 </div>
