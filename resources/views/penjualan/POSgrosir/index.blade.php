@@ -1875,16 +1875,11 @@
 
         function saveStatus() {
             $('.status').attr('disabled', 'disabled');
-            var id = $('#idSales').val();
-            var status = $('#setStatus').val();
-            var oldStatus = $('#oldStatus').val();
-            var a = $('#resi').val();
-            var b = $('#ongkir').val();
             $.ajax({
                 url: baseUrl + '/pembayaran/POSgrosir/changestatus',
                 type: 'get',
                 timeout: 10000,
-                data: {id: id, status: status, oldStatus: oldStatus, resi : a, ongkir : b},
+                data: {id: $('#idSales').val(), status: $('#setStatus').val(), oldStatus: $('#oldStatus').val(), resi : $('#resi').val(), ongkir : $('#ongkir').val()},
                 success: function (response) {
                     if (response.status == 'sukses') {
                         cariTanggal();

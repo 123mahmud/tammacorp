@@ -7,11 +7,10 @@
             }
         });
         $('.simpanCus').attr('disabled', 'disabled');
-        var a = $('#save_customer').serialize();
         $.ajax({
             url: baseUrl + "/penjualan/POSretail/retail/store",
             type: 'POST',
-            data: a,
+            data: $('#save_customer').serialize(),
             success: function (response, customer) {
                 if (response.status == 'sukses') {
                     $('#myModal').modal('hide');
@@ -52,13 +51,10 @@
             }
         });
         $('.simpanFinal').attr('disabled', 'disabled');
-        var bb = $('#save_sform :input').serialize();
-        var cc = $('#save_item :input').serialize();
-        var data = tableDetail.$('input').serialize();
         $.ajax({
             url: baseUrl + "/penjualan/POSgrosir/grosir/sal_save_final",
             type: 'POST',
-            data: bb + '&' + cc + '&' + data,
+            data: $('#save_sform :input').serialize() + '&' + $('#save_item :input').serialize() + '&' + tableDetail.$('input').serialize(),
 
             success: function (response) {
                 if (response.status == 'sukses') {
@@ -130,13 +126,10 @@
             }
         });
         $('.simpanProgres').attr('disabled', 'disabled');
-        var bb = $('#save_sform :input').serialize();
-        var cc = $('#save_item :input').serialize();
-        var data = tableDetail.$('input').serialize();
         $.ajax({
             url: baseUrl + "/penjualan/POSgrosir/grosir/sal_save_onprogres",
             type: 'POST',
-            data: bb + '&' + cc + '&' + data,
+            data: $('#save_sform :input').serialize() + '&' + $('#save_item :input').serialize() + '&' + tableDetail.$('input').serialize(),
             success: function (response, nota) {
                 if (response.status == 'sukses') {
                     $("input[name='s_gross']").val('');
@@ -205,13 +198,10 @@
             }
         });
         $('.simpanDraft').attr('disabled', 'disabled');
-        var bb = $('#save_sform :input').serialize();
-        var cc = $('#save_item :input').serialize();
-        var data = tableDetail.$('input').serialize();
         $.ajax({
             url: baseUrl + "/penjualan/POSgrosir/grosir/sal_save_draft",
             type: 'POST',
-            data: bb + '&' + cc + '&' + data,
+            data: $('#save_sform :input').serialize() + '&' + $('#save_item :input').serialize() + '&' + tableDetail.$('input').serialize(),
             success: function (response, nota) {
                 if (response.status == 'sukses') {
                     $("input[name='s_gross']").val('');
@@ -258,13 +248,10 @@
             }
         });
         $('.simpanFinal').attr('disabled', 'disabled');
-        var bb = $('#save_sform :input').serialize();
-        var cc = $('#save_item :input').serialize();
-        var data = tableDetail.$('input').serialize();
         $.ajax({
             url: baseUrl + "/penjualan/POSgrosir/grosir/sal_save_finalupdate",
             type: 'POST',
-            data: bb + '&' + cc + '&' + data,
+            data: $('#save_sform :input').serialize() + '&' + $('#save_item :input').serialize() + '&' + tableDetail.$('input').serialize(),
 
             success: function (response, nota) {
                 if (response.status == 'sukses') {
@@ -340,13 +327,10 @@
             }
         });
         $('.simpanProgres').attr('disabled', 'disabled');
-        var bb = $('#save_sform :input').serialize();
-        var cc = $('#save_item :input').serialize();
-        var data = tableDetail.$('input').serialize();
         $.ajax({
             url: baseUrl + "/penjualan/POSgrosir/grosir/sal_save_onProgresUpdate",
             type: 'POST',
-            data: bb + '&' + cc + '&' + data,
+            data: $('#save_sform :input').serialize() + '&' + $('#save_item :input').serialize() + '&' + tableDetail.$('input').serialize(),
 
             success: function (response, nota) {
                 if (response.status == 'sukses') {
