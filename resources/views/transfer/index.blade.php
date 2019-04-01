@@ -348,15 +348,26 @@ function tambahreq() {
         tableReq.row.add([
             code,
             nama + '<input type="hidden" name="kode_item[]" class="kode_item kode" value="' + kode + '"><input type="hidden" name="nama_item[]" class="nama_item" value="' + nama + '"> ',
-            '<input size="30" style="text-align:right;" type="number"  name="sd_qty[]" class="sd_qty form-control r_qty-' + kode + '" value="' + qty + '"> ',
+
+            '<input style="text-align:right;" type="text"  name="sd_qty[]" class="sd_qty form-control r_qty-' + kode + ' currency-x" value="' + qty + '"> ',
 
             Hapus
         ]);
 
         tableReq.draw();
         rindex++;
-        // console.log(rtamp);
         rtamp.push(kode);
+        $('.currency-x').inputmask("currency", {
+          radixPoint: ".",
+          groupSeparator: ".",
+          digits: 0,
+          autoGroup: true,
+          prefix: '', //Space after $, this will not truncate the first character.
+          rightAlign: false,
+          autoUnmask: true,
+          // unmaskAsNumber: true,
+        });
+
     } else {
         var qtyLawas = parseInt($(".r_qty-" + kode).val());
         $(".r_qty-" + kode).val(qtyLawas + qty);
@@ -545,7 +556,7 @@ function simpaPenerimaan() {
         url: baseUrl + '/transfer/penerimaan/simpa-penerimaan',
         type: 'POST',
         timeout: 10000,
-        data: item + '&' + tablePenerimaan.$('input').serialize(),
+        data: $('#save_penerimaan :input').serialize() + '&' + tablePenerimaan.$('input').serialize(),
         dataType: 'json',
         success: function(response) {
             if (response.status == 'sukses') {
@@ -673,12 +684,10 @@ function cariTanggalPenerimaan() {
 
 function updateTransfer($id) {
     $('#update').attr('disabled', 'disabled');
-    var item = $('#edit_request :input').serialize();
-    var data = tableTf.$('input').serialize();
     $.ajax({
         url: baseUrl + "/penjualan/POSretail/update-transfer-grosir/" + $id,
         type: 'get',
-        data: item + '&' + data,
+        data: $('#edit_request :input').serialize() + '&' + tableTf.$('input').serialize(),
         dataType: 'json',
         success: function(response) {
             if (response.status == 'sukses') {

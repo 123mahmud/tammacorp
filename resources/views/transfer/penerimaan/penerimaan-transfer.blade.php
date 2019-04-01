@@ -83,14 +83,14 @@
                                       <td class="text-right">@if($data->s_qty=='')
                                             0
                                           @else
-                                            {{$data->s_qty}}</td>
+                                            {{number_format($data->s_qty,0,'.',',')}}</td>
                                           @endif
                                       <td class="text-right">{{$data->tidt_qty_send}}
                                           <input type="hidden" value="{{$data->tidt_qty_send}}" id="qtySend-{{$data->i_id}}">
                                       </td>                                     
                                       <td>
-                                        <input type="number" id="qtyreceived-{{$data->i_id}}"
-                                        onkeyup="HitungQtyRecieved('{{$data->i_id}}');cekQty(this, event);" type="text" name="qtyRecieved[]"  class="form-control text-right terima" value="{{$data->tidt_qty_received}}">
+                                        <input id="qtyreceived-{{$data->i_id}}"
+                                        onkeyup="HitungQtyRecieved('{{$data->i_id}}');cekQty(this, event);" type="text" name="qtyRecieved[]"  class="form-control text-right terima currency-x" value="{{$data->tidt_qty_received}}">
                                       </td>
                                     </tr>
                               @endforeach

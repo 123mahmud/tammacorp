@@ -68,13 +68,13 @@
                             <div class="col-md-3 col-sm-6 col-xs-12">
                              <label class="control-label tebal">Masukan Jumlah</label>
                                 <div class="input-group input-group-sm" style="width: 100%;">
-                                   <input type="number" id="stf_qty" name="stf_qty" class="form-control" >
+                                   <input type="text" id="stf_qty" name="stf_qty" class="form-control currency-x" >
                                 </div>
                             </div>
                             <div class="col-md-3 col-sm-6 col-xs-12">
                              <label class="control-label tebal">Stok</label>
                                 <div class="input-group input-group-sm" style="width: 100%;">
-                                   <input type="number" id="stf_stok" name="stf_stok" class="form-control" readonly="">
+                                   <input type="text" id="stf_stok" name="stf_stok" class="form-control currency-x" readonly="">
                                 </div>
                             </div>
                         </div> 
