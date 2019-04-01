@@ -62,6 +62,6 @@
 <!-- end detail order-->
 
 <script type="text/javascript">
-    $('#detailFormula').dataTable();
+
 
 </script>
