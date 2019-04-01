@@ -115,14 +115,14 @@
 				Staf Sales Outlet
 				<br>
 				<div style="margin-top: 50px;">
-					<small>Della</small>
+
 				</div>
 			</div>
 			<div class="ttd-kanan text-center bold">
 				Staf Sales Online
 				<br>
 				<div style="margin-top: 50px;">
-					<small>Devi</small>
+
 				</div>
 			</div>
 		</div>
