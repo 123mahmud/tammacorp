@@ -49,18 +49,18 @@
 	     	 #table-data{
 				font-size: 8pt;
 				margin-top: 10px;
-				border: 1px solid #555;
+				border: 0px solid #555;
 		    }
 		    #table-data th{
 		    	text-align: center;
-		    	border: 1px solid #aaa;
+		    	border: 0px solid #aaa;
 		    	border-collapse: collapse;
 		    	background: #ccc;
 		    	padding: 5px;
 		    }
 
 		    #table-data td{
-		    	border-right: 1px solid #555;
+		    	border-right: 0px solid #555;
 		    	padding: 5px;
 		    	vertical-align: top;
 		    }
@@ -97,7 +97,6 @@
 		   		border-top: 0px solid #efefef;
 		    	font-size: 10pt;
 		    	color: white;
-		    	color: #555;
 		   }
 
 		   .table_total{
@@ -107,7 +106,7 @@
 
 		    .table_total th.typed{
 		    	text-align: right;
-		    	border: 1px solid #aaa;
+		    	border: 0px solid #aaa;
 		    	border-collapse: collapse;
 		    	background: #ccc;
 		    	padding: 5px 0px;
@@ -224,9 +223,9 @@
 
         @if($request->type == 'detail')
 
-			<table id="table-data" class="table_neraca tree" border="0" width="100%">
+			<table id="table-data" class="table_neraca tree" width="100%">
 				<tbody>
-
+					<?php $totTG = $totTN = $totSD = $totSP = 0; ?>
 					@foreach($supplier as $key => $supp)
 
 						<tr>
@@ -246,7 +245,7 @@
 							<td width="5%" style="text-align: center; border: 1px solid #2e2e2e; background: #eee;">keterangan</td>
 						</tr>
 
-						<?php $empty = true; $no = 0; ?>
+						<?php $empty = true; $no = 0; $saldoTG = $saldoTN = $saldoSD = $saldoSP = 0;?>
 
 						@foreach($data as $key => $purchase)
 							@if($purchase->s_id == $supp->s_id)
@@ -266,6 +265,16 @@
 									<td style="text-align: right; border: 1px solid #ccc;">{{ formatAccounting($purchase->d_pcs_total_net - $purchase->d_pcs_payment) }}</td>
 
 									<?php
+										$saldoTG += $purchase->d_pcs_total_gross;
+										$saldoTN += $purchase->d_pcs_total_net;
+										$saldoSD += ($purchase->d_pcs_payment);
+										$saldoSP += $purchase->d_pcs_total_net - $purchase->d_pcs_payment;
+
+										$totTG += $saldoTG;
+										$totTN += $saldoTN;
+										$totSD += $saldoSD;
+										$totSP += $saldoSP;
+
 										$date1 = (!is_null($purchase->d_pcs_duedate)) ? date_create(date('Y-m-d', strtotime($purchase->d_pcs_duedate))) : date_create(date('Y-m-d', strtotime($purchase->d_pcs_date_created)));
 										$date2 = date_create(date('Y-m-d'));
 										$diff=date_diff($date1,$date2);
@@ -307,8 +316,54 @@
 							</tr>
 						@endif
 
+						<tr>
+							<td class="text-center" colspan="4">Saldo {{ $supp->s_company }}</td>
+							<td class="text-right" style="font-weight: 600;">
+								{{ formatAccounting($saldoTG) }}
+							</td>
+							<td class="text-right" style="font-weight: 600;">
+								{{ formatAccounting($saldoTN) }}
+							</td>
+							<td class="text-right" style="font-weight: 600;">
+								{{ formatAccounting($saldoSD) }}
+							</td>
+							<td class="text-right" style="font-weight: 600;">
+								{{ formatAccounting($saldoSP) }}
+							</td>
+							<td colspan="2">
+								
+							</td>
+						</tr>
+
+						<tr style="border: none;">
+							<td colspan="10" style="border: 0px solid red;"></td>
+						</tr>
+
 					@endforeach
-					
+						
+						<tr>
+							<td colspan="10" style="border: 0px solid red;"></td>
+						</tr>
+
+						<tr>
+							<th class="text-center" colspan="4">Total Saldo Hutang</th>
+							<th class="text-right" style="font-weight: 600; text-align: right;">
+								{{ formatAccounting($totTG) }}
+							</th>
+							<th class="text-right" style="font-weight: 600; text-align: right;">
+								{{ formatAccounting($totTN) }}
+							</th>
+							<th class="text-right" style="font-weight: 600; text-align: right;">
+								{{ formatAccounting($totSD) }}
+							</th>
+							<th class="text-right" style="font-weight: 600; text-align: right;">
+								{{ formatAccounting($totSP) }}
+							</th>
+							<th colspan="2">
+								
+							</th>
+						</tr>
+
 				</tbody>
 			</table>
 

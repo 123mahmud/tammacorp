@@ -224,7 +224,7 @@ class HutangController extends Controller
                       ->distinct('d_sales.s_customer')
                       ->select('d_sales.s_customer', 'c_name')
                       ->where('s_date', '>=', $date_1)
-                      ->where('s_date', '<', $date_2)
+                      ->where('s_date', '<=', $date_2)
                       ->where('s_channel', 'GR');
 
       $data = DB::table('d_sales')
@@ -272,6 +272,10 @@ class HutangController extends Controller
                           DB::raw('max(s_jatuh_tempo) as max_duedate')
                         )->groupBy('c_name');
 
+      if($request->jenis != 'all'){
+        $data = $data->where('d_sales.s_customer', $request->supplier);
+      }
+
       $data = $data->get();
       // return json_encode($data);
       return view('keuangan.l_hutangpiutang.laporan_hutang', compact('data', 'request', 'date_1', 'date_2'));
@@ -294,7 +298,7 @@ class HutangController extends Controller
                       ->distinct('d_purchasing.s_id')
                       ->select('d_purchasing.s_id', 's_company')
                       ->where('d_pcs_date_created', '>=', $date_1)
-                      ->where('d_pcs_date_created', '<', $date_2);
+                      ->where('d_pcs_date_created', '<=', $date_2);
 
       $data = DB::table('d_purchasing')
                     ->where('d_pcs_date_created', '>=', $date_1)
@@ -331,7 +335,6 @@ class HutangController extends Controller
                       ->where('d_pcs_date_created', '>=', $date_1)
                       ->where('d_pcs_date_created', '<', $date_2)
                       ->where('d_pcs_status','!=','WT')
-                      ->where('d_purchasing.s_id', $request->supplier)
                       ->select(
                           's_company', 
                           DB::raw('sum(d_pcs_total_gross) as total_gross'),
@@ -341,6 +344,10 @@ class HutangController extends Controller
                           DB::raw('min(d_pcs_date_created) as min_tanggal'),
                           DB::raw('max(d_pcs_duedate) as max_duedate')
                         )->groupBy('s_company');
+
+      if($request->jenis != 'all'){
+        $data = $data->where('d_purchasing.s_id', $request->supplier);
+      }
 
       $data = $data->get();
       // return json_encode($data);
